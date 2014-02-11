@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Boost Search"
+		description="Widget to search learning material."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/search_youtube.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/search_slideshare.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/search_scribd.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/linkify.js" type="text/javascript"></script>
+    	<script src="https://apis.google.com/js/client.js?onload=onYouTubeClientLoad" type="text/javascript"></script>
+    	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+
+		<!-- Define CSS -->
+		<link href="http://127.0.0.1:8073/role/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<style>
+			.thumbnail.right-caption > img {
+			    float: left;
+			    margin-right: 9px;
+			}
+
+			.thumbnail.right-caption {
+			    float: left;
+			}
+
+			.thumbnail.right-caption > .caption {
+			    padding: 4px;
+			}
+
+			.thumbnail.right-caption > .caption > h3 {
+			    margin-top: 1px;
+			}
+
+			a.thumbnail:hover {
+			    text-decoration: none;
+			}
+
+			a.thumbnail:selected {
+			    text-decoration: none;
+			}
+
+			.nav-tabs > li .close {
+			    margin: -2px 0 0 10px;
+			    font-size: 18px;
+			}
+			.marginBottom {
+			    margin-bottom :1px !important;
+			}
+
+		</style>
+
+		<!-- JavaScript Block -->
+		<script>
+		//Globals
+		var searchResults;
+		var performSearch;
+		var iwcClient;
+		gadgets.util.registerOnLoadHandler(init);
+		activateYouTubeSearch();
+
+		function init(){
+
+			iwcClient = new iwc.Client();
+			iwcClient.connect(iwcCallback);
+		}
+
+		function iwcCallback(intent){
+			console.log(intent);
+		}
+
+		function publishShowYoutubeVideo(id){
+			var intent = {
+				component: "",
+				data: "",
+				dataType: "text/json",
+				action: "SHOW_YOUTUBE_VIDEO",
+				extras: {id:id}
+			};
+
+			iwcClient.publish(intent);
+		}
+
+		function publishShowSlideshareSlideshow(id){
+			var intent = {
+				component: "",
+				data: "",
+				dataType: "text/json",
+				action: "SHOW_SLIDESHARE_SLIDESHOW",
+				extras: {id:id}
+			};
+
+			iwcClient.publish(intent);
+		}
+
+		function publishShowScribdDocument(id, accessKey, description){
+			var intent = {
+				component: "",
+				data: "",
+				dataType: "text/json",
+				action: "SHOW_SCRIBD_DOCUMENT",
+				extras: {id:id,
+						 accessKey:accessKey,
+						 description:description
+						}
+			};
+
+			iwcClient.publish(intent);
+		}
+
+		$(function(){
+			$("#search_button").click(function(){
+				var query = $("#search_field").val();
+				performSearch(query);
+				//performSlideShareSearch($("#search_field").val(), 1, renderSlideshareSearch);
+			});
+
+			$("#search_field").keypress(function(event){
+				if(event.which == 13){
+					var query = $("#search_field").val();
+					performSearch(query);
+			        //performYouTubeSearch($("#search_field").val(), null, renderYoutubeSearch);
+				}
+			});
+			$("#search_field").on("input", function(){
+				searchResults = {};
+			});
+			$(".closeTab").click(function(){
+				var tabContentId = $(this).parent().attr("href");
+				$(this).parent().parent().remove();
+				$('#tab a:first').tab('show');
+				$(tabContentId).remove();
+			});
+
+			$("#youTubeSelector").change(function(){
+				activateYouTubeSearch();
+
+				var query = $("#search_field").val();
+				if(query)
+					performSearch(query);
+			});
+
+			$("#slideShareSelector").change(function(){
+				activateSlideShareSearch();
+
+				var query = $("#search_field").val();
+				if(query)
+					performSearch(query);
+			});
+
+			$("#scribdSelector").change(function(){
+				activateScribdSearch();
+
+				var query = $("#search_field").val();
+				if(query)
+					performSearch(query);
+			});
+		});
+
+		function activateYouTubeSearch(){
+			if(!searchResults) {
+				searchResults = {};
+			}
+			performSearch = function(query){
+				if(!searchResults.youtube) {
+					performYouTubeSearch(query, null, null, function(result){
+						result.queryPage = 1;
+						result.resultsPage = 1;
+						searchResults.query = query;
+						searchResults.youtube = result;
+						renderYoutubeSearch();
+					});
+				}
+				else
+					renderYoutubeSearch();
+			};
+		}
+
+		function switchToNextYouTubeQueryPage(){
+			performYouTubeSearch(searchResults.query, searchResults.youtube.nextPageToken, null, function(result){
+				result.queryPage = searchResults.youtube.queryPage + 1;
+				result.resultsPage = 5 * (result.queryPage - 1) + 1;
+				searchResults.youtube = result;
+				renderYoutubeSearch();
+			});
+		}
+
+		function switchToPrevYouTubeQueryPage(){
+			performYouTubeSearch(searchResults.query, searchResults.youtube.prevPageToken, null, function(result){
+				result.queryPage = searchResults.youtube.queryPage - 1;
+				result.resultsPage = 5 * (result.queryPage - 1) + 1;
+				searchResults.youtube = result;
+				renderYoutubeSearch();
+			});
+		}
+
+		function activateSlideShareSearch(){
+			if(!searchResults) {
+				searchResults = {};
+			}
+			performSearch = function(query){
+				if(!searchResults.slideshare) {
+					performSlideShareSearch(query, "1", function(result){
+						result.queryPage = 1;
+						result.resultsPage = 1;
+						searchResults.query = query;
+						searchResults.slideshare = result;
+						renderSlideshareSearch();
+					});
+				}
+				else
+					renderSlideshareSearch();
+			};
+		}
+
+		function switchToNextSlideShareQueryPage(){
+			performSlideShareSearch(searchResults.query, searchResults.slideshare.queryPage + 1, function(result){
+				result.queryPage = searchResults.slideshare.queryPage + 1;
+				result.resultsPage = 5 * (result.queryPage - 1) + 1;
+				searchResults.slideshare = result;
+				renderSlideshareSearch();
+			});
+		}
+
+		function switchToPrevSlideShareQueryPage(){
+			performSlideShareSearch(searchResults.query, searchResults.slideshare.queryPage - 1, function(result){
+				result.queryPage = searchResults.slideshare.queryPage - 1;
+				result.resultsPage = 5 * (result.queryPage - 1) + 1;
+				searchResults.slideshare = result;
+				renderSlideshareSearch();
+			});
+		}
+
+		function switchToNextScribdQueryPage(){
+			performScribdSearch(searchResults.query, searchResults.scribd.queryPage + 1, function(result){
+				result.queryPage = searchResults.scribd.queryPage + 1;
+				result.resultsPage = 5 * (result.queryPage - 1) + 1;
+				searchResults.scribd = result;
+				renderScribdSearch();
+			});
+		}
+
+		function switchToPrevScribdQueryPage(){
+			performScribdSearch(searchResults.query, searchResults.scribd.queryPage - 1, function(result){
+				result.queryPage = searchResults.scribd.queryPage - 1;
+				result.resultsPage = 5 * (result.queryPage - 1) + 1;
+				searchResults.scribd = result;
+				renderScribdSearch();
+			});
+		}
+
+		function activateScribdSearch(){
+			if(!searchResults) {
+				searchResults = {};
+			}
+			performSearch = function(query){
+				if(!searchResults.scribd) {
+					performScribdSearch(query, "1", function(result){
+						result.queryPage = 1;
+						result.resultsPage = 1;
+						searchResults.query = query;
+						searchResults.scribd = result;
+						renderScribdSearch();
+					});
+				}
+				else
+					renderScribdSearch();
+			};
+		}
+
+		//Rendering stuff
+		function renderYoutubeSearchEntry(videoId, title, description, imageURL){
+		    var youtubeResultEntry =    "<a href='#' class='list-group-item' style='min-height:150px;'>" +
+			    							"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
+			    							"<h4>#title</h4>" +
+	    									"<p>" +
+	    										"#description" +
+	    									"</p>" +
+	    								"</a>";
+
+		    var result = youtubeResultEntry.replace(/#imageURL/g, imageURL);
+		    result = result.replace(/#title/g, title);
+		    result = result.replace(/#description/g, description);
+		    result = result.replace(/#videoId/g, videoId);
+		    var entry = $(result);
+		    entry.click(function(){
+		    	publishShowYoutubeVideo(videoId);
+		    });
+		    return entry;
+		}
+
+		function renderSearchProgressBar(){
+				var progressBar =       "<div class='progress progress-striped active'>" +
+		                                    "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
+		                                        "<span>Searching...</span>" +
+		                                    "</div>" +
+		                                "</div>";
+		        $("#resultsFooter").empty();
+		        $("#resultsFooter").append(progressBar);
+		}
+
+		function renderPagination(startPage){
+			var pagination = 	"<center>" +
+									"<ul class='pagination' style='margin-top:5px; margin-bottom:5px;'>" +
+	  									"<li><a href='#' id='paginationPrev'>&laquo;</a></li>" +
+	  									"<li><a href='#' id='pagination1'>" + startPage + "</a></li>" +
+	  									"<li><a href='#' id='pagination2'>" + (startPage+1) + "</a></li>" +
+	  									"<li><a href='#' id='pagination3'>" + (startPage+2) + "</a></li>" +
+	  									"<li><a href='#' id='pagination4'>" + (startPage+3) + "</a></li>" +
+	  									"<li><a href='#' id='pagination5'>" + (startPage+4) + "</a></li>" +
+	  									"<li><a href='#' id='paginationNext'>&raquo;</a></li>" +
+									"</ul>" +
+								"</center>";
+			return pagination;
+
+		}
+
+		function renderYoutubeSearch() {
+			var response = searchResults.youtube;
+			var startIndex = 5 * (response.queryPage - 1) + 1;
+			var endIndex = startIndex + 4;
+			var entryStart = ((response.resultsPage - 1)%5) * 5;
+		    $("#resultsList").empty();
+		    for(var i = entryStart; i <= entryStart + 4; i++){
+		        var actEntry = response.items[i].snippet;
+		        var id = response.items[i].id.videoId;
+		        var thumbnail = actEntry.thumbnails.medium.url;
+		        var title = actEntry.title;
+		        var description = actEntry.description; 
+		        $("#resultsList").append(renderYoutubeSearchEntry(id, title, description, thumbnail));
+		    }
+		    $("#resultsFooter").empty();
+		    $("#resultsFooter").append(renderPagination(startIndex));
+
+		    for(var i = 1; i <= 5; i++){
+		    	$("#pagination" + i).data("index", i);
+		    	$("#pagination" + i).click(function(){
+		    		searchResults.youtube.resultsPage = (response.queryPage - 1) * 5 + $(this).data("index");
+		    		//console.log(startIndex+$(this).data("index")-1);
+		    		renderYoutubeSearch();
+		    		$("#content").scrollTop(0);
+		    	});
+		    }
+		    $("#pagination" + (((response.resultsPage-1)%5)+1)).parent().addClass("active");
+
+		    if(response.queryPage > 1){
+		    	$("#paginationPrev").click(function(){
+		    		switchToPrevYouTubeQueryPage();
+		    	});
+		    }
+		    else{
+		    	$("#paginationPrev").parent().addClass("disabled");
+		    }
+
+		    if(response.nextPageToken){
+		    	$("#paginationNext").click(function(){
+		    		switchToNextYouTubeQueryPage();
+		    	});
+		    }
+		    else{
+		    	$("#paginationNext").parent().addClass("disabled");
+		    }
+		}
+
+		function performSlideShareSearch(query, page, callback){
+			renderSearchProgressBar();
+			SlideShareSearch.search(query, "" + page, function(response){
+				response.query = query;
+				response.page = page;
+				callback(response);
+			})
+		}
+
+		function performYouTubeSearch(query, pageToken, id, callback){
+			renderSearchProgressBar();
+			YouTubeSearch.search(query, pageToken, id, function(response){
+				response.query = query;
+				callback(response);
+			});
+		}
+
+		function performScribdSearch(query, page, callback){
+			renderSearchProgressBar();
+			//query = query + " license:'pd'";
+			ScribdSearch.search(query, "" + page, function(response){
+				response.query = query;
+				response.page = page;
+				//alert(JSON.stringify(response));
+				callback(response);
+			});
+		}
+
+		function renderSlideshareSearchEntry(id, title, description, imageURL, embed){
+			var slideshareResultEntry =    "<a href='#' class='list-group-item' style='min-height:150px;'>" +
+				    							"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
+				    							"<h4>#title</h4>" +
+		    									"<p>" +
+		    										"#description" +
+		    									"</p>" +
+		    								"</a>";
+
+		    var result = slideshareResultEntry.replace(/#imageURL/g, imageURL);
+		    result = result.replace(/#title/g, title);
+		    result = result.replace(/#description/g, description);
+		    result = result.replace(/#id/g, id);
+		    var entry = $(result);
+		    entry.click(function(){
+		    	publishShowSlideshareSlideshow(id);
+		    });
+		    return entry;
+		}
+
+		function renderSlideshareSearch(response) {
+
+		    var response = searchResults.slideshare;
+			var startIndex = 5 * (response.queryPage - 1) + 1;
+			var endIndex = startIndex + 4;
+			var entryStart = ((response.resultsPage - 1)%5) * 5;
+		    $("#resultsList").empty();
+		    for(var i = entryStart; i < entryStart + 4; i++){
+		        var actEntry = response.Slideshows.Slideshow[i];
+		        var id = actEntry.ID;
+		        var thumbnail = actEntry.ThumbnailURL;
+		        var title = actEntry.Title;
+		        var description = actEntry.Description;
+		        var embed = actEntry.Embed;
+		        if(description == null)
+		        	description = "No description available.";
+		        $("#resultsList").append(renderSlideshareSearchEntry(id, title, description, thumbnail, embed));
+		    }
+		    $("#resultsFooter").empty();
+		    $("#resultsFooter").append(renderPagination(startIndex));
+
+		    for(var i = 1; i <= 5; i++){
+		    	$("#pagination" + i).data("index", i);
+		    	$("#pagination" + i).click(function(){
+		    		searchResults.slideshare.resultsPage = (response.queryPage - 1) * 5 + $(this).data("index");
+		    		renderSlideshareSearch();
+		    		$("#content").scrollTop(0);
+		    	});
+		    }
+		    $("#pagination" + (((response.resultsPage-1)%5)+1)).parent().addClass("active");
+
+		    if(response.queryPage > 1){
+		    	$("#paginationPrev").click(function(){
+		    		switchToPrevSlideShareQueryPage();
+		    	});
+		    }
+		    else{
+		    	$("#paginationPrev").parent().addClass("disabled");
+		    }
+
+	    	$("#paginationNext").click(function(){
+	    		switchToNextSlideShareQueryPage();
+	    	});
+
+		}
+
+		function renderScribdSearchEntry(id, title, description, imageURL, accessKey){
+			var scribdResultEntry =    "<a href='#' class='list-group-item' style='min-height:150px;'>" +
+				    							"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
+				    							"<h4>#title</h4>" +
+		    									"<p>" +
+		    										"#description" +
+		    									"</p>" +
+		    								"</a>";
+
+		    var shortDescription;
+		    if(description.length > 30){
+		    	shortDescription = description.substring(0, 250) + "...";
+		    }
+		    var result = scribdResultEntry.replace(/#imageURL/g, imageURL);
+		    result = result.replace(/#title/g, title);
+		    result = result.replace(/#description/g, shortDescription);
+		    result = result.replace(/#id/g, id);
+		    var entry = $(result);
+		    entry.click(function(){
+		    	publishShowScribdDocument(id, accessKey, description);
+		    });
+		    return entry;
+		}
+
+		function renderScribdSearch(response) {
+
+		    var response = searchResults.scribd;
+			var startIndex = 5 * (response.queryPage - 1) + 1;
+			var endIndex = startIndex + 4;
+			var entryStart = ((response.resultsPage - 1)%5) * 5;
+		    $("#resultsList").empty();
+		    for(var i = entryStart; i < entryStart + 4; i++){
+		        var actEntry = response.rsp.result_set[0].result[i];
+		        var id = actEntry.doc_id;
+		        var accessKey = actEntry.access_key;
+		        var thumbnail = actEntry.thumbnail_url;
+		        var title = actEntry.title;
+		        var description = actEntry.description;
+		        //var embed = actEntry.Embed;
+		        if(description == null)
+		        	description = "No description available.";
+		        $("#resultsList").append(renderScribdSearchEntry(id, title, description, thumbnail, accessKey));
+		    }
+		    $("#resultsFooter").empty();
+		    $("#resultsFooter").append(renderPagination(startIndex));
+
+		    for(var i = 1; i <= 5; i++){
+		    	$("#pagination" + i).data("index", i);
+		    	$("#pagination" + i).click(function(){
+		    		searchResults.scribd.resultsPage = (response.queryPage - 1) * 5 + $(this).data("index");
+		    		renderScribdSearch();
+		    		$("#content").scrollTop(0);
+		    	});
+		    }
+		    $("#pagination" + (((response.resultsPage-1)%5)+1)).parent().addClass("active");
+
+		    if(response.queryPage > 1){
+		    	$("#paginationPrev").click(function(){
+		    		switchToPrevScribdQueryPage();
+		    	});
+		    }
+		    else{
+		    	$("#paginationPrev").parent().addClass("disabled");
+		    }
+
+	    	$("#paginationNext").click(function(){
+	    		switchToNextScribdQueryPage();
+	    	});
+
+		}
+
+		</script>
+		
+		<!-- HTML Block -->
+		<div style="overflow-y: scroll; height:400px;" id="content">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search learning documents</h3>
+		  	</div>
+		  	<div class="panel-body" id="panelBody">
+		  		<div class="input-group" style="padding-top:5px;">
+			      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
+			      <span class="input-group-btn">
+			        <button class="btn btn-default" type="button" id="search_button">Go</button>
+			      </span>
+			    </div>
+			    <div class="btn-group" data-toggle="buttons" style="padding-top:5px;">
+				  <label class="btn btn-xs btn-primary active">
+				    <input type="radio" name="options" id="youTubeSelector"> YouTube
+				  </label>
+				  <label class="btn btn-xs btn-primary">
+				    <input type="radio" name="options" id="slideShareSelector"> SlideShare
+				  </label>
+				  <label class="btn btn-xs btn-primary">
+				    <input type="radio" name="options" id="scribdSelector"> Scribd
+				  </label>
+				</div>
+			</div>
+			<div class="list-group" id="resultsList">
+			</div>
+			<div class="panel-footer" id="resultsFooter"></div>
+		</div>
+		</div>
+	]]>
+  </Content>
+</Module>

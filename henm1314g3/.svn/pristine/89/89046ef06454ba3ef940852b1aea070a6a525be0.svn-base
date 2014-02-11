@@ -1,0 +1,78 @@
+// Called automatically when JavaScript client library is loaded.
+function onClientLoad() {
+	console.log("onClientLoad");
+    gapi.client.load('youtube', 'v3', onYouTubeApiLoad);
+}
+
+// Called automatically when YouTube API interface is loaded (see line 9).
+function onYouTubeApiLoad() {
+    // This API key is intended for use only in this lesson.
+    // See http://goo.gl/PdPA1 to get a key for your own applications.
+    console.log("onYoutubeAPILoad");
+    gapi.client.setApiKey('AIzaSyCR5In4DZaTP6IEZQ0r1JceuvluJRzQNLE');
+}
+
+function search(q) {
+    // Use the JavaScript client library to create a search.list() API call.
+    var request = gapi.client.youtube.search.list({
+        type: 'video',
+        part: 'snippet',
+        q: q
+    });
+    var progressBar =       "<div class='progress progress-striped active'>" +
+                                "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
+                                    "<span>Searching...</span>" +
+                                "</div>" +
+                            "</div>";
+    $("#content").empty();
+    $("#content").append(progressBar);
+    // Send the request to the API server,
+    // and invoke onSearchRepsonse() with the response.
+    request.execute(onSearchResponse);
+}
+
+// Called automatically with the response of the YouTube API request.
+function onSearchResponse(response) {
+    showResponse(response);
+}
+
+// Helper function to display JavaScript value on HTML page.
+function showResponse(response) {
+    //var resultsList = $("<ul class='thumbnails'></ul>");
+
+    youtubeResultEntry =    "<div class='row' style='width:99%'>" +
+                                "<div class='col-md-12'>" +
+                                    "<a id='#videoId' href='#' class='thumbnail right-caption' style='width:100%;'>" +
+                                        "<img class='span2' src='#imageURL' width=100 alt=''>" +
+                                        "<div class='caption'>" +
+                                            "<h3>#title</h3>" +
+                                            "<p>#description</p>" +
+                                        "</div>" +
+                                    "</a>" +
+                                "</div>" +
+                            "</div>"
+
+    //var responseString = JSON.stringify(respons<div class="thumbnail right-caption span4">e, '', 2);
+    //document.getElementById('result').innerHTML = responseString;
+    $("#content").empty();
+    for(var i = 0; i < response.items.length; i++){
+    	//document.getElementById('result').innerHTML += response.items[i].snippet.title + "<br>";
+        var actEntry = response.items[i].snippet;
+        var id = response.items[i].id.videoId;
+        var thumbnail = actEntry.thumbnails.medium.url;
+        var title = actEntry.title;
+        var description = actEntry.description; 
+        var result = youtubeResultEntry.replace(/#imageURL/g, thumbnail);
+        result = result.replace(/#title/g, title);
+        result = result.replace(/#description/g, description);
+        result = result.replace(/#videoId/g, id);
+        //resultsList.append(result);
+        $("#content").append(result);
+        $("#"+id).click(function(){
+            console.log(id);
+        })
+    }
+    
+    //Render 'next' and 'previous button'
+    
+}

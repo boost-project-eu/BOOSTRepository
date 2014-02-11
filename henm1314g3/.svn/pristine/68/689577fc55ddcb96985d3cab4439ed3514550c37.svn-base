@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Manage Employees"
+		description="Widget to manage Employees."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+
+		<!-- Define CSS -->
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<style>
+			#tabs li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+		</style>		
+		
+		<!-- JavaScript Block -->
+		<script>
+			var tabTemplate;
+			var tabContentTemplate;
+			var tabs;
+			
+			//This jQueryUI function magically creates tabs for us.
+			$(function() {
+				tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>"
+				tabContentTemplate = "<div style='overflow:scroll; overflow-x:hidden; height:250px'><h1>#bcn_name</h1> <p>#bcn_description</p> <p>#li_list</p></div>"
+				//$( "#tabs" ).tabs();
+				tabs = $( "#tabs" ).tabs();
+			});
+
+			var space;
+			var employeesList = new Array();
+			
+			gadgets.util.registerOnLoadHandler(init);
+
+			// baraye load kardane bcn
+			
+			function init(){
+				
+			    console.log("Widget loaded");
+				
+				/*
+					Here we get the space resource.
+					It is the top level resource which is shared by all users.
+				*/
+				space = new openapp.oo.Resource(openapp.param.space());
+
+				/*
+					We retrieve all BCNs. They will be stored in the 'bcnsList' array.
+				*/
+				retrieveAllemployees(
+					//This callback will fire after all BCNs are loaded.
+					function(){
+						//We sort the BCNs based on their name property.
+						employeesList.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
+						//Once the BCNs are loaded and sorted we render all of them in the overview
+						renderAllemployee();
+						if(employeesList.length==0)
+							$("#employees").append("<td>No employees defined.</td>");
+					}
+				);
+			}
+			
+			// This function is used to clear content of textfield or textarea after the
+			// content has been submitted
+			//clear 
+			function clearContents(element) {
+			    element.value = '';
+			}
+			
+			function saveEmployee(){
+
+				var employee = {
+					"uri":"", //This will be set after the resource for the bcn has been created.
+					"name":$("#input_employee_name").val(),
+					"email":$("#input_employee_email").val(),
+					"learningIndicators":[]
+				}
+
+				
+				//Here we create the resource. The BCN gets stored in the space.
+				space.create({
+					relation: openapp.ns.role + "data",
+					type: "my:ns:employee",
+					representation: employee, //The representation refers to the object
+					callback: function(employeeResource){
+						//Now we have an URI for our BCN and we need to update the resource
+						employee.uri = employeeResource.getURI();
+						employeeResource.setRepresentation(employee, "application/json", window.location.reload());
+					}
+				});
+				
+				// Clear input fields
+				clearContents(input_employee_name);
+				clearContents(input_employee_email);
+			}
+			
+			
+
+			function retrieveAllemployees(callback){
+				space.getSubResources({
+					relation: openapp.ns.role + "data",
+					type: "my:ns:employee",
+					onAll: function(employees) {
+								/*
+									Be careful here. The getRepresentation(...) function runs
+									asynchronously. This means that the whole for loop is finished
+									before even one BCN has been added to the array. To get informed
+									when the array is finished I used this callback mechanism in the
+									if block. 
+								*/
+								if(employees.length == employeesList.length)
+										callback();
+								for(var i = 0; i < employees.length; i++){
+									employees[i].getRepresentation("rdfjson", function(employeeObject){
+									employeesList.push(employeeObject);
+									if(employees.length == employeesList.length){
+										callback();
+
+									}
+									
+									});
+								}
+							}
+				});
+			}
+
+			function renderAllemployee(){
+				$("#employees").empty();
+				for(var i = 0; i < employeesList.length; i++){
+					renderemployee(employeesList[i]);
+				}
+			}
+			
+			// This function collects all existing BCNs and show them in a drop down list
+			function renderemployeeDropList(){   
+			    var sel = document.getElementById("employee_select");
+			    sel.options.length=0;
+			    for(var i = 0; i < employeesList.length; i++){
+			        var option = document.createElement("option");
+			        option.text = employeesList[i].name;
+			        sel.add(option, null);
+			    }
+			}
+
+			function renderemployee(employee){
+					//Here I use jQuery for the DOM manipulation
+					//Each BCN is an entry in the table
+					var tableRow=$("<tr></tr>");
+					
+					//Show the BCN name
+					tableRow.append("<td>" + employee.name + "</td>");
+					$("#employees").append(tableRow);
+
+					//Show a button to open the details tab
+					var detailsButton = $("<button>Details</button>");
+					detailsButton.click(function(){addemployeeDetailTab(employee);});
+					//tableRow.append($("<td></td>").append(detailsButton));
+					
+					//Show a button to delete the BCN
+					var deleteButton = $("<button>Delete</button>");
+					deleteButton.attr("name", "delete_employee");
+					console.log(employee.uri);
+					deleteButton.click(function() {openapp.resource.del(employee.uri, window.location.reload());});
+					
+					/*
+					deleteButton.button({
+						icons: {
+						primary: "ui-icon-trash"
+						},
+						text: false
+						});
+					*/
+					tableRow.append($("<td></td>").append(deleteButton));
+			}
+
+			// for showing detale od empleyee 
+			function addemployeeDetailTab(employee) {
+				
+				var label = employee.name;
+				id = "tabs-" + employee.uri;
+				
+				
+				tabContentHtml = tabContentTemplate.replace( /#employee_name/g, employee.name).replace( /#employee_email/g, employee.email);
+
+				tabs.append( "<div id='" + id + "'><p>" + tabContentHtml + "</p></div>" );
+				tabs.tabs( "refresh" );
+				tabs.tabs("option","active", -1);
+			}
+
+			 $(function(){tabs.delegate( "span.ui-icon-close", "click", function() {
+				var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+				$( "#" + panelId ).remove();
+				tabs.tabs( "refresh" );
+				});})
+
+		</script>
+		
+		<!-- HTML Block -->
+
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Overview</a></li>
+				<li><a href="#tabs-2">Create Employee</a></li>
+			</ul>
+
+			<div id="tabs-1">
+				<table id="employees">
+					<td>Loading Employees...</td>
+				</table>
+			</div>
+		
+			<div id="tabs-2">
+				<table>
+			      <tr>
+			        <td><label for="input_employee_name">Name:</label></td>
+			        <td><input type="text" id="input_employee_name" value="" /></td>
+			      </tr>
+			      <tr>
+			        <td><label for="input_employee_email">Email:</label></td>
+			        <td><textarea type="text" id="input_employee_email" value="" /></td>
+			      </tr>
+			      	<tr><td><button onclick="saveEmployee()">Save</button></td></tr>
+
+			    </table>
+			</div>
+
+		</div>
+	]]>
+  </Content>
+</Module>

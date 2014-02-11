@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Manage learning levels"
+		description="Widget to manage the different learning levels for employees."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+
+		<!-- Define CSS -->
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<style>
+			#tabs li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+			#feedback { font-size: 1.4em; }
+			.ui-selecting { background: #FECA40; }
+			.ui-selected { background: #F39814; color: white; }
+			.ui-selectable{ list-style-type: none; margin: 0; padding: 0; }
+			.ui-selectable li { margin: 3px; padding: 0.4em; font-size: 0.7em; }
+		</style>
+		
+		<!-- JavaScript Block -->
+		<script>
+			var tabTemplate;
+			var tabContentTemplate;
+			var tabs;
+			var liManagementTemplate;
+			
+			//This jQueryUI function magically creates tabs for us.
+			$(function() {
+				tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>"
+				tabContentTemplate = "<div style='overflow:scroll; overflow-x:hidden; height:250px'><h1>#bcn_name</h1> <p>#bcn_description</p> <p>#li_list</p></div>"
+				learningLevels = [];
+				learningLevels[0] = "I have not started to address the skills required for this indicator";
+				learningLevels[1] = "I have started to try to address these skills but need more support to make progress";
+				learningLevels[2] = "I have started to address these skills but progress is slow";
+				learningLevels[3] = "I feel that I have acquired some knowledge of the skills and am aware of the progress I have made";
+				learningLevels[4] = "Feel that I have acquired significant knowledge of these skills for my current job role through the use of the e-learning tools and am starting to put into practice on the job";
+				learningLevels[5] = "Feel that I have acquired sufficient knowledge of these skills for my current job role through the use of the e-learning tools and am putting into practice on the job";
+				learningLevels[6] = "Feel that I have acquired this learning indicator in terms of my present role but for future development within the company, I recognise that I can develop these skills further.";
+				learningLevels[7] = "Feel confident enough in using these skills that I could support a few colleagues regarding these skills";
+				learningLevels[8] = "Feel confident enough in using these skills that I could support new entrants to the business regarding these skills";
+				learningLevels[9] = "Feel confident enough in using these skills that I could support any colleagues in my business with regard to these skills";
+				var liList = $("<ol id='#id'></ol>");
+				for(var i = 0; i < learningLevels.length; i++)
+					liList.append($("<li class='ui-widget-content'>" + learningLevels[i] + "</li>"));
+				liManagementTemplate = $("<div></div>").append(liList).html();
+				//console.log($("<div></div>").append(liList).html());
+				tabs = $( "#tabs" ).tabs();
+			});
+
+			var space;
+			var bcnsList = new Array();
+			var employeesList = new Array();
+			
+			gadgets.util.registerOnLoadHandler(init);
+			
+			function init(){
+				
+			    console.log("Widget loaded");
+				
+				/*
+					Here we get the space resource.
+					It is the top level resource which is shared by all users.
+				*/
+				space = new openapp.oo.Resource(openapp.param.space());
+
+				/*
+					We retrieve all BCNs. They will be stored in the 'bcnsList' array.
+				*/
+				retrieveAllBcns(
+					//This callback will fire after all BCNs are loaded.
+					function(){
+						//We sort the BCNs based on their name property.
+						bcnsList.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
+					}
+				);
+
+				/*
+					Create fake employees for development purposes.
+					This has to be replaced by employee loading functionality
+					later on.
+				*/
+				employeesList[0] = {"name":"John Doe",
+									"email": "john.doe@example.com",
+									"learningLevels":{}};
+				employeesList[1] = {"name":"Jane Doe",
+									"email": "jane.doe@example.com",
+									"learningLevels":{}};
+				renderAllEmployees();
+			}
+			
+			// This function is used to clear content of textfield or textarea after the
+			// content has been submitted
+			function clearContents(element) {
+			    element.value = '';
+			}
+			
+			function retrieveAllBcns(callback){
+				space.getSubResources({
+					relation: openapp.ns.role + "data",
+					type: "my:ns:bcn",
+					onAll: function(bcns) {
+								/*
+									Be careful here. The getRepresentation(...) function runs
+									asynchronously. This means that the whole for loop is finished
+									before even one BCN has been added to the array. To get informed
+									when the array is finished I used this callback mechanism in the
+									if block. 
+								*/
+								if(bcns.length == bcnsList.length)
+										callback();
+								for(var i = 0; i < bcns.length; i++){
+									bcns[i].getRepresentation("rdfjson", function(bcnObject){
+									bcnsList.push(bcnObject);
+									if(bcns.length == bcnsList.length){
+										callback();
+
+									}
+									
+									});
+								}
+							}
+				});
+			}
+
+			function renderAllEmployees(){
+				$("#employees").empty();
+				for(var i = 0; i < employeesList.length; i++){
+					renderEmployee(employeesList[i]);
+				}
+			}
+
+			function renderEmployee(employee){
+				//Here I use jQuery for the DOM manipulation
+				//Each BCN is an entry in the table
+				var tableRow=$("<tr></tr>");
+				//Show the BCN name
+				tableRow.append("<td>" + employee.name + "</td>");
+				$("#employees").append(tableRow);
+
+				var manageLevelsButton = $("<button>Manage levels</button>");
+				manageLevelsButton.click(function(){addManageLevelsTab(employee)} );
+				tableRow.append($("<td></td>").append(manageLevelsButton));
+
+				var updateLevelsButton = $("<button>Update levels</button>");
+				tableRow.append($("<td></td>").append(updateLevelsButton));
+
+			}
+
+			function addManageLevelsTab(employee) {
+				
+				var label = employee.name;
+				employeeIndex = employeesList.indexOf(employee);
+				id = "tabs-manage-level-" + employeeIndex;
+				li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) );
+				tabs.find( ".ui-tabs-nav" ).append( li );
+
+				var tab = $("<div style='overflow:scroll; overflow-x:hidden; height:250px' id='" + id + "'></div>");
+				tabs.append(tab);
+				//Go through all BCNs
+				for(var i = 0; i < bcnsList.length; i++){
+					var bcn = bcnsList[i];
+					var bcnDiv = $("<div><h1>" + bcn.name + "</h1></div>");
+					tab.append(bcnDiv);
+					//Go through all LIs
+					for(var j = 0; j < bcn.learningIndicators.length; j++){
+
+						var li = bcn.learningIndicators[j];
+						var liDiv = $("<div><h2>" + li.name + "</h2></div>");
+						liDiv.append(liManagementTemplate.replace(/#id/g, "" + employeeIndex + "" + j + "liManagementList" + i));
+						bcnDiv.append(liDiv);
+						$(function(){
+							$( "#" + employeeIndex + "" + j + "liManagementList" + i ).selectable();
+						});
+					}
+				}
+				tabs.tabs( "refresh" );
+				tabs.tabs("option","active", -1);
+			}
+
+			$(function(){tabs.delegate( "span.ui-icon-close", "click", function() {
+				var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+				console.log(panelId);
+				$( "#" + panelId ).remove();
+				tabs.tabs( "refresh" );
+				});})
+
+		</script>
+		
+		<!-- HTML Block -->
+
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Overview</a></li>
+			</ul>
+
+			<div id="tabs-1">
+				<table id="employees">
+					<td>Loading BCNs...</td>
+				</table>
+			</div>
+		</div>
+	]]>
+  </Content>
+</Module>

@@ -1,0 +1,63 @@
+// Called automatically when JavaScript client library is loaded.
+function onClientLoad() {
+	console.log("onClientLoad");
+    gapi.client.load('youtube', 'v3', onYouTubeApiLoad);
+}
+
+// Called automatically when YouTube API interface is loaded (see line 9).
+function onYouTubeApiLoad() {
+    // This API key is intended for use only in this lesson.
+    // See http://goo.gl/PdPA1 to get a key for your own applications.
+    console.log("onYoutubeAPILoad");
+    gapi.client.setApiKey('AIzaSyCR5In4DZaTP6IEZQ0r1JceuvluJRzQNLE');
+}
+
+function search(q) {
+    // Use the JavaScript client library to create a search.list() API call.
+    var request = gapi.client.youtube.search.list({
+        part: 'snippet',
+        q: q
+    });
+    
+    // Send the request to the API server,
+    // and invoke onSearchRepsonse() with the response.
+    request.execute(onSearchResponse);
+}
+
+// Called automatically with the response of the YouTube API request.
+function onSearchResponse(response) {
+    showResponse(response);
+}
+
+// Helper function to display JavaScript value on HTML page.
+function showResponse(response) {
+
+    var youtubeResultEntry = "<div onClick=>" +
+                             "<table height='50px'>" +
+                                 "<tr>" +
+                                     "<td rowspan='2'>#thumbnail</td>" +
+                                     "<td>#title</td>" +
+                                 "</tr>" +
+                                 "<tr>" +
+                                    "<td>#description</td>" +
+                                 "</tr>" +
+                             "</table>" +
+                         "</div>";
+
+    //var responseString = JSON.stringify(response, '', 2);
+    //document.getElementById('result').innerHTML = responseString;
+    $("#result").empty();
+    for(var i = 0; i < response.items.length; i++){
+    	//document.getElementById('result').innerHTML += response.items[i].snippet.title + "<br>";
+        var actEntry = response.items[i].snippet;
+        var thumbnail = $("<a></a>");
+        thumbnail.addClass("thumbnail");
+        thumbnail.append("<img src='" + actEntry.thumbnails.medium.url + "' width='100'>");
+        var title = "<font size='4'>" + actEntry.title + "</font>";
+        var description = "<font size='2'>" + actEntry.description + "</font>"; 
+        var result = youtubeResultEntry.replace(/#thumbnail/g,$("<div></div>").append(thumbnail).html());
+        result = result.replacresult = result.replace(/#title/g,$("<div></div>").append(title).html());
+        result = result.replace(/#description/g,$("<div></div>").append(description).html());
+        $("#result").append(result);
+    }
+}

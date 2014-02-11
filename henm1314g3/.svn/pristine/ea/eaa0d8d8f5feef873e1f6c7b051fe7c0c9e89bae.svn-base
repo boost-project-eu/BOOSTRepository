@@ -1,0 +1,41 @@
+module("BCNManager Tests");
+
+var testBCN = {};
+testBCN.name = "TestBcnName";
+testBCN.description = "TestBcnDescription";
+
+asyncTest("saveBCN", function(){
+	expect(2);
+
+	saveBCN(testBCN, space, function(bcnRes){
+		retrieveAllBcns(space, function(bcns){
+			for(var i = 0; i < bcns.length; i++){
+				var savedBcn = bcns[i];
+				if(savedBcn.name == testBCN.name){
+					equal(testBCN.name, savedBcn.name, "Name saved correctly.");
+					equal(testBCN.description, savedBcn.description, "Description saved correctly.");
+				}
+			}
+			start();
+		});
+	});
+});
+
+asyncTest("updateBCN", function(){
+	expect(1);
+
+	saveBcn(testBCN, function(bcn){
+		bcn.name = "NewBcnName";
+		updateBCN(bcn, function(){
+			retrieveAllBcns(space, function(bcns){
+				for(var i = 0; i < bcns.length; i++){
+					var savedBcn = bcns[i];
+					if(savedBcn.uri == bcn.uri){
+						equal(savedBcn.name, bcn.name);
+					}
+				}
+				start();
+			});
+		});
+	});
+});
