@@ -398,7 +398,7 @@
 		<div style="overflow-y: scroll; height:400px;">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Your company goals</h3>
+		    	<h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Your business goals</h3>
 		  	</div>
 		  	<div id='panel' class="panel-body">
 				<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
