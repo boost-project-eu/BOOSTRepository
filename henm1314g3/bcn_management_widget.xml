@@ -2,7 +2,7 @@
 <Module>
     
     <ModulePrefs title="Boost Goals"
-		description="Define business critical needs and learning indicators for your company."
+		description="Define business critical needs and learning indicators for your business."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400">
@@ -74,7 +74,7 @@
 				});
 
 				var newBcnTooltipOptions = {};
-				newBcnTooltipOptions.title = "Add a new goal for your company.";
+				newBcnTooltipOptions.title = "Add a new goal for your business.";
 				newBcnTooltipOptions.placement = "right";
 				$("#addNewBcnButton").tooltip(newBcnTooltipOptions);
 
