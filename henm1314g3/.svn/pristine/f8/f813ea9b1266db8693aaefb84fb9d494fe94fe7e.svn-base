@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Boost Debug"
+		description="Debug widget which can be used for various purposes."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
+		<!-- JavaScript Block -->
+		<script>
+			var space;
+			
+			gadgets.util.registerOnLoadHandler(init);
+			
+			function init(){
+				
+				/*
+					Here we get the space resource.
+					It is the top level resource which is shared by all users.
+				*/
+				space = new openapp.oo.Resource(openapp.param.space());
+			}
+
+			$(function(){
+				$("#deleteAllSpaceResourcesButton").click(function(){
+					space.getSubResources({
+						relation: openapp.ns.role + "data",
+						onEach: function(resource) {
+							openapp.resource.del(resource.uri, null);
+						}
+					});
+				});
+
+				$("#addExampleData").click(function(){
+					//Create BCNs
+					var bcn1 = new BCN({
+						name: "Create a website",
+						description: "We need to create a website to show off our products and to be able to inform our customers about new products."
+					});
+					bcn1.addLI("Learn HTML");
+					bcn1.addLI("Learn JavaScript");
+					bcn1.addLI("Learn PHP");
+					bcn1.create(function(){});
+
+					//Create employees
+					var employee1 = {};
+					employee1.name = "Martin Brown";
+					employee1.email = "m.brown@example.com";
+					employee1.learningLevels = {};
+					saveEmployee(employee1, space, function(){});
+
+					var employee2 = {};
+					employee2.name = "Tina Smith";
+					employee2.email = "t.smith@example.com";
+					employee2.learningLevels = {};
+					saveEmployee(employee2, space, function(){});
+
+					var employee3 = {};
+					employee3.name = "Anssi Costel";
+					employee3.email = "a.costel@example.com";
+					employee3.learningLevels = {};
+					saveEmployee(employee3, space, function(){});
+
+					var employee4 = {};
+					employee4.name = "Patsy Levi";
+					employee4.email = "p.levi@example.com";
+					employee4.learningLevels = {};
+					saveEmployee(employee4, space, function(){});
+
+					var employee5 = {};
+					employee5.name = "Ed Shi";
+					employee5.email = "e.shi@example.com";
+					employee5.learningLevels = {};
+					saveEmployee(employee5, space, function(){});
+
+					var employee6 = {};
+					employee6.name = "Jennifer Carter";
+					employee6.email = "j.carter@example.com";
+					employee6.learningLevels = {};
+					saveEmployee(employee6, space, function(){});
+
+					var employee7 = {};
+					employee7.name = "Roger Midkiff";
+					employee7.email = "r.midkiff@example.com";
+					employee7.learningLevels = {};
+					saveEmployee(employee7, space, function(){});
+
+					var employee8 = {};
+					employee8.name = "Viktor Wilson";
+					employee8.email = "v.wilson@example.com";
+					employee8.learningLevels = {};
+					saveEmployee(employee8, space, function(){});
+
+					var employee9 = {};
+					employee9.name = "Evelyn Sanders";
+					employee9.email = "e.sanders@example.com";
+					employee9.learningLevels = {};
+					saveEmployee(employee9, space, function(){});
+
+					var employee10 = {};
+					employee10.name = "William Mathews";
+					employee10.email = "w.mathews@example.com";
+					employee10.learningLevels = {};
+					saveEmployee(employee10, space, function(){});
+				});
+			});
+
+		</script>
+
+		<!-- HTML Block -->
+		<button id="deleteAllSpaceResourcesButton">Delete all space resources</button>
+		<button id="addExampleData">Add example data</button>
+	]]>
+  </Content>
+</Module>

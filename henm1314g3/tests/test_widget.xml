@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Boost Unit Tests"
+		description="Widget which executes unit tests to test the functionality of Boost widgets."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+    	<script src="http://127.0.0.1:8073/role/henm1314g3/tests/qunit/qunit.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/tests/BCNManagerTests.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/tests/EmployeeManagerTests.js" type="text/javascript"></script>
+
+
+		<!-- Define CSS -->
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/henm1314g3/tests/qunit/qunit.css">
+		
+		<!-- JavaScript Block -->
+		<script>
+
+		var space;
+		
+		gadgets.util.registerOnLoadHandler(init);
+		
+		function init(){
+			/*
+				Here we get the space resource.
+				It is the top level resource which is shared by all users.
+			*/
+			space = new openapp.oo.Resource(openapp.param.space());
+		};
+
+		</script>
+		
+		<!-- HTML Block -->
+		<div style="overflow-y: scroll; overflow-x:hidden; height:390px;">
+			<div id="qunit"></div>
+			<div id="qunit-fixture"></div>
+		</div>
+
+	]]>
+  </Content>
+</Module>

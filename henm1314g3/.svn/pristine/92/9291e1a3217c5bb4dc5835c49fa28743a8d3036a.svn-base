@@ -1,0 +1,54 @@
+function saveBCN(bcn, space, callback){
+	bcn.uri = "";
+	//Here we create the resource. The BCN gets stored in the space.
+	space.create({
+		relation: openapp.ns.role + "data",
+		type: "my:ns:bcn",
+		representation: bcn, //The representation refers to the object
+		callback: function(bcnResource){
+			//Now we have an URI for our BCN and we need to update the resource
+			bcn.uri = bcnResource.getURI();
+			bcnResource.setRepresentation(bcn, "application/json", function(){
+				callback(bcn);
+			});
+		}
+	});
+}
+
+function updateBCN(bcn, callback){
+	bcnResource = new openapp.oo.Resource(bcn.uri);
+	bcnResource.setRepresentation(bcn, "application/json", callback());
+}
+
+function deleteBCN(bcn, callback){
+	openapp.resource.del(bcn.uri, callback());
+}
+
+function retrieveAllBcns(space, callback){
+	space.getSubResources({
+		relation: openapp.ns.role + "data",
+		type: "my:ns:bcn",
+		onAll: function(bcns) {
+					/*
+						Be careful here. The getRepresentation(...) function runs
+						asynchronously. This means that the whole for loop is finished
+						before even one BCN has been added to the array. To get informed
+						when the array is finished I used this callback mechanism in the
+						if block. 
+					*/
+					var bcnsList = [];
+					if(bcns.length == bcnsList.length)
+							callback(bcnsList);
+					for(var i = 0; i < bcns.length; i++){
+						bcns[i].getRepresentation("rdfjson", function(bcnObject){
+						bcnsList.push(bcnObject);
+						if(bcns.length == bcnsList.length){
+							callback(bcnsList);
+
+						}
+						
+						});
+					}
+				}
+	});
+}

@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Boost Employees"
+		description="Manage your employees ans assign them learning aims."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and Bootstrap for the interface. -->
+    		<script src="http://127.0.0.1:8073/role/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/js/bootstrap.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/js/bootstrap-slider.js"></script>
+		
+		<!-- Managers for BCN and Employee related stuff -->
+		<script src="http://127.0.0.1:8073/role/henm1314g3/js/BCNManager.js"></script>
+		<script src="http://127.0.0.1:8073/role/henm1314g3/js/EmployeeManager.js"></script>
+
+		<!-- Define CSS -->
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/henm1314g3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/henm1314g3/css/slider.css">
+
+		<!-- JavaScript Block -->
+		<script>
+			
+			var space;
+			var employeeList;
+			var bcnList;
+			
+			gadgets.util.registerOnLoadHandler(init);
+			
+			function init(){
+				// create space
+				space = new openapp.oo.Resource(openapp.param.space());
+			}
+
+			$(function(){
+
+				$("#refreshButton").click(function(){
+					window.location.reload();
+
+				});
+				// routines for modals
+				$('#newEmployeeModal').on('hidden.bs.modal', function (e) {
+					$('#newEmployeeModal').find('input[type="text"],input[type="email"]').val('');
+				});
+				$("#addNewEmployeeButton").click(function(){
+					$("#newEmployeeModal").modal();
+
+				});
+				
+				// tooltip for add employee button
+				var newEmployeeTooltipOptions = {};
+				newEmployeeTooltipOptions.title = "Add a new employee for your company.";
+				newEmployeeTooltipOptions.placement = "right";
+				$("#addNewEmployeeButton").tooltip(newEmployeeTooltipOptions);
+				// save button
+				$("#saveNewEmployeeButton").click(function(){
+					$(this).button("loading");
+					saveNewEmployee(function(employee){
+						addEmployee(employee);
+						$('#newEmployeeModal').modal("hide");
+						$("#saveNewEmployeeButton").button("reset");
+					});
+				});
+				//update button
+				$("#updateEmployeeButton").click(function(){
+					$(this).button("updating");
+					// callback used to refresh employee list					
+										
+					updateStoredEmployee();
+				});
+
+				retrieveAllEmployees(space, function(employees){
+					employeeList = employees;
+					renderAllEmployees();
+				});
+
+				retrieveAllBcns(space, function(bcns){
+					bcnList = bcns;
+					bcnList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
+							return -1; else return 1;});
+				});
+
+			});
+
+			function saveNewEmployee(callback){
+				//get information
+				var newEmployee = {};
+				newEmployee.name = $("#inputNewEmployeeName").val();
+				newEmployee.email = $("#inputNewEmployeeEmail").val();
+				newEmployee.learningLevels={};
+				//save employee
+				saveEmployee(newEmployee, space, function(savedEmployee){
+					callback(savedEmployee);
+				});
+			}
+
+			function updateStoredEmployee(){				
+				var employee = employeeList[$("#updateEmployeeModal").data("employeeIndex")];
+				employee.name = $("#inputUpdateEmployeeName").val();
+				employee.email = $("#inputUpdateEmployeeEmail").val();	
+				updateEmployee(employee, function(){
+					$("#updateEmployeeModal").modal("hide");
+					$("#updateEmployeeButton").button("reset");
+				});
+				renderAllEmployees();
+			}
+
+			function renderAllEmployees(){
+				employeeList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;});
+				$("#employeeOverviewTable").empty();
+				for(var i = 0; i < employeeList.length; i++){
+					var employee = employeeList[i];
+					var deleteButton = $(
+						"<button class='btn btn-default delete-employee-btn'>" +
+							"<span class='glyphicon glyphicon-trash'></span>" + 
+						"</button>"
+					);
+					//assign employee index to the button.					
+					deleteButton.data("employeeIndex", i);
+					var setLIButton = $(
+						"<button class='btn btn-default set-li-btn'>" +
+							"<span class='glyphicon glyphicon-flag'></span>" + 
+						"</button>"
+					);
+
+					setLIButton.data("employeeIndex", i);
+
+					var editButton = $(
+						"<button class='btn btn-default edit-employee-btn'>" +
+							"<span class='glyphicon glyphicon-edit'></span>" + 
+						"</button>"
+					);
+					editButton.data("employeeIndex", i);
+					var template = 
+						"<tr>" +
+							"<td>#{employeeName}" +
+								"<a href='mailto:" + employee.email +"' style='float:right'><button class='btn btn-default mail-employee-btn'>" +
+								"<span class='glyphicon glyphicon-envelope'></span>" + 
+								"</button></a>" +
+							"</td>" +	
+							
+							"<td style='width:130px;' align='center'>" +
+							"<div class='btn-group'>" +
+					
+							"</div>" +
+							"</td>" +
+						"</tr>";
+					var entry = $(template.replace(/#{employeeName}/g, employee.name));
+					entry.find(".btn-group").append(editButton);					
+					entry.find(".btn-group").append(deleteButton);
+					entry.find(".btn-group").append(setLIButton);
+					$("#employeeOverviewTable").append(entry);
+					
+					$(".set-li-btn").click(function(){
+						renderAllBcns(employeeList[$(this).data("employeeIndex")]);
+						$("#setLIModal").modal();
+					});
+
+				}
+
+				var deleteEmployeeTooltipOptions = {};
+				deleteEmployeeTooltipOptions.title = "Delete";
+				deleteEmployeeTooltipOptions.container = "body";
+				$(".delete-employee-btn").tooltip(deleteEmployeeTooltipOptions);
+
+				var editEmployeeTooltipOptions = {};
+				editEmployeeTooltipOptions.title = "View/Edit";
+				editEmployeeTooltipOptions.container = "body";
+				$(".edit-employee-btn").tooltip(editEmployeeTooltipOptions);
+
+				var editLearningLevelsTooltipOptions = {};
+				editLearningLevelsTooltipOptions.title = "Adjust learning levels.";
+				editLearningLevelsTooltipOptions.container = "body";
+				$(".set-li-btn").tooltip(editLearningLevelsTooltipOptions);
+
+				$(".delete-employee-btn").click(function(){
+					var employeeIndex = $(this).data("employeeIndex");
+					// aleart and confirm deleting process.
+					$("#alertInModal").alert();
+					$("#deleteAlertModal").modal();
+					$("#confirmDeleteButton").off().click(function(){
+						deleteEmployee(employeeList[employeeIndex], function(){
+							employeeList.splice(employeeIndex, 1);
+							renderAllEmployees();
+							$("#deleteAlertModal").modal("hide");
+						});	
+					});
+				});
+
+				$(".edit-employee-btn").click(function(){
+					var employeeIndex = $(this).data("employeeIndex");
+					var employee = employeeList[employeeIndex];
+					$("#inputUpdateEmployeeName").val(employee.name);
+					$("#inputUpdateEmployeeEmail").val(employee.email);
+					$("#updateEmployeeModal").data("employeeIndex", employeeIndex);					
+					$("#updateEmployeeModal").modal();
+				});
+					
+			}
+
+			function ensureEmplyoeeBCNConsistency(employee){
+				for(var i = 0; i < bcnList.length; i++){
+					var bcn = bcnList[i];
+					if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
+						employee.learningLevels[bcn.uri] = {};
+						employee.learningLevels[bcn.uri].isRelevant = true;
+					}
+					var learningLevel = employee.learningLevels[bcn.uri];
+					for(var j = 0; j < bcn.learningIndicators.length; j++){
+						var li = bcn.learningIndicators[j];
+						if(!learningLevel.hasOwnProperty(li.id)){
+							learningLevel[li.id] = {};
+							learningLevel[li.id].start = 0;
+							learningLevel[li.id].current = 0;
+							learningLevel[li.id].end = 4;
+						}
+					}
+				}
+			}
+
+			function renderAllBcns(employee){
+				ensureEmplyoeeBCNConsistency(employee);
+				$("#bcnPanel").empty();
+				for(var i = 0; i < bcnList.length; i++){
+					
+					// template for one entry in the BCN List					
+					var bcnTemplate = 
+					"<div class='panel panel-default'>" +
+    						"<div class='panel-heading'>" + 
+      							"<h4 class='panel-title'>" +
+        						"<span class='glyphicon' style='margin-right:5px;'></span>" +
+        						"<a data-toggle='collapse' data-parent='#bcnPanel' href='#collapse#{id}'>" + 
+          							"#{bcnName}" +
+							"</a>" + 
+							"<div class='checkbox' style='float:right; margin-top:1px'>" +
+  								"<label>" +
+  									"Relevant" +
+    								"<input class='relevance-checkbox' type='checkbox' value=''>" +
+  								"</label>" +
+							"</div>" +
+      							"</h4>" + 
+    						"</div>" + 
+    						"<div id='collapse#{id}' class='panel-collapse collapse '>" + 
+      							"<div class='panel-body'>" +
+        							"<ul class='list-group' id='LIList#{id}'>" +
+								"</ul>" + 
+      							"</div>" +
+    						"</div>" +
+  					"</div>";
+					
+					// template for entries in the LI list of one BCN
+					var LITemplate = 
+						"<li class='list-group-item'>" +
+							"<h4><span class='glyphicon glyphicon-flag' style='margin-right:5px;'></span> #{LI} </h4>" + 
+						"</li>";
+
+					var sliderTemplate = 
+						"<div class='slider mySlider' id='slider#{li}'" + 
+							"style='width:200px;'" +
+						"></div>";
+
+					var bcn = bcnList[i];
+
+					var entry = $(bcnTemplate.replace(/#{bcnName}/g, bcn.name).replace(/#{id}/g, i));
+					entry.find(".relevance-checkbox").data("bcnUri", bcn.uri);
+					if(employee.learningLevels[bcn.uri].isRelevant)
+						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star");
+					else
+						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star-empty");
+					for(var j = 0; j < bcn.learningIndicators.length; j++){
+						var li = bcn.learningIndicators[j];
+						var liEntry = $(LITemplate.replace(/#{LI}/g, li.name));
+						entry.find("#LIList"+i).append(liEntry);
+						
+						var slider = $(sliderTemplate.replace(/#{li}/g, j));
+						slider.data("bcnUri", bcn.uri);
+						slider.data("liId", li.id);
+						liEntry.append(slider);
+						var initialValues = [];
+						initialValues.push(employee.learningLevels[bcn.uri][li.id].start);
+						initialValues.push(employee.learningLevels[bcn.uri][li.id].end);
+						slider.data("start", initialValues[0]);
+						slider.data("end", initialValues[1]);
+						slider.slider({
+							max:llevel.length-1,
+							value:initialValues,
+							formater:function(val){
+								return llevel[val];
+							}
+						}).on("slideStop", function(env){
+							var values = env.value;
+							$(this).data("start", values[0]);
+							$(this).data("end", values[1]);
+						});
+
+						
+						 
+					}
+					$("#bcnPanel").append(entry);
+				}
+				$("#updateLearningLevelsButton").off().click(function(){
+					$(".mySlider").each(function(){
+						//alert(JSON.stringify($(this)));
+						employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].start = $(this).data("start");
+						employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].end = $(this).data("end");
+					});
+					$(".relevance-checkbox").each(function(){
+						var bcnUri = $(this).data("bcnUri");
+						employee.learningLevels[bcnUri].isRelevant = $(this).prop("checked");
+					});
+					updateEmployee(employee, function(){
+						$("#setLIModal").modal("hide");
+					});
+				});
+				$("#setLIModal").find(".relevance-checkbox").change(function(){
+					var isChecked = $(this).prop("checked");
+					var glyphicon = $(this).closest(".panel").find(".glyphicon");
+					if(isChecked){
+						glyphicon.removeClass("glyphicon-star-empty");
+						glyphicon.addClass("glyphicon-star");
+					}
+					else{
+						glyphicon.removeClass("glyphicon-star");
+						glyphicon.addClass("glyphicon-star-empty");
+					}
+				});
+				$("#setLIModal").find(".relevance-checkbox").each(function(){
+					$(this).prop("checked", employee.learningLevels[$(this).data("bcnUri")].isRelevant);
+				});	
+			}
+
+			function addEmployee(employee){
+				employeeList.push(employee);
+				renderAllEmployees();
+			}
+
+		</script>
+
+		<!-- HTML Block -->
+		
+		<div style="overflow-y: scroll; height:400px;">
+		<div class="panel panel-primary">
+			
+			<div class="panel-heading">
+		    		<h3 class="panel-title">
+					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Your employees
+				</h3>
+		  	</div>
+		  	
+			<div class="panel-body">
+				<button type="button" class="btn btn-primary" id="addNewEmployeeButton">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+				<button type="button" class="btn btn-primary" id="refreshButton">
+					<span class="glyphicon glyphicon-refresh"></span>
+				</button>
+			</div>
+			<table class="table table-striped table-bordered" id="employeeOverviewTable">
+			</table>
+		</div>
+		</div>
+
+		<div class="modal fade" id="newEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Add a new employee</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+						<div class="form-group">
+							<label for="inputNewEmployeeName">Name</label>
+							<input type="text" class="form-control" id="inputNewEmployeeName" placeholder="Enter name">
+						</div>
+						<div class="form-group">
+							<label for="inputNewEmployeeEmail">Email</label>
+							<input type="text" class="form-control" id="inputNewEmployeeEmail" placeholder="Enter email">
+						</div>
+					</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-loading-text="Saving..." id="saveNewEmployeeButton" class="btn btn-primary">Save</button>
+  					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">View/Update Employee</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+						<div class="form-group">
+							<label for="inputUpdateEmployeeName">Name</label>
+							<input type="text" class="form-control" id="inputUpdateEmployeeName" placeholder="Enter name">
+						</div>
+						<div class="form-group">
+							<label for="inputUpdateEmployeeEmail">Email</label>
+							<input type="text" class="form-control" id="inputUpdateEmployeeEmail" placeholder="Enter email">
+						</div>
+					</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-loading-text="Updating..." id="updateEmployeeButton" class="btn btn-primary">Update</button>
+  					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade" id="setLIModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    						<h4 class="modal-title" id="myModalLabel">Define learning levels</h4>
+    				</div>
+					<div class="modal-body">
+						<div class="panel-group" id="bcnPanel">
+						</div>
+					</div>
+					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-loading-text="Saving..." id="updateLearningLevelsButton" class="btn btn-primary">Save</button>
+  					</div>			
+				</div>			
+			</div>
+		</div>
+
+		<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-body">
+						<div class="alert alert-danger fade in" id="alertInModal">
+							<h4>Do you really want to delete this employee?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				       <button type="button" data-loading-text="Deleting..." id="confirmDeleteButton" class="btn btn-danger">Delete</button>
+						</div>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	]]>
+  </Content>
+</Module>

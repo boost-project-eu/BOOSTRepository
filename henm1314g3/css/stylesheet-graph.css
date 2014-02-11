@@ -1,0 +1,13 @@
+table,tr,th,td{
+	border:2px solid #ccdddd;
+}
+/*table thead{
+	display: none;
+}
+
+table tbody td[id='first']{
+	width: 20px;
+	height: 20px;
+	background-color: #cc0000;
+}
+*/
