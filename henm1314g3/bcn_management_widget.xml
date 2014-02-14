@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     
-    <ModulePrefs title="Boost Goals"
-		description="Define business critical needs and learning indicators for your company."
+    <ModulePrefs title="Business Goals"
+		description="Define business critical needs and learning indicators for your business."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400">
@@ -33,11 +33,9 @@
 		<script src="http://127.0.0.1:8073/role/henm1314g3/ladda/spin.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/henm1314g3/ladda/ladda.min.js"></script>
 
-
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/henm1314g3/ladda/ladda-themeless.min.css">
-
 
 		<!-- JavaScript Block -->
 		<script>
@@ -49,7 +47,6 @@
 			gadgets.util.registerOnLoadHandler(init);
 			
 			function init(){
-
 				/*
 					Here we get the space resource.
 					It is the top level resource which is shared by all users.
@@ -59,6 +56,8 @@
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
 			}
+
+			/* Shorthand for $( document ).ready() */
 
 			$(function(){
 				$('#newBcnModal').on('hidden.bs.modal', function (e) {
@@ -77,7 +76,7 @@
 				});
 
 				var newBcnTooltipOptions = {};
-				newBcnTooltipOptions.title = "Add a new goal for your company.";
+				newBcnTooltipOptions.title = "Add a new goal for your business.";
 				newBcnTooltipOptions.placement = "right";
 				$("#addNewBcnButton").tooltip(newBcnTooltipOptions);
 
@@ -101,6 +100,13 @@
 					});
 				});
 
+				/* Assign color, name and index to the priority pushpins */
+
+				for (var i = 0; i < 3; i++) {
+					$('#priority' + i).css({'color':priorityColors[i]});
+					$('#prioritytext' + i).append(priorityNames[i]);
+					$('#prioritytext' + i).data('priorityIndex', i);				
+					};			
 			});
 
 			function updateEmployeesForNewBcn(bcn, callback){
@@ -235,37 +241,41 @@
 
 			function renderAllBcns(){
 				$("#bcnOverviewTable").empty();
-				bcnsList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;});
+
+				/* Sort accord. priority, then alphabet */
+
+				bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+					
+					
+				});
 				for(var i = 0; i < bcnsList.length; i++){
 					var bcn = bcnsList[i];
 					var editButton = $("<button class='btn btn-default edit-bcn-btn'><span class='glyphicon glyphicon-edit'></span></button>");
 					editButton.data("bcnIndex", i);
 					var deleteButton = $("<button class='btn btn-default delete-bcn-btn'><span class='glyphicon glyphicon-trash'></span></button>");
 					deleteButton.data("bcnIndex", i);
-                    
 					var graphButton = $("<button class='btn btn-default show-graph-btn'><span class='glyphicon glyphicon-stats'></span></button>");
 					graphButton.data("bcnIndex", i);
-                    
-         
-                    <!-- Added priority button to the Boost Goals widget (Kat)-->
-                    
-                    var priorityButton = $("<button class='btn btn-default edit-priority-btn'><span class='glyphicon glyphicon-star'></span></button>");
-					priorityButton.data("bcnIndex", i);
 
-            
-                     
+					/* Added pushpin before the name in main BCN modal */
+
 					var template = 	"<tr>" +
-										"<td>#{bcnName}</td>" +
-										"<td style='width:120px;' align='center'>" +
+										"<td><span class='glyphicon glyphicon-pushpin' style='color:#{priorityPushpin}'></span> #{bcnName}</td>" +
+										"<td style='width:150px' align='center'>" +
 											"<div class='btn-group'>" +
 											"</div>" +
 										"</td>" +
 									"</tr>";
-					var entry = $(template.replace(/#{bcnName}/g, bcn.name));
+
+					/* Replaced priorityPushpin with the value from priorityColors array according to it index */				
+
+					var entry = $(template.replace(/#{bcnName}/g, bcn.name).replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
+
 					entry.find(".btn-group").append(editButton);
 					entry.find(".btn-group").append(deleteButton);
 					entry.find(".btn-group").append(graphButton);
-                    entry.find(".btn-group").append(priorityButton);
 					$("#bcnOverviewTable").append(entry);
 				}
 
@@ -273,16 +283,6 @@
 				deleteBcnTooltipOptions.title = "Delete";
 				deleteBcnTooltipOptions.container = "body";
 				$(".delete-bcn-btn").tooltip(deleteBcnTooltipOptions);
-                
-               
-                <!-- Added tooltip to the priority button (Kat)-->
-                
-                var editPriorityBcnTooltipOptions = {};
-				editPriorityBcnTooltipOptions.title = "Assign priority to the goal";
-				editPriorityBcnTooltipOptions.container = "body";
-				$(".edit-priority-btn").tooltip(editPriorityBcnTooltipOptions);
-                
-                
 
 				var editBcnTooltipOptions = {};
 				editBcnTooltipOptions.title = "View/Edit";
@@ -293,40 +293,8 @@
 				showGraphTooltipOptions.title = "Show progress";
 				showGraphTooltipOptions.container = "body";
 				$(".show-graph-btn").tooltip(showGraphTooltipOptions);
-                
-             
-                <!-- Added priority modal (Kat)-->
 
-                $(".edit-priority-btn").click(function(event){
-
-                var bcnPriorityIndex = $(this).data("bcnIndex");	
-               	var bcnName = bcnsList[bcnPriorityIndex].name;
-               		$("#priorityModal").modal('show'); 
-            		$("#priorityModalTitle").text("Please prioritize goal: " + bcnName);
-               		$('.dropdown-toggle').dropdown();
-
-               		$('#oneStar').click(function(e) {
-               		
-    				console.log("One Star!");
-    				e.preventDefault();// prevent the default anchor functionality
-    				});
-
-    				$('#twoStar').click(function(e) {
-    				console.log("Two Stars!");
-    				e.preventDefault();// prevent the default anchor functionality
-    				});
-
-    				$('#threeStar').click(function(e) {
-    				console.log("Three Stars!");
-    				e.preventDefault();// prevent the default anchor functionality
-    				});
-               		
-
-				}); 
-			  
-
-
-                $(".show-graph-btn").click(function(){
+				$(".show-graph-btn").click(function(){
 					var bcnIndex = $(this).data("bcnIndex");
 					publishShowBcnProgress(bcnsList[bcnIndex].uri);
 				});
@@ -401,6 +369,16 @@
 					bcn.description = $(this).val();
 				});
 
+				/* Added click event on the drop-down pushpins */
+
+				$('.priorityClass').click(function(){
+					
+      				$('#mainPushpin').css({'color':priorityColors[$(this).data('priorityIndex')]});
+      				bcn.priority = $(this).data('priorityIndex');	
+    				  });
+				$('#mainPushpin').css({'color':priorityColors[bcn.priority]});
+	
+	
 				if(bcn.learningIndicators.length == 0)
 					bcn.addLI("");
 				//Update LIs
@@ -460,7 +438,7 @@
 				<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
 				<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
 			</div>
-			<table class="table table-striped table-bordered" id="bcnOverviewTable">
+			<table class="table table-striped table-bordered table-condensed" id="bcnOverviewTable">
 			</table>
 		</div>
 		</div>
@@ -483,6 +461,25 @@
 								<label for="inputNewBcnDescription">Description</label>
 								<textarea style="resize:none;" class="form-control" id="inputNewBcnDescription" placeholder="Enter description"></textarea>
 								</div>
+
+								<!--Added priority pushpins to the newBCNModal-->			
+
+								<div class="form-group">
+								<label for="inputNewBcnPriority" >Priority</label>
+									<div class="btn-group" id="inputNewBcnPriority">
+					            	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+					            		<span class="glyphicon glyphicon-pushpin" id='mainPushpin'></span><span class="caret"></span></button>
+						            	<ul class="dropdown-menu">
+						                	<li><a class="priorityClass" href="#" id='prioritytext0'>
+						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority0' > </span></a></li>
+						                	<li><a class="priorityClass" href="#" id='prioritytext1'>
+						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority1' > </span></a></li>
+						                	<li><a class="priorityClass" href="#" id='prioritytext2'>
+						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority2' > </span></a></li>                	
+						            	</ul>
+									</div>
+								</div>							
+								
 								<div class="form-group">
 									<label for="inputNewBcnLi">Learning indicators</label>
 									<div id = "inputNewBcnLi">
@@ -518,46 +515,6 @@
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
-
-	
-		<!-- HTML Priority Modal (Kat) -->
-
-		<!-- Modal -->
-		    <div class="modal fade" id="priorityModal">
-		      <div class="modal-dialog">
-		        <div class="modal-content">
-
-		          <div class="modal-header">
-		            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		            <h5 class="modal-title" id="priorityModalTitle"></h5>
-		          </div>
-		          <div class="modal-body">
-				    <form class="form-inline"> 
-						
-					<div class="btn-group">
-			            <button id="priorityDropdown" data-toggle="dropdown" class="btn btn-success dropdown-toggle">Choose Level <span class="caret"></span></button>
-			            <ul class="dropdown-menu">
-				     		 <li><a href="#" id="oneStar"> <span class="glyphicon glyphicon-star"></span></a></li>
-				     		 <li><a href="#" id="twoStar"> <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span></a></li>
-				    		  <li><a href="#" id="threeStar"> <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"><span class="glyphicon glyphicon-star"></span></a></li>
-				   
-				    </ul>
-			        </div>
-
-						
-		           <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal" >Confirm</button>
-		               
-		            </form> 
-		          </div>
-
-		        </div>
-		      </div>
-		    </div>
-		    <!-- End Modal -->
-
-		   
-
-		
 	]]>
   </Content>
 </Module>

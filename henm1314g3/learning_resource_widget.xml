@@ -59,8 +59,8 @@
 				if(intent.action == "BCN_CREATE"){
 					createBCNfromUri(intent.data, function(bcn){
 						bcnsList.push(bcn);
-						bcnsList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
-								return -1; else return 1;});
+					//	bcnsList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
+					//			return -1; else return 1;});
 						renderAllBCNs();
 					});
 				}
@@ -126,7 +126,7 @@
 				retrieveAllBcns(space, function(bcns){
 						bcnsList = bcns;
 						//We sort the BCNs based on their name property.
-						bcnsList.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
+					//	bcnsList.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
 						$("#loader").remove();
 						renderAllBCNs();
 						if(bcnsList.length==0)
@@ -180,6 +180,14 @@
 			}
 			
 			function renderAllBCNs(){
+
+				bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+					
+					
+				});
+
 				$("#bcns").empty();
 				for(var i = 0; i < bcnsList.length; i++){
 					renderBCN(bcnsList[i]);
@@ -255,13 +263,13 @@
 						showLdTab();
 					});
 				var template = 	"<tr>" +
-									"<td>#{bcnName}</td>" +
+									"<td><span class='glyphicon glyphicon-pushpin' style='color:#{priorityColor}'></span> #{bcnName}</td>" +
 									"<td style='width:100px;' align='center'>" +
 										"<div class='btn-group'>" +
 										"</div>" +
 									"</td>" +
 								"</tr>";
-				var entry = $(template.replace(/#{bcnName}/g, bcn.name));
+				var entry = $(template.replace(/#{bcnName}/g, bcn.name).replace(/#{priorityColor}/g, priorityColors[bcn.priority]));
 				
 				var dropClass = $('<div class="btn-group"></div>');					
 				var dropDownName = "dropDown"+bcn.name;
