@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     
-    <ModulePrefs title="Boost Progress"
+    <ModulePrefs title="Learning Progress"
 		description="This widget gives an overview of the learning process.."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
@@ -41,6 +41,7 @@
 
 		<!-- JavaScript Block -->
 		<script>
+
 			var color1 = '#428BCA';
 			var color2 = '#f5f5f5';
 			var iwcClient;
@@ -48,6 +49,7 @@
 			var bcns;
 			var space;
 			var check=false;
+
 				
 			//Those boolean tell us if we are currently displaying a BCN or Employee graph.
 			var isOverviewGraph={};
@@ -344,6 +346,9 @@
 			// Printing the graphs
 			
 			function printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg){
+				
+
+
 				var learningLevelsName = [];
 				for (var i=0; i<llevel.length; i++)
 					learningLevelsName.push(llevel[i]);
@@ -357,6 +362,9 @@
 					liEndListAvg[i] = {y: liEndListAvg[i], color:color2};
 				}
 				if (isOverview.bool){
+
+					// Initialized chart
+
 					$('#container').highcharts({
 						chart: {
 							type: 'column',
@@ -389,10 +397,13 @@
 						xAxis: {
 							type: 'category',
 							categories: liNameList,
+						
 							labels:{
 								rotation: -25,
 								formatter: function() {
-									return formater+this.value;
+
+										
+										return formater+this.value;
 								},
 								useHTML:true
 							}
@@ -407,6 +418,7 @@
 								text: 'Learning Levels'
 							}
 						},
+
 						tooltip: {
 							enabled: false,
 						},
@@ -490,6 +502,7 @@
 							labels:{
 								rotation: -25,
 								formatter: function() {
+
 									return formater+this.value;
 								},
 								useHTML:true
@@ -543,6 +556,8 @@
 							name: 'Current',
 							data: liStartListAvg,
 						}],
+							name: 'Initial',
+							data: [],
 					});
 				}
 			}
@@ -559,12 +574,17 @@
 				var liEndListAvgTotal=[];
 				
 				var liNameList=[];
+			//	var liPriorityList=[];
+			
 				for(var i=0; i<bcns.length; i++){
 					var liStartListAvg=[];
 					var liCurrentListAvg=[];
 					var liEndListAvg=[];
 					var bcn = bcns[i];
 					liNameList.push(bcn.name);
+			//		liPriorityList.push(bcn.priority);
+			
+
 					for(var j = 0; j<bcn.learningIndicators.length; j++){
 						var liStartList=[];
 						var liCurrentList=[];
@@ -600,15 +620,27 @@
 					liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
 				}
 				var uriBcn=[];
-				for (var i=0; i<bcns.length; i++)
+				for (var i=0; i<bcns.length; i++){
 					uriBcn[i]=bcns[i].uri;
+
+				}
 				var title= 'Overall View';
 				var subtitle = 'How close you are to accomplish your goals';
 				var isOverview={};
 				isOverview.bool=true;
 				isOverview.isBcn=true;
 				isOverview.isEmployee=false;
-				var formater='<span class="glyphicon glyphicon-star" style:"margin-right: 5px;"></span>';
+
+		
+			//	var template='<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
+				
+			//	var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
+
+				var formater = '<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
+			//	$( document.createElement('div')).append(entry).html();
+
+			
+
 				printGraph(isOverview, 0, title, subtitle, uriBcn, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 			}
 			
@@ -673,7 +705,8 @@
 				isOverview.bool=true;
 				isOverview.isBcn=false;
 				isOverview.isEmployee=false;
-				var formater='<span class="glyphicon glyphicon-user" style:"margin-right: 5px;"></span>';
+				var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
+
 				printGraph(isOverview, 0, title, subtitle, uriEmployee, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 			}
 			
@@ -688,6 +721,7 @@
 				for(t=0; t<bcns.length; t++){
 					if (bcns[t].uri == bcnUri)
 						bcn=bcns[t];
+
 				}
 				var data = averageLIProgressForBcn(bcn);
 				var liEndListAvg=[];
@@ -699,14 +733,22 @@
 					liStartListAvg[i]=data[1][i][1];
 					liNameList[i]=data[0][i][0];
 				}
-				var title= '<span class="glyphicon glyphicon-star" style:"margin-right: 5px;"></span>'+bcn.name+'';
+ 
+				/* Added priority pushpin to the title of the goals graph */
+
+				var template = '<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
+
+				var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
+				
+				var title = $( document.createElement('div')).append(entry).html()+bcn.name+ '';
+
 				var subtitle='Taking the average employees';
 				var isOverview={};
 				isOverview.bool=false;
 				isOverview.isBcn=false;
 				isOverview.isEmployee=false;
 				var uriList=[];
-				var formater='<span class="glyphicon glyphicon-flag" style:"margin-right: 5px;"></span>';
+				var formater='<span class="glyphicon glyphicon-flag" style="margin-right: 5px;"></span>';
 				printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
 			}
 
@@ -733,14 +775,14 @@
 					liStartListAvg[i]=data[1][i][1];
 					liNameList[i]=data[0][i][0];
 				}
-				var title= '<span class="glyphicon glyphicon-user" style:"margin-right: 5px;"></span>'+employee.name+'';
+				var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
 				var subtitle='Average for goals';
 				var isOverview={};
 				isOverview.bool=false;
 				isOverview.isBcn=false;
 				isOverview.isEmployee=true;
 				var uriList=[];
-				var formater='<span class="glyphicon glyphicon-star" style:"margin-right: 5px;"></span>';
+				var formater='<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px;"></span>';
 				printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
 			}
 			
@@ -777,9 +819,19 @@
 					liCurrentList.push(current);
 					liEndList.push(end);
 				}	
-				var title='<span class="glyphicon glyphicon-star" style:"margin-right: 5px;"></span>'+bcn.name+'';
-				var subtitle='<span class="glyphicon glyphicon-user" style:"margin-right: 5px;"></span>'+employee.name+'';
-				var formater='<span class="glyphicon glyphicon-flag" style:"margin-right: 5px;"></span>';
+				
+				/*Added priority pushpin to the title of the employee detailled graph*/
+
+				var template = '<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
+
+				var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
+				
+				var title = $( document.createElement('div')).append(entry).html()+bcn.name+ '';
+
+
+
+				var subtitle='<span class="glyphicon glyphicon-user" style="margin-right: 5px; margin-top: 5px"></span>'+employee.name+'';
+				var formater='<span class="glyphicon glyphicon-flag" style="margin-right: 5px;"></span>';
 				var isOverview={};
 				isOverview.bool=false;
 				isOverview.isBcn=false;
@@ -787,17 +839,21 @@
 				var uriList=[];
 				printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartList, liCurrentList, liEndList);
 			}
+
 			
+
 		</script>
 
 		<!-- HTML Block -->
 		<div style="overflow-y: scroll; height: 400px;">
 		<div class="panel panel-primary" style="margin-bottom: 0px">
 			<div class="panel-heading">
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-stats" style="margin-right:5px;"></span>Your progress</h3>
+		    	<h3 class="panel-title"><span class="glyphicon glyphicon-stats" style="margin-right:5px;"></span>Your learning progress</h3>
+
 		  	</div>
 		  	<div class="panel-body">
-				<div id="container" style="min-height: 355px;">
+				<div id="container" style=" height: 350px; margin: 0 auto">	
+					
 			</div>
 			</div>
 		</div>
