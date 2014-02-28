@@ -34,6 +34,9 @@
     	<script src="https://apis.google.com/js/client.js?onload=onYouTubeClientLoad" type="text/javascript"></script>
     	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 
+ 		<!-- Config stuff -->
+    	  <script src="http://127.0.0.1:8073/role/henm1314g3/js/ConfigManager.js"></script>
+
 		<!-- Define CSS -->
 		<link href="http://127.0.0.1:8073/role/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 		<style>
@@ -78,17 +81,36 @@
 		var searchResults;
 		var performSearch;
 		var iwcClient;
+		var config;
+		var space;
+
 		gadgets.util.registerOnLoadHandler(init);
 		activateYouTubeSearch();
 
 		function init(){
 
+			space = new openapp.oo.Resource(openapp.param.space());
 			iwcClient = new iwc.Client();
 			iwcClient.connect(iwcCallback);
+			retrieveConfig(space, function(configObject){
+				config = configObject;
+				console.log(JSON.stringify(config));
+				if (!config.useYouTube){
+					$("#youTubeSelector").parent().addClass("disabled");
+					} else if (!config.useScribd){
+						$("#scribdSelector").parent().addClass("disabled");
+					} else if (!config.useSlideShare) {
+						$("slideShareSelector").parent().addClass("disabled");
+						
+					}
+     		 });
 		}
 
 		function iwcCallback(intent){
-			console.log(intent);
+			if (intent.action == "CONFIG_CHANGE"){
+
+			}
+			
 		}
 
 		function publishShowYoutubeVideo(id){
@@ -131,6 +153,8 @@
 		}
 
 		$(function(){
+
+
 			$("#search_button").click(function(){
 				var query = $("#search_field").val();
 				performSearch(query);
@@ -565,15 +589,15 @@
 			      </span>
 			    </div>
 			    <div class="btn-group" data-toggle="buttons" style="padding-top:5px;">
-				  <label class="btn btn-xs btn-primary active">
+				  <button class="btn btn-xs btn-primary ">
 				    <input type="radio" name="options" id="youTubeSelector"> YouTube
-				  </label>
-				  <label class="btn btn-xs btn-primary">
+				  </button>
+				  <button class="btn btn-xs btn-primary active">
 				    <input type="radio" name="options" id="slideShareSelector"> SlideShare
-				  </label>
-				  <label class="btn btn-xs btn-primary">
+				  </button>
+				  <button class="btn btn-xs btn-primary">
 				    <input type="radio" name="options" id="scribdSelector"> Scribd
-				  </label>
+				  </button>
 				</div>
 			</div>
 			<div class="list-group" id="resultsList">
