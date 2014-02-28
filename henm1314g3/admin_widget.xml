@@ -35,6 +35,7 @@
     <!-- Managers for BCN and Employee related stuff -->
     <script src="http://127.0.0.1:8073/role/henm1314g3/js/BCNManager.js"></script>
     <script src="http://127.0.0.1:8073/role/henm1314g3/js/EmployeeManager.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/js/ConfigManager.js"></script>
 
 
     <!-- Define CSS -->
@@ -47,21 +48,53 @@
     var space;
     var iwcClient;
     var bcnsList = new Array();
+    var liList = new Array();
+    var config;
 
     gadgets.util.registerOnLoadHandler(init);
-    var bcnGlobal; // for the current bcn
-
+ 
     function init(){
           
         space = new openapp.oo.Resource(openapp.param.space());
         iwcClient = new iwc.Client();
-      //  iwcClient.connect(iwcCallback);
+        retrieveConfig(space, function(configObject){
+          config = configObject; 
+        });
+
+      }
+
+    function publishConfigChanged(configUri){
+        var intent = {
+          component: "",
+          data: configUri,
+          dataType: "text/json",
+          flags :["PUBLISH_GLOBAL"],
+          action: "CONFIG_CHANGE"
+        };
+
+        iwcClient.publish(intent);
       }
       
 
     $(document).ready(function(){
 
-      addKeywordsModal();
+
+      $("#saveRepoButton").click(function(){
+
+        config.useYouTube = $("#youTubeCheckBox").is(':checked');
+        config.useSlideShare = $("#slideShareCheckBox").is(':checked');
+        config.useScribd = $("#scribdCheckBox").is(':checked');
+        console.log(JSON.stringify(config));
+        
+        updateConfig(config, function(){
+           publishConfigChanged(config.uri);
+        });
+
+       
+
+      });
+
+
       $("#repoIDmenu").click(function() {
         $("#manageRepoModal").modal();
 
@@ -71,18 +104,22 @@
         $("#addKeywordsModal").modal();
      }); 
 
+
       retrieveAllBcns(space, function(bcns){
             bcnsList = bcns;
             
+            
             for(var i = 0; i < bcnsList.length; i++){
              var bcn = bcnsList[i];
+             liList = bcn.learningIndicators;
              };
-             addKeywordsModal();
+             keywordsModal();
           });
+
 
     });
 
-    function addKeywordsModal() {
+    function keywordsModal() {
 
       $("#bodyKeywordsModal").empty();
 
@@ -97,14 +134,14 @@
         var template =  "<tr>" +
                   "<td><h5>Choose goal: </h5></td>" +
                   "<td style='width:100px;' align='center'>" +
-                  "<div class='btn-group'>" +
+                  "<div id='goal-btn-group' class='btn-group'>" +
                     "</div>" +
                     "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td><h5 style='margin-top: 30px'>Choose learning indicator: </h5></td>" +
+                "<td><h5>Choose learning indicator: </h5></td>" +
                 "<td style='width:100px;' align='center'>" +
-                     "<div class='btn-group'>" +
+                     "<div id='li-btn-group' class='btn-group'>" +
                     "</div>" +
                     "</td>" +
                 "</tr>" +
@@ -120,30 +157,47 @@
                 "</tr>";
 
         var entry = $(template);
-        var dropClass = $('<div class="btn-group"></div>'); 
+        var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>'); 
+    //    var liDropClass = $('<div id="liDropClass" class="btn-group"></div>'); 
 
-
-        var dropDownName = "goalDropDown";
-        var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="'+dropDownName+'" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
+        var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="goalDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
+     //   var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
         
-        dropClass.append(goalButton);
+        goalDropClass.append(goalButton);
+    //    liDropClass.append(liButton);
        
-        var dropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="'+dropDownName+'"></ul>');
-        var element;
+        var goalDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="goalDropDown"></ul>');
+    //    var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
+
+        var goal;
+    //    var learningIndicator;
         
         for(var i=0; i<bcnsList.length; i++) {
           var bcn = bcnsList[i];
-          console.log(bcn.name);
-          element = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
-          
-          dropDownMenu.append(element);
+          goal = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
+          goalDropDownMenu.append(goal);
        }
-      dropClass.append(dropDownMenu);
-    entry.find(".btn-group").append(dropClass);
+
+    //   for(var i=0; i<liList.length; i++) {
+     //     var li = liList[i];
+    //      learningIndicator = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+li.name+'</a></li>');
           
+   //       liDropDownMenu.append(learningIndicator);
+   //    }
+
+    goalDropClass.append(goalDropDownMenu);
+    //liDropClass.append(liDropDownMenu);
+
+    entry.find("#goal-btn-group").append(goalDropClass);
+   // entry.find("#li-btn-group").append(liDropClass);      
 
     $("#bodyKeywordsModal").append(entry);
     }
+
+    function renderLI(i)
+    {
+      
+    };
 
                
     </script>
@@ -185,33 +239,33 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h5 class="modal-title">Choose repositories that you would like to restrict:</h5>
+              <h5 class="modal-title">Choose repositories that you would like to access:</h5>
             </div>
             <div class="modal-body">
                <li class="list-group-item">
             <div class="checkbox">
                 <label>
-                  <input type="checkbox"> YouTube
+                  <input id="youTubeCheckBox" type="checkbox"> YouTube
                 </label>
            </div>
           </li>
           <li class="list-group-item">
             <div class="checkbox">
                 <label>
-                  <input type="checkbox"> SlideShare
+                  <input id="slideShareCheckBox" type="checkbox"> SlideShare
                 </label>
             </div>
            </li>
           <li class="list-group-item">
             <div class="checkbox">
                 <label>
-                  <input type="checkbox"> Scribd
+                  <input id="scribdCheckBox" type="checkbox"> Scribd
                 </label>
             </div></li>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button id="saveRepoButton" type="button" class="btn btn-primary"  data-dismiss="modal">Save changes</button>
               
             </div>
           </div><!-- /.modal-content -->
