@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     
-    <ModulePrefs title="Boost Documents"
+    <ModulePrefs title="Learning Repository"
 		description="Widget to manage learning Documents."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
@@ -59,8 +59,6 @@
 				if(intent.action == "BCN_CREATE"){
 					createBCNfromUri(intent.data, function(bcn){
 						bcnsList.push(bcn);
-						bcnsList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
-								return -1; else return 1;});
 						renderAllBCNs();
 					});
 				}
@@ -125,8 +123,6 @@
 				$("#panel").append("<img id='loader' src='http://127.0.0.1:8073/role/henm1314g3/resources/loader.gif'>")
 				retrieveAllBcns(space, function(bcns){
 						bcnsList = bcns;
-						//We sort the BCNs based on their name property.
-						bcnsList.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
 						$("#loader").remove();
 						renderAllBCNs();
 						if(bcnsList.length==0)
@@ -180,6 +176,16 @@
 			}
 			
 			function renderAllBCNs(){
+
+				/* Sort according priority index and name */
+
+				bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+					
+					
+				});
+
 				$("#bcns").empty();
 				for(var i = 0; i < bcnsList.length; i++){
 					renderBCN(bcnsList[i]);
@@ -254,14 +260,17 @@
 						bcnGlobal = bcn;
 						showLdTab();
 					});
+
+				/* Added pushpin before name */
+					
 				var template = 	"<tr>" +
-									"<td>#{bcnName}</td>" +
+									"<td><span class='glyphicon glyphicon-pushpin' style='color:#{priorityPushpin}'></span> #{bcnName}</td>" +
 									"<td style='width:100px;' align='center'>" +
 										"<div class='btn-group'>" +
 										"</div>" +
 									"</td>" +
 								"</tr>";
-				var entry = $(template.replace(/#{bcnName}/g, bcn.name));
+				var entry = $(template.replace(/#{bcnName}/g, bcn.name).replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
 				
 				var dropClass = $('<div class="btn-group"></div>');					
 				var dropDownName = "dropDown"+bcn.name;

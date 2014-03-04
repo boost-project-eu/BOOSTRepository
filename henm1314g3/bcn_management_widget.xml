@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     
-    <ModulePrefs title="Boost Goals"
-		description="Define business critical needs and learning indicators for your company."
+    <ModulePrefs title="Business Goals"
+		description="Define business critical needs and learning indicators for your business."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400">
@@ -57,6 +57,8 @@
 				iwcClient.connect(iwcCallback);
 			}
 
+			/* Shorthand for $( document ).ready() */
+
 			$(function(){
 				$('#newBcnModal').on('hidden.bs.modal', function (e) {
 					$('#newBcnModal').find('input[type="text"],input[type="email"],textarea,select').val('');
@@ -74,7 +76,7 @@
 				});
 
 				var newBcnTooltipOptions = {};
-				newBcnTooltipOptions.title = "Add a new goal for your company.";
+				newBcnTooltipOptions.title = "Add a new goal for your business.";
 				newBcnTooltipOptions.placement = "right";
 				$("#addNewBcnButton").tooltip(newBcnTooltipOptions);
 
@@ -98,6 +100,13 @@
 					});
 				});
 
+				/* Assign color, name and index to the priority pushpins */
+
+				for (var i = 0; i < 3; i++) {
+					$('#priority' + i).css({'color':priorityColors[i]});
+					$('#prioritytext' + i).append(priorityNames[i]);
+					$('#prioritytext' + i).data('priorityIndex', i);				
+					};			
 			});
 
 			function updateEmployeesForNewBcn(bcn, callback){
@@ -232,7 +241,15 @@
 
 			function renderAllBcns(){
 				$("#bcnOverviewTable").empty();
-				bcnsList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;});
+
+				/* Sort accord. priority, then alphabet */
+
+				bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+					
+					
+				});
 				for(var i = 0; i < bcnsList.length; i++){
 					var bcn = bcnsList[i];
 					var editButton = $("<button class='btn btn-default edit-bcn-btn'><span class='glyphicon glyphicon-edit'></span></button>");
@@ -241,14 +258,21 @@
 					deleteButton.data("bcnIndex", i);
 					var graphButton = $("<button class='btn btn-default show-graph-btn'><span class='glyphicon glyphicon-stats'></span></button>");
 					graphButton.data("bcnIndex", i);
+
+					/* Added pushpin before the name in main BCN modal */
+
 					var template = 	"<tr>" +
-										"<td>#{bcnName}</td>" +
+										"<td><span class='glyphicon glyphicon-pushpin' style='color:#{priorityPushpin}'></span> #{bcnName}</td>" +
 										"<td style='width:150px' align='center'>" +
 											"<div class='btn-group'>" +
 											"</div>" +
 										"</td>" +
 									"</tr>";
-					var entry = $(template.replace(/#{bcnName}/g, bcn.name));
+
+					/* Replaced priorityPushpin with the value from priorityColors array according to it index */				
+
+					var entry = $(template.replace(/#{bcnName}/g, bcn.name).replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
+
 					entry.find(".btn-group").append(editButton);
 					entry.find(".btn-group").append(deleteButton);
 					entry.find(".btn-group").append(graphButton);
@@ -345,6 +369,16 @@
 					bcn.description = $(this).val();
 				});
 
+				/* Added click event on the drop-down pushpins */
+
+				$('.priorityClass').click(function(){
+					
+      				$('#mainPushpin').css({'color':priorityColors[$(this).data('priorityIndex')]});
+      				bcn.priority = $(this).data('priorityIndex');	
+    				  });
+				$('#mainPushpin').css({'color':priorityColors[bcn.priority]});
+	
+	
 				if(bcn.learningIndicators.length == 0)
 					bcn.addLI("");
 				//Update LIs
@@ -398,7 +432,7 @@
 		<div style="overflow-y: scroll; height:400px;">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Your company goals</h3>
+		    	<h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Your business goals</h3>
 		  	</div>
 		  	<div id='panel' class="panel-body">
 				<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
@@ -427,6 +461,25 @@
 								<label for="inputNewBcnDescription">Description</label>
 								<textarea style="resize:none;" class="form-control" id="inputNewBcnDescription" placeholder="Enter description"></textarea>
 								</div>
+
+								<!--Added priority pushpins to the newBCNModal-->			
+
+								<div class="form-group">
+								<label for="inputNewBcnPriority" >Priority</label>
+									<div class="btn-group" id="inputNewBcnPriority">
+					            	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+					            		<span class="glyphicon glyphicon-pushpin" id='mainPushpin'></span><span class="caret"></span></button>
+						            	<ul class="dropdown-menu">
+						                	<li><a class="priorityClass" href="#" id='prioritytext0'>
+						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority0' > </span></a></li>
+						                	<li><a class="priorityClass" href="#" id='prioritytext1'>
+						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority1' > </span></a></li>
+						                	<li><a class="priorityClass" href="#" id='prioritytext2'>
+						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority2' > </span></a></li>                	
+						            	</ul>
+									</div>
+								</div>							
+								
 								<div class="form-group">
 									<label for="inputNewBcnLi">Learning indicators</label>
 									<div id = "inputNewBcnLi">

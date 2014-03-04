@@ -1,3 +1,7 @@
+var priorityColors = ["green", "orange", "red"];  
+var priorityNames = ["low", "medium", "high"];
+
+
 function BCN(object){
 	if(object.hasOwnProperty("uri"))
 		this.uri = object.uri;
@@ -23,6 +27,13 @@ function BCN(object){
 		this.learningDocuments = object.learningDocuments;
 	else
 		this.learningDocuments = [];
+
+	//added attr priority to the object BCN
+
+	if(object.hasOwnProperty("priority"))
+		this.priority = object.priority;
+	else
+		this.priority = 0;
 }
 
 BCN.prototype.addLI = function(name){
