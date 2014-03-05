@@ -78,13 +78,12 @@
 
     $(document).ready(function(){
 
-
       $("#saveRepoButton").click(function(){
 
         config.useYouTube = $("#youTubeCheckBox").is(':checked');
         config.useSlideShare = $("#slideShareCheckBox").is(':checked');
         config.useScribd = $("#scribdCheckBox").is(':checked');
-        console.log(JSON.stringify(config));
+       // console.log(JSON.stringify(config));
         
         updateConfig(config, function(){
            publishConfigChanged(config.uri);
@@ -97,6 +96,21 @@
 
       $("#repoIDmenu").click(function() {
         $("#manageRepoModal").modal();
+
+        if (config.useYouTube) {
+        $("#youTubeCheckBox").prop('checked', true);
+        console.log(config.useYouTube);
+      };
+
+        if (config.useSlideShare) {
+        $("#slideShareCheckBox").prop('checked', true);
+        console.log(config.useSlideShare);
+      };
+
+        if (config.useScribd) {
+        $("#scribdCheckBox").prop('checked', true);
+        console.log(config.useScribd);
+      };
 
       });
 
@@ -121,6 +135,7 @@
 
     function keywordsModal() {
 
+
       $("#bodyKeywordsModal").empty();
 
          /* Sort according priority index and name */
@@ -131,67 +146,117 @@
           
         });
 
-        var template =  "<tr>" +
-                  "<td><h5>Choose goal: </h5></td>" +
+        var template =  "<table width='100%'>" +
+                  "<tr>" +
+                  "<td><h5>Choose goal: </h5><h5 id='someGoal' style='color:#3677AF; font-weight:bold;'></h5></td>" +
                   "<td style='width:100px;' align='center'>" +
                   "<div id='goal-btn-group' class='btn-group'>" +
                     "</div>" +
                     "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td><h5>Choose learning indicator: </h5></td>" +
+                "<td><h5>Choose learning indicator: </h5><h5 id='someLI' style='color:#3677AF; font-weight:bold;'></h5></td>" +
                 "<td style='width:100px;' align='center'>" +
                      "<div id='li-btn-group' class='btn-group'>" +
                     "</div>" +
                     "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td><h5>Enter keywords for: </h5></td>" +
+                "<td colspan='2'><h5 id ='disabledText' class='hide'>Enter related keywords: </h5></td>" +
                 "</tr>"+
                 "<tr>" +
-                "<td><h5>#SomeGoal </h5></td>" +
-                "<td><h5>#SomeLI </h5></td>" +
+                "<td></td>" +
+                "<td></td>" +
                 "</tr>"+
                 "<tr>" +
-                 "<td colspan='2'><input class='form-control' id='disabledInput' type='text' placeholder='ex: responsive, design, widget...' disabled></td>"+
-                "</tr>";
+                 "<td colspan='2'><input class='form-control hide' id='disabledInput' type='text' placeholder='ex: responsive, design, widget...'></td>"+
+                "</tr>" + 
+                "</table>";
 
         var entry = $(template);
         var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>'); 
-    //    var liDropClass = $('<div id="liDropClass" class="btn-group"></div>'); 
+  
 
         var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="goalDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
-     //   var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
+  
         
         goalDropClass.append(goalButton);
-    //    liDropClass.append(liButton);
+    
        
         var goalDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="goalDropDown"></ul>');
-    //    var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
+    
 
         var goal;
-    //    var learningIndicator;
+   
         
         for(var i=0; i<bcnsList.length; i++) {
           var bcn = bcnsList[i];
+
           goal = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
           goalDropDownMenu.append(goal);
        }
 
-    //   for(var i=0; i<liList.length; i++) {
-     //     var li = liList[i];
-    //      learningIndicator = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+li.name+'</a></li>');
-          
-   //       liDropDownMenu.append(learningIndicator);
-   //    }
 
     goalDropClass.append(goalDropDownMenu);
-    //liDropClass.append(liDropDownMenu);
+    
 
     entry.find("#goal-btn-group").append(goalDropClass);
-   // entry.find("#li-btn-group").append(liDropClass);      
+     
 
     $("#bodyKeywordsModal").append(entry);
+
+      
+
+
+      var liDropClass = $('<div id="liDropClass" class="btn-group"></div>');
+      var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>'); 
+      liDropClass.append(liButton);
+      var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
+      var learningIndicator;
+
+       $('#goalDropClass li a').click(function()
+    { 
+      console.log("Test");
+      var selectedGoalName = $(this).text();
+
+
+     //var test = $(template.replace(/#{SomeGoal}/g, selectedGoalName));
+     // alert(test);
+
+     $('#someGoal').text(selectedGoalName);
+     
+      for(var i=0; i<bcnsList.length; i++) {
+        if (bcnsList[i].name == selectedGoalName) {
+            console.log(selectedGoalName); 
+
+            var temp = bcnsList[i].learningIndicators;
+           // alert("test" + temp[0].name);
+
+             for (var j=0; j<temp.length; j++) {
+              var selectedLearningIndicator = temp[j];
+              learningIndicator = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
+               liDropDownMenu.append(learningIndicator);
+             }
+          }
+       }
+
+       liDropClass.append(liDropDownMenu);
+      entry.find("#li-btn-group").append(liDropClass); 
+
+       $('#liDropClass li a').click(function()
+          { 
+            var selectedLIName = $(this).text();
+            $('#someLI').text(selectedLIName);
+            $('#disabledInput').removeClass('hide');
+            $('#disabledText').removeClass('hide');
+
+           });
+
+    });
+
+
+      
+
     }
 
     function renderLI(i)
@@ -283,6 +348,7 @@
                       <h4 class="modal-title">Assign keywords to learning indicators:</h4>
                   </div>
                   <div class="modal-body" id="bodyKeywordsModal">
+
 
                   </div>
                   <div class="modal-footer">
