@@ -95,14 +95,14 @@
 			retrieveConfig(space, function(configObject){
 				config = configObject;
 				console.log(JSON.stringify(config));
-				if (!config.useYouTube){
+				if (!config.useYouTube)
 					$("#youTubeSelector").parent().addClass("disabled");
-					} else if (!config.useScribd){
+				if (!config.useScribd)
 						$("#scribdSelector").parent().addClass("disabled");
-					} else if (!config.useSlideShare) {
+				if (!config.useSlideShare) 
 						$("slideShareSelector").parent().addClass("disabled");
 						
-					}
+					
      		 });
 		}
 
@@ -592,7 +592,7 @@
 				  <button class="btn btn-xs btn-primary ">
 				    <input type="radio" name="options" id="youTubeSelector"> YouTube
 				  </button>
-				  <button class="btn btn-xs btn-primary active">
+				  <button class="btn btn-xs btn-primary ">
 				    <input type="radio" name="options" id="slideShareSelector"> SlideShare
 				  </button>
 				  <button class="btn btn-xs btn-primary">
