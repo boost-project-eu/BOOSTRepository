@@ -36,9 +36,13 @@ function BCN(object){
 		this.priority = 0;
 }
 
-BCN.prototype.addLI = function(name){
+BCN.prototype.addLI = function(name, description){
 	var li = {};
 	li.name = name;
+	li.description = description;
+	//li.description = "Empty description";
+
+
 	//We just increment the LI id whenever a new LI is added
 	//We also assume that the LIs are ordered by id in the array
 	if(this.learningIndicators.length == 0){

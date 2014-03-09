@@ -247,6 +247,7 @@
        $('#liDropClass li a').click(function()
           { 
             selectedLIName = $(this).text();
+
             $('#someLI').text(selectedLIName);
             $('#textInput').removeClass('hide');
             $('#disabledText').removeClass('hide');
@@ -261,13 +262,19 @@
         var descriptionLI = $('#textInput').val();
 
         if (descriptionLI) {
-     //     console.log(descriptionLI );
-     //     $('#textInput').val('');
 
           for(var i=0; i<liList.length; i++) {
-         
+            console.log("Test For");
+        
            if (liList[i].name == selectedLIName) {
-          console.log("Selected LI" + liList[i].name);
+            console.log("Test If");
+  
+            console.log("Selected Description" + liList[i].description);
+
+            liList[i].description = $('#textInput').val();
+
+            console.log("Changed Local Description" + liList[i].description);
+          
           }
         }
       } else 
