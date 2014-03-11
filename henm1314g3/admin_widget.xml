@@ -2,7 +2,7 @@
 <Module>
   <ModulePrefs
     title="Admin Widget"
-    description="Manage your Repository."
+    description="Config widget."
     author="Team Boost"
     author_email="neulinger@dbis.rwth-aachen.de"
     height="400">
@@ -25,21 +25,21 @@
     <![CDATA[
 
     <!-- We use jQuery to manipulate DOM and Bootstrap for the interface. -->
-      <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/js/bootstrap.min.js"></script>
    
     <script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/ladda/spin.min.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/ladda/ladda.min.js"></script>
             
     <!-- Managers for BCN and Employee related stuff -->
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/js/BCNManager.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/js/EmployeeManager.js"></script>
+    <script src="http://127.0.0.1:8073/role/henm1314g3/js/ConfigManager.js"></script>
 
 
     <!-- Define CSS -->
-   <link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
+   <link rel="stylesheet" href="http://127.0.0.1:8073/role/henm1314g3/css/bootstrap.min.css">
  
 
     <!-- JavaScript Block -->
@@ -48,8 +48,9 @@
     var space;
     var iwcClient;
     var bcnsList = new Array();
-    var liList = new Array();
-    var config;
+    var selectedLI;
+    var selectedBCN;
+    var config;  //used to allow/restrict search repositories
 
     gadgets.util.registerOnLoadHandler(init);
  
@@ -78,7 +79,9 @@
 
     $(document).ready(function(){
 
-      $("#saveRepoButton").click(function(){
+      /* manage search repositories */
+
+    $("#saveRepoButton").click(function(){
 
         config.useYouTube = $("#youTubeCheckBox").is(':checked');
         config.useSlideShare = $("#slideShareCheckBox").is(':checked');
@@ -89,34 +92,40 @@
            publishConfigChanged(config.uri);
         });
 
-       
-
-      });
+     });
 
 
       $("#repoIDmenu").click(function() {
         $("#manageRepoModal").modal();
 
-        if (config.useYouTube) {
-        $("#youTubeCheckBox").prop('checked', true);
-        console.log(config.useYouTube);
-      };
+          if (config.useYouTube) {
+          $("#youTubeCheckBox").prop('checked', true);
+       
+        };
 
-        if (config.useSlideShare) {
-        $("#slideShareCheckBox").prop('checked', true);
-        console.log(config.useSlideShare);
-      };
+          if (config.useSlideShare) {
+          $("#slideShareCheckBox").prop('checked', true);
+     
+        };
 
-        if (config.useScribd) {
-        $("#scribdCheckBox").prop('checked', true);
-        console.log(config.useScribd);
-      };
+          if (config.useScribd) {
+          $("#scribdCheckBox").prop('checked', true);
+       
+        };
 
       });
+
+       /* open modal to add descriptions to LI's */
 
       $("#keywordsIDmenu").click(function() {
         $("#addKeywordsModal").modal();
         $("#textInput").val('');
+        $('#textInput').addClass('hide');
+        $('#disabledText').addClass('hide');
+        $('#someLI').text("");              // remove previous li label
+        $('#someGoal').text("");              // remove previous goal label
+        $('#liDropClass').addClass('hide');    // remove previous li-dropdown list
+
      }); 
 
 
@@ -126,24 +135,29 @@
             
             for(var i = 0; i < bcnsList.length; i++){
              var bcn = bcnsList[i];
-             liList = bcn.learningIndicators;
-
-          //    var test = bcn.addLIwithDescription("someGoal","someDescription");
-         //    console.log(test);
+  
              };
              keywordsModal();
           });
 
-       
+      /* assign description to selectedBCN-LI */
+
+      $("#assignButton").click(function(){
+        if ($('#someLI').text()===""){
+          alert ("Please choose LI");
+        } else if ($("#textInput").val()) {
+          selectedLI.description = $("#textInput").val();
+
+          selectedBCN.update(function(){ 
+            $("#addKeywordsModal").modal('hide');
+        });
+         } else alert("Please enter description!");
+
+      });
+
     });
 
     function keywordsModal() {
-
-      var selectedLIName;
-      var selectedGoalName;
-
-
-      $("#bodyKeywordsModal").empty();
 
          /* Sort according priority index and name */
 
@@ -153,22 +167,21 @@
           
         });
 
-        var template =  "<table width='100%'>" +
-                  "<tr>" +
-                  "<td><h5>Choose goal: </h5><h5 id='someGoal' style='color:#3677AF; font-weight:bold;'></h5></td>" +
-                  "<td style='width:100px;' align='center'>" +
-                  "<div id='goal-btn-group' class='btn-group'>" +
-                    "</div>" +
-                    "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<td><h5>Choose learning indicator: </h5><h5 id='someLI' style='color:#3677AF; font-weight:bold;'></h5></td>" +
-                "<td style='width:100px;' align='center'>" +
-                     "<div id='li-btn-group' class='btn-group'>" +
-                    "</div>" +
-                    "</td>" +
-                "</tr>" +
-                "<tr>" +
+        var template =   "<tr>" +
+                            "<td><h5>Choose goal: </h5><h5 id='someGoal' style='color:#3677AF; font-weight:bold;'></h5></td>" +
+                            "<td style='width:100px;' align='center'>" +
+                                 "<div id='goal-btn-group' class='btn-group'>" +
+                                 "</div>" +
+                           "</td>" +
+                          "</tr>" +
+                           "<tr>" +
+                             "<td><h5>Choose learning indicator: </h5><h5 id='someLI' style='color:#3677AF; font-weight:bold;'></h5></td>" +
+                             "<td style='width:100px;' align='center'>" +
+                               "<div id='li-btn-group' class='btn-group'>" +
+                               "</div>" +
+                             "</td>" +
+                          "</tr>" +
+                            "<tr>" +
                 "<td colspan='2'><h5 id ='disabledText' class='hide'>Enter related description: </h5></td>" +
                 "</tr>"+
                 "<tr>" +
@@ -177,13 +190,12 @@
                 "</tr>"+
                 "<tr>" +
                 "<td colspan='2'><textarea class='form-control hide' id='textInput' rows='3'></textarea></td>" +
-                "</tr>" + 
-                "</table>";
+                "</tr>";
+
+        /* add dropdown list with BCNs */
 
         var entry = $(template);
         var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>'); 
-  
-
         var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="goalDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
   
         
@@ -191,29 +203,24 @@
     
        
         var goalDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="goalDropDown"></ul>');
-    
-
         var goal;
    
-        
-        for(var i=0; i<bcnsList.length; i++) {
-          var bcn = bcnsList[i];
+        for (key in bcnsList) {
+    
+          var bcn = bcnsList[key];
 
           goal = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
+          goal.find("a").data("dataBCNselected", bcn);
           goalDropDownMenu.append(goal);
        }
 
-
-    goalDropClass.append(goalDropDownMenu);
-    
-
-    entry.find("#goal-btn-group").append(goalDropClass);
+     goalDropClass.append(goalDropDownMenu);
      
-
+     entry.find("#goal-btn-group").append(goalDropClass);
+     
     $("#bodyKeywordsModal").append(entry);
 
-      
-
+      /* add dropdown list with LIs */
 
       var liDropClass = $('<div id="liDropClass" class="btn-group"></div>');
       var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>'); 
@@ -221,70 +228,47 @@
       var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
       var learningIndicator;
 
-       $('#goalDropClass li a').click(function()
-    { 
-      selectedGoalName = $(this).text();
+    $('#goalDropClass li a').click(function()
+     { 
+      $('#someLI').text("");              // remove previous li label
+      $('#liDropClass li a').remove();    // remove previous li from li-dropdown list
+      $('#liDropClass').removeClass('hide');
 
-     $('#someGoal').text(selectedGoalName);
+      selectedBCN =  $(this).data("dataBCNselected");
+
+      $('#someGoal').text(selectedBCN.name);
      
-      for(var i=0; i<bcnsList.length; i++) {
-        if (bcnsList[i].name == selectedGoalName) {
-
-            var temp = bcnsList[i].learningIndicators;
-
+      for(var key in bcnsList) {
+        if (bcnsList[key].name === selectedBCN.name) {
+       
+            var temp = bcnsList[key].learningIndicators;
+      
              for (var j=0; j<temp.length; j++) {
               var selectedLearningIndicator = temp[j];
-              learningIndicator = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
+
+               learningIndicator = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
                liDropDownMenu.append(learningIndicator);
+               learningIndicator.find("a").data("dataLearningIndicator", selectedLearningIndicator);
 
              }
           }
        }
 
-       liDropClass.append(liDropDownMenu);
+      liDropClass.append(liDropDownMenu);
       entry.find("#li-btn-group").append(liDropClass); 
 
        $('#liDropClass li a').click(function()
           { 
-            selectedLIName = $(this).text();
-
-            $('#someLI').text(selectedLIName);
+            selectedLI = $(this).data("dataLearningIndicator");
+            $('#someLI').text(selectedLI.name);
             $('#textInput').removeClass('hide');
             $('#disabledText').removeClass('hide');
-
            });
+     });
 
-    });
+   }               
 
-
-      $("#saveButton").click(function(){
-
-        var descriptionLI = $('#textInput').val();
-
-        if (descriptionLI) {
-
-          for(var i=0; i<liList.length; i++) {
-            console.log("Test For");
-        
-           if (liList[i].name == selectedLIName) {
-            console.log("Test If");
-  
-            console.log("Selected Description" + liList[i].description);
-
-            liList[i].description = $('#textInput').val();
-
-            console.log("Changed Local Description" + liList[i].description);
-          
-          }
-        }
-      } else 
-          {alert("Please enter description!")};
-      
-      });
-
-    }
-               
-    </script>
+  </script>
 
     <!-- HTML Block -->
 
@@ -304,7 +288,7 @@
           </a>
           <a href="#" id="keywordsIDmenu" class="list-group-item">
             <div><span class="glyphicon glyphicon-list-alt pull-right" style="margin-right:5px;"></span>
-               <h5 class="list-group-item-heading"> Assign description to LI´s </h5>      
+               <h5 class="list-group-item-heading"> Assign description to the LI´s </h5>      
               <h6 class="list-group-item-text">Provide description to the learning indicators to help your employees search for the relevant content </h6>       
             </div>
             
@@ -357,7 +341,7 @@
       </div><!-- /.modal -->
 
 
-      <!-- Modal to manage keywords -->
+      <!-- Modal to assign LI description -->
 
       <div class="modal fade" id="addKeywordsModal"> 
           <div class="modal-dialog">
@@ -367,13 +351,14 @@
                       <h4 class="modal-title">Assign description to learning indicators:</h4>
                   </div>
                   <div class="modal-body" id="bodyKeywordsModal">
+                  <table id='keywordsTable' width='100%'>
 
-
+                  </table>
                   </div>
                   <div class="modal-footer">
                     <div class="form-actions">
                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
+                      <button type="submit" class="btn btn-primary"  id="assignButton">Assign description</button>
                     </div>
                   </div><!-- /.modal-footer -->
               </div><!-- /.modal-content -->
