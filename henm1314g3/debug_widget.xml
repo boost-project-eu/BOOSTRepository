@@ -60,17 +60,17 @@
 						name: "Create a website",
 						description: "We need to create a website to show off our products and to be able to inform our customers about new products."
 					});
-					bcn1.addLI("Learn HTML");
-					bcn1.addLI("Learn JavaScript");
-					bcn1.addLI("Learn PHP");
+					bcn1.addLI("Learn HTML", "Description HTML");
+					bcn1.addLI("Learn JavaScript", "Description JS");
+					bcn1.addLI("Learn PHP", "Description PHP");
 					bcn1.create(function(){
 						bcns.push(bcn1);
 						var bcn2 = new BCN({
 							name: "Create BOOST",
 							description: "We need to create BOOST to help our employees during their learning process."
 						});
-						bcn2.addLI("Learn CSS");
-						bcn2.addLI("Learn JSON");
+						bcn2.addLI("Learn CSS", "Description CSS");
+						bcn2.addLI("Learn JSON", "Description JSON");
 						bcn2.create(function(){
 							bcns.push(bcn2);
 

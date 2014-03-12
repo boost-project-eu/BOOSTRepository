@@ -1,10 +1,10 @@
 // descriptions of learning levels used for tooltips.
 	llevel = [];
-	llevel[0] = "Beginner";
-	llevel[1] = "Intermediate";
-	llevel[2] = "Advanced";
-	llevel[3] = "Expert";
-	//llevel[4] = "Genius";
+	llevel[0] = "0";
+	llevel[1] = "1";
+	llevel[2] = "2";
+	llevel[3] = "4";
+	llevel[4] = "5";
 
 function deleteEmployee(employee, callback){
 	openapp.resource.del(employee.uri, function(){
