@@ -48,6 +48,19 @@
 				iwcClient.connect(iwcCallback);
 			}
 
+			function publishSaveYoutubeVideoAsDocument(youtubeVideoData){
+				var intent = {
+					component: "",
+					data: "",
+					dataType: "text/json",
+					flags :["PUBLISH_GLOBAL"],
+					action: "SAVE_YOUTUBE_VIDEO_AS_DOCUMENT",
+					extras: youtubeVideoData
+				};
+
+				iwcClient.publish(intent);
+			}
+
 			function iwcCallback(intent){
 				if(intent.action == "SHOW_YOUTUBE_VIDEO"){
 					showYoutubeVideo(intent.extras.id);
@@ -66,11 +79,17 @@
 				$("#content").empty();
 				//Retrieve video data
 				YouTubeSearch.getVideoDetails(id, function(videoDetails){
+					var title = videoDetails.items[0].snippet.description;
 					var description = videoDetails.items[0].snippet.description;
 					var youtubeTemplate = 	"<div class='well'>" +
 											"<center>" +
+											"<div>" +
 											"<iframe type='text/html' width='480' height='270' src='https://www.youtube.com/embed/" + id + "' " +
 		                                    "frameborder='0' allowfullscreen></iframe>" +
+		                                    "<p style='margin-top:5px;'>" +
+		                                    "<button id='saveDocumentButton' type='button' class='btn btn-primary btn-xs'>Add to documents</button>" +
+				                        	"</p>" +
+				                        	"</div>" +
 		                                    "</center>" +
 				                        	"<h4>Description</h4>" +
 				                        	"<p>" +
@@ -78,6 +97,13 @@
 				                        	"</p>" +
 				                        	"</div>";
 				    $("#content").append(youtubeTemplate);
+				    $("#saveDocumentButton").click(function(){
+				    	var youtubeVideoData = {};
+				    	youtubeVideoData.id = id;
+				    	youtubeVideoData.title = title;
+				    	youtubeVideoData.description = description;
+				    	publishSaveYoutubeVideoAsDocument(youtubeVideoData);
+				    });
 				});
 			}
 
@@ -116,6 +142,8 @@
 				scribd_doc.addParam('jsapi_version', 2);
 				scribd_doc.write('scribdContainer');
 			}
+
+
 
 		</script>
 
