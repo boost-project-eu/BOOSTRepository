@@ -58,7 +58,8 @@
 					//Create BCNs
 					var bcn1 = new BCN({
 						name: "Create a website",
-						description: "We need to create a website to show off our products and to be able to inform our customers about new products."
+						description: "We need to create a website to show off our products and to be able to inform our customers about new products.",
+						priority: 0
 					});
 					bcn1.addLI("Learn HTML", "Description HTML");
 					bcn1.addLI("Learn JavaScript", "Description JS");
