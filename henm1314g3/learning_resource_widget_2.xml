@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Learning Repository"
+		description="Widget to manage learning Documents."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree.js" type="text/javascript"></script>
+		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+
+		<!-- Define CSS -->
+		
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
+		<!-- JavaScript Block -->
+		<script>
+			
+			var space;
+			var iwcClient;
+			var bcnsList = new Array();
+			var ldsList= new Array();
+			
+			var liGlobal; // current learning Indicator
+			
+			gadgets.util.registerOnLoadHandler(init);
+			var bcnGlobal; // for the current bcn
+			var ldGlobal; // for the ld to update (saves the id of the ld in the array)
+			function init(){
+			    
+				space = new openapp.oo.Resource(openapp.param.space());
+				iwcClient = new iwc.Client();
+				iwcClient.connect(iwcCallback);
+			}
+			
+			function iwcCallback(intent){
+				if(intent.action == "BCN_CREATE"){
+					createBCNfromUri(intent.data, function(bcn){
+						bcnsList.push(bcn);
+						renderAllBCNs();
+					});
+				}
+
+				if(intent.action == "BCN_UPDATE"){
+					createBCNfromUri(intent.data, function(updatedBcn){
+						for(var i = 0; i < bcnsList.length; i++){
+							var bcn = bcnsList[i];
+							if(bcn.uri == intent.data) {
+								var oldBcn = bcnsList[i];
+								bcnsList[i] = updatedBcn;
+							}
+						}
+						renderAllBCNs();
+					});
+				}
+
+				if(intent.action == "BCN_DELETE"){
+					for(var i = 0; i < bcnsList.length; i++){
+						var bcn = bcnsList[i];
+						if(bcn.uri == intent.data){
+							bcnsList.splice(i, 1);
+						}
+					}
+					renderAllBCNs();
+					if(bcnsList.length==0)
+						$("#bcns").append("<td>No goals defined.</td>");
+				}
+			}
+			
+			$(function(){
+    			$("#tree").tree();
+				retrieveAllBcns(space, function(bcns){
+						bcnsList = bcns;
+						renderAllBCNs();
+					}
+				);
+
+			});
+			
+			function showAddModal() {
+			
+				$('#inputLdLiLevelDiv').remove();
+				
+				var div = $('<div id="inputLdLiLevelDiv" class="form-group"></div>');			
+				var liLabel = $('<label for="inputLdLiLevel" id="labelLdLiLevel">Learning Indicator:</label>');
+				div.append(liLabel);
+				
+				var select = $('<select id="inputLdLiLevel" style="border:1px solid #D3D3D3; background-color:#FFFFFF; margin-left:5px;"></select>');
+				var liList = bcnGlobal.learningIndicators;
+				for(i = 0; i< liList.length; i++) {
+					if(liGlobal == liList[i]) {
+						var option = $('<option selected value="'+liList[i].id+'">'+liList[i].name+'</option>');
+					} else {
+						var option = $('<option value="'+liList[i].id+'">'+liList[i].name+'</option>');
+					}
+					select.append(option);
+				}
+				div.append(select);
+				$("#addForm").append(div);
+				
+				$("#addLdModal").modal();
+			}
+			
+			function saveNewLd(){
+				var ld = {
+					"name":$("#inputLdName").val(),
+					"description":$("#inputLdDescription").val(),
+					"link": $("#inputLdLink").val(),
+					//"liLevel":$("#inputLdLiLevel").val()
+					"liLevel":$("#inputLdLiLevel option:selected").attr("value")
+				}
+				console.log($("#inputLdLiLevel option:selected").attr("value"));
+				ldsList.push(ld);
+				
+				updateBCNwithLds(ldsList, function() {
+					renderLds();
+					$('#addLdModal').modal("hide");
+					$("#saveLdButton").button("reset");
+				});
+				
+			}
+			
+			function renderAllBCNs(){
+
+				/* Sort according priority index and name */
+
+				bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+				});
+
+				$("#bcns").empty();
+				for(var i = 0; i < bcnsList.length; i++){
+					renderBCN(bcnsList[i]);
+				}
+			}
+			
+			function changeTabs(li) {
+			//switch to learning document tab
+				if( $('#ovTab').hasClass('active') ) {
+				
+					$('#ovTab').removeClass('active');
+					$('#ovTab').addClass('hidden');
+					
+					$('#ldNav').addClass('active');
+					$('#ldNav').removeClass('hidden');
+					
+					$('#ldTab').removeClass('hidden');
+					$('#ldTab').addClass('active');
+					$("#ovNav").css("cursor","pointer");
+					$('#ovNav').text("");
+					$('#ovNav').append('<a id="ovHighlight">Choose the goal</a>');
+					if( liGlobal != null) {
+						$('#ldNav').html('Learning Documents for  "'+bcnGlobal.name +'" and Learning Indicator "<span id="curLi">' + liGlobal.name + '"</span>');
+					} else {
+						$('#ldNav').html('Learning Documents for "'+bcnGlobal.name+'"');
+					}		
+			//switch to overview
+				} else if( $('#ldTab').hasClass('active') ) {
+				
+					$('#ldNav').removeClass('active');
+					$('#ldNav').addClass('hidden');
+					
+					$('#ldTab').removeClass('active');
+					$('#ldTab').addClass('hidden');
+					
+					$('#ovTab').removeClass('hidden');
+					$('#ovTab').addClass('active');
+					
+					$('#ovHighlight').remove();
+					$('#ovNav').append('Choose the goal');
+					$("#ovNav").css("cursor","default");
+				}
+			}
+			
+			function renderLdWithLi(i) {
+				
+				$("#lds").empty();
+				
+				ldsList = bcnGlobal.learningDocuments;
+				liGlobal = bcnGlobal.learningIndicators[i];
+				
+				renderLds();
+				changeTabs();
+				
+			}
+			
+			function updateBCNwithLds(lds, callback) {
+				var newBCN = {
+					"uri": bcnGlobal.uri,
+					"name":bcnGlobal.name,
+					"description":bcnGlobal.description,
+					"learningIndicators":bcnGlobal.learningIndicators,
+					"learningDocuments":lds
+				}
+				updateBCN(newBCN, callback);
+			
+			}
+			
+			function renderBCN(bcn) {
+				var treeTemplate = "<div class='tree'>" +
+										"<ul>" +
+										"</ul>" +
+									"</div>";
+				var nodeTemplate = 	"<li>" +
+										"<span><span class='glyphicon #{icon}'></span>#{nodeName}</span>" +
+									"</li>";
+
+				var $tree = $(treeTemplate);
+				var $bcnNode = $(nodeTemplate.replace(/#{nodeName}/g, bcn.name).replace(/#{icon}/g, "glyphicon-star"));
+				$bcnNode.append("<ul></ul>");
+
+				for(var i = 0; i < bcn.learningIndicators.length; i++){
+					var li = bcn.learningIndicators[i];
+					var $liNode = $(nodeTemplate.replace(/#{nodeName}/g, li.name).replace(/#{icon}/g, "glyphicon-flag"));
+					$liNode.append("<ul></ul>");
+					//Add special nodel which lets you add new documents
+					var $newDocumentNode = $(nodeTemplate.replace(/#{nodeName}/g, "Add new document").replace(/#{icon}/g, "glyphicon-plus"));
+					$liNode.find("ul").append($newDocumentNode);
+					$bcnNode.find(">ul").append($liNode);
+				}
+
+				$tree.find("ul").append($bcnNode);
+				$("#bcns").append($tree);
+				$tree.tree();
+			}
+			
+			
+			function renderLd(i) {
+				
+				var ld = ldsList[i];
+				
+				//Each LD is an entry in the table
+				var tableRow=$('<tr></tr>');
+				var col = $('<td class="ldFirstCol" style="cursor:pointer;"><span class="caret"></span>&nbsp;<span>' + ld.name + '</span></td>');
+				col.click(function() { $(this).parent("tr").next().toggle("normal"); });					
+				tableRow.append(col);										
+				
+				col = $("<td align='center'></td>").append('<span></span>');
+				var showLDBtn = $('<button type="button" class="btn btn-default btn-show-ld" title="'+ ld.link +'">Show document</button>');
+				showLDBtn.click(function() { window.open( $(this).attr('title') ); });
+				col.append(showLDBtn);
+				tableRow.append(col);
+				
+				$("#lds").append(tableRow);
+				
+				var btnGroup = $('<div class="btn-group"></div');
+				
+				//show an update Button
+				var updateButton = $('<button class="btn btn-default update-ld-btn"><span class="glyphicon glyphicon-edit"></span></button>');
+				updateButton.attr("name", "update_ld");
+				updateButton.click(function() {
+					ldGlobal = i;
+					showUpdateModal();
+				});
+				//show a delete Button
+				var deleteButton = $('<button class="btn btn-default delete-ld-btn"><span class="glyphicon glyphicon-trash"></span></button>');
+				deleteButton.attr("name", "delete_ld");
+				deleteButton.click(function() {
+					$('#deleteAlertText').val(i);
+					$('#deleteAlertText').text('Do you really want to delete ' + ldsList[i].name + ' ?');
+					$('#deleteAlertModal').modal();
+					
+				});
+				
+				btnGroup.append(updateButton);
+				btnGroup.append(deleteButton);
+				tableRow.append($("<td align='center'></td>").append(btnGroup));
+					// Every learning documents has one extra hidden row for the description
+				var descriptionRow = $('<tr style="display:none;"></tr>');
+				LDdescription = $('<td colspan="3"><span style="font-size:small">' + ld.description + '</span></td>');
+				descriptionRow.append(LDdescription);
+				$("#lds").append(descriptionRow);
+				// Add tooltips for buttons in the btn-group
+				var ldTooltip1 = {};
+				ldTooltip1.title = "View/Edit";
+				ldTooltip1.container = "body";
+				$(".update-ld-btn").tooltip(ldTooltip1);
+				var ldTooltip2 = {};
+				ldTooltip2.title = "Delete";
+				ldTooltip2.container = "body";
+				$(".delete-ld-btn").tooltip(ldTooltip2);
+
+				var ldTooltip3 = {};
+				ldTooltip3.title = "Show/Hide description";
+				ldTooltip3.container = "body";
+				$(".ldFirstCol").tooltip(ldTooltip3);
+			}
+
+			function showLdTab() {
+				
+				liGlobal = null;
+				
+				ldsList = bcnGlobal.learningDocuments;
+				if (ldsList === null) {
+					return;
+				}
+				renderLds();
+				changeTabs();
+			}
+			
+			function showUpdateModal() {
+				$('#inputLdLiLevelDiv').remove();
+				var ld = ldsList[ldGlobal];
+				
+				var div = $('<div id="inputLdLiLevelDiv" class="form-group"></div>');			
+				var liLabel = $('<label for="inputLdLiLevel" id="labelLdLiLevel">Learning Indicator:</label>');
+				div.append(liLabel);
+				
+				var select = $('<select id="inputLdLiLevelUpdate" style="border:1px solid #D3D3D3; background-color:#FFFFFF; margin-left:5px;"></select>');
+				var liList = bcnGlobal.learningIndicators;
+				for(i = 0; i< liList.length; i++) {
+					if(ld.liLevel == liGlobal) {
+						var option = $('<option selected value="'+liList[i].id+'"> '+liList[i].name+'</option>');
+					} else {
+						var option = $('<option value="'+liList[i].id+'">'+liList[i].name+'</option>');
+					}
+					select.append(option);
+				}
+				div.append(select);
+				$("#updateForm").append(div);
+				
+				
+				$("#inputLdLiLevelUpdate").val(ld.liLevel);	
+				
+				$("#inputLdNameUpdate").val(ld.name);
+				$("#inputLdDescriptionUpdate").val(ld.description);
+				$("#inputLdLinkUpdate").val(ld.link);
+				
+				$("#updateLdModal").modal();
+			}
+			
+			function updateLd() {
+				var ld = {
+					"name":$("#inputLdNameUpdate").val(),
+					"description":$("#inputLdDescriptionUpdate").val(),
+					"link": $("#inputLdLinkUpdate").val(),
+					//"liLevel":$("#inputLdLiLevelUpdate").val()
+					"liLevel":($("#inputLdLiLevelUpdate option:selected").attr("value"))
+				}
+				ldsList[ldGlobal] = ld;
+			
+				updateBCNwithLds(ldsList, function() {
+					renderLds();
+					$('#updateLdModal').modal("hide");
+					$("#updateLdButton").button("reset");
+				});
+			}
+			
+			function renderLds() {
+				$("#lds").empty();
+				if(liGlobal != null) {
+							
+					for(j = 0; j < ldsList.length; j++) {
+						if(ldsList[j].liLevel == liGlobal.id) {
+							renderLd(j);
+						}
+					}	
+				} else {
+					for(i=0; i<ldsList.length; i++) {
+						renderLd(i);
+					}
+				}
+			}
+			
+			
+		</script>
+			
+		<!-- HTML Block -->
+		<div style="overflow-y: scroll; height:400px;">
+		<div class ="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title"><span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span> Your Learning Documents</h3>
+			</div>
+		
+			<div id ="panel" class="panel-body">
+			<div id="bcns">
+			</div> 
+		</div>
+		</div>
+		</div>
+		
+		<div class="modal fade" id="addLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Add a new Learning Document</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form id="addForm" role="form">
+								<div class="form-group">
+									<label for="inputLdName">Name</label>
+									<input type="text" class="form-control" id="inputLdName" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputLdDescription">Description</label>
+									<textarea style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="inputLdLink"">Link</label>
+									<input type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
+			 					</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-loading-text="Saving..." id="saveLdButton" class="btn btn-primary">Save</button>
+  					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		<div class="modal fade" id="updateLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Update a Learning Document</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form id="updateForm" role="form">
+								<div class="form-group">
+									<label for="inputLdNameUpdate">Name</label>
+									<input type="text" class="form-control" id="inputLdNameUpdate" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputLdDescriptionUpdate">Description</label>
+									<textarea style="resize:none;" class="form-control" id="inputLdDescriptionUpdate" placeholder="Enter description"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="inputLdLinkUpdate"">Link</label>
+									<input type="text" class="form-control" id="inputLdLinkUpdate" placeholder="Enter url">
+			 					</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-loading-text="Saving..." id="updateLdButton" class="btn btn-primary">Save</button>
+  					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-body">
+						<div class="alert alert-danger fade in" id="alertInModal">
+							<h4 value="" id="deleteAlertText">Do you really want to delete this Learning Document?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				       <button type="button" data-loading-text="Deleting..." id="confirmDeleteButton" class="btn btn-danger">Delete</button>
+						</div>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		
+	]]>
+  </Content>
+</Module>

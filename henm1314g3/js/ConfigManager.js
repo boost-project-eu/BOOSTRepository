@@ -48,24 +48,5 @@ function updateConfig(config, callback){
 
 
 function retrieveConfig(space, callback){
-	space.getSubResources({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:config",
-		onAll: function(config) {	
-
-					if (config.length == 0) {
-						config = new Config({}); 
-						config.create(function(){
-							callback(config);
-						});
-						
-					} else {
-						
-					config[0].getRepresentation("rdfjson", function(configObject){
-						callback(configObject);
-					});
-				}
-			}
-	});
-
+	retrieveBoostResources("my:ns:config", function(object){return new Config(object)}, callback);
 }

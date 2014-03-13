@@ -142,30 +142,5 @@ function deleteBCN(bcn, callback){
 }
 
 function retrieveAllBcns(space, callback){
-	space.getSubResources({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:bcn",
-		onAll: function(bcns) {
-					/*
-						Be careful here. The getRepresentation(...) function runs
-						asynchronously. This means that the whole for loop is finished
-						before even one BCN has been added to the array. To get informed
-						when the array is finished I used this callback mechanism in the
-						if block. 
-					*/
-					var bcnsList = [];
-					if(bcns.length == bcnsList.length)
-							callback(bcnsList);
-					for(var i = 0; i < bcns.length; i++){
-						bcns[i].getRepresentation("rdfjson", function(bcnObject){
-						bcnsList.push(new BCN(bcnObject));
-						if(bcns.length == bcnsList.length){
-							callback(bcnsList);
-
-						}
-						
-						});
-					}
-				}
-	});
+	retrieveBoostResources("my:ns:bcn", function(object){return new BCN(object)}, callback);
 }
