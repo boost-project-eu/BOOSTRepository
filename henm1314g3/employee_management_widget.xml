@@ -522,51 +522,155 @@
 							"style='width:200px;'" +
 						"></div>";
 
+					var labelTemplate = '<span style="margin-right:#{leftMargin};"> #{nameLevel} level: </span>';
+
+					var dropdownTemplate = 
+						'<div class="btn-group">' +
+						  '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">' +
+    						'Undefined <span class="caret"></span></button>' +
+						  '<ul class="dropdown-menu #{dropdownId}" role="menu">' +
+						  		'<li><a data-learningLevel="1" href="#">1</a></li>' +
+					            '<li><a data-learningLevel="2" href="#">2</a></li>' +
+					           	'<li><a data-learningLevel="3" href="#">3</a></li>' +
+					           	'<li><a data-learningLevel="4" href="#">4</a></li>' +						
+					           	'<li><a data-learningLevel="5" href="#">5</a></li>' +
+						  '</ul>' +
+						'</div>';
+
+					var div = '<div style="margin-top:15px;"></div>';
+	
+			
 					var bcn = bcnList[i];
 
 					var entry = $(bcnTemplate.replace(/#{bcnName}/g, bcn.name).replace(/#{id}/g, i));
 					entry.find(".relevance-checkbox").data("bcnUri", bcn.uri);
+
+
 					if(employee.learningLevels[bcn.uri].isRelevant)
 						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star");
 					else
 						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star-empty");
+
 					for(var j = 0; j < bcn.learningIndicators.length; j++){
 						var li = bcn.learningIndicators[j];
 						var liEntry = $(LITemplate.replace(/#{LI}/g, li.name));
+	
+						var startLabel = $(labelTemplate.replace(/#{nameLevel}/g, "Start").replace(/#{leftMargin}/g,"20px"));
+						var startDropdown = $(dropdownTemplate.replace(/#{dropdownId}/g, "startDropdown"));
+
+						var currentLabel = $(labelTemplate.replace(/#{nameLevel}/g, "Current").replace(/#{leftMargin}/g,"2px"));
+						var currentDropdown = $(dropdownTemplate.replace(/#{dropdownId}/g, "currentDropdown"));
+
+						var endLabel = $(labelTemplate.replace(/#{nameLevel}/g, "End").replace(/#{leftMargin}/g,"25px"));
+						var endDropdown = $(dropdownTemplate.replace(/#{dropdownId}/g, "endDropdown"));
+
+				
 						entry.find("#LIList"+i).append(liEntry);
+
+						//saving bcn and li links
 						
-						var slider = $(sliderTemplate.replace(/#{li}/g, j));
-						slider.data("bcnUri", bcn.uri);
-						slider.data("liId", li.id);
-						liEntry.append(slider);
-						var initialValues = [];
-						initialValues.push(employee.learningLevels[bcn.uri][li.id].start);
-						initialValues.push(employee.learningLevels[bcn.uri][li.id].end);
-						slider.data("start", initialValues[0]);
-						slider.data("end", initialValues[1]);
-						slider.slider({
-							max:llevel.length-1,
-							value:initialValues,
-							formater:function(val){
-								return llevel[val];
-							}
-						}).on("slideStop", function(env){
-							var values = env.value;
-							$(this).data("start", values[0]);
-							$(this).data("end", values[1]);
-						});
+				
+						currentDropdown.find(">ul").data("bcnUri", bcn.uri);
+
+						currentDropdown.find(">ul").data("liID", li.id);
+
+						startDropdown.find(">ul").data("bcnUri", bcn.uri);
+
+						startDropdown.find(">ul").data("liID", li.id);
+
+						endDropdown.find(">ul").data("bcnUri", bcn.uri);
+
+						endDropdown.find(">ul").data("liID", li.id);
+
+
+						//adding elements to the modal
+						
+						liEntry.append(startLabel).append(startDropdown).append(div);
+
+						liEntry.append(currentLabel).append(currentDropdown).append(div);
+						
+						liEntry.append(endLabel).append(endDropdown).append(div);
+
+
+						//showing saved values in the dropdowns
+
+						currentDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
+
+						currentDropdown.find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
+
+						currentDropdown.find(".btn").append('<span class="caret"></span>');
+
+
+						startDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
+
+						startDropdown.find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
+
+						startDropdown.find(".btn").append('<span class="caret"></span>');
+
+
+
+						endDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
+
+						endDropdown.find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
+
+						endDropdown.find(".btn").append('<span class="caret"></span>');
+				
+
+					//	var slider = $(sliderTemplate.replace(/#{li}/g, j));
+					//	slider.data("bcnUri", bcn.uri);
+					//	slider.data("liId", li.id);
+					//	liEntry.append(slider);
+						
+
+					//	var initialValues = [];
+					//	initialValues.push(employee.learningLevels[bcn.uri][li.id].start);
+					//	initialValues.push(employee.learningLevels[bcn.uri][li.id].end);
+					//	slider.data("start", initialValues[0]);
+					//	slider.data("end", initialValues[1]);
+					//	slider.slider({
+					//		max:llevel.length-1,
+					//		value:initialValues,
+					//		formater:function(val){
+					//			return llevel[val];
+					//		}
+					//	}).on("slideStop", function(env){
+					//		var values = env.value;
+					//		$(this).data("start", values[0]);
+					//		$(this).data("end", values[1]);
+					//	});
 
 						
 						 
 					}
+
 					$("#bcnPanel").append(entry);
 				}
+
 				$("#updateLearningLevelsButton").off().click(function(){
-					$(".mySlider").each(function(){
-						//alert(JSON.stringify($(this)));
-						employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].start = $(this).data("start");
-						employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].end = $(this).data("end");
+					$(".currentDropdown").each(function(){
+					    employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
+						console.log("Current level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current);
+
 					});
+
+					 $(".startDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
+					 	console.log("Start level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start);
+
+					 });
+
+					 $(".endDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
+					 	console.log("End level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end);
+
+					 });
+
+					//$(".mySlider").each(function(){
+						
+					//	employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].start = $(this).data("start");
+
+					//	employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].end = $(this).data("end");
+					//});
 					$(".relevance-checkbox").each(function(){
 						var bcnUri = $(this).data("bcnUri");
 						employee.learningLevels[bcnUri].isRelevant = $(this).prop("checked");
@@ -594,6 +698,46 @@
 				$("#setLIModal").find(".relevance-checkbox").each(function(){
 					$(this).prop("checked", employee.learningLevels[$(this).data("bcnUri")].isRelevant);
 				});	
+
+				$(".currentDropdown li a").click(function(){
+
+       				
+       					$(this).parents(".btn-group").find(".btn").text($(this).text()+ ' ');
+       				
+       					$(this).parents(".btn-group").find(".btn").append('<span class="caret"></span>');
+       				
+     					$(this).parents("ul").data('currentLevel', $(this).attr('data-learningLevel'));
+     				
+     					console.log("CL: " + $(this).parents("ul").data('currentLevel'));
+
+   					 });
+
+				$(".startDropdown li a").click(function(){
+
+       				
+       					$(this).parents(".btn-group").find(".btn").text($(this).text()+ ' ');
+       				
+       					$(this).parents(".btn-group").find(".btn").append('<span class="caret"></span>');
+       				
+      					$(this).parents("ul").data('startLevel', $(this).attr('data-learningLevel'));
+     				
+     					console.log("SL: " + $(this).parents("ul").data('startLevel'));
+
+   		 			 });
+
+
+				$(".endDropdown li a").click(function(){
+
+       				
+       					$(this).parents(".btn-group").find(".btn").text($(this).text()+ ' ');
+       				
+       					$(this).parents(".btn-group").find(".btn").append('<span class="caret"></span>');
+       				
+      					$(this).parents("ul").data('endLevel', $(this).attr('data-learningLevel'));
+     				
+     					console.log("EL: " + $(this).parents("ul").data('endLevel'));
+
+   					 });
 			}
 
 			function addEmployee(employee){
