@@ -517,10 +517,10 @@
 							"<h4><span class='glyphicon glyphicon-flag' style='margin-right:5px;'></span> #{LI} </h4>" + 
 						"</li>";
 
-					var sliderTemplate = 
-						"<div class='slider mySlider' id='slider#{li}'" + 
-							"style='width:200px;'" +
-						"></div>";
+				//	var sliderTemplate = 
+				//		"<div class='slider mySlider' id='slider#{li}'" + 
+				//			"style='width:200px;'" +
+				//		"></div>";
 
 					var labelTemplate = '<span style="margin-right:#{leftMargin};"> #{nameLevel} level: </span>';
 
@@ -537,7 +537,7 @@
 						  '</ul>' +
 						'</div>';
 
-					var div = '<div style="margin-top:15px;"></div>';
+					
 	
 			
 					var bcn = bcnList[i];
@@ -552,6 +552,7 @@
 						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star-empty");
 
 					for(var j = 0; j < bcn.learningIndicators.length; j++){
+
 						var li = bcn.learningIndicators[j];
 						var liEntry = $(LITemplate.replace(/#{LI}/g, li.name));
 	
@@ -567,53 +568,78 @@
 				
 						entry.find("#LIList"+i).append(liEntry);
 
+						var allDropdowns = [startDropdown, currentDropdown, endDropdown];
+						var allLabels = [startLabel, currentLabel, endLabel];
+						var div = '<div style="margin-top:15px;"></div>';
+						var caret = '<span class="caret"></span>';
+
+						for (var temp = 0; temp < allDropdowns.length; temp++){
+
+								allDropdowns[temp].find(">ul").data("bcnUri", bcn.uri);
+								allDropdowns[temp].find(">ul").data("liID", li.id);
+								liEntry.append(allLabels[temp]).append(allDropdowns[temp]);
+								liEntry.append(div);
+								if (allDropdowns[temp] == currentDropdown) {
+										allDropdowns[temp].find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
+										allDropdowns[temp].find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
+								} else if (allDropdowns[temp] == startDropdown) {
+										allDropdowns[temp].find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
+										allDropdowns[temp].find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
+								} else {
+										allDropdowns[temp].find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
+										allDropdowns[temp].find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
+								}
+
+								allDropdowns[temp].find(".btn").append(caret);
+
+							}
 						//saving bcn and li links
 						
 				
-						currentDropdown.find(">ul").data("bcnUri", bcn.uri);
+						// currentDropdown.find(">ul").data("bcnUri", bcn.uri);
 
-						currentDropdown.find(">ul").data("liID", li.id);
+						// currentDropdown.find(">ul").data("liID", li.id);
 
-						startDropdown.find(">ul").data("bcnUri", bcn.uri);
+						// startDropdown.find(">ul").data("bcnUri", bcn.uri);
 
-						startDropdown.find(">ul").data("liID", li.id);
+						// startDropdown.find(">ul").data("liID", li.id);
 
-						endDropdown.find(">ul").data("bcnUri", bcn.uri);
+						// endDropdown.find(">ul").data("bcnUri", bcn.uri);
 
-						endDropdown.find(">ul").data("liID", li.id);
+						// endDropdown.find(">ul").data("liID", li.id);
 
 
 						//adding elements to the modal
 						
-						liEntry.append(startLabel).append(startDropdown).append(div);
+						// liEntry.append(startLabel).append(startDropdown).append(div);
 
-						liEntry.append(currentLabel).append(currentDropdown).append(div);
+						// liEntry.append(currentLabel).append(currentDropdown).append(div);
 						
-						liEntry.append(endLabel).append(endDropdown).append(div);
+						// liEntry.append(endLabel).append(endDropdown).append(div);
 
 
 						//showing saved values in the dropdowns
 
-						currentDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
+					//	currentDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
 
-						currentDropdown.find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
+					//	currentDropdown.find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
 
-						currentDropdown.find(".btn").append('<span class="caret"></span>');
-
-
-						startDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
-
-						startDropdown.find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
-
-						startDropdown.find(".btn").append('<span class="caret"></span>');
+					//	currentDropdown.find(".btn").append('<span class="caret"></span>');
 
 
+					//	startDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
 
-						endDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
+					//	startDropdown.find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
 
-						endDropdown.find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
+					//	startDropdown.find(".btn").append('<span class="caret"></span>');
 
-						endDropdown.find(".btn").append('<span class="caret"></span>');
+
+
+						// endDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
+
+						// endDropdown.find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
+
+						// endDropdown.find(".btn").append('<span class="caret"></span>');
 				
 
 					//	var slider = $(sliderTemplate.replace(/#{li}/g, j));
@@ -647,23 +673,37 @@
 				}
 
 				$("#updateLearningLevelsButton").off().click(function(){
-					$(".currentDropdown").each(function(){
-					    employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
-						console.log("Current level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current);
 
+					for (var temp = 0; temp < allDropdowns.length; temp++){
+						allDropdowns[temp].each(function(){
+							if (allDropdowns[temp] == currentDropdown) {
+									employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
+								} else if (allDropdowns[temp] == startDropdown) {
+										employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
+									} else {
+ 											employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
+										}
+							}
+						});
 					});
 
-					 $(".startDropdown").each(function(){
-					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
-					 	console.log("Start level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start);
+					// $(".currentDropdown").each(function(){
+					//     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
+					// //	console.log("Current level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current);
 
-					 });
+					// });
 
-					 $(".endDropdown").each(function(){
-					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
-					 	console.log("End level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end);
+					//  $(".startDropdown").each(function(){
+					//      employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
+					//  //	console.log("Start level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start);
 
-					 });
+					//  });
+
+					//  $(".endDropdown").each(function(){
+					//      employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
+					//  //	console.log("End level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end);
+
+					//  });
 
 					//$(".mySlider").each(function(){
 						
