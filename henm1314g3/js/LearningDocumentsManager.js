@@ -14,6 +14,11 @@ function LearningDocument(object){
 	else
 		this.liId = "";
 
+	if(object.hasOwnProperty("type"))
+		this.type = object.type;
+	else
+		this.type = "";
+
 	if(object.hasOwnProperty("name"))
 		this.name = object.name;
 	else
@@ -23,6 +28,11 @@ function LearningDocument(object){
 		this.description = object.description;
 	else
 		this.description = "No description available.";
+
+	if(object.hasOwnProperty("url"))
+		this.url = object.url;
+	else
+		this.url = "";
 
 	if(object.hasOwnProperty("contentSpecificData"))
 		this.contentSpecificData = object.contentSpecificData;
@@ -61,5 +71,5 @@ LearningDocument.prototype.delete = function(callback){
 }
 
 function retrieveAllLearningDocuments(callback){
-	retrieveBoostResources("my:ns:LearningDocument", function(object){return new LearningDocument(object)}, callback);
+	retrieveBoostResources("my:ns:learningDocument", function(object){return new LearningDocument(object)}, callback);
 }

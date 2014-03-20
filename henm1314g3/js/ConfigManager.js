@@ -48,5 +48,15 @@ function updateConfig(config, callback){
 
 
 function retrieveConfig(space, callback){
-	retrieveBoostResources("my:ns:config", function(object){return new Config(object)}, callback);
+	retrieveBoostResources("my:ns:config", function(object){return new Config(object)}, function(config){
+		if(config.length == 0){
+			var defaultConfig = new Config({});
+			defaultConfig.create(function(){
+				callback(defaultConfig);
+			});
+		}
+		else{
+			callback(config[0]);
+		}
+	});
 }
