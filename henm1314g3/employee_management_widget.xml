@@ -688,37 +688,22 @@
 
 				$("#updateLearningLevelsButton").off().click(function(){
 
-					for (var temp = 0; temp < allDropdowns.length; temp++){
+					 $(".currentDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
+						console.log("Current level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current);
+					 });
 
-						$(".dropdown-menu").each(function(){
+					 $(".startDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
+					 	console.log("Start level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start);
 
-							if (allDropdowns[temp] == currentDropdown) {
-									employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
-								} else if (allDropdowns[temp] == startDropdown) {
-										employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
-									} else {
- 											employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
-										}
-							});
-					};
+					 });
 
-					// $(".currentDropdown").each(function(){
-					//     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
-					// //	console.log("Current level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current);
+					 $(".endDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
+					 	console.log("End level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end);
 
-					// });
-
-					//  $(".startDropdown").each(function(){
-					//      employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
-					//  //	console.log("Start level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start);
-
-					//  });
-
-					//  $(".endDropdown").each(function(){
-					//      employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
-					//  //	console.log("End level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end);
-
-					//  });
+					 });
 
 					//$(".mySlider").each(function(){
 						
