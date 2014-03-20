@@ -6,6 +6,7 @@
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400"
+		width="600"
 		>
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
@@ -42,8 +43,10 @@
 		<!-- JavaScript Block -->
 		<script>
 
-			var color1 = '#428BCA';
-			var color2 = '#f5f5f5';
+			var colorStart = '#808080'; 	//start
+			var colorEnd = '#f5f5f5';		//end
+			var colorCurrent = '#428BCA';		//current
+
 			var iwcClient;
 			var employees;
 			var bcns;
@@ -64,6 +67,7 @@
 				space = new openapp.oo.Resource(openapp.param.space());
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
+
 				retrieveAllBcns(space, function(bcnsList){
 					bcns=bcnsList;
 					bcns.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
@@ -256,18 +260,25 @@
 				var liStartListAvg=[];
 				var liCurrentListAvg=[];
 				var liEndListAvg=[];
+
 				for(var j = 0; j<bcn.learningIndicators.length; j++){
+
 					var liStartList=[];
 					var liCurrentList=[];
 					var liEndList=[];
 					var cont=0;
 					var li = bcn.learningIndicators[j];
+
 					liNameList.push(li.name);
+
 					for(i=0; i<employees.length; i++){
+
 						var employee = employees[i];
+
 						var start = employee.learningLevels[bcn.uri][li.id].start;
 						var current = employee.learningLevels[bcn.uri][li.id].current;
-						var end = employee.learningLevels[bcn.uri][li.id].end;	
+						var end = employee.learningLevels[bcn.uri][li.id].end;
+
 						if (employee.learningLevels[bcn.uri].isRelevant){
 							liStartList.push(start);
 							liCurrentList.push(current);
@@ -276,9 +287,10 @@
 						}
 					}
 					if (cont>0){
-						var sumStart = liStartList.reduce(function(a, b) { return a + b });
-						var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-						var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+						var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+						var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+						var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
+
 						liStartListAvg.push(sumStart / liStartList.length);
 						liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 						liEndListAvg.push(sumEnd / liEndList.length);
@@ -290,20 +302,26 @@
 					}
 				}
 				var solution=[];
-				solution[0]=[];
-				solution[1]=[];
+				solution[0]=[]; //value with liEndListAvg
+				solution[1]=[];	//value with liStartListAvg
+				solution[2]=[]; //value with liCurrentListAvg
+
 				for (var i=0; i<liStartListAvg.length; i++){
 					solution[0][i]= [liNameList[i], liEndListAvg[i]];
 					solution[1][i] = [liNameList[i], liStartListAvg[i]];
+					solution[2][i] = [liNameList[i], liCurrentListAvg[i]];
+					
 				}
 				return solution;
 			}
 			
 			function averageBcnProgressForEmployee(employee){
 				var liNameList=[];
+
 				var liStartListAvg=[];
 				var liCurrentListAvg=[];
 				var liEndListAvg=[];
+
 				for(i=0; i<bcns.length; i++){
 					var bcn = bcns[i];
 					var liStartList=[];
@@ -312,9 +330,14 @@
 					var cont=0;
 					for(var j = 0; j<bcn.learningIndicators.length; j++){
 						var li = bcn.learningIndicators[j];
+
 						var start = employee.learningLevels[bcn.uri][li.id].start;
 						var current = employee.learningLevels[bcn.uri][li.id].current;
 						var end = employee.learningLevels[bcn.uri][li.id].end;
+
+						console.log("Average progress for employee");
+						console.log("Start:" + start, "Current:" + current, "End:" + end);
+
 						if (employee.learningLevels[bcn.uri].isRelevant){
 							liStartList.push(start);
 							liCurrentList.push(current);
@@ -325,9 +348,13 @@
 					
 					if (cont>0){
 						liNameList.push(bcn.name);
-						var sumStart = liStartList.reduce(function(a, b) { return a + b });
-						var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-						var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+						var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+						console.log("SumStart: " + sumStart);
+						var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+						console.log("SumCurrent: " + sumCurrent);
+						var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
+						console.log("SumEnd: " + sumEnd);
+
 						liStartListAvg.push(sumStart / liStartList.length);
 						liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 						liEndListAvg.push(sumEnd / liEndList.length);
@@ -336,9 +363,14 @@
 				var solution=[];
 				solution[0]=[];
 				solution[1]=[];
+				solution[2]=[];
+
 				for (var i=0; i<liStartListAvg.length; i++){
 					solution[0][i]= [liNameList[i], liEndListAvg[i]];
 					solution[1][i] = [liNameList[i], liStartListAvg[i]];
+					solution[2][i] = [liNameList[i], liCurrentListAvg[i]];
+					
+					
 				}
 				return solution;
 			}
@@ -347,20 +379,32 @@
 			
 			function printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg){
 				
-
+				//llevel is from EmployeeManager.js
 
 				var learningLevelsName = [];
 				for (var i=0; i<llevel.length; i++)
 					learningLevelsName.push(llevel[i]);
+
 				for (var i=0; i<liEndListAvg.length; i++){
-					liEndListAvg[i] = liEndListAvg[i]-liStartListAvg[i];
+					liEndListAvg[i] = liEndListAvg[i]-liCurrentListAvg[i];
 				}
+
+				 for (var i=0; i<liCurrentListAvg.length; i++) {
+				 	liCurrentListAvg[i] = liCurrentListAvg[i] - liStartListAvg[i];
+
+				}
+
 				for(var i = 0; i < liStartListAvg.length; i++){
-					liStartListAvg[i] = {y: liStartListAvg[i], color:color1};
+					liStartListAvg[i] = {y: liStartListAvg[i], color:colorStart};
 				}
 				for(var i = 0; i < liEndListAvg.length; i++){
-					liEndListAvg[i] = {y: liEndListAvg[i], color:color2};
+					liCurrentListAvg[i] = {y: liCurrentListAvg[i], color:colorCurrent};
 				}
+				for(var i = 0; i < liEndListAvg.length; i++){
+					liEndListAvg[i] = {y: liEndListAvg[i], color:colorEnd};
+				}
+				
+				
 				if (isOverview.bool){
 
 					// Initialized chart
@@ -401,7 +445,6 @@
 							labels:{
 								rotation: -25,
 								formatter: function() {
-
 										
 										return formater+this.value;
 								},
@@ -419,8 +462,13 @@
 							}
 						},
 
+
 						tooltip: {
-							enabled: false,
+							 formatter: function() {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                     			   this.series.name +': '+ this.y +'<br/>'+			//round?
+                     			   'Total: '+ this.point.stackTotal;
+                }
 						},
 						plotOptions: {
 							series: {
@@ -465,6 +513,11 @@
 
 						}, {
 							name: 'Current',
+							data: liCurrentListAvg,
+							uri: uriList,
+						}, {
+							
+							name: 'Start',
 							data: liStartListAvg,
 							uri: uriList,
 						}],
@@ -482,7 +535,7 @@
 							}
 						},
 						legend: {
-							enabled: false
+							 enabled:false
 						},
 
 						title: {
@@ -519,7 +572,11 @@
 							}
 						},
 						tooltip: {
-							enabled: false,
+							 formatter: function() {
+                    return '<b>'+ this.x +'</b><br/>'+
+                        this.series.name +': '+ this.y +'<br/>'+
+                        'Total: '+ this.point.stackTotal;
+                }
 						},
 						plotOptions: {
 							series: {
@@ -554,15 +611,18 @@
 							data: liEndListAvg,
 						}, {
 							name: 'Current',
+							data: liCurrentListAvg,
+							
+						}, {
+							name: 'Start',
 							data: liStartListAvg,
 						}],
-							name: 'Initial',
-							data: [],
 					});
 				}
 			}
 			
 			function showDefaultGraph(){
+
 				isOverviewGraph.bool=true;
 				isEmployeeOverviewGraph.bool=false;
 				isBcnGraph.bool=false;
@@ -573,48 +633,57 @@
 				var liCurrentListAvgTotal=[];
 				var liEndListAvgTotal=[];
 				
-				var liNameList=[];
-			//	var liPriorityList=[];
-			
+				var liNameList=[];	
 				for(var i=0; i<bcns.length; i++){
 					var liStartListAvg=[];
 					var liCurrentListAvg=[];
 					var liEndListAvg=[];
 					var bcn = bcns[i];
 					liNameList.push(bcn.name);
-			//		liPriorityList.push(bcn.priority);
-			
+					var cont=0;
 
 					for(var j = 0; j<bcn.learningIndicators.length; j++){
+
 						var liStartList=[];
 						var liCurrentList=[];
 						var liEndList=[];
+
 						var li = bcn.learningIndicators[j];
-						var cont=0;
+					//	var cont=0;
+
 						for (var k = 0; k<employees.length; k++){
 							var employee = employees[k];
 							var start = employee.learningLevels[bcn.uri][li.id].start;
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
+
+							console.log("Overall bcns progress:");
+							console.log("Start:" + start, "Current:" + current, "End:" + end);
+
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								liStartList.push(start);
 								liCurrentList.push(current);
 								liEndList.push(end);
 								cont++;
+							
 							}
 						}
 						if (cont>0){
-							var sumStart = liStartList.reduce(function(a, b) { return a + b });
-							var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-							var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+							var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+							var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+							var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
 							liStartListAvg.push(sumStart / liStartList.length);
 							liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 							liEndListAvg.push(sumEnd / liEndList.length);
 						}
 					}
-					var sumStart = liStartListAvg.reduce(function(a, b) { return a + b });
-					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return a + b });
-					var sumEnd = liEndListAvg.reduce(function(a, b) { return a + b });
+					var sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
+					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
+					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
+
+					console.log("Overall average bcns progress:");
+					console.log("Average Start:" + sumStart, "Average Current:" + sumCurrent, "Average End:" + sumEnd);
+
 					liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 					liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
 					liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
@@ -629,6 +698,7 @@
 				var isOverview={};
 				isOverview.bool=true;
 				isOverview.isBcn=true;
+				//isOverview.isBcn=false;
 				isOverview.isEmployee=false;
 
 		
@@ -656,42 +726,58 @@
 				var liEndListAvgTotal=[];
 				
 				var liNameList=[];
+
 				for (var k = 0; k<employees.length; k++){
 					var liStartListAvg=[];
 					var liCurrentListAvg=[];
 					var liEndListAvg=[];
 					var employee = employees[k];
 					liNameList.push(employee.name);
+					
 					for(var i=0; i<bcns.length; i++){
+						console.log("bcns.length " + bcns.length);
+
 						var liStartList=[];
 						var liCurrentList=[];
 						var liEndList=[];
 						var bcn = bcns[i];
 						var cont=0;
+
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
+							console.log("bcns.learningIndicators " + bcn.learningIndicators.length);
+
 							var li = bcn.learningIndicators[j];
 							var start = employee.learningLevels[bcn.uri][li.id].start;
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
+
+							console.log("Overall employee progress:");
+							console.log("Start:" + start, "Current:" + current, "End:" + end);
+
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								liStartList.push(start);
+
 								liCurrentList.push(current);
 								liEndList.push(end);
 								cont++;
 							}
 						}
 						if (cont>0){
-							var sumStart = liStartList.reduce(function(a, b) { return a + b });
-							var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-							var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+							console.log("listartlist " + liStartList);
+							var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+							var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+							var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
+							console.log("sumStart " + sumStart);
+							console.log("Li-start.list.length " + liStartList.length);
+
 							liStartListAvg.push(sumStart / liStartList.length);
 							liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 							liEndListAvg.push(sumEnd / liEndList.length);
 						}
 					}
-					var sumStart = liStartListAvg.reduce(function(a, b) { return a + b });
-					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return a + b });
-					var sumEnd = liEndListAvg.reduce(function(a, b) { return a + b });
+					var sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
+					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
+					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 					liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 					liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
 					liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
@@ -703,7 +789,7 @@
 				var subtitle = 'How close your employees are to accomplish your goals';
 				var isOverview={};
 				isOverview.bool=true;
-				isOverview.isBcn=false;
+				isOverview.isBcn=true;
 				isOverview.isEmployee=false;
 				var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
 
@@ -711,6 +797,9 @@
 			}
 			
 			function showBcnGraph(bcnUri){
+
+
+
 				isBcnGraph.bool=true;
 				isOverviewGraph.bool=false;
 				isEmployeeOverviewGraph.bool=false;
@@ -724,13 +813,19 @@
 
 				}
 				var data = averageLIProgressForBcn(bcn);
+
+			//	console.log(data);
+				
 				var liEndListAvg=[];
 				var liCurrentListAvg=[];
 				var liStartListAvg=[];
 				var liNameList=[];
 				for (var i=0; i<data[0].length; i++){
+
 					liEndListAvg[i]=data[0][i][1];
 					liStartListAvg[i]=data[1][i][1];
+					liCurrentListAvg[i]=data[2][i][1];
+					
 					liNameList[i]=data[0][i][0];
 				}
  
@@ -773,6 +868,8 @@
 				for (var i=0; i<data[0].length; i++){
 					liEndListAvg[i]=data[0][i][1];
 					liStartListAvg[i]=data[1][i][1];
+					liCurrentListAvg[i]=data[2][i][1];
+					
 					liNameList[i]=data[0][i][0];
 				}
 				var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
@@ -852,9 +949,8 @@
 
 		  	</div>
 		  	<div class="panel-body">
-				<div id="container" style=" height: 350px; margin: 0 auto">	
-					
-			</div>
+				<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+				</div>
 			</div>
 		</div>
 		</div>
