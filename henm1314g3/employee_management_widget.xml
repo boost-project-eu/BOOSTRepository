@@ -42,6 +42,20 @@
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/slider.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 
+
+		<style>
+			.dropdown-menu{
+				max-height: 80px;
+    			overflow-y: auto;
+			}
+
+			.endDropdown  {
+				position: relative;
+   				 z-index: 5000;
+			}
+
+		</style>
+
 		<!-- JavaScript Block -->
 		<script>
 			
@@ -675,7 +689,9 @@
 				$("#updateLearningLevelsButton").off().click(function(){
 
 					for (var temp = 0; temp < allDropdowns.length; temp++){
-						allDropdowns[temp].each(function(){
+
+						$(".dropdown-menu").each(function(){
+
 							if (allDropdowns[temp] == currentDropdown) {
 									employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
 								} else if (allDropdowns[temp] == startDropdown) {
@@ -683,9 +699,8 @@
 									} else {
  											employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
 										}
-							}
-						});
-					});
+							});
+					};
 
 					// $(".currentDropdown").each(function(){
 					//     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
