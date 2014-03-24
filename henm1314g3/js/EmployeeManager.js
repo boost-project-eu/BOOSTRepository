@@ -3,8 +3,9 @@
 	llevel[0] = "0";
 	llevel[1] = "1";
 	llevel[2] = "2";
-	llevel[3] = "4";
-	llevel[4] = "5";
+	llevel[3] = "3";
+	llevel[4] = "4";
+	llevel[5] = "5";
 
 function deleteEmployee(employee, callback){
 	openapp.resource.del(employee.uri, function(){
