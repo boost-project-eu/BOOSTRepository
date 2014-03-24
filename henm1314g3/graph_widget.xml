@@ -335,8 +335,7 @@
 						var current = employee.learningLevels[bcn.uri][li.id].current;
 						var end = employee.learningLevels[bcn.uri][li.id].end;
 
-						console.log("Average progress for employee");
-						console.log("Start:" + start, "Current:" + current, "End:" + end);
+						
 
 						if (employee.learningLevels[bcn.uri].isRelevant){
 							liStartList.push(start);
@@ -349,11 +348,11 @@
 					if (cont>0){
 						liNameList.push(bcn.name);
 						var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
-						console.log("SumStart: " + sumStart);
+						
 						var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
-						console.log("SumCurrent: " + sumCurrent);
+						
 						var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
-						console.log("SumEnd: " + sumEnd);
+						
 
 						liStartListAvg.push(sumStart / liStartList.length);
 						liCurrentListAvg.push(sumCurrent / liCurrentList.length);
@@ -413,13 +412,16 @@
 						chart: {
 							type: 'column',
 							events: {
-								click: function () {
+								click: function (event) {
 									if (isOverviewGraph.bool){
 										showEmployeeOverviewGraph();
+										alert ('showEmployeeOverviewGraph');
 									}
-									if (isEmployeeOverviewGraph.bool){
+									else if (isEmployeeOverviewGraph.bool){
 										showDefaultGraph();
-									}
+										alert ('showDefaultGraph');
+									} 
+
 								}
 							}
 						},
@@ -445,8 +447,21 @@
 							labels:{
 								rotation: -25,
 								formatter: function() {
+										if (isOverviewGraph.bool) {
+										var $formater = $("formater");
+										for (var i=0; i<liNameList.length; i++){
+												
+													if (bcns[i].name==this.value){
+														
+														var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
+												
+														return pushpin[0].outerHTML+this.value;
+														
+													}}
+											 
+										} else return formater+this.value;
+
 										
-										return formater+this.value;
 								},
 								useHTML:true
 							}
@@ -466,8 +481,8 @@
 						tooltip: {
 							 formatter: function() {
                    				 return '<b>'+ this.x +'</b><br/>'+
-                     			   this.series.name +': '+ this.y +'<br/>'+			//round?
-                     			   'Total: '+ this.point.stackTotal;
+                     			   this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+			//round?
+                     			   'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
                 }
 						},
 						plotOptions: {
@@ -490,14 +505,17 @@
 											if (isOverview.isBcn){
 												for (var i=0; i<liNameList.length; i++){
 													if (bcns[i].name==liNameList[this.x]){
+
 														showBcnGraph(bcns[i].uri);
+														alert("Point: showBcnGraph");
 													}
 												}
 											}
-											else{
+											if(isOverview.isEmployee){
 												for (var i=0; i<liNameList.length; i++){
 													if (employees[i].name==liNameList[this.x]){
 														showEmployeeGraph(employees[i].uri);
+														alert("Point: showEmployeeGraph");
 													}
 												}
 											}
@@ -529,8 +547,24 @@
 						chart: {
 							type: 'column',
 							events: {
-								click: function () {
-									showDefaultGraph();
+
+								click: function (event) {
+									if (isBcnGraph.bool){
+										showDefaultGraph();
+										alert ('showDefaultGraph');
+									} else if (isEmployeeGraph.bool) {
+										showEmployeeOverviewGraph();
+										alert ('showEmployeeOverviewGraph');
+									} else if (isDetailedGraph.bool) {
+										var emplDataUri = $('#container').data('emplDataUri');
+										var bcnDataUri = $('#container').data('bcnDataUri');
+										showEmployeeGraph(emplDataUri);
+										alert ("Show Employee Graph");
+									}
+									
+						//			function (event) {
+						//			showDefaultGraph();
+						//			alert('showDefaultGraph');
 								}
 							}
 						},
@@ -556,7 +590,18 @@
 								rotation: -25,
 								formatter: function() {
 
-									return formater+this.value;
+									if (isEmployeeGraph.bool) {
+										var $formater = $("formater");
+										for (var i=0; i<liNameList.length; i++){
+												
+													if (bcns[i].name==this.value){
+														
+														var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
+												
+														return pushpin[0].outerHTML+this.value;
+														
+													}}
+									} else return formater+this.value;
 								},
 								useHTML:true
 							}
@@ -574,18 +619,20 @@
 						tooltip: {
 							 formatter: function() {
                     return '<b>'+ this.x +'</b><br/>'+
-                        this.series.name +': '+ this.y +'<br/>'+
-                        'Total: '+ this.point.stackTotal;
+                        this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+
+                        'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
                 }
 						},
 						plotOptions: {
 							series: {
 								shadow:true,
-								borderColor: '#303030'
+								borderColor: '#303030',
+								allowPointSelect: false
 							},
 							column: {
 								states:{
 									hover:{enabled:false}
+									
 								},
 								stacking: 'normal',
 								pointPadding: 0.2,
@@ -594,10 +641,16 @@
 								point: {
 									events: {
 										click: function(event) {
+
 											if (isOverview.isEmployee){
+												
 												for (var i=0; i<liNameList.length; i++){
+													
 													if (bcns[i].name==liNameList[this.x]){
+														$('#container').data('emplDataUri', employeeUri);
+														$('#container').data('bcnDataUri', bcns[i].uri);
 														showDetailedEmployeeGraph(employeeUri, bcns[i].uri);
+														alert ('Point: showDetailedEmployeeGraph');
 													}
 												}
 											}
@@ -616,6 +669,7 @@
 						}, {
 							name: 'Start',
 							data: liStartListAvg,
+							
 						}],
 					});
 				}
@@ -657,8 +711,7 @@
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
 
-							console.log("Overall bcns progress:");
-							console.log("Start:" + start, "Current:" + current, "End:" + end);
+							
 
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								liStartList.push(start);
@@ -681,8 +734,7 @@
 					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
 					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 
-					console.log("Overall average bcns progress:");
-					console.log("Average Start:" + sumStart, "Average Current:" + sumCurrent, "Average End:" + sumEnd);
+					
 
 					liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 					liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
@@ -701,7 +753,7 @@
 				//isOverview.isBcn=false;
 				isOverview.isEmployee=false;
 
-		
+				
 			//	var template='<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 				
 			//	var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
@@ -735,8 +787,7 @@
 					liNameList.push(employee.name);
 					
 					for(var i=0; i<bcns.length; i++){
-						console.log("bcns.length " + bcns.length);
-
+						
 						var liStartList=[];
 						var liCurrentList=[];
 						var liEndList=[];
@@ -744,15 +795,14 @@
 						var cont=0;
 
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
-							console.log("bcns.learningIndicators " + bcn.learningIndicators.length);
+							
 
 							var li = bcn.learningIndicators[j];
 							var start = employee.learningLevels[bcn.uri][li.id].start;
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
 
-							console.log("Overall employee progress:");
-							console.log("Start:" + start, "Current:" + current, "End:" + end);
+							
 
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								liStartList.push(start);
@@ -763,13 +813,11 @@
 							}
 						}
 						if (cont>0){
-							console.log("listartlist " + liStartList);
+						
 							var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
 							var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
 							var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
-							console.log("sumStart " + sumStart);
-							console.log("Li-start.list.length " + liStartList.length);
-
+							
 							liStartListAvg.push(sumStart / liStartList.length);
 							liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 							liEndListAvg.push(sumEnd / liEndList.length);
@@ -789,8 +837,11 @@
 				var subtitle = 'How close your employees are to accomplish your goals';
 				var isOverview={};
 				isOverview.bool=true;
-				isOverview.isBcn=true;
-				isOverview.isEmployee=false;
+				isOverview.isBcn=false;
+				isOverview.isEmployee=true;
+				//isOverview.bool=true;
+				//isOverview.isBcn=true;
+				//isOverview.isEmployee=false;
 				var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
 
 				printGraph(isOverview, 0, title, subtitle, uriEmployee, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
@@ -814,7 +865,6 @@
 				}
 				var data = averageLIProgressForBcn(bcn);
 
-			//	console.log(data);
 				
 				var liEndListAvg=[];
 				var liCurrentListAvg=[];
@@ -875,11 +925,12 @@
 				var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
 				var subtitle='Average for goals';
 				var isOverview={};
+				
 				isOverview.bool=false;
 				isOverview.isBcn=false;
 				isOverview.isEmployee=true;
 				var uriList=[];
-				var formater='<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px;"></span>';
+				var formater = '<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 				printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
 			}
 			
@@ -906,15 +957,20 @@
 				var liCurrentList=[];
 				var liEndList=[];
 				var liNameList=[];
+
 				for(var j = 0; j<bcn.learningIndicators.length; j++){
 					var li = bcn.learningIndicators[j];
-					var start = employee.learningLevels[bcn.uri][li.id].start;
+					var start = parseFloat(employee.learningLevels[bcn.uri][li.id].start);
+					
 					var current = employee.learningLevels[bcn.uri][li.id].current;
 					var end = employee.learningLevels[bcn.uri][li.id].end;
 					liNameList.push(li.name);
+
 					liStartList.push(start);
+				
 					liCurrentList.push(current);
 					liEndList.push(end);
+				
 				}	
 				
 				/*Added priority pushpin to the title of the employee detailled graph*/
