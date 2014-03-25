@@ -7,6 +7,58 @@
 	llevel[4] = "4";
 	llevel[5] = "5";
 
+function Employee(object){
+	if(object.hasOwnProperty("uri"))
+		this.uri = object.uri;
+	else
+		this.uri = "";
+
+	if(object.hasOwnProperty("name"))
+		this.name = object.name;
+	else
+		this.name = "";
+
+	if(object.hasOwnProperty("email"))
+		this.email = object.email;
+	else
+		this.email = "noemail@example.com";
+
+	if(object.hasOwnProperty("learningLevels"))
+		this.learningLevels = object.learningLevels;
+	else
+		this.learningLevels = {};
+}
+
+Employee.prototype.create = function(callback){
+	var space = new openapp.oo.Resource(openapp.param.space());
+	var thisEmployee = this;
+	space.create({
+		relation: openapp.ns.role + "data",
+		type: "my:ns:employee",
+		representation: this, //The representation refers to the object
+		callback: function(employeeResource){
+			//Now we have an URI for our Employee and we need to update the resource
+			thisEmployee.uri = employeeResource.getURI();
+			employeeResource.setRepresentation(thisEmployee, "application/json", function(){
+				callback();
+			});
+		}
+	});
+}
+
+Employee.prototype.update = function(callback){
+	var employeeResource = new openapp.oo.Resource(this.uri);
+	employeeResource.setRepresentation(this, "application/json", function(){
+		callback();
+	});
+}
+
+Employee.prototype.delete = function(callback){
+	openapp.resource.del(this.uri, function(){
+		callback();
+	});
+}
+
 function deleteEmployee(employee, callback){
 	openapp.resource.del(employee.uri, function(){
 		callback();
@@ -53,32 +105,7 @@ function updateEmployee(employee, callback){
 }
 
 function retrieveAllEmployees(space, callback){
-	space.getSubResources({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:employee",
-		onAll: function(employees) {
-					/*
-						Be careful here. The getRepresentation(...) function runs
-						asynchronously. This means that the whole for loop is finished
-						before even one BCN has been added to the array. To get informed
-						when the array is finished I used this callback mechanism in the
-						if block. 
-					*/
-					var employeesList = [];
-					if(employees.length == employeesList.length)
-							callback(employeesList);
-					for(var i = 0; i < employees.length; i++){
-						employees[i].getRepresentation("rdfjson", function(employeeObject){
-						employeesList.push(employeeObject);
-						if(employees.length == employeesList.length){
-							callback(employeesList);
-
-						}
-						
-						});
-					}
-				}
-	});
+	retrieveBoostResources("my:ns:employee", function(object){return new Employee(object)}, callback);
 }
 
 function ensureEmplyoeeBCNConsistency(employee, bcn){

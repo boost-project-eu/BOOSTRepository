@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Learning Repository"
+		description="Widget to manage learning Documents."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
+		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+
+		<!-- Define CSS -->
+		
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
+		<!-- JavaScript Block -->
+		<script>
+			
+			var space;
+			var iwcClient;
+			var bcnsList = new Array();
+			var ldsList = {};
+			var ldToBeSaved;
+			var learningDocumentFromSearchWidget;
+
+			//Template used for the document tree
+			var treeTemplate = "<div class='tree'>" +
+										"<ul>" +
+										"</ul>" +
+									"</div>";
+			//Template used for a node in the documents tree
+			var nodeTemplate = 	"<li>" +
+									"<span><span style='margin-right:5px;' class='glyphicon #{icon}'></span>#{nodeName}</span>" +
+								"</li>";
+			
+			var liGlobal; // current learning Indicator
+			
+			gadgets.util.registerOnLoadHandler(init);
+			var bcnGlobal; // for the current bcn
+			var ldGlobal; // for the ld to update (saves the id of the ld in the array)
+			function init(){
+			    
+				space = new openapp.oo.Resource(openapp.param.space());
+				iwcClient = new iwc.Client();
+				iwcClient.connect(iwcCallback);
+			}
+
+			function publishShowLearningDocument(learningDocument){
+				var intent = {
+					component: "",
+					data: "",
+					dataType: "text/json",
+					action: "SHOW_LEARNING_DOCUMENT",
+					extras: learningDocument
+				};
+
+				iwcClient.publish(intent);
+			}
+			
+			function iwcCallback(intent){
+				if(intent.action == "LEARNING_DOCUMENT_SELECTED"){
+					learningDocumentFromSearchWidget = new LearningDocument(intent.extras);
+				}
+
+				if(intent.action == "BCN_CREATE"){
+					createBCNfromUri(intent.data, function(bcn){
+						bcnsList.push(bcn);
+						renderAllBCNs();
+					});
+				}
+
+				if(intent.action == "BCN_UPDATE"){
+					createBCNfromUri(intent.data, function(updatedBcn){
+						for(var i = 0; i < bcnsList.length; i++){
+							var bcn = bcnsList[i];
+							if(bcn.uri == intent.data) {
+								var oldBcn = bcnsList[i];
+								bcnsList[i] = updatedBcn;
+							}
+						}
+						renderAllBCNs();
+					});
+				}
+
+				if(intent.action == "BCN_DELETE"){
+					for(var i = 0; i < bcnsList.length; i++){
+						var bcn = bcnsList[i];
+						if(bcn.uri == intent.data){
+							bcnsList.splice(i, 1);
+						}
+					}
+					renderAllBCNs();
+					if(bcnsList.length==0)
+						$("#bcns").append("<td>No goals defined.</td>");
+				}
+			}
+			
+			$(function(){
+				$("#importLearningDocumentButton").click(function(){
+					if(learningDocumentFromSearchWidget != null){
+						$("#inputLdName").val(learningDocumentFromSearchWidget.name);
+						$("#inputLdDescription").val(learningDocumentFromSearchWidget.description);
+						$("#inputLdLink").val(learningDocumentFromSearchWidget.url)
+						ldToBeSaved.type = learningDocumentFromSearchWidget.type;
+						ldToBeSaved.contentSpecificData = learningDocumentFromSearchWidget.contentSpecificData;
+					}
+				});
+				retrieveAllBcns(space, function(bcns){
+						retrieveAllLearningDocuments(function(lds){
+							bcnsList = bcns;
+							//Directly categorize learning documents
+							//according to BCN and LI
+							for(var i = 0; i < bcns.length; i++){
+								var currentBcn = bcns[i];
+								ldsList[currentBcn.uri] = {};
+								for(var j = 0; j < currentBcn.learningIndicators.length; j++){
+									var currentLi = currentBcn.learningIndicators[j];
+									ldsList[currentBcn.uri][currentLi.id] = new Array();
+								}
+							}
+							for(var i = 0; i < lds.length; i++){
+								ldsList[lds[i].bcnUri][lds[i].liId].push(lds[i]);
+							}
+							renderAllBCNs();
+						});
+					}
+				);
+				
+			});
+			
+			function renderAllBCNs(){
+
+				/* Sort according priority index and name */
+
+				bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+				});
+
+				$("#bcns").empty();
+				for(var i = 0; i < bcnsList.length; i++){
+					renderBCN(bcnsList[i]);
+				}
+			}
+			
+			function createDocumentNode(documentArray, document){
+				$existingDocumentNode = $(nodeTemplate.replace(/#{nodeName}/g, document.name).replace(/#{icon}/g, "glyphicon-book"));
+
+				//Create "show document" button for the node
+				var showDocumentButtonTemplate = "<button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-play-circle'></span></button>"
+				$showDocumentButton = $(showDocumentButtonTemplate);
+				$showDocumentButton.click(function(){
+					publishShowLearningDocument(document);
+				});
+
+				//Create "delete document" button for the node
+				var deleteDocumentButtonTemplate = "<button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-trash'></span></button>"
+				var $deleteDocumentButton = $(deleteDocumentButtonTemplate);
+				$deleteDocumentButton.data({
+					"documentArray" : documentArray,
+					"document" : document
+				});
+
+				$deleteDocumentButton.click(function(){
+					$("#deleteDocumentModal").modal();
+					var documentArray = $(this).data("documentArray");
+					var document = $(this).data("document");
+					var treeNode = $(this).closest("li");
+
+					$("#confirmDeleteDocumentButton").off().click(function(){
+						var l = Ladda.create(this);
+						l.start();
+						document.delete(function(){
+							documentArray.splice(documentArray.indexOf(document), 1);
+							treeNode.remove();
+							$("#deleteDocumentModal").modal("hide");
+							l.stop();
+						});
+					});
+				});
+
+				$existingDocumentNode.find(">span").append("<div class='btn-group pull-right'></div>");
+				$existingDocumentNode.find(">span>.btn-group").append($showDocumentButton);
+				$existingDocumentNode.find(">span>.btn-group").append($deleteDocumentButton);
+				return $existingDocumentNode;
+			}
+
+			function renderBCN(bcn) {
+				var $tree = $(treeTemplate);
+				var $bcnNode = $(nodeTemplate.replace(/#{nodeName}/g, bcn.name).replace(/#{icon}/g, "glyphicon-star"));
+				$bcnNode.append("<ul></ul>");
+
+				for(var i = 0; i < bcn.learningIndicators.length; i++){
+					var li = bcn.learningIndicators[i];
+					var $liNode = $(nodeTemplate.replace(/#{nodeName}/g, li.name).replace(/#{icon}/g, "glyphicon-flag"));
+					$liNode.append("<ul></ul>");
+					//Add special node which lets you add new documents
+					var $newDocumentNode = $(nodeTemplate.replace(/#{nodeName}/g, "Add new document").replace(/#{icon}/g, "glyphicon-plus"));
+					$newDocumentNode.css("cursor", "pointer");
+					$newDocumentNode.find(">span").data("bcnUri", bcn.uri);
+					$newDocumentNode.find(">span").data("liId", li.id);
+					$newDocumentNode.find(">span").click(function(){
+						var $parentNode = $(this).closest("ul");
+						ldToBeSaved = new LearningDocument({
+							bcnUri: $(this).data("bcnUri"),
+							liId: $(this).data("liId")
+						});
+
+						$("#saveLdButton").off().click(function(){
+							var l = Ladda.create(this);
+							l.start();
+							ldToBeSaved.name = $("#inputLdName").val();
+							ldToBeSaved.description = $("#inputLdDescription").val();
+							ldToBeSaved.url = $("#inputLdLink").val();
+							ldToBeSaved.create(function(){
+								var documentArray = ldsList[ldToBeSaved.bcnUri][ldToBeSaved.liId];
+								documentArray.push(ldToBeSaved);
+								$parentNode.append(createDocumentNode(documentArray, ldToBeSaved));
+								$('#addLdModal').modal("hide");
+								l.stop();
+							});
+						});
+						$("#addLdModal").modal();
+					});
+					
+					$liNode.find("ul").append($newDocumentNode);
+
+					//Add actual document nodes
+					var documentsForLi = ldsList[bcn.uri][li.id];
+					for(var j = 0; j < documentsForLi.length; j++){
+						$liNode.find("ul").append(createDocumentNode(documentsForLi, documentsForLi[j]));
+					}
+					$bcnNode.find(">ul").append($liNode);
+				}
+
+				$tree.find("ul").append($bcnNode);
+				$("#bcns").append($tree);
+				$tree.tree();
+			}
+			
+		</script>
+			
+		<!-- HTML Block -->
+		<div style="overflow-y: scroll; height:400px;">
+		<div class ="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title"><span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span> Your Learning Documents</h3>
+			</div>
+		
+			<div id ="panel" class="panel-body">
+			<div id="bcns">
+			</div> 
+		</div>
+		</div>
+		</div>
+		
+		<div class="modal fade" id="addLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Add a new Learning Document</h4>
+  						<p>
+  						<button id="importLearningDocumentButton" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>Import from viewer widget</button>
+  						</p>
+  					</div>
+  					<div class="modal-body">
+    					<form id="addForm" role="form">
+								<div class="form-group">
+									<label for="inputLdName">Name</label>
+									<input type="text" class="form-control" id="inputLdName" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputLdDescription">Description</label>
+									<textarea style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="inputLdLink"">Link</label>
+									<input type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
+			 					</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-style="zoom-out" id="saveLdButton" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+  					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		<div class="modal fade" id="updateLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Update a Learning Document</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form id="updateForm" role="form">
+								<div class="form-group">
+									<label for="inputLdNameUpdate">Name</label>
+									<input type="text" class="form-control" id="inputLdNameUpdate" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputLdDescriptionUpdate">Description</label>
+									<textarea style="resize:none;" class="form-control" id="inputLdDescriptionUpdate" placeholder="Enter description"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="inputLdLinkUpdate"">Link</label>
+									<input type="text" class="form-control" id="inputLdLinkUpdate" placeholder="Enter url">
+			 					</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" data-loading-text="Saving..." id="updateLdButton" class="btn btn-primary">Save</button>
+  					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		<div class="modal fade" id="deleteDocumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-body">
+						<div class="alert alert-danger fade in" id="alertInModal">
+							<h4 value="" id="deleteAlertText">Do you really want to delete this Learning Document?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				       <button type="button" data-style="zoom-out" id="confirmDeleteDocumentButton" class="btn btn-danger ladda-button"><span class="ladda-label">Delete</span></button>
+						</div>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		
+	]]>
+  </Content>
+</Module>

@@ -35,7 +35,8 @@
     	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 
  		<!-- Config stuff -->
-    	  <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
+ 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
 
 		<!-- Define CSS -->
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
@@ -83,6 +84,13 @@
 		var iwcClient;
 		var config;
 		var space;
+		var searchResultEntryTemplate =    	"<a href='#' class='list-group-item' style='min-height:150px;'>" +
+			    								"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
+			    								"<h4>#title</h4>" +
+	    										"<p>" +
+	    											"#description" +
+	    										"</p>" +
+	    									"</a>";
 
 		gadgets.util.registerOnLoadHandler(init);
 		activateYouTubeSearch();
@@ -94,15 +102,12 @@
 			iwcClient.connect(iwcCallback);
 			retrieveConfig(space, function(configObject){
 				config = configObject;
-				console.log(JSON.stringify(config));
 				if (!config.useYouTube)
 					$("#youTubeSelector").parent().addClass("disabled");
 				if (!config.useScribd)
 						$("#scribdSelector").parent().addClass("disabled");
 				if (!config.useSlideShare) 
-						$("slideShareSelector").parent().addClass("disabled");
-						
-					
+						$("#slideShareSelector").parent().addClass("disabled");
      		 });
 		}
 
@@ -111,6 +116,18 @@
 
 			}
 			
+		}
+
+		function publishLearningDocumentSelected(learningDocument){
+			var intent = {
+				component: "",
+				data: "",
+				dataType: "text/json",
+				action: "LEARNING_DOCUMENT_SELECTED",
+				extras: learningDocument
+			};
+
+			iwcClient.publish(intent);
 		}
 
 		function publishShowYoutubeVideo(id){
@@ -157,8 +174,16 @@
 
 			$("#search_button").click(function(){
 				var query = $("#search_field").val();
-				performSearch(query);
-				//performSlideShareSearch($("#search_field").val(), 1, renderSlideshareSearch);
+				/*
+				performYouTubeSearch(query, null, null, function(response){
+					var documentItems = youtubeResponseProcessor(response);
+					renderSearchResult(documentItems);
+				});
+				*/
+				performSlideShareSearch(query, "1", function(response){
+					var documentItems = slideshareResponseProcessor(response);
+					renderSearchResult(documentItems);
+				});
 			});
 
 			$("#search_field").keypress(function(event){
@@ -315,7 +340,7 @@
 		}
 
 		//Rendering stuff
-		function renderYoutubeSearchEntry(videoId, title, description, imageURL){
+		function renderYoutubeSearchEntry(document){
 		    var youtubeResultEntry =    "<a href='#' class='list-group-item' style='min-height:150px;'>" +
 			    							"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
 			    							"<h4>#title</h4>" +
@@ -324,13 +349,13 @@
 	    									"</p>" +
 	    								"</a>";
 
-		    var result = youtubeResultEntry.replace(/#imageURL/g, imageURL);
-		    result = result.replace(/#title/g, title);
-		    result = result.replace(/#description/g, description);
-		    result = result.replace(/#videoId/g, videoId);
+		    var result = youtubeResultEntry.replace(/#imageURL/g, document.contentSpecificData.imageUrl);
+		    result = result.replace(/#title/g, document.name);
+		    result = result.replace(/#description/g, document.description);
+		    result = result.replace(/#videoId/g, document.contentSpecificData.videoId);
 		    var entry = $(result);
 		    entry.click(function(){
-		    	publishShowYoutubeVideo(videoId);
+		    	publishLearningDocumentSelected(document);
 		    });
 		    return entry;
 		}
@@ -369,11 +394,21 @@
 		    $("#resultsList").empty();
 		    for(var i = entryStart; i <= entryStart + 4; i++){
 		        var actEntry = response.items[i].snippet;
+		        var learningDocument = {
+		        	name : actEntry.title,
+		        	description : actEntry.description,
+		        	type : "youtube",
+		        	url : "http://www.youtube.com/watch?v=" + response.items[i].id.videoId,
+		        	contentSpecificData : {
+		        		videoId : response.items[i].id.videoId,
+		        		imageUrl : actEntry.thumbnails.medium.url,
+		        	}
+		        };
 		        var id = response.items[i].id.videoId;
 		        var thumbnail = actEntry.thumbnails.medium.url;
 		        var title = actEntry.title;
 		        var description = actEntry.description; 
-		        $("#resultsList").append(renderYoutubeSearchEntry(id, title, description, thumbnail));
+		        $("#resultsList").append(renderYoutubeSearchEntry(learningDocument));
 		    }
 		    $("#resultsFooter").empty();
 		    $("#resultsFooter").append(renderPagination(startIndex));
@@ -465,6 +500,7 @@
 		    $("#resultsList").empty();
 		    for(var i = entryStart; i < entryStart + 4; i++){
 		        var actEntry = response.Slideshows.Slideshow[i];
+		        //alert(JSON.stringify(actEntry));
 		        var id = actEntry.ID;
 		        var thumbnail = actEntry.ThumbnailURL;
 		        var title = actEntry.Title;
@@ -525,6 +561,71 @@
 		    });
 		    return entry;
 		}
+
+		/*
+			NEW STUFF
+		*/
+
+		function youtubeResponseProcessor(response){
+		    var resultDocumentsList = [];
+		    for(var i = 0; i < response.items.length; i++){
+		        var videoData = response.items[i];
+		        var documentItem = {
+		        	name : videoData.snippet.title,
+		        	description : videoData.snippet.description,
+		        	type : "youtube",
+		        	url : "http://www.youtube.com/watch?v=" + videoData.id.videoId,
+		        	contentSpecificData : {
+		        		videoId : videoData.id.videoId,
+		        		imageUrl : videoData.snippet.thumbnails.medium.url,
+		        	}
+		        };
+		        resultDocumentsList.push(documentItem);
+		    }
+		    return resultDocumentsList;
+		}
+
+		function slideshareResponseProcessor(response){
+			var resultDocumentsList = [];
+		    for(var i = 0; i < response.Slideshows.Slideshow.length; i++){
+		        var slideshowData = response.Slideshows.Slideshow[i];
+		        var documentItem = {
+		        	name : slideshowData.Title,
+		        	description : slideshowData.Description,
+		        	type : "slideshare",
+		        	url : slideshowData.URL,
+		        	contentSpecificData: {
+		        		id : slideshowData.ID,
+		        		embedCode : slideshowData.Embed,
+		        		imageUrl : slideshowData.ThumbnailURL
+		        	}
+		        };
+		        resultDocumentsList.push(documentItem);
+		    }
+		    return resultDocumentsList;
+		}
+
+		function createSearchResultEntry(documentItem){
+		    var entry = searchResultEntryTemplate.replace(/#imageURL/g, documentItem.contentSpecificData.imageUrl);
+		    entry = entry.replace(/#title/g, documentItem.name);
+		    entry = entry.replace(/#description/g, documentItem.description);
+		    var $entry = $(entry);
+		    $entry.click(function(){
+		    	publishLearningDocumentSelected(documentItem);
+		    });
+		    return $entry;
+		}
+
+		function renderSearchResult(documentItems){
+		    $("#resultsList").empty();
+		    for(var i = 0; i < documentItems.length; i++){
+		    	$("#resultsList").append(createSearchResultEntry(documentItems[i]));
+		    }
+		}
+
+		/*
+			END OF NEW STUFF
+		*/
 
 		function renderScribdSearch(response) {
 
