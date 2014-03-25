@@ -185,6 +185,13 @@
 			}
 
 			$(function(){
+				//question Icon 
+				$('.launch-modal').click(function(){
+					$('#descriptionModal').modal({
+						keyboard: true
+					});
+				}); 
+
 				// routines for modals
 				$('#newEmployeeModal').on('hidden.bs.modal', function (e) {
 					$('#newEmployeeModal').find('input[type="text"],input[type="email"]').val('');
@@ -802,6 +809,7 @@
 				<button type="button" class="btn btn-primary" id="addNewEmployeeButton">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
+				<button id="question" type="button" class="btn btn-primary launch-modal" style="float:right; margin:0 10 0 5px;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 				<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
 			</div>
 			<table class="table table-striped table-bordered" id="employeeOverviewTable">
@@ -886,6 +894,29 @@
 				</div>			
 			</div>
 		</div>
+	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    		<h4 class="modal-title">Definition of Learning levels</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+            	<p>This widget has created mainly for <b>manager </b>of companies. Manager can define Employees of company by clicking on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20">  button.</p> 
+                <p><b>Stage 0:</b> I have not started to address the skills / knowledge required for this indicator.</p></br>
+                <p><b>Stage 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</p>
+                <p><b>Stage 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</p>
+                <p><b>Stage 3:</b>  I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</p>
+                <p><b>Stage 4:</b> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</p>
+                <p><b>Stage 5:</b> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</p>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
 
 		<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
