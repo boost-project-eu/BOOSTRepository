@@ -241,9 +241,9 @@
 
 			$("#search_field").keypress(function(event){
 				if(event.which == 13){
-					var query = $("#search_field").val();
-					performSearch(query);
-			        //performYouTubeSearch($("#search_field").val(), null, renderYoutubeSearch);
+					model.selectedRepository.search($("#search_field").val(), function(){
+					
+				});
 				}
 			});
 			$("#search_field").on("input", function(){
