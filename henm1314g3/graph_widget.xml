@@ -6,6 +6,7 @@
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400"
+		width="600"
 		>
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
@@ -43,8 +44,10 @@
 		<!-- JavaScript Block -->
 		<script>
 
-			var color1 = '#428BCA';
-			var color2 = '#f5f5f5';
+			var colorStart = '#808080'; 	//start
+			var colorEnd = '#f5f5f5';		//end
+			var colorCurrent = '#428BCA';		//current
+
 			var iwcClient;
 			var employees;
 			var bcns;
@@ -65,6 +68,7 @@
 				space = new openapp.oo.Resource(openapp.param.space());
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
+
 				retrieveAllBcns(space, function(bcnsList){
 					bcns=bcnsList;
 					bcns.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
@@ -257,18 +261,25 @@
 				var liStartListAvg=[];
 				var liCurrentListAvg=[];
 				var liEndListAvg=[];
+
 				for(var j = 0; j<bcn.learningIndicators.length; j++){
+
 					var liStartList=[];
 					var liCurrentList=[];
 					var liEndList=[];
 					var cont=0;
 					var li = bcn.learningIndicators[j];
+
 					liNameList.push(li.name);
+
 					for(i=0; i<employees.length; i++){
+
 						var employee = employees[i];
+
 						var start = employee.learningLevels[bcn.uri][li.id].start;
 						var current = employee.learningLevels[bcn.uri][li.id].current;
-						var end = employee.learningLevels[bcn.uri][li.id].end;	
+						var end = employee.learningLevels[bcn.uri][li.id].end;
+
 						if (employee.learningLevels[bcn.uri].isRelevant){
 							liStartList.push(start);
 							liCurrentList.push(current);
@@ -277,9 +288,10 @@
 						}
 					}
 					if (cont>0){
-						var sumStart = liStartList.reduce(function(a, b) { return a + b });
-						var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-						var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+						var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+						var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+						var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
+
 						liStartListAvg.push(sumStart / liStartList.length);
 						liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 						liEndListAvg.push(sumEnd / liEndList.length);
@@ -291,20 +303,26 @@
 					}
 				}
 				var solution=[];
-				solution[0]=[];
-				solution[1]=[];
+				solution[0]=[]; //value with liEndListAvg
+				solution[1]=[];	//value with liStartListAvg
+				solution[2]=[]; //value with liCurrentListAvg
+
 				for (var i=0; i<liStartListAvg.length; i++){
 					solution[0][i]= [liNameList[i], liEndListAvg[i]];
 					solution[1][i] = [liNameList[i], liStartListAvg[i]];
+					solution[2][i] = [liNameList[i], liCurrentListAvg[i]];
+					
 				}
 				return solution;
 			}
 			
 			function averageBcnProgressForEmployee(employee){
 				var liNameList=[];
+
 				var liStartListAvg=[];
 				var liCurrentListAvg=[];
 				var liEndListAvg=[];
+
 				for(i=0; i<bcns.length; i++){
 					var bcn = bcns[i];
 					var liStartList=[];
@@ -313,9 +331,13 @@
 					var cont=0;
 					for(var j = 0; j<bcn.learningIndicators.length; j++){
 						var li = bcn.learningIndicators[j];
+
 						var start = employee.learningLevels[bcn.uri][li.id].start;
 						var current = employee.learningLevels[bcn.uri][li.id].current;
 						var end = employee.learningLevels[bcn.uri][li.id].end;
+
+						
+
 						if (employee.learningLevels[bcn.uri].isRelevant){
 							liStartList.push(start);
 							liCurrentList.push(current);
@@ -326,9 +348,13 @@
 					
 					if (cont>0){
 						liNameList.push(bcn.name);
-						var sumStart = liStartList.reduce(function(a, b) { return a + b });
-						var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-						var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+						var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+						
+						var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+						
+						var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
+						
+
 						liStartListAvg.push(sumStart / liStartList.length);
 						liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 						liEndListAvg.push(sumEnd / liEndList.length);
@@ -337,9 +363,14 @@
 				var solution=[];
 				solution[0]=[];
 				solution[1]=[];
+				solution[2]=[];
+
 				for (var i=0; i<liStartListAvg.length; i++){
 					solution[0][i]= [liNameList[i], liEndListAvg[i]];
 					solution[1][i] = [liNameList[i], liStartListAvg[i]];
+					solution[2][i] = [liNameList[i], liCurrentListAvg[i]];
+					
+					
 				}
 				return solution;
 			}
@@ -348,20 +379,32 @@
 			
 			function printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg){
 				
-
+				//llevel is from EmployeeManager.js
 
 				var learningLevelsName = [];
 				for (var i=0; i<llevel.length; i++)
 					learningLevelsName.push(llevel[i]);
+
 				for (var i=0; i<liEndListAvg.length; i++){
-					liEndListAvg[i] = liEndListAvg[i]-liStartListAvg[i];
+					liEndListAvg[i] = liEndListAvg[i]-liCurrentListAvg[i];
 				}
+
+				 for (var i=0; i<liCurrentListAvg.length; i++) {
+				 	liCurrentListAvg[i] = liCurrentListAvg[i] - liStartListAvg[i];
+
+				}
+
 				for(var i = 0; i < liStartListAvg.length; i++){
-					liStartListAvg[i] = {y: liStartListAvg[i], color:color1};
+					liStartListAvg[i] = {y: liStartListAvg[i], color:colorStart};
 				}
 				for(var i = 0; i < liEndListAvg.length; i++){
-					liEndListAvg[i] = {y: liEndListAvg[i], color:color2};
+					liCurrentListAvg[i] = {y: liCurrentListAvg[i], color:colorCurrent};
 				}
+				for(var i = 0; i < liEndListAvg.length; i++){
+					liEndListAvg[i] = {y: liEndListAvg[i], color:colorEnd};
+				}
+				
+				
 				if (isOverview.bool){
 
 					// Initialized chart
@@ -370,13 +413,16 @@
 						chart: {
 							type: 'column',
 							events: {
-								click: function () {
+								click: function (event) {
 									if (isOverviewGraph.bool){
 										showEmployeeOverviewGraph();
+										alert ('showEmployeeOverviewGraph');
 									}
-									if (isEmployeeOverviewGraph.bool){
+									else if (isEmployeeOverviewGraph.bool){
 										showDefaultGraph();
-									}
+										alert ('showDefaultGraph');
+									} 
+
 								}
 							}
 						},
@@ -402,9 +448,21 @@
 							labels:{
 								rotation: -25,
 								formatter: function() {
+										if (isOverviewGraph.bool) {
+										var $formater = $("formater");
+										for (var i=0; i<liNameList.length; i++){
+												
+													if (bcns[i].name==this.value){
+														
+														var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
+												
+														return pushpin[0].outerHTML+this.value;
+														
+													}}
+											 
+										} else return formater+this.value;
 
 										
-										return formater+this.value;
 								},
 								useHTML:true
 							}
@@ -420,8 +478,13 @@
 							}
 						},
 
+
 						tooltip: {
-							enabled: false,
+							 formatter: function() {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                     			   this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+			//round?
+                     			   'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
+                }
 						},
 						plotOptions: {
 							series: {
@@ -443,14 +506,17 @@
 											if (isOverview.isBcn){
 												for (var i=0; i<liNameList.length; i++){
 													if (bcns[i].name==liNameList[this.x]){
+
 														showBcnGraph(bcns[i].uri);
+														alert("Point: showBcnGraph");
 													}
 												}
 											}
-											else{
+											if(isOverview.isEmployee){
 												for (var i=0; i<liNameList.length; i++){
 													if (employees[i].name==liNameList[this.x]){
 														showEmployeeGraph(employees[i].uri);
+														alert("Point: showEmployeeGraph");
 													}
 												}
 											}
@@ -466,6 +532,11 @@
 
 						}, {
 							name: 'Current',
+							data: liCurrentListAvg,
+							uri: uriList,
+						}, {
+							
+							name: 'Start',
 							data: liStartListAvg,
 							uri: uriList,
 						}],
@@ -477,13 +548,29 @@
 						chart: {
 							type: 'column',
 							events: {
-								click: function () {
-									showDefaultGraph();
+
+								click: function (event) {
+									if (isBcnGraph.bool){
+										showDefaultGraph();
+										alert ('showDefaultGraph');
+									} else if (isEmployeeGraph.bool) {
+										showEmployeeOverviewGraph();
+										alert ('showEmployeeOverviewGraph');
+									} else if (isDetailedGraph.bool) {
+										var emplDataUri = $('#container').data('emplDataUri');
+										var bcnDataUri = $('#container').data('bcnDataUri');
+										showEmployeeGraph(emplDataUri);
+										alert ("Show Employee Graph");
+									}
+									
+						//			function (event) {
+						//			showDefaultGraph();
+						//			alert('showDefaultGraph');
 								}
 							}
 						},
 						legend: {
-							enabled: false
+							 enabled:false
 						},
 
 						title: {
@@ -504,7 +591,18 @@
 								rotation: -25,
 								formatter: function() {
 
-									return formater+this.value;
+									if (isEmployeeGraph.bool) {
+										var $formater = $("formater");
+										for (var i=0; i<liNameList.length; i++){
+												
+													if (bcns[i].name==this.value){
+														
+														var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
+												
+														return pushpin[0].outerHTML+this.value;
+														
+													}}
+									} else return formater+this.value;
 								},
 								useHTML:true
 							}
@@ -520,16 +618,22 @@
 							}
 						},
 						tooltip: {
-							enabled: false,
+							 formatter: function() {
+                    return '<b>'+ this.x +'</b><br/>'+
+                        this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+
+                        'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
+                }
 						},
 						plotOptions: {
 							series: {
 								shadow:true,
-								borderColor: '#303030'
+								borderColor: '#303030',
+								allowPointSelect: false
 							},
 							column: {
 								states:{
 									hover:{enabled:false}
+									
 								},
 								stacking: 'normal',
 								pointPadding: 0.2,
@@ -538,10 +642,16 @@
 								point: {
 									events: {
 										click: function(event) {
+
 											if (isOverview.isEmployee){
+												
 												for (var i=0; i<liNameList.length; i++){
+													
 													if (bcns[i].name==liNameList[this.x]){
+														$('#container').data('emplDataUri', employeeUri);
+														$('#container').data('bcnDataUri', bcns[i].uri);
 														showDetailedEmployeeGraph(employeeUri, bcns[i].uri);
+														alert ('Point: showDetailedEmployeeGraph');
 													}
 												}
 											}
@@ -555,15 +665,19 @@
 							data: liEndListAvg,
 						}, {
 							name: 'Current',
+							data: liCurrentListAvg,
+							
+						}, {
+							name: 'Start',
 							data: liStartListAvg,
+							
 						}],
-							name: 'Initial',
-							data: [],
 					});
 				}
 			}
 			
 			function showDefaultGraph(){
+
 				isOverviewGraph.bool=true;
 				isEmployeeOverviewGraph.bool=false;
 				isBcnGraph.bool=false;
@@ -574,48 +688,55 @@
 				var liCurrentListAvgTotal=[];
 				var liEndListAvgTotal=[];
 				
-				var liNameList=[];
-			//	var liPriorityList=[];
-			
+				var liNameList=[];	
 				for(var i=0; i<bcns.length; i++){
 					var liStartListAvg=[];
 					var liCurrentListAvg=[];
 					var liEndListAvg=[];
 					var bcn = bcns[i];
 					liNameList.push(bcn.name);
-			//		liPriorityList.push(bcn.priority);
-			
+					var cont=0;
 
 					for(var j = 0; j<bcn.learningIndicators.length; j++){
+
 						var liStartList=[];
 						var liCurrentList=[];
 						var liEndList=[];
+
 						var li = bcn.learningIndicators[j];
-						var cont=0;
+					//	var cont=0;
+
 						for (var k = 0; k<employees.length; k++){
 							var employee = employees[k];
 							var start = employee.learningLevels[bcn.uri][li.id].start;
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
+
+							
+
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								liStartList.push(start);
 								liCurrentList.push(current);
 								liEndList.push(end);
 								cont++;
+							
 							}
 						}
 						if (cont>0){
-							var sumStart = liStartList.reduce(function(a, b) { return a + b });
-							var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-							var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+							var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+							var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+							var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
 							liStartListAvg.push(sumStart / liStartList.length);
 							liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 							liEndListAvg.push(sumEnd / liEndList.length);
 						}
 					}
-					var sumStart = liStartListAvg.reduce(function(a, b) { return a + b });
-					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return a + b });
-					var sumEnd = liEndListAvg.reduce(function(a, b) { return a + b });
+					var sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
+					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
+					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
+
+					
+
 					liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 					liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
 					liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
@@ -630,9 +751,10 @@
 				var isOverview={};
 				isOverview.bool=true;
 				isOverview.isBcn=true;
+				//isOverview.isBcn=false;
 				isOverview.isEmployee=false;
 
-		
+				
 			//	var template='<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 				
 			//	var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
@@ -657,42 +779,54 @@
 				var liEndListAvgTotal=[];
 				
 				var liNameList=[];
+
 				for (var k = 0; k<employees.length; k++){
 					var liStartListAvg=[];
 					var liCurrentListAvg=[];
 					var liEndListAvg=[];
 					var employee = employees[k];
 					liNameList.push(employee.name);
+					
 					for(var i=0; i<bcns.length; i++){
+						
 						var liStartList=[];
 						var liCurrentList=[];
 						var liEndList=[];
 						var bcn = bcns[i];
 						var cont=0;
+
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
+							
+
 							var li = bcn.learningIndicators[j];
 							var start = employee.learningLevels[bcn.uri][li.id].start;
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
+
+							
+
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								liStartList.push(start);
+
 								liCurrentList.push(current);
 								liEndList.push(end);
 								cont++;
 							}
 						}
 						if (cont>0){
-							var sumStart = liStartList.reduce(function(a, b) { return a + b });
-							var sumCurrent = liCurrentList.reduce(function(a, b) { return a + b });
-							var sumEnd = liEndList.reduce(function(a, b) { return a + b });
+						
+							var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
+							var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
+							var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
+							
 							liStartListAvg.push(sumStart / liStartList.length);
 							liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 							liEndListAvg.push(sumEnd / liEndList.length);
 						}
 					}
-					var sumStart = liStartListAvg.reduce(function(a, b) { return a + b });
-					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return a + b });
-					var sumEnd = liEndListAvg.reduce(function(a, b) { return a + b });
+					var sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
+					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
+					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 					liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 					liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
 					liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
@@ -705,13 +839,19 @@
 				var isOverview={};
 				isOverview.bool=true;
 				isOverview.isBcn=false;
-				isOverview.isEmployee=false;
+				isOverview.isEmployee=true;
+				//isOverview.bool=true;
+				//isOverview.isBcn=true;
+				//isOverview.isEmployee=false;
 				var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
 
 				printGraph(isOverview, 0, title, subtitle, uriEmployee, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 			}
 			
 			function showBcnGraph(bcnUri){
+
+
+
 				isBcnGraph.bool=true;
 				isOverviewGraph.bool=false;
 				isEmployeeOverviewGraph.bool=false;
@@ -725,13 +865,18 @@
 
 				}
 				var data = averageLIProgressForBcn(bcn);
+
+				
 				var liEndListAvg=[];
 				var liCurrentListAvg=[];
 				var liStartListAvg=[];
 				var liNameList=[];
 				for (var i=0; i<data[0].length; i++){
+
 					liEndListAvg[i]=data[0][i][1];
 					liStartListAvg[i]=data[1][i][1];
+					liCurrentListAvg[i]=data[2][i][1];
+					
 					liNameList[i]=data[0][i][0];
 				}
  
@@ -774,16 +919,19 @@
 				for (var i=0; i<data[0].length; i++){
 					liEndListAvg[i]=data[0][i][1];
 					liStartListAvg[i]=data[1][i][1];
+					liCurrentListAvg[i]=data[2][i][1];
+					
 					liNameList[i]=data[0][i][0];
 				}
 				var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
 				var subtitle='Average for goals';
 				var isOverview={};
+				
 				isOverview.bool=false;
 				isOverview.isBcn=false;
 				isOverview.isEmployee=true;
 				var uriList=[];
-				var formater='<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px;"></span>';
+				var formater = '<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 				printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
 			}
 			
@@ -810,15 +958,20 @@
 				var liCurrentList=[];
 				var liEndList=[];
 				var liNameList=[];
+
 				for(var j = 0; j<bcn.learningIndicators.length; j++){
 					var li = bcn.learningIndicators[j];
-					var start = employee.learningLevels[bcn.uri][li.id].start;
+					var start = parseFloat(employee.learningLevels[bcn.uri][li.id].start);
+					
 					var current = employee.learningLevels[bcn.uri][li.id].current;
 					var end = employee.learningLevels[bcn.uri][li.id].end;
 					liNameList.push(li.name);
+
 					liStartList.push(start);
+				
 					liCurrentList.push(current);
 					liEndList.push(end);
+				
 				}	
 				
 				/*Added priority pushpin to the title of the employee detailled graph*/
@@ -853,9 +1006,8 @@
 
 		  	</div>
 		  	<div class="panel-body">
-				<div id="container" style=" height: 350px; margin: 0 auto">	
-					
-			</div>
+				<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+				</div>
 			</div>
 		</div>
 		</div>

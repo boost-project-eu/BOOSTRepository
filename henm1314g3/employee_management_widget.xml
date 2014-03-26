@@ -43,6 +43,20 @@
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/slider.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 
+
+		<style>
+			.dropdown-menu{
+				max-height: 80px;
+    			overflow-y: auto;
+			}
+
+			.endDropdown  {
+				position: relative;
+   				 z-index: 5000;
+			}
+
+		</style>
+
 		<!-- JavaScript Block -->
 		<script>
 			
@@ -172,6 +186,13 @@
 			}
 
 			$(function(){
+				//question Icon 
+				$('.launch-modal').click(function(){
+					$('#descriptionModal').modal({
+						keyboard: true
+					});
+				}); 
+
 				// routines for modals
 				$('#newEmployeeModal').on('hidden.bs.modal', function (e) {
 					$('#newEmployeeModal').find('input[type="text"],input[type="email"]').val('');
@@ -518,56 +539,186 @@
 							"<h4><span class='glyphicon glyphicon-flag' style='margin-right:5px;'></span> #{LI} </h4>" + 
 						"</li>";
 
-					var sliderTemplate = 
-						"<div class='slider mySlider' id='slider#{li}'" + 
-							"style='width:200px;'" +
-						"></div>";
+				//	var sliderTemplate = 
+				//		"<div class='slider mySlider' id='slider#{li}'" + 
+				//			"style='width:200px;'" +
+				//		"></div>";
 
+					var labelTemplate = '<span style="margin-right:#{leftMargin};"> #{nameLevel} level: </span>';
+
+					var dropdownTemplate = 
+						'<div class="btn-group">' +
+						  '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">' +
+    						'Undefined <span class="caret"></span></button>' +
+						  '<ul class="dropdown-menu #{dropdownId}" role="menu">' +
+						  		'<li><a data-learningLevel="1" href="#">1</a></li>' +
+					            '<li><a data-learningLevel="2" href="#">2</a></li>' +
+					           	'<li><a data-learningLevel="3" href="#">3</a></li>' +
+					           	'<li><a data-learningLevel="4" href="#">4</a></li>' +						
+					           	'<li><a data-learningLevel="5" href="#">5</a></li>' +
+						  '</ul>' +
+						'</div>';
+
+					
+	
+			
 					var bcn = bcnList[i];
 
 					var entry = $(bcnTemplate.replace(/#{bcnName}/g, bcn.name).replace(/#{id}/g, i));
 					entry.find(".relevance-checkbox").data("bcnUri", bcn.uri);
+
+
 					if(employee.learningLevels[bcn.uri].isRelevant)
 						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star");
 					else
 						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star-empty");
+
 					for(var j = 0; j < bcn.learningIndicators.length; j++){
+
 						var li = bcn.learningIndicators[j];
 						var liEntry = $(LITemplate.replace(/#{LI}/g, li.name));
+	
+						var startLabel = $(labelTemplate.replace(/#{nameLevel}/g, "Start").replace(/#{leftMargin}/g,"20px"));
+						var startDropdown = $(dropdownTemplate.replace(/#{dropdownId}/g, "startDropdown"));
+
+						var currentLabel = $(labelTemplate.replace(/#{nameLevel}/g, "Current").replace(/#{leftMargin}/g,"2px"));
+						var currentDropdown = $(dropdownTemplate.replace(/#{dropdownId}/g, "currentDropdown"));
+
+						var endLabel = $(labelTemplate.replace(/#{nameLevel}/g, "End").replace(/#{leftMargin}/g,"25px"));
+						var endDropdown = $(dropdownTemplate.replace(/#{dropdownId}/g, "endDropdown"));
+
+				
 						entry.find("#LIList"+i).append(liEntry);
-						
-						var slider = $(sliderTemplate.replace(/#{li}/g, j));
-						slider.data("bcnUri", bcn.uri);
-						slider.data("liId", li.id);
-						liEntry.append(slider);
-						var initialValues = [];
-						initialValues.push(employee.learningLevels[bcn.uri][li.id].start);
-						initialValues.push(employee.learningLevels[bcn.uri][li.id].end);
-						slider.data("start", initialValues[0]);
-						slider.data("end", initialValues[1]);
-						slider.slider({
-							max:llevel.length-1,
-							value:initialValues,
-							formater:function(val){
-								return llevel[val];
+
+						var allDropdowns = [startDropdown, currentDropdown, endDropdown];
+						var allLabels = [startLabel, currentLabel, endLabel];
+						var div = '<div style="margin-top:15px;"></div>';
+						var caret = '<span class="caret"></span>';
+
+						for (var temp = 0; temp < allDropdowns.length; temp++){
+
+								allDropdowns[temp].find(">ul").data("bcnUri", bcn.uri);
+								allDropdowns[temp].find(">ul").data("liID", li.id);
+								liEntry.append(allLabels[temp]).append(allDropdowns[temp]);
+								liEntry.append(div);
+								if (allDropdowns[temp] == currentDropdown) {
+										allDropdowns[temp].find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
+										allDropdowns[temp].find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
+								} else if (allDropdowns[temp] == startDropdown) {
+										allDropdowns[temp].find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
+										allDropdowns[temp].find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
+								} else {
+										allDropdowns[temp].find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
+										allDropdowns[temp].find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
+								}
+
+								allDropdowns[temp].find(".btn").append(caret);
+
 							}
-						}).on("slideStop", function(env){
-							var values = env.value;
-							$(this).data("start", values[0]);
-							$(this).data("end", values[1]);
-						});
+						//saving bcn and li links
+						
+				
+						// currentDropdown.find(">ul").data("bcnUri", bcn.uri);
+
+						// currentDropdown.find(">ul").data("liID", li.id);
+
+						// startDropdown.find(">ul").data("bcnUri", bcn.uri);
+
+						// startDropdown.find(">ul").data("liID", li.id);
+
+						// endDropdown.find(">ul").data("bcnUri", bcn.uri);
+
+						// endDropdown.find(">ul").data("liID", li.id);
+
+
+						//adding elements to the modal
+						
+						// liEntry.append(startLabel).append(startDropdown).append(div);
+
+						// liEntry.append(currentLabel).append(currentDropdown).append(div);
+						
+						// liEntry.append(endLabel).append(endDropdown).append(div);
+
+
+						//showing saved values in the dropdowns
+
+					//	currentDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
+
+					//	currentDropdown.find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
+
+					//	currentDropdown.find(".btn").append('<span class="caret"></span>');
+
+
+					//	startDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
+
+					//	startDropdown.find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
+
+					//	startDropdown.find(".btn").append('<span class="caret"></span>');
+
+
+
+						// endDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
+
+						// endDropdown.find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
+
+						// endDropdown.find(".btn").append('<span class="caret"></span>');
+				
+
+					//	var slider = $(sliderTemplate.replace(/#{li}/g, j));
+					//	slider.data("bcnUri", bcn.uri);
+					//	slider.data("liId", li.id);
+					//	liEntry.append(slider);
+						
+
+					//	var initialValues = [];
+					//	initialValues.push(employee.learningLevels[bcn.uri][li.id].start);
+					//	initialValues.push(employee.learningLevels[bcn.uri][li.id].end);
+					//	slider.data("start", initialValues[0]);
+					//	slider.data("end", initialValues[1]);
+					//	slider.slider({
+					//		max:llevel.length-1,
+					//		value:initialValues,
+					//		formater:function(val){
+					//			return llevel[val];
+					//		}
+					//	}).on("slideStop", function(env){
+					//		var values = env.value;
+					//		$(this).data("start", values[0]);
+					//		$(this).data("end", values[1]);
+					//	});
 
 						
 						 
 					}
+
 					$("#bcnPanel").append(entry);
 				}
+
 				$("#updateLearningLevelsButton").off().click(function(){
-					$(".mySlider").each(function(){
-						//alert(JSON.stringify($(this)));
-						employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].start = $(this).data("start");
-						employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].end = $(this).data("end");
-					});
+
+					 $(".currentDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current = $(this).data("currentLevel");
+						console.log("Current level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].current);
+					 });
+
+					 $(".startDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start = $(this).data("startLevel");
+					 	console.log("Start level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].start);
+
+					 });
+
+					 $(".endDropdown").each(function(){
+					     employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end = $(this).data("endLevel");
+					 	console.log("End level: " + employee.learningLevels[$(this).data("bcnUri")][$(this).data("liID")].end);
+
+					 });
+
+					//$(".mySlider").each(function(){
+						
+					//	employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].start = $(this).data("start");
+
+					//	employee.learningLevels[$(this).data("bcnUri")][$(this).data("liId")].end = $(this).data("end");
+					//});
 					$(".relevance-checkbox").each(function(){
 						var bcnUri = $(this).data("bcnUri");
 						employee.learningLevels[bcnUri].isRelevant = $(this).prop("checked");
@@ -595,6 +746,46 @@
 				$("#setLIModal").find(".relevance-checkbox").each(function(){
 					$(this).prop("checked", employee.learningLevels[$(this).data("bcnUri")].isRelevant);
 				});	
+
+				$(".currentDropdown li a").click(function(){
+
+       				
+       					$(this).parents(".btn-group").find(".btn").text($(this).text()+ ' ');
+       				
+       					$(this).parents(".btn-group").find(".btn").append('<span class="caret"></span>');
+       				
+     					$(this).parents("ul").data('currentLevel', $(this).attr('data-learningLevel'));
+     				
+     					console.log("CL: " + $(this).parents("ul").data('currentLevel'));
+
+   					 });
+
+				$(".startDropdown li a").click(function(){
+
+       				
+       					$(this).parents(".btn-group").find(".btn").text($(this).text()+ ' ');
+       				
+       					$(this).parents(".btn-group").find(".btn").append('<span class="caret"></span>');
+       				
+      					$(this).parents("ul").data('startLevel', $(this).attr('data-learningLevel'));
+     				
+     					console.log("SL: " + $(this).parents("ul").data('startLevel'));
+
+   		 			 });
+
+
+				$(".endDropdown li a").click(function(){
+
+       				
+       					$(this).parents(".btn-group").find(".btn").text($(this).text()+ ' ');
+       				
+       					$(this).parents(".btn-group").find(".btn").append('<span class="caret"></span>');
+       				
+      					$(this).parents("ul").data('endLevel', $(this).attr('data-learningLevel'));
+     				
+     					console.log("EL: " + $(this).parents("ul").data('endLevel'));
+
+   					 });
 			}
 
 			function addEmployee(employee){
@@ -619,6 +810,7 @@
 				<button type="button" class="btn btn-primary" id="addNewEmployeeButton">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
+				<button id="question" type="button" class="btn btn-primary launch-modal" style="float:right; margin:0 10 0 5px;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 				<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
 			</div>
 			<table class="table table-striped table-bordered" id="employeeOverviewTable">
@@ -703,6 +895,29 @@
 				</div>			
 			</div>
 		</div>
+	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    		<h4 class="modal-title">Definition of Learning levels</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+            	<p>This widget has created mainly for <b>manager </b>of companies. Manager can define Employees of company by clicking on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20">  button.</p> 
+                <p><b>Stage 0:</b> I have not started to address the skills / knowledge required for this indicator.</p></br>
+                <p><b>Stage 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</p>
+                <p><b>Stage 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</p>
+                <p><b>Stage 3:</b>  I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</p>
+                <p><b>Stage 4:</b> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</p>
+                <p><b>Stage 5:</b> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</p>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
 
 		<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
