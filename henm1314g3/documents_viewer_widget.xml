@@ -5,6 +5,7 @@
 		description="View documents like videos or slides."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
+		width="600"
 		height="400">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
@@ -56,6 +57,8 @@
 						showYoutubeVideo(document.contentSpecificData.videoId);
 					if(document.type == "slideshare")
 						showSlideshareSlideshow(document.contentSpecificData.id);
+					if(document.type == "scribd")
+						showScribdDocument(document.contentSpecificData.id, document.contentSpecificData.accessKey, document.description);
 				}
 
 				if(intent.action == "SHOW_YOUTUBE_VIDEO"){

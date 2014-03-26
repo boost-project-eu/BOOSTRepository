@@ -377,11 +377,11 @@
 
 				/* Added click event on the drop-down pushpins */
 
-				$('.priorityClass').click(function(){
+				$('.priorityClass').off("click").click(function(){
 					
       				$('#mainPushpin').css({'color':priorityColors[$(this).data('priorityIndex')]});
-      				bcn.priority = $(this).data('priorityIndex');	
-    				  });
+      				bcn.priority = $(this).data('priorityIndex');
+    			});
 				$('#mainPushpin').css({'color':priorityColors[bcn.priority]});
 	
 	

@@ -6,6 +6,103 @@ function onYouTubeClientLoad(){
     });
 }
 
+function YoutubeSearch(resultsPerPage){
+    this.name = "YouTube";
+    this.query = null;
+    this.resultsPerPage = resultsPerPage;
+    this.nextPageToken = null;
+    this.prevPageToken = null;
+}
+
+YoutubeSearch.prototype.search = function(query, callback){
+    params = {};
+    params.type = 'video';
+    params.part = 'snippet';
+    params.q = query;
+    this.query = query;
+    var thisElement = this;
+    params.maxResults = this.resultsPerPage;
+    var request = gapi.client.youtube.search.list(params);
+    // Send the request to the API server and fire the callback with the response
+    request.execute(function(response){
+        if(response.hasOwnProperty("nextPageToken")){
+            thisElement.nextPageToken = response.nextPageToken;
+        }
+        if(response.hasOwnProperty("prevPageToken")){
+            thisElement.prevPageToken = response.prevPageToken;
+        }
+        callback(youtubeDocumentProcessor(response));
+    });
+}
+
+function youtubeDocumentProcessor(response){
+    var resultDocumentsList = [];
+        for(var i = 0; i < response.items.length; i++){
+            var videoData = response.items[i];
+            var documentItem = {
+                name : videoData.snippet.title,
+                description : videoData.snippet.description,
+                type : "youtube",
+                url : "http://www.youtube.com/watch?v=" + videoData.id.videoId,
+                contentSpecificData : {
+                    videoId : videoData.id.videoId,
+                    imageUrl : videoData.snippet.thumbnails.medium.url,
+                }
+            };
+            resultDocumentsList.push(documentItem);
+        }
+        return resultDocumentsList;
+}
+
+YoutubeSearch.prototype.nextResultsPage = function(callback){
+    if(!this.query)
+        return [];
+
+    params = {};
+    params.type = 'video';
+    params.part = 'snippet';
+    params.q = this.query;
+    params.maxResults = this.resultsPerPage;
+    params.pageToken = this.nextPageToken;
+    var thisElement = this;
+    var request = gapi.client.youtube.search.list(params);
+    // Send the request to the API server and fire the callback with the response
+    request.execute(function(response){
+        if(response.hasOwnProperty("nextPageToken")){
+            thisElement.nextPageToken = response.nextPageToken;
+        }
+        if(response.hasOwnProperty("prevPageToken")){
+            thisElement.prevPageToken = response.prevPageToken;
+        }
+        callback(youtubeDocumentProcessor(response));
+    });
+
+}
+
+YoutubeSearch.prototype.prevResultsPage = function(callback){
+    if(!this.query)
+        return [];
+
+    params = {};
+    params.type = 'video';
+    params.part = 'snippet';
+    params.q = this.query;
+    params.maxResults = this.resultsPerPage;
+    params.pageToken = this.prevPageToken;
+    var thisElement = this;
+    var request = gapi.client.youtube.search.list(params);
+    // Send the request to the API server and fire the callback with the response
+    request.execute(function(response){
+        if(response.hasOwnProperty("nextPageToken")){
+            thisElement.nextPageToken = response.nextPageToken;
+        }
+        if(response.hasOwnProperty("prevPageToken")){
+            thisElement.prevPageToken = response.prevPageToken;
+        }
+        callback(youtubeDocumentProcessor(response));
+    });
+}
+
 var YouTubeSearch = {
     // Call this to perform a search
     search:function(q, pageToken, id, callback) {
