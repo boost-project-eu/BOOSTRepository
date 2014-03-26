@@ -538,14 +538,15 @@
          <div class="modal-content">
            <div class="modal-header">
            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-     		<h4 class="modal-title">Description of Business goals Widget</h4>
+     		<h4 class="modal-title">Description of Business Goals Widget</h4>
              </div>
            <div class="modal-body">
              <div class="panel-group" id="levelsdef" align="justify">
-             <p>This widget has created mainly for <b>manager </b>of companies. Manager can define business critical needs (BCN) of company by clicking on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20">  button.</p> 
+             <p>Description</p>
+          <!--   <p>This widget has created mainly for <b>manager </b>of companies. Manager can define business critical needs (BCN) of company by clicking on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20">  button.</p> 
 		 		<p>After defining BCN, according to importance of BCN for company, manager can add priority to it by choosing appropriate flag.</p> 
  	 			<p>Next step is defining Learning Indicators (LI) for each BCN. After pressing the Save Button, BCN will save. Manager can see, Edit <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20">  or Delete  <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> the BCN. Besides, manager can monitor the <b>progress </b> of each employee on BCN immediately on BOOST Progress Widget By clicking on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> Button.</p>
- 	 			<p> <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> Allows manager to see the overall progress of all employees on each BCN on top of the widget. </p>
+ 	 			<p> <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> Allows manager to see the overall progress of all employees on each BCN on top of the widget. </p> -->
           </div>
            <div class="modal-footer">
                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
