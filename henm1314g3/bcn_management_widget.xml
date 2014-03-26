@@ -275,7 +275,7 @@
 					/* Added pushpin before the name in main BCN modal */
 
 					var template = 	"<tr>" +
-										"<td><span class='glyphicon glyphicon-pushpin' style='color:#{priorityPushpin}'></span> #{bcnName}</td>" +
+										"<td><span class='glyphicon glyphicon-star' style='color:#{priorityPushpin}'></span> #{bcnName}</td>" +
 										"<td style='width:150px' align='center'>" +
 											"<div class='btn-group'>" +
 											"</div>" +
@@ -484,14 +484,14 @@
 								<label for="inputNewBcnPriority" >Priority</label>
 									<div class="btn-group" id="inputNewBcnPriority">
 					            	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-					            		<span class="glyphicon glyphicon-pushpin" id='mainPushpin'></span><span class="caret"></span></button>
+					            		<span class="glyphicon glyphicon-star" id='mainPushpin'></span><span class="caret"></span></button>
 						            	<ul class="dropdown-menu">
 						                	<li><a class="priorityClass" href="#" id='prioritytext0'>
-						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority0' > </span></a></li>
+						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority0' > </span></a></li>
 						                	<li><a class="priorityClass" href="#" id='prioritytext1'>
-						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority1' > </span></a></li>
+						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority1' > </span></a></li>
 						                	<li><a class="priorityClass" href="#" id='prioritytext2'>
-						                		<span class="glyphicon glyphicon-pushpin pull-left" style='margin-right:5px' id='priority2' > </span></a></li>                	
+						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority2' > </span></a></li>                	
 						            	</ul>
 									</div>
 								</div>							

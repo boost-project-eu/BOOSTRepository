@@ -416,11 +416,11 @@
 								click: function (event) {
 									if (isOverviewGraph.bool){
 										showEmployeeOverviewGraph();
-										alert ('showEmployeeOverviewGraph');
+									//	alert ('showEmployeeOverviewGraph');
 									}
 									else if (isEmployeeOverviewGraph.bool){
 										showDefaultGraph();
-										alert ('showDefaultGraph');
+									//	alert ('showDefaultGraph');
 									} 
 
 								}
@@ -508,7 +508,7 @@
 													if (bcns[i].name==liNameList[this.x]){
 
 														showBcnGraph(bcns[i].uri);
-														alert("Point: showBcnGraph");
+													//	alert("Point: showBcnGraph");
 													}
 												}
 											}
@@ -516,7 +516,7 @@
 												for (var i=0; i<liNameList.length; i++){
 													if (employees[i].name==liNameList[this.x]){
 														showEmployeeGraph(employees[i].uri);
-														alert("Point: showEmployeeGraph");
+													//	alert("Point: showEmployeeGraph");
 													}
 												}
 											}
@@ -552,15 +552,15 @@
 								click: function (event) {
 									if (isBcnGraph.bool){
 										showDefaultGraph();
-										alert ('showDefaultGraph');
+									//	alert ('showDefaultGraph');
 									} else if (isEmployeeGraph.bool) {
 										showEmployeeOverviewGraph();
-										alert ('showEmployeeOverviewGraph');
+									//	alert ('showEmployeeOverviewGraph');
 									} else if (isDetailedGraph.bool) {
 										var emplDataUri = $('#container').data('emplDataUri');
 										var bcnDataUri = $('#container').data('bcnDataUri');
 										showEmployeeGraph(emplDataUri);
-										alert ("Show Employee Graph");
+									//	alert ("Show Employee Graph");
 									}
 									
 						//			function (event) {
@@ -651,7 +651,7 @@
 														$('#container').data('emplDataUri', employeeUri);
 														$('#container').data('bcnDataUri', bcns[i].uri);
 														showDetailedEmployeeGraph(employeeUri, bcns[i].uri);
-														alert ('Point: showDetailedEmployeeGraph');
+													//	alert ('Point: showDetailedEmployeeGraph');
 													}
 												}
 											}
@@ -759,7 +759,7 @@
 				
 			//	var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
 
-				var formater = '<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
+				var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 			//	$( document.createElement('div')).append(entry).html();
 
 			
@@ -882,7 +882,7 @@
  
 				/* Added priority pushpin to the title of the goals graph */
 
-				var template = '<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
+				var template = '<span class="glyphicon glyphicon-star" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
 
 				var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
 				
@@ -931,7 +931,7 @@
 				isOverview.isBcn=false;
 				isOverview.isEmployee=true;
 				var uriList=[];
-				var formater = '<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
+				var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 				printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
 			}
 			
@@ -976,7 +976,7 @@
 				
 				/*Added priority pushpin to the title of the employee detailled graph*/
 
-				var template = '<span class="glyphicon glyphicon-pushpin" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
+				var template = '<span class="glyphicon glyphicon-star" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
 
 				var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
 				
