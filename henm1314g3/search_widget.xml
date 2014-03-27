@@ -203,6 +203,15 @@
 		}
 
 		$(function(){
+
+			 // help button click 
+
+    	  $('#question').click(function(){
+        	$('#descriptionModal').modal({
+        		keyboard: true
+          	});
+        	}); 
+
 			//Add new repositories here
 			addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
 			addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
@@ -242,6 +251,10 @@
 				});
 				}
 			});
+<<<<<<< HEAD
+
+=======
+>>>>>>> FETCH_HEAD
 		});
 
 		function renderSearchProgressBar(){
@@ -261,7 +274,15 @@
 		<div style="overflow-y: scroll; height:400px;" id="content">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
+<<<<<<< HEAD
+
+				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search learning documents</h3>
+
+
+=======
 		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
+>>>>>>> FETCH_HEAD
 		  	</div>
 		  	<div class="panel-body" id="panelBody">
 		  		<div class="input-group" style="padding-top:5px;">
@@ -298,6 +319,24 @@
 				</center>
 			</div>
 		</div>
+		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    		<h4 class="modal-title">Description of Progress Widget</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+                <p>This widget has created to help employees to find the learning materials on Youtube, Slideshare, Scribd websites by choosing them before searching. Description of each result is accessible for employees. </p>
+ 				<p>There is an ability of widget to employees watch videos or slides on BOOST Viewer widget by clicking on the link of it and the video or slides is automatically ready for play on Boost viewer widget. By clicking on save button, employee can add the learning material on BOOST Documents widget.</p>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
 	]]>
   </Content>
 </Module>
