@@ -28,9 +28,13 @@ YoutubeSearch.prototype.search = function(query, callback){
         if(response.hasOwnProperty("nextPageToken")){
             thisElement.nextPageToken = response.nextPageToken;
         }
+        else
+            thisElement.nextPageToken = null;
         if(response.hasOwnProperty("prevPageToken")){
             thisElement.prevPageToken = response.prevPageToken;
         }
+        else
+            thisElement.prevPageToken = null;
         callback(youtubeDocumentProcessor(response));
     });
 }
@@ -71,9 +75,13 @@ YoutubeSearch.prototype.nextResultsPage = function(callback){
         if(response.hasOwnProperty("nextPageToken")){
             thisElement.nextPageToken = response.nextPageToken;
         }
+        else
+            thisElement.nextPageToken = null;
         if(response.hasOwnProperty("prevPageToken")){
             thisElement.prevPageToken = response.prevPageToken;
         }
+        else
+            thisElement.prevPageToken = null;
         callback(youtubeDocumentProcessor(response));
     });
 
@@ -96,11 +104,23 @@ YoutubeSearch.prototype.prevResultsPage = function(callback){
         if(response.hasOwnProperty("nextPageToken")){
             thisElement.nextPageToken = response.nextPageToken;
         }
+        else
+            thisElement.nextPageToken = null;
         if(response.hasOwnProperty("prevPageToken")){
             thisElement.prevPageToken = response.prevPageToken;
         }
+        else
+            thisElement.prevPageToken = null;
         callback(youtubeDocumentProcessor(response));
     });
+}
+
+YoutubeSearch.prototype.hasPrevPage = function(){
+    return (this.prevPageToken != null)
+}
+
+YoutubeSearch.prototype.hasNextPage = function(){
+    return (this.nextPageToken != null)
 }
 
 var YouTubeSearch = {

@@ -85,11 +85,17 @@
 			newRepository.pageOffset = 1;
 			newRepository.searchResults = [];
 			newRepository.visibleResults = [];
+			newRepository.hasNextPage = false;
+			newRepository.hasPrevPage = false;
+			newRepository.hasResults = false;
 
 			var updateVisibleResults = function(){
 				newRepository.visibleResults = [];
+				var maxIndex = newRepository.currentPageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE;
+				if (maxIndex > newRepository.searchResults.length)
+					maxIndex = newRepository.searchResults.length;
 				for(var i = newRepository.currentPageIndex * ITEMS_PER_PAGE; 
-					i < newRepository.currentPageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE; i++){
+					i < maxIndex; i++){
 					newRepository.visibleResults.push(newRepository.searchResults[i]);
 				}
 			};
@@ -119,33 +125,32 @@
 				}
 			};
 
-			updatePagination();
-
 			newRepository.nextResultsPage = function(){
 				newRepository.searchFunctions.nextResultsPage(function(results){
-					for(var i = 0; i < results.length; i ++){
-						results[i] = processResult(results[i]);
-					}
-					newRepository.searchResults = results;
 					newRepository.pageOffset += ITEMS_PER_PAGE;
-					newRepository.currentPageIndex = 0;
-					updatePagination();
-					updateVisibleResults();
+					newRepository.initNewResults(results);
 					$("#content").animate({ scrollTop: 0 }, "fast");
 				});
 			}
 			newRepository.prevResultsPage = function(){
 				newRepository.searchFunctions.prevResultsPage(function(results){
-					for(var i = 0; i < results.length; i ++){
-						results[i] = processResult(results[i]);
-					}
-					newRepository.searchResults = results;
 					newRepository.pageOffset -= ITEMS_PER_PAGE;
-					newRepository.currentPageIndex = 0;
-					updatePagination();
-					updateVisibleResults();
+					newRepository.initNewResults(results);
 					$("#content").animate({ scrollTop: 0 }, "fast");
 				});
+			}
+
+			newRepository.initNewResults = function(results){
+				for(var i = 0; i < results.length; i ++){
+					results[i] = processResult(results[i]);
+				}
+				newRepository.searchResults = results;
+				newRepository.currentPageIndex = 0;
+				newRepository.hasPrevPage = newRepository.searchFunctions.hasPrevPage();
+				newRepository.hasNextPage = newRepository.searchFunctions.hasNextPage();
+				newRepository.hasResults = (results.length > 0);
+				updatePagination();
+				updateVisibleResults();
 			}
 
 			var processResult = function(result){
@@ -156,16 +161,14 @@
 			}
 			newRepository.search = function(query, callback){
 				newRepository.searchFunctions.search(query, function(results){
-					for(var i = 0; i < results.length; i ++){
-						results[i] = processResult(results[i]);
-					}
-					newRepository.currentPageIndex = 0;
 					newRepository.pageOffset = 1;
-					newRepository.searchResults = results;
-					updateVisibleResults();
-					callback();
+					newRepository.initNewResults(results);
 				});
 			}
+
+			newRepository.initNewResults([]);
+
+			//alert(JSON.stringify(newRepository));
 			
 			repositories.push(newRepository);
 		}
@@ -189,46 +192,15 @@
 			iwcClient.publish(intent);
 		}
 
-		function publishShowYoutubeVideo(id){
-			var intent = {
-				component: "",
-				data: "",
-				dataType: "text/json",
-				action: "SHOW_YOUTUBE_VIDEO",
-				extras: {id:id}
-			};
-
-			iwcClient.publish(intent);
-		}
-
-		function publishShowSlideshareSlideshow(id){
-			var intent = {
-				component: "",
-				data: "",
-				dataType: "text/json",
-				action: "SHOW_SLIDESHARE_SLIDESHOW",
-				extras: {id:id}
-			};
-
-			iwcClient.publish(intent);
-		}
-
-		function publishShowScribdDocument(id, accessKey, description){
-			var intent = {
-				component: "",
-				data: "",
-				dataType: "text/json",
-				action: "SHOW_SCRIBD_DOCUMENT",
-				extras: {id:id,
-						 accessKey:accessKey,
-						 description:description
-						}
-			};
-
-			iwcClient.publish(intent);
-		}
-
 		$(function(){
+			 // help button click 
+
+    	  $('#question').click(function(){
+        	$('#descriptionModal').modal({
+        		keyboard: true
+          	});
+        	}); 
+
 			//Add new repositories here
 			addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
 			addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
@@ -241,6 +213,13 @@
 					$(el).addClass("active");
 				else
 					$(el).removeClass("active");
+			}
+
+			rivets.binders.enable = function(el, value){
+				if(value)
+					$(el).removeClass("disabled");
+				else
+					$(el).addClass("disabled");
 			}
 
 			rivets.bind($("#selectRepositoryButtonGroup").get(), {repositories:repositories});
@@ -260,34 +239,7 @@
 				});
 				}
 			});
-			$("#search_field").on("input", function(){
-				currentQuery = $(this).val();
-			});
 
-			$("#youTubeSelector").change(function(){
-				activateSearch("youtube");
-			});
-
-			$("#slideShareSelector").change(function(){
-				activateSlideShareSearch();
-
-				var query = $("#search_field").val();
-				if(query)
-					performSearch(query);
-			});
-
-			$("#scribdSelector").change(function(){
-				activateScribdSearch();
-
-				var query = $("#search_field").val();
-				if(query)
-					performSearch(query);
-			});
-			$('#question').click(function(){
-				$('#descriptionModal').modal({
-				keyboard: true
-					});
-				}); 
 		});
 
 		function renderSearchProgressBar(){
@@ -307,8 +259,11 @@
 		<div style="overflow-y: scroll; height:400px;" id="content">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
+
 				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search learning documents</h3>
+
+
 		  	</div>
 		  	<div class="panel-body" id="panelBody">
 		  		<div class="input-group" style="padding-top:5px;">
@@ -325,17 +280,17 @@
 			</div>
 			<div class="list-group" id="resultsList">
 				<a rv-each-result="model.selectedRepository.visibleResults" rv-on-click="result.click" href='#' class='list-group-item' style='min-height:150px;'>
-					<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:100px;' class='pull-left' alt=''>
-					<h4>{result.name}</h4>
-					<p>{result.description}</p>
+					<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+					<h5>{result.name}</h5>
+					<p><small>{result.description}</small></p>
 				</a>
 			</div>
 			<div class="panel-footer" id="resultsFooter"></div>
 				<center>
-					<ul id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
-							<li><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
-							<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
-							<li><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
+					<ul rv-show="model.selectedRepository.hasResults" id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
+						<li rv-if="model.selectedRepository.hasPrevPage"><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
+						<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
+						<li rv-if="model.selectedRepository.hasNextPage"><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
 					</ul>
 				</center>
 			</div>

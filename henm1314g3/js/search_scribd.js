@@ -22,9 +22,14 @@ function scribdDocumentProcessor(response){
 	var resultDocumentsList = [];
     for(var i = 0; i < response.rsp.result_set[0].result.length; i++){
         var scribdData = response.rsp.result_set[0].result[i];
+        var description;
+        if(!scribdData.description)
+            description = "No description available.";
+        else
+            description = scribdData.description;
         var documentItem = {
         	name : scribdData.title,
-        	description : "scribdData.description",
+        	description : description,
         	type : "scribd",
         	url : "",
         	contentSpecificData: {
@@ -33,7 +38,6 @@ function scribdDocumentProcessor(response){
         		accessKey : scribdData.access_key
         	}
         };
-        console.log(JSON.stringify(documentItem));
         resultDocumentsList.push(documentItem);
     }
     return resultDocumentsList;
@@ -65,4 +69,12 @@ ScribdSearch.prototype.prevResultsPage = function(callback){
 	$.get( "http://query.yahooapis.com/v1/public/yql?q=" + q + "&format=json").done(function( data ) {
 		callback(scribdDocumentProcessor(data.query.results));
 	});
+}
+
+ScribdSearch.prototype.hasPrevPage = function(){
+    return (this.page != 1)
+}
+
+ScribdSearch.prototype.hasNextPage = function(){
+    return true;
 }
