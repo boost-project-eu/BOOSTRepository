@@ -66,3 +66,11 @@ ScribdSearch.prototype.prevResultsPage = function(callback){
 		callback(scribdDocumentProcessor(data.query.results));
 	});
 }
+
+ScribdSearch.prototype.hasPrevPage = function(){
+    return (this.page != 1)
+}
+
+ScribdSearch.prototype.hasNextPage = function(){
+    return true;
+}
