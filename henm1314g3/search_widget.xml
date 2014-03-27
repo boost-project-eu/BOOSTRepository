@@ -267,17 +267,17 @@
 			</div>
 			<div class="list-group" id="resultsList">
 				<a rv-each-result="model.selectedRepository.visibleResults" rv-on-click="result.click" href='#' class='list-group-item' style='min-height:150px;'>
-					<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:100px;' class='pull-left' alt=''>
-					<h4>{result.name}</h4>
-					<p>{result.description}</p>
+					<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+					<h5>{result.name}</h5>
+					<p><small>{result.description}</small></p>
 				</a>
 			</div>
 			<div class="panel-footer" id="resultsFooter"></div>
 				<center>
 					<ul rv-show="model.selectedRepository.hasResults" id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
-						<li rv-show="model.selectedRepository.hasPrevPage"><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
+						<li rv-if="model.selectedRepository.hasPrevPage"><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
 						<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
-						<li rv-show="model.selectedRepository.hasNextPage"><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
+						<li rv-if="model.selectedRepository.hasNextPage"><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
 					</ul>
 				</center>
 			</div>
