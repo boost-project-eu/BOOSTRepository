@@ -80,6 +80,14 @@
 
     $(document).ready(function(){
 
+      // help button click 
+
+      $('#question').click(function(){
+        $('#descriptionModal').modal({
+        keyboard: true
+          });
+        }); 
+
       /* manage search repositories */
 
     $("#saveRepoButton").click(function(){
@@ -277,6 +285,7 @@
       <div class="panel panel-primary">
    
         <div class="panel-heading">
+            <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
             <h3 class="panel-title">Control Boost Widgets</h3>
         </div>
 
@@ -365,6 +374,26 @@
               </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
       </div><!-- /.modal -->
+
+      <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Description of Boost search Widget</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+              <p>Admin widget has created for filtering learning repositories and adding description to the Learning Indicators (LI). </p>  
+             <p>By clicking on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/filter.PNG" alt="filter" width="30" height="20"> Icon and checking or unchecking the learning repositories, User can disable or enable them for Employees on Search widget.</p>
+              <p>By clicking on  <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/desc.PNG" alt="description" width="30" height="20"> Icon, choosing BCN and after that LI, User can add description for LIs.</p>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
 
     ]]>
   </Content>
