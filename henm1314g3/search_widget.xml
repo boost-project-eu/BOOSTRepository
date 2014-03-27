@@ -251,10 +251,6 @@
 				});
 				}
 			});
-<<<<<<< HEAD
-
-=======
->>>>>>> FETCH_HEAD
 		});
 
 		function renderSearchProgressBar(){
@@ -274,15 +270,8 @@
 		<div style="overflow-y: scroll; height:400px;" id="content">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-<<<<<<< HEAD
-
 				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search learning documents</h3>
-
-
-=======
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
->>>>>>> FETCH_HEAD
 		  	</div>
 		  	<div class="panel-body" id="panelBody">
 		  		<div class="input-group" style="padding-top:5px;">
