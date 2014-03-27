@@ -57,8 +57,23 @@
 										"</ul>" +
 									"</div>";
 			//Template used for a node in the documents tree
+			// var nodeTemplate = 	"<li>" +
+			// 						"<span>" +
+			// 						"<table>" +
+			// 							"<tr>" +
+			// 								"<td><span style='margin-right:5px;' class='glyphicon #{icon}'></span>#{nodeName}<td>" +
+			// 							"</tr>" +
+			// 							"<tr>" +
+			// 								"<td><small>Text</small></td>" +
+			// 							"</tr>" +
+			// 						"<table>" +
+			// 						"</span>" +
+			// 					"</li>";
+
 			var nodeTemplate = 	"<li>" +
-									"<span><span style='margin-right:5px;' class='glyphicon #{icon}'></span>#{nodeName}</span>" +
+									"<span>" +
+										"<span style='margin-right:5px;' class='glyphicon #{icon}'></span>#{nodeName}" +
+									"</span>" +
 								"</li>";
 			
 			var liGlobal; // current learning Indicator

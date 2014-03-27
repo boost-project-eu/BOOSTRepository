@@ -98,8 +98,14 @@
 				var page = {};
 				page.index = index;
 				page.value = index + offset;
+				page.isSelected = (index==0);
 				page.click = function(event, model){
 					newRepository.currentPageIndex = page.index;
+					page.isSelected = true;
+					for(var i = 0; i < newRepository.pages.length; i++){
+						if(i != page.index)
+							newRepository.pages[i].isSelected = false;
+					}
 					updateVisibleResults();
 					$("#content").animate({ scrollTop: 0 }, "fast");
 				}
@@ -229,6 +235,14 @@
 			addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
 			
 			model.selectedRepository = repositories[0];
+
+			rivets.binders.highlight = function(el, value){
+				if(value)
+					$(el).addClass("active");
+				else
+					$(el).removeClass("active");
+			}
+
 			rivets.bind($("#selectRepositoryButtonGroup").get(), {repositories:repositories});
 			rivets.bind($("#resultsList").get(), {model:model});
 			rivets.bind($("#pagination").get(),  {model:model});
@@ -314,7 +328,7 @@
 				<center>
 					<ul id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
 							<li><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
-							<li rv-each-page="model.selectedRepository.pages"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
+							<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
 							<li><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
 					</ul>
 				</center>
