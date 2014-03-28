@@ -72,7 +72,11 @@
 
 				retrieveAllBcns(space, function(bcnsList){
 					bcns=bcnsList;
-					bcns.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
+
+					bcnsList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+				});
 					
 					retrieveAllEmployees(space, function(employeesList){
 					employees=employeesList;
@@ -390,7 +394,7 @@
 			// Printing the graphs
 			
 			function printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg){
-				
+			
 				//llevel is from EmployeeManager.js
 
 				var learningLevelsName = [];
@@ -469,6 +473,7 @@
 														var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
 												
 														return pushpin[0].outerHTML+this.value;
+														
 														
 													}}
 											 
@@ -602,7 +607,6 @@
 							labels:{
 								rotation: -25,
 								formatter: function() {
-
 									if (isEmployeeGraph.bool) {
 										var $formater = $("formater");
 										for (var i=0; i<liNameList.length; i++){
@@ -610,8 +614,9 @@
 													if (bcns[i].name==this.value){
 														
 														var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
-												
+														
 														return pushpin[0].outerHTML+this.value;
+														
 														
 													}}
 									} else return formater+this.value;
