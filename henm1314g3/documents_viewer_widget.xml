@@ -132,6 +132,17 @@
 				scribd_doc.write('scribdContainer');
 			}
 
+			$(function(){
+
+			      // help button click 
+
+			      $('#question').click(function(){
+			        $('#descriptionModal').modal({
+			        keyboard: true
+			          });
+			        }); 
+			});
+
 
 
 		</script>
@@ -140,12 +151,34 @@
 		<div style="overflow-y: scroll; height:400px;">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>Documents viewer</h3>
+				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+				<h3 class="panel-title"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>Documents viewer</h3>
 		  	</div>
 		  	<div class="panel-body" id="content">
 			</div>
 		</div>
 		</div>
+
+		 <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Boost Viewer Help</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+            <ul style="padding: 10px;">
+             <li>Click on learning document in <i>Boost Search</i> or <i>Learning Repository</i> widget to see it in <i>Boost Viewer</i></li>
+              </li>
+            </ul>         
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
 	]]>
   </Content>
 </Module>
