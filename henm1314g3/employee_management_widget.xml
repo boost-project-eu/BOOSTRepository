@@ -728,8 +728,9 @@
 		<div class="panel panel-primary">
 			
 			<div class="panel-heading">
-		    		<h3 class="panel-title">
-					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Your employees
+					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					<h3 class="panel-title">
+					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business employees
 				</h3>
 		  	</div>
 		  	
@@ -737,7 +738,6 @@
 				<button type="button" class="btn btn-primary" id="addNewEmployeeButton">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
-				<button id="question" type="button" class="btn btn-primary launch-modal" style="float:right; margin:0 10 0 5px;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 				<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
 			</div>
 			<table class="table table-striped table-bordered" id="employeeOverviewTable">
