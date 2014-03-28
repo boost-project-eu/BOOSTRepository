@@ -63,6 +63,7 @@
 			var isDetailedGraph={};
 			
 			gadgets.util.registerOnLoadHandler(init);
+
 			
 			function init(){
 				space = new openapp.oo.Resource(openapp.param.space());
@@ -255,6 +256,17 @@
 					}
 				}
 			}
+
+			$(function(){
+
+			      // help button click 
+
+			      $('#question').click(function(){
+			        $('#descriptionModal').modal({
+			        keyboard: true
+			          });
+			        }); 
+			 });
 
 			function averageLIProgressForBcn(bcn){
 				var liNameList=[];
@@ -746,8 +758,8 @@
 					uriBcn[i]=bcns[i].uri;
 
 				}
-				var title= 'Overall View';
-				var subtitle = 'How close you are to accomplish your goals';
+				var title= 'Overall Goals View';
+				var subtitle = 'How close employee are to accomplish business goals';
 				var isOverview={};
 				isOverview.bool=true;
 				isOverview.isBcn=true;
@@ -835,7 +847,7 @@
 				for (var i=0; i<employees.length; i++)
 					uriEmployee[i]=employees[i].uri;
 				var title= 'Overall Employee View';
-				var subtitle = 'How close your employees are to accomplish your goals';
+				var subtitle = 'How close employees are to accomplish business goals';
 				var isOverview={};
 				isOverview.bool=true;
 				isOverview.isBcn=false;
@@ -1002,7 +1014,8 @@
 		<div style="overflow-y: scroll; height: 400px;">
 		<div class="panel panel-primary" style="margin-bottom: 0px">
 			<div class="panel-heading">
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-stats" style="margin-right:5px;"></span>Your learning progress</h3>
+			    <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+				<h3 class="panel-title"><span class="glyphicon glyphicon-stats" style="margin-right:5px;"></span>Learning progress</h3>
 
 		  	</div>
 		  	<div class="panel-body">
@@ -1011,6 +1024,44 @@
 			</div>
 		</div>
 		</div>
+
+		 <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Learning Progress Help</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+            <ul style="padding: 10px;">
+              <li><i>Learning progress</i> widget works together with <i>Business Goals</i> and <i>Business Employees</i> widgets. By default <i>Overall Employee</i> view is shown.</li>
+              <li>To export graph view in PNG, PDF or JPEG formats click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/export.PNG" alt="filter" width="21" height="19"> icon. </li>             
+
+              <li>If current view is <i>Overall Employee View</i>: average learning progress of all employees will be shown. In this view you can: 
+              	<ul style="padding: 10px;"> 
+              		<li>Change current view to the <i>Overall Business Goals</i> by clicking on the chart.</li>
+               		<li>To see the average learning progress on goals of particular employee click on the <i>employee</i> bar accordingly.</li>
+              		<li>To see the learning progress on learning indicators of particular employee click on the <i>goal</i> bar. </li>
+              		<li>To come back to previous step click on the chart.</li> 
+              	</ul>
+              </li>
+
+              <li>If current view is <i>Overall Business Goals</i>: average learning progress on all goals will be shown. In this view you can: 
+               <ul style="padding: 10px;">
+               	<li>Click on the chart to change view to the <i>Overall Employee View</i>.</li>
+               	<li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li>
+               	<li>To come back to previous step click on the chart.</li> 
+               <ul>              
+            </ul>         
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
+
 	]]>
   </Content>
 </Module>
