@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     
-    <ModulePrefs title="Boost Employees"
+    <ModulePrefs title="Business Employees"
 		description="Manage your employees ans assign them learning aims."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
@@ -187,7 +187,7 @@
 
 			$(function(){
 				//question Icon 
-				$('.launch-modal').click(function(){
+				$('#question').click(function(){
 					$('#descriptionModal').modal({
 						keyboard: true
 					});
@@ -551,6 +551,7 @@
 						  '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">' +
     						'Undefined <span class="caret"></span></button>' +
 						  '<ul class="dropdown-menu #{dropdownId}" role="menu">' +
+						 		'<li><a data-learningLevel="0" href="#">0</a></li>' +
 						  		'<li><a data-learningLevel="1" href="#">1</a></li>' +
 					            '<li><a data-learningLevel="2" href="#">2</a></li>' +
 					           	'<li><a data-learningLevel="3" href="#">3</a></li>' +
@@ -615,80 +616,6 @@
 								allDropdowns[temp].find(".btn").append(caret);
 
 							}
-						//saving bcn and li links
-						
-				
-						// currentDropdown.find(">ul").data("bcnUri", bcn.uri);
-
-						// currentDropdown.find(">ul").data("liID", li.id);
-
-						// startDropdown.find(">ul").data("bcnUri", bcn.uri);
-
-						// startDropdown.find(">ul").data("liID", li.id);
-
-						// endDropdown.find(">ul").data("bcnUri", bcn.uri);
-
-						// endDropdown.find(">ul").data("liID", li.id);
-
-
-						//adding elements to the modal
-						
-						// liEntry.append(startLabel).append(startDropdown).append(div);
-
-						// liEntry.append(currentLabel).append(currentDropdown).append(div);
-						
-						// liEntry.append(endLabel).append(endDropdown).append(div);
-
-
-						//showing saved values in the dropdowns
-
-					//	currentDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].current + ' ');
-
-					//	currentDropdown.find("ul").data('currentLevel', employee.learningLevels[bcn.uri][li.id].current);
-
-					//	currentDropdown.find(".btn").append('<span class="caret"></span>');
-
-
-					//	startDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].start + ' ');
-
-					//	startDropdown.find("ul").data('startLevel', employee.learningLevels[bcn.uri][li.id].start);
-
-					//	startDropdown.find(".btn").append('<span class="caret"></span>');
-
-
-
-						// endDropdown.find(".btn").text(employee.learningLevels[bcn.uri][li.id].end + ' ');
-
-						// endDropdown.find("ul").data('endLevel', employee.learningLevels[bcn.uri][li.id].end);
-
-						// endDropdown.find(".btn").append('<span class="caret"></span>');
-				
-
-					//	var slider = $(sliderTemplate.replace(/#{li}/g, j));
-					//	slider.data("bcnUri", bcn.uri);
-					//	slider.data("liId", li.id);
-					//	liEntry.append(slider);
-						
-
-					//	var initialValues = [];
-					//	initialValues.push(employee.learningLevels[bcn.uri][li.id].start);
-					//	initialValues.push(employee.learningLevels[bcn.uri][li.id].end);
-					//	slider.data("start", initialValues[0]);
-					//	slider.data("end", initialValues[1]);
-					//	slider.slider({
-					//		max:llevel.length-1,
-					//		value:initialValues,
-					//		formater:function(val){
-					//			return llevel[val];
-					//		}
-					//	}).on("slideStop", function(env){
-					//		var values = env.value;
-					//		$(this).data("start", values[0]);
-					//		$(this).data("end", values[1]);
-					//	});
-
-						
-						 
 					}
 
 					$("#bcnPanel").append(entry);
@@ -895,30 +822,7 @@
 				</div>			
 			</div>
 		</div>
-	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    		<h4 class="modal-title">Description of the Boost Employees</h4>
-            </div>
-          <div class="modal-body">
-            <div class="panel-group" id="levelsdef" align="justify">
-            	<p> Description </p>
-            <!--	<p>This widget has created mainly for <b>manager </b>of companies. Manager can define Employees of company by clicking on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20">  button.</p> 
-                <p><b>Stage 0:</b> I have not started to address the skills / knowledge required for this indicator.</p></br>
-                <p><b>Stage 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</p>
-                <p><b>Stage 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</p>
-                <p><b>Stage 3:</b>  I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</p>
-                <p><b>Stage 4:</b> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</p>
-                <p><b>Stage 5:</b> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</p> -->
-          </div>
-          <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-          </div>      
-        </div>      
-      </div>
-    </div>
+	
 
 		<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -935,6 +839,42 @@
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
+
+	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    		<h4 class="modal-title">Business Employees Help</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+             <ul style="padding: 10px;">
+			 <li>To add new business employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Email</i> for your employee. Click on the <i>Save</i> button to save the changes.</li>
+             <li>To see overall progress of all goals click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the <i>Learning Progress</i> widget.</p></li>
+             <li>To edit employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
+             <li>To delete employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
+             <li>To assign goals to employee and define learning levels click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/flag.PNG" alt="assign" width="30" height="20"> icon. 
+              In the new view check in relevant goals for this employee and define learning levels by clicking on the goal name and selecting start, current and end level accordingly. 
+              <br>The description of learning level as follows: 
+              	<ul style="padding: 10px;">
+                	<li><b>Level 0:</b> I have not started to address the skills / knowledge required for this indicator.</li> 
+               	  	<li><b>Level 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
+                	<li><b>Level 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
+                	<li><b>Level 3:</b> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>
+                	<li><b>Level 4:</b> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</li>
+               		<li><b>Level 5:</b> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</li>
+              	</ul>
+              </li>
+             <li>To monitor the learning progress of employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
+             </ul>	
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
 	]]>
   </Content>
 </Module>
