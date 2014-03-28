@@ -543,10 +543,11 @@
            <div class="modal-body">
              <div class="panel-group" id="levelsdef" align="justify">
              <ul style="padding: 10px;">
-			 <li>To add new business goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/addLI.PNG" alt="addLI" width="30" height="20">. </li>
-             <li>To see the overall progress of all employees click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20">. The graph will be shown in the Learning Progress widget.</p></li>
-             <li>To edit business goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"></li>
-             <li>To monitor the progress of each employee immediately on Learning Progress widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"></li>
+			 <li>To add new business goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/addLI.PNG" alt="addLI" width="30" height="20"> icon. </li>
+             <li>To see overall progress of all employees click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the Learning Progress widget.</p></li>
+             <li>To edit goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
+             <li>To delete goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
+             <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
              </ul>	 		
           </div>
            <div class="modal-footer">
