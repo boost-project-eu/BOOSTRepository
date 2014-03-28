@@ -506,7 +506,16 @@
 			}
 
 			function renderAllBcns(employee){
+
+				/* Sort according priority index and name */
+
+				bcnList.sort(function(a, b){
+					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+					if(a.priority > b.priority)  return -1; else return 1;
+				});
+
 				$("#bcnPanel").empty();
+
 				for(var i = 0; i < bcnList.length; i++){
 					
 					// template for one entry in the BCN List					
@@ -570,9 +579,10 @@
 
 
 					if(employee.learningLevels[bcn.uri].isRelevant)
-						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star");
+						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star").css({color:priorityColors[bcn.priority]});
+						
 					else
-						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star-empty");
+						entry.closest(".panel").find(".glyphicon").addClass("glyphicon-star-empty").css({color:priorityColors[bcn.priority]});;
 
 					for(var j = 0; j < bcn.learningIndicators.length; j++){
 
@@ -664,10 +674,12 @@
 					if(isChecked){
 						glyphicon.removeClass("glyphicon-star-empty");
 						glyphicon.addClass("glyphicon-star");
+						glyphicon.find(".glyphicon-star").css({color:priorityColors[bcn.priority]});
 					}
 					else{
 						glyphicon.removeClass("glyphicon-star");
 						glyphicon.addClass("glyphicon-star-empty");
+						glyphicon.find(".glyphicon-star-empty").css({color:priorityColors[bcn.priority]});
 					}
 				});
 				$("#setLIModal").find(".relevance-checkbox").each(function(){
