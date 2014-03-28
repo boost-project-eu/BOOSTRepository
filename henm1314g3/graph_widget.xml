@@ -609,7 +609,8 @@
 								formatter: function() {
 									if (isEmployeeGraph.bool) {
 										var $formater = $("formater");
-										for (var i=0; i<liNameList.length; i++){
+										for (var i=0; i<bcns.length; i++){
+										//	console.log("bcns.list " + bcns.length);
 												
 													if (bcns[i].name==this.value){
 														
@@ -619,7 +620,7 @@
 														
 														
 													}}
-									} else return formater+this.value;
+									} return formater+this.value;
 								},
 								useHTML:true
 							}
@@ -662,7 +663,7 @@
 
 											if (isOverview.isEmployee){
 												
-												for (var i=0; i<liNameList.length; i++){
+												for (var i=0; i<bcns.length; i++){
 													
 													if (bcns[i].name==liNameList[this.x]){
 														$('#container').data('emplDataUri', employeeUri);
