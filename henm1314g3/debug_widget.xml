@@ -57,23 +57,34 @@
 					var employees = [];
 					//Create BCNs
 					var bcn1 = new BCN({
-						name: "Create a website",
-						description: "We need to create a website to show off our products and to be able to inform our customers about new products.",
+						name: "Design Energy-Efficient House",
+						description: "This goal has the highest priority. Planning energy efficiency should be done as soon as possible",
 						priority: 0
 					});
-					bcn1.addLI("Learn HTML", "Description HTML");
-					bcn1.addLI("Learn JavaScript", "Description JS");
-					bcn1.addLI("Learn PHP", "Description PHP");
+					bcn1.addLI("Ventilation", "Description ventilation");
+					bcn1.addLI("Tankless water heaters", "Description tankless water heaters");
+					bcn1.addLI("Building materials", "Description building materials");
 					bcn1.create(function(){
 						bcns.push(bcn1);
 						var bcn2 = new BCN({
-							name: "Create BOOST",
-							description: "We need to create BOOST to help our employees during their learning process."
+							name: "Green House Construction",
+							description: "Our goal is to reduce energy consumption by implementing energy-savings strategies",
+							priority: 1
 						});
-						bcn2.addLI("Learn CSS", "Description CSS");
-						bcn2.addLI("Learn JSON", "Description JSON");
+						bcn2.addLI("Solar electricity", "Description solar electricity");
+						bcn2.addLI("Solar heating", "Description solar heating");
 						bcn2.create(function(){
 							bcns.push(bcn2);
+
+						var bcn3 = new BCN({
+							name: "Decor and Furnishing",
+							description: "Our goal is to decorate with the costs and energy savings in mind",
+							priority: 2
+						});
+						bcn3.addLI("Led lights", "Description led lights");
+						bcn3.addLI("Reflective decorating", "Description reflective decorating");
+						bcn3.create(function(){
+							bcns.push(bcn3);
 
 							//Create employees
 							var employee1 = {};
@@ -154,7 +165,7 @@
 					});
 				});
 			});
-
+		});
 		</script>
 
 		<!-- HTML Block -->
