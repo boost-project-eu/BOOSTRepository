@@ -3,18 +3,16 @@ function Config(object){
 		this.uri = object.uri;
 	else
 		this.uri = "";
-	if(object.hasOwnProperty("useYouTube"))
-		this.useYouTube = object.useYouTube;
-	else
-		this.useYouTube = true;
-	if(object.hasOwnProperty("useSlideShare"))
-		this.useSlideShare = object.useSlideShare;
-	else
-		this.useSlideShare = true;
-	if(object.hasOwnProperty("useScribd"))
-		this.useScribd = object.useScribd;
-	else
-		this.useScribd = true;
+
+	if(object.hasOwnProperty("repositorySelection"))
+		this.repositorySelection = object.repositorySelection;
+	else{
+		this.repositorySelection = [];
+		for(var i = 0; i < repositories.length; i++){
+			var repository = repositories[i];
+			this.repositorySelection.push({name: repository.name, isSelected: true});
+		}
+	}
 }
 
 Config.prototype.create = function(callback){

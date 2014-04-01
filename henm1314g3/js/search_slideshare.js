@@ -1,5 +1,5 @@
 function SlideshareSearch(resultsPerPage){
-    this.name = "SlideShare";
+    this.name = "Slideshare";
     this.query = null;
     this.resultsPerPage = resultsPerPage;
     this.page = 1;

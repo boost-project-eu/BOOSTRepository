@@ -37,6 +37,7 @@
 
  		<!-- Config stuff -->
  		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
+ 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
 
 		<!-- Define CSS -->
@@ -50,7 +51,9 @@
 		var ITEMS_PER_SEARCH = ITEMS_PER_PAGE * NUM_PAGES;
 		var repositories = [];
 		var model = {};
-		model.selectedRepository = null;
+		model.selectedRepository = {};
+		model.repositories = repositories;
+		model.config = {};
 		var iwcClient;
 		var config;
 		var space;
@@ -70,14 +73,50 @@
 			iwcClient = new iwc.Client();
 			iwcClient.connect(iwcCallback);
 			retrieveConfig(space, function(configObject){
-				config = configObject;
+				model.config = configObject;
+
+				//Add new repositories here
+				addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
+				addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
+				addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
+				
+				for(var i = 0; i < repositories.length; i++){
+					if(repositories[i].isEnabled){
+						repositories[i].activate();
+						break;
+					}
+				}
+
+				rivets.binders.highlight = function(el, value){
+					if(value)
+						$(el).addClass("active");
+					else
+						$(el).removeClass("active");
+				}
+
+				rivets.binders.enable = function(el, value){
+					if(value)
+						$(el).removeClass("disabled");
+					else
+						$(el).addClass("disabled");
+
+					console.log($(el).find(">input").text());
+				}
+
+				rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
+				rivets.bind($("#resultsList").get(), {model:model});
+				rivets.bind($("#pagination").get(),  {model:model});
+				rivets.bind($("#progressbar").get(),  {model:model});
      		});
 		}
 
 		function addRepository(repository){
 			var newRepository = {};
 			newRepository.activate = function(){
+				model.selectedRepository.isActive = false;
+				newRepository.isActive = true;
 				model.selectedRepository = newRepository;
+
 			}
 			newRepository.index = repositories.length;
 			newRepository.searchFunctions = repository;
@@ -89,6 +128,12 @@
 			newRepository.hasPrevPage = false;
 			newRepository.hasResults = false;
 			newRepository.searching = false;
+			for(var i = 0; i < model.config.repositorySelection.length; i++){
+				var selection = model.config.repositorySelection[i];
+				if(selection.name == repository.name)
+					newRepository.isEnabled = selection.isSelected;
+			}
+			newRepository.isActive = false;
 
 			var updateVisibleResults = function(){
 				newRepository.visibleResults = [];
@@ -212,31 +257,6 @@
           	});
         	}); 
 
-			//Add new repositories here
-			addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
-			addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
-			addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
-			
-			model.selectedRepository = repositories[0];
-
-			rivets.binders.highlight = function(el, value){
-				if(value)
-					$(el).addClass("active");
-				else
-					$(el).removeClass("active");
-			}
-
-			rivets.binders.enable = function(el, value){
-				if(value)
-					$(el).removeClass("disabled");
-				else
-					$(el).addClass("disabled");
-			}
-
-			rivets.bind($("#selectRepositoryButtonGroup").get(), {repositories:repositories});
-			rivets.bind($("#resultsList").get(), {model:model});
-			rivets.bind($("#pagination").get(),  {model:model});
-			rivets.bind($("#progressbar").get(),  {model:model});
 
 			$("#search_button").click(function(){
 				model.selectedRepository.search($("#search_field").val(), function(){
@@ -281,8 +301,8 @@
 			      </span>
 			    </div>
 			    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
-				  <button rv-each-repository="repositories" class="btn btn-xs btn-primary">
-				    <input rv-on-change="repository.activate" type="radio" name="options">{repository.searchFunctions.name}</input>
+				  <button rv-highlight="repository.isActive" rv-each-repository="model.repositories" rv-enabled="repository.isEnabled" class="btn btn-xs btn-primary">
+				    <input rv-on-change="repository.activate" type="radio" name="opt">{repository.searchFunctions.name}</input>
 				  </button>
 				</div>
 				<div id="progressbar" style="margin-top:10px;" rv-if="model.selectedRepository.searching" class='progress progress-striped active'>

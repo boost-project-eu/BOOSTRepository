@@ -7,7 +7,7 @@ function onYouTubeClientLoad(){
 }
 
 function YoutubeSearch(resultsPerPage){
-    this.name = "YouTube";
+    this.name = "Youtube";
     this.query = null;
     this.resultsPerPage = resultsPerPage;
     this.nextPageToken = null;
