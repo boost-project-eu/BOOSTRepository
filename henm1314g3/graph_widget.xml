@@ -466,7 +466,7 @@
 								formatter: function() {
 										if (isOverviewGraph.bool) {
 										var $formater = $("formater");
-										for (var i=0; i<liNameList.length; i++){
+										for (var i=0; i<bcns.length; i++){
 												
 													if (bcns[i].name==this.value){
 														
