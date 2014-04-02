@@ -25,6 +25,8 @@
     <![CDATA[
 
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
 		<!-- JavaScript Block -->
@@ -160,6 +162,9 @@
 								}
 								saveEmployee(employees[e], space, function(){});
 							}
+
+							config = new Config({});
+							config.create(function(){});
 
 						});
 					});

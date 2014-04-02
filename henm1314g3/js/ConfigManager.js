@@ -47,11 +47,10 @@ function updateConfig(config, callback){
 
 function retrieveConfig(space, callback){
 	retrieveBoostResources("my:ns:config", function(object){return new Config(object)}, function(config){
+		//If no config file is stored in the space just return a default one
 		if(config.length == 0){
 			var defaultConfig = new Config({});
-			defaultConfig.create(function(){
-				callback(defaultConfig);
-			});
+			callback(defaultConfig);
 		}
 		else{
 			callback(config[0]);
