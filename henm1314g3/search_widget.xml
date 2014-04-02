@@ -74,7 +74,6 @@
 			iwcClient.connect(iwcCallback);
 			retrieveConfig(space, function(configObject){
 				model.config = configObject;
-
 				//Add new repositories here
 				addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
 				addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
@@ -86,27 +85,6 @@
 						break;
 					}
 				}
-
-				rivets.binders.highlight = function(el, value){
-					if(value)
-						$(el).addClass("active");
-					else
-						$(el).removeClass("active");
-				}
-
-				rivets.binders.enable = function(el, value){
-					if(value)
-						$(el).removeClass("disabled");
-					else
-						$(el).addClass("disabled");
-
-					console.log($(el).find(">input").text());
-				}
-
-				rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
-				rivets.bind($("#resultsList").get(), {model:model});
-				rivets.bind($("#pagination").get(),  {model:model});
-				rivets.bind($("#progressbar").get(),  {model:model});
      		});
 		}
 
@@ -248,6 +226,27 @@
 		}
 
 		$(function(){
+
+			rivets.binders.highlight = function(el, value){
+				if(value)
+					$(el).addClass("active");
+				else
+					$(el).removeClass("active");
+			}
+
+			rivets.binders.enable = function(el, value){
+				if(value)
+					$(el).removeClass("disabled");
+				else
+					$(el).addClass("disabled");
+
+				console.log($(el).find("input").text());
+			}
+
+			rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
+			rivets.bind($("#resultsList").get(), {model:model});
+			rivets.bind($("#pagination").get(),  {model:model});
+			rivets.bind($("#progressbar").get(),  {model:model});
 
 			 // help button click 
 
