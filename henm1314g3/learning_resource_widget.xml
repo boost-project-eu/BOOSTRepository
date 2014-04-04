@@ -135,8 +135,9 @@
 						retrieveAllLearningDocuments(function(lds){
 							bcnsList = bcns;
 							learningDocuments = lds;
-							//Directly categorize learning documents
-							//according to BCN and LI
+
+							//We add the learning documents to their respective learning indicators
+							//to get a nice tree-like structure of BCN->LI->Document
 							for(var i = 0; i < bcns.length; i++){
 								var currentBcn = bcns[i];
 								ldsList[currentBcn.uri] = {};
@@ -216,7 +217,6 @@
 					        		$("#deleteDocumentModal").modal("hide");
 					        	});
 
-					        	//console.log(this.get("document").name)
 					        });
 
 					        var addDocumentRactive = new Ractive({
@@ -268,13 +268,20 @@
 						{{#bcns}}
 				        <li>
 							<span>
-								<span style='margin-right:5px; color:{{this.getPriorityColor()}};' class='glyphicon glyphicon-star'></span>{{name}}
+								<p style="margin-bottom:0px">
+									<span style='margin-right:5px; color:{{this.getPriorityColor()}};' class='glyphicon glyphicon-star'></span>{{name}}
+								</p>
 							</span>
 							<ul>
 								{{#learningIndicators}}
 								 <li>
 									<span>
-										<span style='margin-right:5px;' class='glyphicon glyphicon-flag'></span>{{name}}
+										<p style="margin-bottom:0px">
+											<span style='margin-right:5px;' class='glyphicon glyphicon-flag'></span>{{name}}
+										</p>
+										<p style="margin-bottom:0px; overflow:hidden">
+											<small>{{description}}</small>
+										</p>
 									</span>
 									<ul>
 										<li>
