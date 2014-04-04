@@ -22,12 +22,12 @@ function LearningDocument(object){
 	if(object.hasOwnProperty("name"))
 		this.name = object.name;
 	else
-		this.name = "No name";
+		this.name = "";
 
 	if(object.hasOwnProperty("description"))
 		this.description = object.description;
 	else
-		this.description = "No description available.";
+		this.description = "";
 
 	if(object.hasOwnProperty("url"))
 		this.url = object.url;

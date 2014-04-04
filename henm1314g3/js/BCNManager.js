@@ -23,11 +23,6 @@ function BCN(object){
 	else
 		this.learningIndicators = [];
 
-	if(object.hasOwnProperty("learningDocuments"))
-		this.learningDocuments = object.learningDocuments;
-	else
-		this.learningDocuments = [];
-
 	//added attr priority to the object BCN
 
 	if(object.hasOwnProperty("priority"))
@@ -36,6 +31,9 @@ function BCN(object){
 		this.priority = 0;
 }
 
+BCN.prototype.getPriorityColor = function(){
+	return priorityColors[this.priority];
+}
 
 BCN.prototype.addLI = function(name){
 	var li = {};
