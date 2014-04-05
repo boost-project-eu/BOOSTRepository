@@ -187,6 +187,9 @@
 				result.click = function(){
 					publishLearningDocumentSelected(result);
 				}
+				result.getShortenedDescription = function(){
+					
+				}
 				return result;
 			}
 			newRepository.search = function(query, callback){

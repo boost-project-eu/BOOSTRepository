@@ -180,12 +180,23 @@
 					$("#inputNewBcnNameWarning").text("Error: Name must be filled out!");					
 					return false
 				}
-				return true;
+				var result = true;
+				$(".li-input").each(function(){
+					if($(this).find("input[type='text']").val() == ""){
+						$("#li-form-group").addClass("has-error");
+						$("#li-form-group").find(".help-block > h6").text("Error: Learning indicator names must not be empty.");
+						result = false;
+					}
+				});
+				return result;
 			}
 
 			function clearInputNewBCNWarning(){
 				$("#inputNewBcnName").parent().removeClass("has-error");
 				$("#inputNewBcnNameWarning").text("");
+
+				$("#li-form-group").removeClass("has-error");
+				$("#li-form-group").find(".help-block > h6").text("");
 			}
 
 			function iwcCallback(intent){
@@ -346,6 +357,7 @@
 				liInput.find("input[type='text']").val(li.name);
 				liInput.id = "liInput" + li.id;
 				liInput.addClass("additionalLI");
+				liInput.addClass("li-input");
 				liInput.find("input[type='text']").off("input").on("input", function(){
 					li.name = $(this).val();
 				});
@@ -411,6 +423,7 @@
 				$("#saveNewBcnButton").click(function(){
 					//$(this).button("loading");
 					var l = Ladda.create(this);
+					clearInputNewBCNWarning();
 					if(checkInputNewBcn()){					
 					l.start();
 					if(bcnIndex < 0){
@@ -471,9 +484,9 @@
   					<div class="modal-body">
     					<form role="form">
 								<div class="form-group">
-								<label for="inputNewBcnName" class="control-label">Name</label>
-								<input type="text" class="form-control" id="inputNewBcnName" placeholder="Enter name">
-								<span class="help-block"><h6 id="inputNewBcnNameWarning"></h6></span>		
+									<label for="inputNewBcnName" class="control-label">Name</label>
+									<input type="text" class="form-control" id="inputNewBcnName" placeholder="Enter name">
+									<span class="help-block"><h6 id="inputNewBcnNameWarning"></h6></span>	
 								</div>
 								<div class="form-group">
 								<label for="inputNewBcnDescription">Description</label>
@@ -498,14 +511,15 @@
 									</div>
 								</div>							
 								
-								<div class="form-group">
+								<div id="li-form-group" class="form-group">
 									<label for="inputNewBcnLi">Learning indicators</label>
+									<span class="help-block"><h6></h6></span>	
 									<div id = "inputNewBcnLi">
-										<div class="input-group" id="liInput" style="margin-bottom:5px;">
+										<div class="input-group li-input" id="liInput" style="margin-bottom:5px;">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-flag"></span></span>
 											<input type="text" class="form-control liNameInput" placeholder="Enter learning indicator name">
 										</div>
-								</div>
+									</div>
 			 					</div>
 								<button type="button" class="btn btn-primary" id="addLIButton"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button>
 						</form>
