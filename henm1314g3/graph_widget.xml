@@ -498,8 +498,18 @@
 
 						tooltip: {
 							 formatter: function() {
+							 	if (this.series.name=="Start") {
                    				 return '<b>'+ this.x +'</b><br/>'+
-                   				  this.series.name +': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				  'Started learning at ' + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				}
+                   				if (this.series.name=="Current") {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                   				  'Learned ' + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				}
+                   				if (this.series.name=="End") {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                   				  'Still to learn ' +': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				}
                      		//	   this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+			//round?
                      		//	   'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
                 }
@@ -637,9 +647,19 @@
 							}
 						},
 						tooltip: {
-							 formatter: function() {
-                    return '<b>'+ this.x +'</b><br/>'+
-                    	 this.series.name +': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+							  formatter: function() {
+							 	if (this.series.name=="Start") {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                   				  'Started learning at ' + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				}
+                   				if (this.series.name=="Current") {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                   				  'Learned ' + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				}
+                   				if (this.series.name=="End") {
+                   				 return '<b>'+ this.x +'</b><br/>'+
+                   				  'Still to learn ' +': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+                   				}
                       //  this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+
                       //  'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
                 }
