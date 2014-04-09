@@ -25,23 +25,23 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_youtube.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_slideshare.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_scribd.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/rivets.min.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/search_youtube.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/search_slideshare.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/search_scribd.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/linkify.js" type="text/javascript"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/rivets.min.js" type="text/javascript"></script>
     	<script src="https://apis.google.com/js/client.js?onload=onYouTubeClientLoad" type="text/javascript"></script>
     	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 
  		<!-- Config stuff -->
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
+ 		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/boostShared.js"></script>
+ 		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/repositories.js"></script>
+    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/ConfigManager.js"></script>
 
 		<!-- Define CSS -->
-		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
 		<script>

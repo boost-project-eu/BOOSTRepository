@@ -25,24 +25,24 @@
     <![CDATA[
 
     <!-- We use jQuery to manipulate DOM and Bootstrap for the interface. -->
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/bootstrap.min.js"></script>
    
     <script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/rivets.min.js" type="text/javascript"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/ladda/spin.min.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/ladda/ladda.min.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/rivets.min.js" type="text/javascript"></script>
             
     <!-- Managers for BCN and Employee related stuff -->
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/boostShared.js" type="text/javascript"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/BCNManager.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/EmployeeManager.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/repositories.js"></script>
+    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/ConfigManager.js"></script>
 
 
     <!-- Define CSS -->
-   <link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/css/bootstrap.min.css">
  
 
     <!-- JavaScript Block -->
@@ -356,8 +356,8 @@
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
             <ul style="padding: 10px;">
-              <li>To manage learning repositories click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/filter.PNG" alt="filter" width="21" height="17"> icon. In the new view check in learning repositories that will be available in the <i>Boost Search</i> widget.</li>
-              <li>To add description (keywords) to learning indicators click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/desc.PNG" alt="description" width="21" height="18"> icon. In the new view choose goal, then learning indicator and enter description in the text field. Save changes, by clicking on the <i>Assign description</i>button.
+              <li>To manage learning repositories click on the <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/filter.PNG" alt="filter" width="21" height="17"> icon. In the new view check in learning repositories that will be available in the <i>Boost Search</i> widget.</li>
+              <li>To add description (keywords) to learning indicators click on the <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/desc.PNG" alt="description" width="21" height="18"> icon. In the new view choose goal, then learning indicator and enter description in the text field. Save changes, by clicking on the <i>Assign description</i>button.
               <br>Employee can read this description in the <i>Learning Repository</i> widget. 
               </li>
             </ul>         
