@@ -25,18 +25,18 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/boostShared.js" type="text/javascript"></script>
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/ladda/spin.min.js"></script>
-		<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/ladda/ladda.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
 
 		<!-- Define CSS -->		
-		<link href="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/ladda/ladda-themeless.min.css">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 
 		<!-- JavaScript Block -->
 		<script>
@@ -98,7 +98,7 @@
 				addLiTooltipOptions.placement = "right";
 				$("#addLIButton").tooltip(addLiTooltipOptions);
 
-				$("#panel").append("<img id='loader' src='https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/loader.gif'>")
+				$("#panel").append("<img id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>")
 				retrieveAllBcns(space, function(bcns){
 					bcnsList = bcns;
 					retrieveAllEmployees(space, function(employees){
@@ -559,11 +559,11 @@
            <div class="modal-body">
              <div class="panel-group" id="levelsdef" align="justify">
              <ul style="padding: 10px;">
-			 <li>To add new business goal click on <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/addLI.PNG" alt="addLI" width="30" height="20"> icon. </li>
-             <li>To see overall progress of all employees click on <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the Learning Progress widget.</p></li>
-             <li>To edit goal click on <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
-             <li>To delete goal click on <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
-             <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
+			 <li>To add new business goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/addLI.PNG" alt="addLI" width="30" height="20"> icon. </li>
+             <li>To see overall progress of all employees click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the Learning Progress widget.</p></li>
+             <li>To edit goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
+             <li>To delete goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
+             <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
              </ul>	 		
           </div>
            <div class="modal-footer">

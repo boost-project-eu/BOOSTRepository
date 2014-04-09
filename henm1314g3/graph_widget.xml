@@ -27,19 +27,19 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
     	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 
-    <script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/boostShared.js"></script>
-	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
-	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
 		
-	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/highcharts/js/highcharts.js" type="text/javascript"></script>
-	<script src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/highcharts/js/modules/exporting.js" type="text/javascript"></script>
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/highcharts.js" type="text/javascript"></script>
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/modules/exporting.js" type="text/javascript"></script>
 
 		<!-- Define CSS -->		
-		<link href="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
 		<script>
@@ -1064,7 +1064,7 @@
             <div class="panel-group" id="levelsdef" align="justify">
             <ul style="padding: 10px;">
               <li><i>Learning progress</i> widget works together with <i>Business Goals</i> and <i>Business Employees</i> widgets. By default <i>Overall Employee</i> view is shown.</li>
-              <li>To export graph view in PNG, PDF or JPEG formats click on the <img src="https://raw.githubusercontent.com/sunkat/BOOSTRepository/publish/henm1314g3/resources/export.PNG" alt="filter" width="21" height="19"> icon. </li>             
+              <li>To export graph view in PNG, PDF or JPEG formats click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/export.PNG" alt="filter" width="21" height="19"> icon. </li>             
 
               <li>If current view is <i>Overall Employee View</i>: average learning progress of all employees will be shown. In this view you can: 
               	<ul style="padding: 10px;"> 
