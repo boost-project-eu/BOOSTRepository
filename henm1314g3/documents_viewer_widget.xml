@@ -92,7 +92,10 @@
 				                        		description.replace(/\n/g, "<br>").linkify() +
 				                        	"</p>" +
 				                        	"</div>";
-				    $("#content").append(youtubeTemplate);
+				    var $youtubeElement = $(youtubeTemplate);
+				    //If the user clicks on a link, open a new tab in the browser
+				    assignLinkClickEvents($youtubeElement);
+				    $("#content").append($youtubeElement);
 				});
 			}
 
@@ -111,7 +114,11 @@
 				                        		description.replace(/\n/g, "<br>").linkify() +
 				                        	"</p>" +
 				                        	"</div>";
-				    $("#content").append(slideshowTemplate);
+
+				    var $slideShowElement = $(slideshowTemplate);
+                	//If the user clicks on a link, open a new tab in the browser
+				    assignLinkClickEvents($slideShowElement);
+				    $("#content").append($slideShowElement);
 				});
 			}
 
@@ -126,10 +133,23 @@
 			                        	"</p>" +
 			                        	"</div>";
 			    
-			    $("#content").append(scribdTemplate);
+			    var $scribdElement = $(scribdTemplate);
+			    //If the user clicks on a link, open a new tab in the browser
+			    assignLinkClickEvents($scribdElement);
+			    $("#content").append($scribdElement);
+			    
 			    var scribd_doc = scribd.Document.getDoc(id, accessKey);
 				scribd_doc.addParam('jsapi_version', 2);
 				scribd_doc.write('scribdContainer');
+			}
+
+			function assignLinkClickEvents(element){
+				element.find('a').click(function(e){
+			    	var url = $(this).attr("href");
+			    	window.open(url,'_blank');
+			    	//Prevent default click behaviour which opens the link inside the widget
+			    	e.preventDefault();
+			    });
 			}
 
 			$(function(){
