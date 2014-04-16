@@ -184,12 +184,18 @@
 			}
 
 			var processResult = function(result){
+				//Add a click event to the result which sends a "learning document selected" message
+				//to other widgets.
 				result.click = function(){
 					publishLearningDocumentSelected(result);
 				}
-				result.getShortenedDescription = function(){
-					
+				
+				//Shorten the description of the result if it is too long
+				var maxDescriptionLength = 500;
+				if(result.description.length > maxDescriptionLength){
+					result.description = result.description.substring(0, maxDescriptionLength) + "...";
 				}
+
 				return result;
 			}
 			newRepository.search = function(query, callback){
