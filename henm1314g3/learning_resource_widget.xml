@@ -194,6 +194,11 @@
 					        treeRactive.on("documentShow", function(event){
 					        	publishShowLearningDocument(event.context);
 					        });
+					        treeRactive.on("documentEdit", function(event){
+					        	editDocumentRactive.set("editDocument", event.context);
+					        	editDocumentRactive.set("keypath", event.keypath);
+					        	$("#editDocumentModal").modal();
+					        });
 					        $("#documentsTree").tree();
 
 					        var deleteDocumentRactive = new Ractive({
@@ -217,6 +222,27 @@
 					        		$("#deleteDocumentModal").modal("hide");
 					        	});
 
+					        });
+
+					        var editDocumentRactive = new Ractive({
+					        	el: 'editDocumentTemplateContainer',
+					        	template: '#editDocumentTemplate',
+					        	data: {
+					        		editDocument: null,
+					        		keypath: null
+					        	}
+					        });
+					        editDocumentRactive.on("updateDocument", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var document = this.get("editDocument");
+					        	var kp = this.get("keypath");
+					        	document.update(function(){
+					        		l.stop();
+					        		treeRactive.update(kp);
+					        		$("#editDocumentModal").modal("hide");
+					        	});
 					        });
 
 					        var addDocumentRactive = new Ractive({
@@ -297,6 +323,9 @@
 													<button on-click="documentShow" class='btn btn-default btn-sm'>
 														<span class='glyphicon glyphicon-play-circle'></span>
 													</button>
+													<button on-click="documentEdit" class='btn btn-default btn-sm'>
+														<span class='glyphicon glyphicon-edit'></span>
+													</button>
 													<button on-click="documentDelete" class='btn btn-default btn-sm'>
 														<span class='glyphicon glyphicon-trash'></span>
 													</button>
@@ -355,38 +384,41 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		<div class="modal fade" id="updateLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+		<div class="modal fade" id="editDocumentModal" tabindex="-1" role="dialog" aria-labelledby="editDocumentModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
+					<div id="editDocumentTemplateContainer">
+					<script id='editDocumentTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">Update a Learning Document</h4>
+    					<h4 class="modal-title" id="editDocumentModalLabel">Edit learning Document</h4>
   					</div>
   					<div class="modal-body">
-    					<form id="updateForm" role="form">
+    					<form id="addForm" role="form">
 								<div class="form-group">
-									<label for="inputLdNameUpdate">Name</label>
-									<input type="text" class="form-control" id="inputLdNameUpdate" placeholder="Enter name">
+									<label for="inputLdName">Name</label>
+									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
 								</div>
 								<div class="form-group">
-									<label for="inputLdDescriptionUpdate">Description</label>
-									<textarea style="resize:none;" class="form-control" id="inputLdDescriptionUpdate" placeholder="Enter description"></textarea>
+									<label for="inputLdDescription">Description</label>
+									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
 								</div>
 								<div class="form-group">
-									<label for="inputLdLinkUpdate">Link</label>
-									<input type="text" class="form-control" id="inputLdLinkUpdate" placeholder="Enter url">
+									<label for="inputLdLink">Link</label>
+									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
 						</form>
 					</div>
   					<div class="modal-footer">
 				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button type="button" data-loading-text="Saving..." id="updateLdButton" class="btn btn-primary">Save</button>
+				        <button on-click="updateDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Update</span></button>
   					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
 		
 		<div class="modal fade" id="deleteDocumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
