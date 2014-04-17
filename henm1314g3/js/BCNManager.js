@@ -20,8 +20,10 @@ function BCN(object){
 
 	if(object.hasOwnProperty("learningIndicators"))
 		this.learningIndicators = object.learningIndicators;
-	else
+	else{
 		this.learningIndicators = [];
+		this.addLI("");
+	}
 
 	//added attr priority to the object BCN
 
