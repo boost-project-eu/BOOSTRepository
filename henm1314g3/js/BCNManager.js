@@ -1,5 +1,5 @@
-var priorityColors = ["green", "orange", "red"];  
-var priorityNames = ["low", "medium", "high"];
+var priorityColors = ["#b2b2b2", "#333333"];  
+var priorityNames = ["low", "high"];
 
 
 function BCN(object){

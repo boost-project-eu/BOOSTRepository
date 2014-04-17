@@ -110,7 +110,7 @@
 
 				/* Assign color, name and index to the priority pushpins */
 
-				for (var i = 0; i < 3; i++) {
+				for (var i = 0; i < 2; i++) {
 					$('#priority' + i).css({'color':priorityColors[i]});
 					$('#prioritytext' + i).append(priorityNames[i]);
 					$('#prioritytext' + i).data('priorityIndex', i);				
@@ -505,8 +505,6 @@
 						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority0' > </span></a></li>
 						                	<li><a class="priorityClass" href="#" id='prioritytext1'>
 						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority1' > </span></a></li>
-						                	<li><a class="priorityClass" href="#" id='prioritytext2'>
-						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority2' > </span></a></li>                	
 						            	</ul>
 									</div>
 								</div>							
