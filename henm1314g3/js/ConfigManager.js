@@ -33,10 +33,19 @@ Config.prototype.create = function(callback){
 }
 
 Config.prototype.update = function(callback){
-	var configResource = new openapp.oo.Resource(this.uri);
-	configResource.setRepresentation(this, "application/json", function(){
-		callback();
-	});
+	//If update is called before the resource was created in the space (uri == "")
+	//just call create.
+	if(this.uri == ""){
+		this.create(function(){
+			callback();
+		});
+	}
+	else {
+		var configResource = new openapp.oo.Resource(this.uri);
+		configResource.setRepresentation(this, "application/json", function(){
+			callback();
+		});
+	}
 }
 
 function updateConfig(config, callback){
