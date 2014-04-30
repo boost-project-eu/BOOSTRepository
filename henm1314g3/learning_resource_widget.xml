@@ -161,6 +161,7 @@
 					        });
 					        treeRactive.on("documentAdd", function(event){
 					        	var newDocument = new LearningDocument({});
+					        	newDocument.type = "weblink";
 					        	var learningIndicatorId = event.context.id;
 
 					        	var kp = event.keypath;
@@ -192,7 +193,16 @@
 					        	$("#deleteDocumentModal").modal();
 					        });
 					        treeRactive.on("documentShow", function(event){
-					        	publishShowLearningDocument(event.context);
+					        	if(event.context.type == "weblink"){
+					        		var url = event.context.url;
+					        		var http = "http://"
+					        		if(!(url.substring(0, http.length) == http))
+					        			url = http + url;
+					        		window.open(url,'_blank');
+					        	}
+					        	else
+					        		publishShowLearningDocument(event.context);
+					        	console.log(event.context.url);
 					        });
 					        treeRactive.on("documentEdit", function(event){
 					        	editDocumentRactive.set("editDocument", event.context);
