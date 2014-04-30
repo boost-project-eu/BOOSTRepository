@@ -1,11 +1,11 @@
 // descriptions of learning levels used for tooltips.
 	llevel = [];
-	llevel[0] = "0";
-	llevel[1] = "1";
-	llevel[2] = "2";
-	llevel[3] = "3";
-	llevel[4] = "4";
-	llevel[5] = "5";
+	llevel[0] = 0;
+	llevel[1] = 1;
+	llevel[2] = 2;
+	llevel[3] = 3;
+	llevel[4] = 4;
+	llevel[5] = 5;
 
 function Employee(object){
 	if(object.hasOwnProperty("uri"))
@@ -21,59 +21,7 @@ function Employee(object){
 	if(object.hasOwnProperty("email"))
 		this.email = object.email;
 	else
-		this.email = "noemail@example.com";
-
-	if(object.hasOwnProperty("learningLevels"))
-		this.learningLevels = object.learningLevels;
-	else
-		this.learningLevels = {};
-}
-
-Employee.prototype.create = function(callback){
-	var space = new openapp.oo.Resource(openapp.param.space());
-	var thisEmployee = this;
-	space.create({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:employee",
-		representation: this, //The representation refers to the object
-		callback: function(employeeResource){
-			//Now we have an URI for our Employee and we need to update the resource
-			thisEmployee.uri = employeeResource.getURI();
-			employeeResource.setRepresentation(thisEmployee, "application/json", function(){
-				callback();
-			});
-		}
-	});
-}
-
-Employee.prototype.update = function(callback){
-	var employeeResource = new openapp.oo.Resource(this.uri);
-	employeeResource.setRepresentation(this, "application/json", function(){
-		callback();
-	});
-}
-
-Employee.prototype.delete = function(callback){
-	openapp.resource.del(this.uri, function(){
-		callback();
-	});
-}
-
-function Employee(object){
-	if(object.hasOwnProperty("uri"))
-		this.uri = object.uri;
-	else
-		this.uri = "";
-
-	if(object.hasOwnProperty("name"))
-		this.name = object.name;
-	else
-		this.name = "";
-
-	if(object.hasOwnProperty("email"))
-		this.email = object.email;
-	else
-		this.email = "noemail@example.com";
+		this.email = "";
 
 	if(object.hasOwnProperty("learningLevels"))
 		this.learningLevels = object.learningLevels;
@@ -174,7 +122,8 @@ function ensureEmplyoeeBCNConsistency(employee, bcn){
 			learningLevel[li.id] = {};
 			learningLevel[li.id].start = 0;
 			learningLevel[li.id].current = 0;
-			learningLevel[li.id].end = llevel.length -1;
+			learningLevel[li.id].end = llevel.length -1
+			learningLevel[li.id].isRelevant = true;
 		}
 	}
 }

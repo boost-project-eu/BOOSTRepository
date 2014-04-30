@@ -157,6 +157,7 @@
 										var liForEmployee = bcnForEmployee[bcns[b].learningIndicators[l].id] = {};
 										liForEmployee.start = Math.floor((Math.random()*llevel.length));
 										liForEmployee.current = liForEmployee.start;
+										liForEmployee.isRelevant = true;
 										liForEmployee.end = liForEmployee.start +  Math.floor((Math.random()*(llevel.length -liForEmployee.start)));
 									}
 								}
