@@ -227,6 +227,7 @@
 					employeeList = employees;
 					retrieveAllBcns(space, function(bcns){
 						bcnList = bcns;
+						//bindEmployeeToBCNs(employeeList[0]);
 						bcnList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
 								return -1; else return 1;});
 						$("#loader").remove();
@@ -308,25 +309,19 @@
 						var ractiveSetLIEmployee = new Ractive({
 							el: 'containerEmployeeSetLI',
 						    template: '#setLITemplate',
-						    data: 	{ 	"bcnList" : bcnList, 
+						    data: 	{ 	"bcnList" : null, 
 										"learningLevels" : llevel,
-										"employee" : null,
-										getLearningLevels: function (employee,bcnUri,liID)
-										{
-											return employee.learningLevels[bcnUri][liID];
-										},
-										getBcnRelevance: function (employee,bcnUri)
-										{
-											return employee.learningLevels[bcnUri];
-										},
-										getLearningLevelsRelevance: function (employee,bcnUri,liID)
-										{
-											return employee.learningLevels[bcnUri][liID];
-										}
-
+										"employee" : null
 								 	},
 			
 						    append: true
+						});
+
+						ractiveSetLIEmployee.on("saveSetLI", function(event){
+							var employee = this.get("employee");
+							employee.update(function(){
+								$('#setLIModal').modal("hide");
+							});
 						});
 
 						ractiveOverview.on("edit", function ( event ) {
@@ -365,11 +360,10 @@
 
 
 						ractiveOverview.on( 'setLI', function ( event ) {
-							ractiveSetLIEmployee.set("employee", event.context);
 							bindEmployeeToBCNs(event.context);
+							ractiveSetLIEmployee.set("bcnList", bcnList);
+							ractiveSetLIEmployee.set("employee", event.context);
 							$('#setLIModal').modal();
-							$("#massageEmployeeSetLI").text("Define Learning Level for \"" + event.context.name + "\"");
-							
 						});
 
 						ractiveOverview.on( 'graph', function ( event ) {
@@ -419,20 +413,8 @@
 						li.employeeLiData = employee.learningLevels[bcn.uri][li.id];
 					}
 				}
-			}
 
-			function saveNewEmployee(callback){
-				//get information
-				var newEmployee = {};
-				newEmployee.name = $("#inputNewEmployeeName").val();
-				newEmployee.email = $("#inputNewEmployeeEmail").val();
-				newEmployee.learningLevels={};
-				ensureEmplyoeeBCNConsistency(newEmployee);
-				//save employee
-				saveEmployee(newEmployee, space, function(savedEmployee){
-					publishEmployeeCreated(savedEmployee.uri);
-					callback(savedEmployee);
-				});
+				console.log(JSON.stringify(bcnList[0]));
 			}
 
 			function clearEmployeeInputWarning(){
@@ -648,33 +630,32 @@
 		<div class="modal fade" id="setLIModal" tabindex="-1" role="dialog" aria-labelledby="setLIModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content" id="containerEmployeeSetLI">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4  class="modal-title" id='massageEmployeeSetLI'></h4>
-					</div>
 				</div>
 			</div>
 		</div>
 
 <script id="setLITemplate" type="text/ractive">
-
-	<div class="modal-body">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4  class="modal-title" id='massageEmployeeSetLI'>{{employee.name}}</h4>
+		</div>
+		<div class="modal-body">
 		<div class="panel-group" id="bcnPanel">
 		{{#bcnList:num}}
 			<div class="panel panel-default">
 				<div class="panel-heading">
 	      			<h4 class="panel-title">
-	        			<span class="glyphicon" style="margin-right:5px;"></span> 
+	        			<span class="glyphicon glyphicon-star" style="margin-right:5px;"></span> 
 	        			<a data-toggle="collapse" data-parent="#bcnPanel" href="#bcn{{num}}"> {{name}}
 	        				<span class="caret"></span>
 	        			</a> 
-						<div class="checkbox" style="float:right; margin-top:1px"> 
-	  						<label> 
-	  						 	Relevant 
-	    					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
-	  						</label> 
-						</div>
-	      			</h4> 
+	      			</h4>
+	      			<div class="checkbox"> 
+						<label> 
+						 	Relevant 
+					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
+						</label> 
+					</div>
 	    		</div> 				
 	    		<div  id="bcn{{num}}" class="panel-collapse collapse"> 
 	      			<ul style="margin-bottom:0px;" class="list-group">
@@ -688,19 +669,19 @@
 			  					        </label>
 							        </div> 
 							    </h4>
-								Start Level: 
+								{{employeeLiData.start}}: 
 								<select class="form-control" value="{{employeeLiData.start}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
 								</select>
-								Current Level: 
+								{{employeeLiData.current}}:
 								<select class="form-control" value="{{employeeLiData.current}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
 								</select>
-								End Level: 
+								{{employeeLiData.end}}:
 								<select class="form-control" value="{{employeeLiData.end}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
@@ -726,7 +707,7 @@
 <script id="deleteEmployeeTemplate" type="text/ractive">
 	<div class="modal-body">
 		<div class="alert alert-danger fade in" id="alertInModal">
-			<h4>Do you really want to delete {{employee.name}}</h4>
+			<h4>Do you really want to delete {{employee.name}} as an employee?</h4>
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
