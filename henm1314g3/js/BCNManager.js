@@ -1,6 +1,8 @@
 var priorityColors = ["#b2b2b2", "#333333"];  
 var priorityNames = ["low", "high"];
 
+var priorityArray = [{"color" : "#b2b2b2", "name" : "low"}, {"color" : "#333333", "name" : "high"}];
+
 
 function BCN(object){
 	if(object.hasOwnProperty("uri"))
@@ -34,7 +36,11 @@ function BCN(object){
 }
 
 BCN.prototype.getPriorityColor = function(){
-	return priorityColors[this.priority];
+	return priorityArray[this.priority].color;
+}
+
+BCN.prototype.setPriorityColor = function(color){
+	return priorityArray[this.priority].color = color;
 }
 
 BCN.prototype.addLI = function(name){
