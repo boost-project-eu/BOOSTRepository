@@ -108,22 +108,25 @@ function retrieveAllEmployees(space, callback){
 	retrieveBoostResources("my:ns:employee", function(object){return new Employee(object)}, callback);
 }
 
-function ensureEmplyoeeBCNConsistency(employee, bcn){
-	if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
-		employee.learningLevels[bcn.uri] = {};
-		employee.learningLevels[bcn.uri].isRelevant = true;
-	}
-	if(!employee.learningLevels[bcn.uri].hasOwnProperty("isRelevant"))
-		employee.learningLevels[bcn.uri].isRelevant = true;
-	var learningLevel = employee.learningLevels[bcn.uri];
-	for(var j = 0; j < bcn.learningIndicators.length; j++){
-		var li = bcn.learningIndicators[j];
-		if(!learningLevel.hasOwnProperty(li.id)){
-			learningLevel[li.id] = {};
-			learningLevel[li.id].start = 0;
-			learningLevel[li.id].current = 0;
-			learningLevel[li.id].end = llevel.length -1
-			learningLevel[li.id].isRelevant = true;
+function ensureEmplyoeeBCNConsistency(employee, bcns){
+	for(var i = 0; i < bcns.length; i++){
+		var bcn = bcns[i];
+		if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
+			employee.learningLevels[bcn.uri] = {};
+			employee.learningLevels[bcn.uri].isRelevant = true;
+		}
+		if(!employee.learningLevels[bcn.uri].hasOwnProperty("isRelevant"))
+			employee.learningLevels[bcn.uri].isRelevant = true;
+		var learningLevel = employee.learningLevels[bcn.uri];
+		for(var j = 0; j < bcn.learningIndicators.length; j++){
+			var li = bcn.learningIndicators[j];
+			if(!learningLevel.hasOwnProperty(li.id)){
+				learningLevel[li.id] = {};
+				learningLevel[li.id].start = 0;
+				learningLevel[li.id].current = 0;
+				learningLevel[li.id].end = llevel.length -1
+				learningLevel[li.id].isRelevant = true;
+			}
 		}
 	}
 }

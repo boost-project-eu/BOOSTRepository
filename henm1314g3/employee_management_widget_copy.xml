@@ -84,7 +84,7 @@
 								return -1; else return 1;});
 
 						for(var i=0; i < employeeList.length; i++){
-							ensureEmplyoeeBCNConsistency(employeeList[i]);
+							ensureEmplyoeeBCNConsistency(employeeList[i], bcnList);
 						}
 
 						//If the modal to set LIs is open we have to update it
@@ -102,7 +102,7 @@
 								bcnList[i] = updatedBcn;
 						}
 						for(var i=0; i < employeeList.length; i++){
-							ensureEmplyoeeBCNConsistency(employeeList[i]);
+							ensureEmplyoeeBCNConsistency(employeeList[i], bcnList);
 						}
 						if($("#setLIModal").hasClass("in")){
 							renderAllBcns(employeeList[$("#setLIModal").data("employeeIndex")]);
@@ -271,10 +271,12 @@
 							//Show the loading indicator of the save button
 							var l = Ladda.create(buttonElement);
 							l.start();
+							ensureEmplyoeeBCNConsistency(employee, bcnList);
 							employee.create(function(){
 								employeeList.push(employee);
 								//TODO: Sort the array by employee name
 
+								publishEmployeeCreated(employee.uri);
 								//Hide the loading indicator of the save button
 								l.stop();
 								$("#addEmployeeModal").modal("hide");
@@ -300,6 +302,7 @@
 								employeeList.splice(employeeList.indexOf(employee), 1);
 								//TODO: Sort the array by employee name
 
+								publishEmployeeDeleted(employee.uri);
 								//Hide the loading indicator of the delete button
 								l.stop();
 								$("#deleteEmployeeModal").modal("hide");
@@ -319,7 +322,14 @@
 
 						ractiveSetLIEmployee.on("saveSetLI", function(event){
 							var employee = this.get("employee");
+							var buttonElement = event.node;
+							//Show the loading indicator of the save button
+							var l = Ladda.create(buttonElement);
+							l.start();
 							employee.update(function(){
+								publishEmployeeUpdated(employee.uri);
+								//Hide the loading indicator of the save button
+								l.stop();
 								$('#setLIModal').modal("hide");
 							});
 						});
@@ -332,6 +342,10 @@
 						ractiveOverview.on("delete", function ( event ) {
 							ractiveDeleteEmployee.set("employee", event.context);
 							$('#deleteEmployeeModal').modal();
+						});
+
+						ractiveOverview.on("graph", function(event){
+							publishShowEmployeeProgress(event.context.uri);
 						});
 
 
@@ -349,6 +363,7 @@
 								//Tell the overview ractive that the employee was updated
 								ractiveOverview.update();
 
+								publishEmployeeUpdated(employee.uri);
 								//Hide the loading indicator of the save button
 								l.stop();
 								$("#updateEmployeeModal").modal("hide");
@@ -356,49 +371,12 @@
 
 						});
 
-
-
-
 						ractiveOverview.on( 'setLI', function ( event ) {
 							bindEmployeeToBCNs(event.context);
 							ractiveSetLIEmployee.set("bcnList", bcnList);
 							ractiveSetLIEmployee.set("employee", event.context);
 							$('#setLIModal').modal();
 						});
-
-						ractiveOverview.on( 'graph', function ( event ) {
-							ractiveGraphEmployee.set("employee", event.context);
-  							var employeeToGraph = event.context;
-							var employeeIndex = employeeList.indexOf(employeeToGraph);
-							publishShowEmployeeProgress(employeeList[employeeIndex].uri);
-				
-						});
-
-						ractiveOverview.on( 'delete', function ( event ) {
-							ractiveDeleteEmployee.set("employee", event.context);
-							$('#deleteAlertModal').modal();
-								// aleart and"" confirm deleting process.
-						$("#alertInModal").alert();
-						$("#deleteAlertMessage").text("Do you really want to delete \"" + event.context.name + "\"?");
-					    $("#deleteAlertModal").modal();
-						$("#confirmDeleteButton").off().click(function(){
-						var l = Ladda.create(this);
-						l.start();
-						var employeeToDelete = event.context;
-						var employeeIndex = employeeList.indexOf(employeeToDelete);
-						employeeToDelete.delete(function(){
-							publishEmployeeDeleted(employeeList[employeeIndex].uri);
-							employeeList.splice(employeeIndex, 1);
-							//renderAllEmployees();
-							$("#deleteAlertModal").modal("hide");
-							l.stop();
-
-					});
-					});
-						});
-
-				
-
 					});
 				});
 
@@ -491,28 +469,6 @@
   					return false;
   				} 
  				return true;
-			}
-
-			function ensureEmplyoeeBCNConsistency(employee){
-				for(var i = 0; i < bcnList.length; i++){
-					var bcn = bcnList[i];
-					if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
-						employee.learningLevels[bcn.uri] = {};
-						employee.learningLevels[bcn.uri].isRelevant = true;
-					}
-					if(!employee.learningLevels[bcn.uri].hasOwnProperty("isRelevant"))
-						employee.learningLevels[bcn.uri].isRelevant = true;
-					var learningLevel = employee.learningLevels[bcn.uri];
-					for(var j = 0; j < bcn.learningIndicators.length; j++){
-						var li = bcn.learningIndicators[j];
-						if(!learningLevel.hasOwnProperty(li.id)){
-							learningLevel[li.id] = {};
-							learningLevel[li.id].start = 0;
-							learningLevel[li.id].current = 0;
-							learningLevel[li.id].end = llevel.length -1;
-						}
-					}
-				}
 			}
 
 			function addEmployee(employee){
@@ -669,19 +625,19 @@
 			  					        </label>
 							        </div> 
 							    </h4>
-								{{employeeLiData.start}}: 
+								Start level: 
 								<select class="form-control" value="{{employeeLiData.start}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
 								</select>
-								{{employeeLiData.current}}:
+								Current level:
 								<select class="form-control" value="{{employeeLiData.current}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
 								</select>
-								{{employeeLiData.end}}:
+								End level:
 								<select class="form-control" value="{{employeeLiData.end}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
