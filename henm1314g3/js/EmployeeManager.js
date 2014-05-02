@@ -47,9 +47,10 @@ Employee.prototype.create = function(callback){
 }
 
 Employee.prototype.update = function(callback){
+	var employee = this;
 	var employeeResource = new openapp.oo.Resource(this.uri);
 	employeeResource.setRepresentation(this, "application/json", function(){
-		callback();
+		callback.call(employee);
 	});
 }
 
@@ -131,6 +132,10 @@ function ensureEmplyoeeBCNConsistency(employee, bcns){
 				learningLevel[li.id].current = 0;
 				learningLevel[li.id].end = llevel.length -1
 				learningLevel[li.id].isRelevant = true;
+			}
+			else{ //Quick fix to update old employee data. To be removed later on
+				if(!learningLevel[li.id].hasOwnProperty("isRelevant"))
+					learningLevel[li.id].isRelevant = true;
 			}
 		}
 	}

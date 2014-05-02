@@ -27,6 +27,7 @@
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
 		<!-- JavaScript Block -->
@@ -51,6 +52,20 @@
 						onEach: function(resource) {
 							openapp.resource.del(resource.uri, null);
 						}
+					});
+				});
+
+				$("#updateEmployeesWithLiRelevance").click(function(){
+					retrieveAllBcns(space, function(bcns){
+						retrieveAllEmployees(space, function(employees){
+							for(var i = 0; i < employees.length; i++){
+								var employee = employees[i];
+								ensureEmplyoeeBCNConsistency(employee, bcns);
+								employee.update(function(){
+									console.log("Updated: " + this.name);
+								});
+							}
+						});
 					});
 				});
 
@@ -177,6 +192,7 @@
 		<!-- HTML Block -->
 		<button id="deleteAllSpaceResourcesButton">Delete all space resources</button>
 		<button id="addExampleData">Add example data</button>
+		<button id="updateEmployeesWithLiRelevance">Update employees for learning indicator relevance</button>
 	]]>
   </Content>
 </Module>
