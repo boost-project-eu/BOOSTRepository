@@ -59,6 +59,11 @@ Employee.prototype.delete = function(callback){
 	});
 }
 
+Employee.prototype.clone = function(){
+	var clone = JSON.parse(JSON.stringify(this));
+	return new Employee(clone);
+}
+
 function deleteEmployee(employee, callback){
 	openapp.resource.del(employee.uri, function(){
 		callback();

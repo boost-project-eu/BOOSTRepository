@@ -247,6 +247,7 @@
 							el: 'containerEmployeeEdit',
 						    template: '#employeeTemplate',
 						    data: { "employee" : null,
+						    		"originalEmployee" : null
 						    	  },
 						    append: true
 						});
@@ -314,7 +315,8 @@
 						    template: '#setLITemplate',
 						    data: 	{ 	"bcnList" : null, 
 										"learningLevels" : llevel,
-										"employee" : null
+										"employee" : null,
+										"originalEmployee" : null
 								 	},
 			
 						    append: true
@@ -322,12 +324,20 @@
 
 						ractiveSetLIEmployee.on("saveSetLI", function(event){
 							var employee = this.get("employee");
+							var originalEmployee = this.get("originalEmployee");
 							var buttonElement = event.node;
 							//Show the loading indicator of the save button
 							var l = Ladda.create(buttonElement);
 							l.start();
 							employee.update(function(){
 								publishEmployeeUpdated(employee.uri);
+
+								//Replace the old employee in the array with the modified one
+								employeeList[employeeList.indexOf(originalEmployee)] = employee;
+
+								//Tell the overview ractive that the employee was updated
+								ractiveOverview.update();
+
 								//Hide the loading indicator of the save button
 								l.stop();
 								$('#setLIModal').modal("hide");
@@ -335,7 +345,8 @@
 						});
 
 						ractiveOverview.on("edit", function ( event ) {
-							ractiveEditEmployee.set("employee", event.context);
+							ractiveEditEmployee.set("employee", event.context.clone());
+							ractiveEditEmployee.set("originalEmployee", event.context);
 							$('#updateEmployeeModal').modal();
 						});
 
@@ -352,6 +363,7 @@
                 	   
 						ractiveEditEmployee.on("saveEmployee", function (event) {
 							var employee = this.get("employee");
+							var originalEmployee = this.get("originalEmployee");
 							var buttonElement = event.node;
 							//Show the loading indicator of the save button
 							var l = Ladda.create(buttonElement);
@@ -359,11 +371,13 @@
 							employee.update(function(){
 								//TODO: Sort the array by employee name
 
+								publishEmployeeUpdated(employee.uri);
+								//Replace the old employee in the array with the modified one
+								employeeList[employeeList.indexOf(originalEmployee)] = employee;
 
 								//Tell the overview ractive that the employee was updated
 								ractiveOverview.update();
 
-								publishEmployeeUpdated(employee.uri);
 								//Hide the loading indicator of the save button
 								l.stop();
 								$("#updateEmployeeModal").modal("hide");
@@ -372,9 +386,11 @@
 						});
 
 						ractiveOverview.on( 'setLI', function ( event ) {
-							bindEmployeeToBCNs(event.context);
+							var clone = event.context.clone();
+							bindEmployeeToBCNs(clone);
 							ractiveSetLIEmployee.set("bcnList", bcnList);
-							ractiveSetLIEmployee.set("employee", event.context);
+							ractiveSetLIEmployee.set("employee", clone);
+							ractiveSetLIEmployee.set("originalEmployee", event.context);
 							$('#setLIModal').modal();
 						});
 					});
@@ -517,13 +533,13 @@
 						<tr> 
 							<td>
 								{{name}}
-								<a class='btn btn-default mail-employee-btn' href='mailto:{{email}}' style='float:right'><span class='glyphicon glyphicon-envelope'></span></a>
 							</td>
-							<td style='width:190px'>
+							<td style='width:215px;' align='center'>
 								<div class='btn-group'>
 									<button class='btn btn-default' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
 									<button class='btn btn-default' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
 									<button class='btn btn-default' on-click='setLI'><span class='glyphicon glyphicon-flag'></span></button>
+									<a class='btn btn-default mail-employee-btn' href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope'></span></a>
 									<button class='btn btn-default' on-click='graph'><span class='glyphicon glyphicon-stats'></span></button>
 								</div>
 							</td>
@@ -599,14 +615,14 @@
 		<div class="panel-group" id="bcnPanel">
 		{{#bcnList:num}}
 			<div class="panel panel-default">
-				<div class="panel-heading">
+				<div class="panel-heading" style="padding-bottom:1px;">
 	      			<h4 class="panel-title">
 	        			<span class="glyphicon glyphicon-star" style="margin-right:5px;"></span> 
 	        			<a data-toggle="collapse" data-parent="#bcnPanel" href="#bcn{{num}}"> {{name}}
 	        				<span class="caret"></span>
 	        			</a> 
 	      			</h4>
-	      			<div class="checkbox"> 
+	      			<div class="checkbox" style="margin-bottom:1px; margin-top:1px;"> 
 						<label> 
 						 	Relevant 
 					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
@@ -617,15 +633,14 @@
 	      			<ul style="margin-bottom:0px;" class="list-group">
 		      			{{#learningIndicators}}
 							<li class="list-group-item">
-								<h4><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span> {{name}}
-								    <div class="checkbox" style="float:right; margin-top:1px">
-			  							<label>
-			  								Relevant
-			    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}">
-			  					        </label>
-							        </div> 
-							    </h4>
-								Start level: 
+								<h4><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span> {{name}}</h4>
+								<div class="checkbox">
+		  							<label>
+		  								Relevant
+		    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}">
+		  					        </label>
+						        </div> 
+								Start level:
 								<select class="form-control" value="{{employeeLiData.start}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
