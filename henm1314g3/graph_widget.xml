@@ -263,6 +263,7 @@
 
 			$(function(){
 
+
 			      // help button click 
 
 			      $('#question').click(function(){
@@ -291,10 +292,10 @@
 					for(i=0; i<employees.length; i++){
 
 						var employee = employees[i];
-
 						var start = employee.learningLevels[bcn.uri][li.id].start;
 						var current = employee.learningLevels[bcn.uri][li.id].current;
 						var end = employee.learningLevels[bcn.uri][li.id].end;
+					
 
 						if (employee.learningLevels[bcn.uri].isRelevant){
 							liStartList.push(start);
@@ -1005,14 +1006,19 @@
 					
 					var current = employee.learningLevels[bcn.uri][li.id].current;
 					var end = employee.learningLevels[bcn.uri][li.id].end;
-					liNameList.push(li.name);
 
-					liStartList.push(start);
-				
-					liCurrentList.push(current);
-					liEndList.push(end);
+					//check if LI isRelevant and show only if it is true
+					if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+						liNameList.push(li.name);
+
+						liStartList.push(start);
+					
+						liCurrentList.push(current);
+						liEndList.push(end);
+					} 
 				
 				}	
+				
 				
 				/*Added priority pushpin to the title of the employee detailled graph*/
 
