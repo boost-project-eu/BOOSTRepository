@@ -248,7 +248,9 @@
 							el: 'containerEmployeeEdit',
 						    template: '#employeeTemplate',
 						    data: { "employee" : null,
-						    		"originalEmployee" : null
+						    		"originalEmployee" : null,
+						    		"nameError" : false,
+						    		"emailError" : false
 						    	  },
 						    append: true
 						});
@@ -256,7 +258,9 @@
 						var ractiveAddEmployee = new Ractive({
 							el: 'containerEmployeeAdd',
 						    template: '#employeeTemplate',
-						    data: { "employee" : null
+						    data: { "employee" : null,
+						    		"nameError" : false,
+						    		"emailError" : false
 						    	  },
 						    append: true
 						});
@@ -264,11 +268,16 @@
 						$("#addNewEmployeeButton").click(function(){
 							var employee = new Employee({});
 							ractiveAddEmployee.set("employee", employee);
+							ractiveAddEmployee.set("nameError", false);
+							ractiveAddEmployee.set("emailError", false);
 							$("#addEmployeeModal").modal();
 						});
 
 						ractiveAddEmployee.on("saveEmployee", function (event) {
 							var employee = this.get("employee");
+							if(!checkInputEmployee(employee, this))
+								return;
+
 							var buttonElement = event.node;
 							//Show the loading indicator of the save button
 							var l = Ladda.create(buttonElement);
@@ -348,6 +357,8 @@
 						ractiveOverview.on("edit", function ( event ) {
 							ractiveEditEmployee.set("employee", event.context.clone());
 							ractiveEditEmployee.set("originalEmployee", event.context);
+							ractiveEditEmployee.set("nameError", false);
+							ractiveEditEmployee.set("emailError", false);
 							$('#updateEmployeeModal').modal();
 						});
 
@@ -364,14 +375,14 @@
                 	   
 						ractiveEditEmployee.on("saveEmployee", function (event) {
 							var employee = this.get("employee");
+							if(!checkInputEmployee(employee, this))
+								return;
 							var originalEmployee = this.get("originalEmployee");
 							var buttonElement = event.node;
 							//Show the loading indicator of the save button
 							var l = Ladda.create(buttonElement);
 							l.start();
 							employee.update(function(){
-								//TODO: Sort the array by employee name
-
 								publishEmployeeUpdated(employee.uri);
 								//Replace the old employee in the array with the modified one
 								employeeList[employeeList.indexOf(originalEmployee)] = employee;
@@ -435,34 +446,25 @@
 				$("#inputUpdateEmployeeEmailWarning").text("");
 			}
 
-			function checkInputNewEmployee()
-			{	
-				var name = $("#inputNewEmployeeName").val();
-				var email = $("#inputNewEmployeeEmail").val();	
+			function checkInputEmployee(employee, ractive)
+			{
+				var nameError = (employee.name == "");
+				ractive.set("nameError", nameError);
 
-				if (name == null || name == "") // empty name
-  				{				
-					$("#inputNewEmployeeName").parent().addClass("has-error");					
-					$("#employeeNameInputWarning").text("Error: Name must be filled out!");
-  	  				return false;
-   				}
+				var emailError = false;
+				var email = employee.email;	
 
 				var atpos = email.indexOf("@");
 				var dotpos = email.lastIndexOf(".");
 
 				if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
   				{
-  					if (email == null || email == "") // empty email
-					{
-						$("#inputNewEmployeeEmail").parent().addClass("has-error");						
-						$("#employeeEmailInputWarning").text("Error: Email must be filled out!");
-						return false;
-					}
-					$("#inputNewEmployeeEmail").parent().addClass("has-error");
-  					$("#employeeEmailInputWarning").text("\"" + email + "\"" +" is not a valid e-mail address");
-  					return false;
-  				} 
- 				return true;
+  					emailError = true;
+  				}
+
+  				ractive.set("emailError", emailError);
+
+  				return !(nameError || emailError);
 			}
 
 			function checkInputUpdateEmployee()
@@ -542,28 +544,30 @@
 
 
 		<script id="employeeTemplate" type="text/ractive">
-
-  					<div class="modal-body">
-    					<form role="form">
-						<div class="form-group">
-							<label for="inputNewEmployeeName" class="control-label">Name</label>
-							<input value='{{employee.name}}' type="text" class="form-control" id="inputNewEmployeeName" placeholder="Enter name">
-							<span class="help-block"><h6 id="employeeNameInputWarning"></h6></span>
-						
-						</div>
-						<div class="form-group">
-							<label for="inputNewEmployeeEmail" class="control-label">Email</label>
-							<input value='{{employee.email}}' type="text" class="form-control" id="inputNewEmployeeEmail" placeholder="Enter email">
-							<span class="help-block"><h6 id="employeeEmailInputWarning"></h6></span>
-						</div>
-						</form>
-
+			<div class="modal-body">
+				<form role="form">
+					<div class="form-group {{ nameError ? "has-error" : "" }}">
+						<label for="inputNewEmployeeName" class="control-label">Name</label>
+						<input value='{{employee.name}}' type="text" class="form-control" id="inputNewEmployeeName" placeholder="Enter name">
+						{{#nameError}}
+						<span class="help-block"><h6>Name must not be empty.</h6></span>
+						{{/nameError}}
 					</div>
-  					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveEmployee"><span class="ladda-label">Save</span></button>
-  					</div>
-  		 </script>
+					<div class="form-group {{ emailError ? "has-error" : "" }}">
+						<label for="inputNewEmployeeEmail" class="control-label">Email</label>
+						<input value='{{employee.email}}' type="text" class="form-control" id="inputNewEmployeeEmail" placeholder="Enter email">
+						{{#emailError}}
+						<span class="help-block"><h6>Please enter a valid email adress.</h6></span>
+						{{/emailError}}
+					</div>
+				</form>
+			</div>
+
+			<div class="modal-footer">
+	        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        	<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveEmployee"><span class="ladda-label">Save</span></button>
+			</div>
+  		</script>
 				
 
 
