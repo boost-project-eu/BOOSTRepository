@@ -225,6 +225,7 @@
 				$("#panel").append("<img id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>")
 				retrieveAllEmployees(space, function(employees){
 					employeeList = employees;
+					sortEmployees();
 					retrieveAllBcns(space, function(bcns){
 						bcnList = bcns;
 						//bindEmployeeToBCNs(employeeList[0]);
@@ -275,7 +276,7 @@
 							ensureEmplyoeeBCNConsistency(employee, bcnList);
 							employee.create(function(){
 								employeeList.push(employee);
-								//TODO: Sort the array by employee name
+								sortEmployees();
 
 								publishEmployeeCreated(employee.uri);
 								//Hide the loading indicator of the save button
@@ -378,6 +379,8 @@
 								//Tell the overview ractive that the employee was updated
 								ractiveOverview.update();
 
+								sortEmployees();
+
 								//Hide the loading indicator of the save button
 								l.stop();
 								$("#updateEmployeeModal").modal("hide");
@@ -407,8 +410,13 @@
 						li.employeeLiData = employee.learningLevels[bcn.uri][li.id];
 					}
 				}
+			}
 
-				console.log(JSON.stringify(bcnList[0]));
+			function sortEmployees(){
+				employeeList.sort(function (a, b){
+					if(a.name.toLowerCase() < b.name.toLowerCase()) 
+						return -1; else return 1;
+				});
 			}
 
 			function clearEmployeeInputWarning(){
@@ -485,23 +493,6 @@
   					return false;
   				} 
  				return true;
-			}
-
-			function addEmployee(employee){
-				employeeList.push(employee);
-				//renderAllEmployees();
-			}
-
-			function prepareEmployeeModal (employeeIndex) {
-				var employee;
-				if(employeeIndex < 0){
-					employee = new Employee({});
-					$("#myModalLabel").text("Add a new employee");
-				}
-				else{
-					$("#myModalLabel").text("View/Update Employee");
-					employee = employeeList[employeeIndex].clone();
-				}
 			}
 
 		</script>
