@@ -32,6 +32,7 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
 						
 		<!-- Managers for BCN and Employee related stuff -->
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
@@ -65,6 +66,13 @@
 			var employeeList;
 			var bcnList;
 			var iwcClient;
+
+			//Define the ractives as globals
+			var ractiveOverview;
+			var ractiveEditEmployee;
+			var ractiveAddEmployee;
+			var ractiveDeleteEmployee;
+			var ractiveSetLIEmployee;
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
@@ -77,54 +85,64 @@
 			}
 
 			function iwcCallback(intent){
-				if(intent.action == "BCN_CREATE"){
-					createBCNfromUri(intent.data, function(bcn){
-						bcnList.push(bcn);
-						bcnList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
-								return -1; else return 1;});
+				if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
+					$('#setLIModal').modal("hide");
 
-						for(var i=0; i < employeeList.length; i++){
-							ensureEmplyoeeBCNConsistency(employeeList[i], bcnList);
-						}
-
-						//If the modal to set LIs is open we have to update it
-						if($("#setLIModal").hasClass("in")){
-							renderAllBcns(employeeList[$("#setLIModal").data("employeeIndex")]);
-						}
+					var message = "<div>Please wait while the employees are updated to reflect these changes.</div>"
+					message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
+					bootbox.dialog({
+						title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
+						message : message,
+						closeButton : false
 					});
-				}
+					createBCNfromUri(intent.data, function(bcn){
+						if(intent.action == "BCN_CREATE"){
+							//Add the new BCN to the local list
+							bcnList.push(bcn);
+						}
+						else{
+							//Replace the BCN in the local list with the update one
+							for(var i = 0; i < bcnList.length; i++){
+								if(bcn.uri == bcnList[i].uri)
+									bcnList[i] = bcn;
+							}
+							ractiveOverview.update();
+						}
+						sortBcns(bcnList);
 
-				if(intent.action == "BCN_UPDATE"){
-					createBCNfromUri(intent.data, function(updatedBcn){
-						for(var i = 0; i < bcnList.length; i++){
-							var bcn = bcnList[i];
-							if(bcn.uri == intent.data)
-								bcnList[i] = updatedBcn;
+						//Update all local employee objects
+						for(var i = 0; i < employeeList.length; i++){
+							ensureEmplyoeeBCNConsistency(employeeList[i], [bcn], []);
 						}
-						for(var i=0; i < employeeList.length; i++){
-							ensureEmplyoeeBCNConsistency(employeeList[i], bcnList);
-						}
-						if($("#setLIModal").hasClass("in")){
-							renderAllBcns(employeeList[$("#setLIModal").data("employeeIndex")]);
-						}
+						bootbox.hideAll();
 					});
 				}
 
 				if(intent.action == "BCN_DELETE"){
+					$('#setLIModal').modal("hide");
+					var message = "<div>Please wait while the employees are updated to reflect these changes.</div>"
+					message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
+					bootbox.dialog({
+						title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
+						message : message,
+						closeButton : false
+					});
+
+					//Find the deleted BCN in the list via its URI and remove it
+					var bcnToRemove = null;
 					for(var i = 0; i < bcnList.length; i++){
-						var bcn = bcnList[i];
-						if(bcn.uri == intent.data){
-							for(var e = 0; e < employeeList.length; e++){
-								delete employeeList[e].learningLevels[bcn.uri];
-							}
+						if(bcnList[i].uri == intent.data){
+							bcnToRemove = bcnList[i];
 							bcnList.splice(i, 1);
 						}
 					}
 
-					if($("#setLIModal").hasClass("in")){
-						renderAllBcns(employeeList[$("#setLIModal").data("employeeIndex")]);
+					//Remove BCN data from the employees
+					for(var i = 0; i < employeeList.length; i++){
+						ensureEmplyoeeBCNConsistency(employeeList[i], [], [bcnToRemove]);
 					}
 
+					bootbox.hideAll();
 				}
 			}
 
@@ -203,48 +221,75 @@
 				showOverallGraphTooltipOptions.placement = "left";
 				$("#showOverallProgressButton").tooltip(showOverallGraphTooltipOptions);
 				
-				// tooltip for add employee button
 				var newEmployeeTooltipOptions = {};
 				newEmployeeTooltipOptions.title = "Add a new employee for your company.";
 				newEmployeeTooltipOptions.placement = "right";
 				$("#addNewEmployeeButton").tooltip(newEmployeeTooltipOptions);
-				// save button
-				$("#saveNewEmployeeButton").click(function(){
-					clearEmployeeInputWarning();
-					if (checkInputNewEmployee()) {
-						var l = Ladda.create(this);
-						l.start();
-						saveNewEmployee(function(employee){
-							addEmployee(employee);
-							$('#newEmployeeModal').modal("hide");
-							l.stop();
-						});
-					}
-				});
 
-				$("#panel").append("<img id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>")
+				var message = "<div>Please wait.</div>"
+				message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
+				bootbox.dialog({
+					title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Loading employees.",
+					message : message,
+					closeButton : false
+				});
 				retrieveAllEmployees(space, function(employees){
 					employeeList = employees;
 					sortEmployees();
 					retrieveAllBcns(space, function(bcns){
 						bcnList = bcns;
-						//bindEmployeeToBCNs(employeeList[0]);
-						bcnList.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
-								return -1; else return 1;});
-						$("#loader").remove();
-						//renderAllEmployees();
+						sortBcns(bcnList);
 
-						// create Ractive object and link EmployeesList to the template
-				
+						$("#addNewEmployeeButton").click(function(){
+							var employee = new Employee({});
+							ractiveAddEmployee.set("employee", employee);
+							ractiveAddEmployee.set("nameError", false);
+							ractiveAddEmployee.set("emailError", false);
+							$("#addEmployeeModal").modal();
+						});
 
-						var ractiveOverview = new Ractive({
+						// Overview ractive which is responsible to render the overview list of all employees
+						ractiveOverview = new Ractive({
 						    el: 'containerEmployeeOverview',
 						    template: '#templateEmployeeOverview',
 						    data: { "employeeList" : employeeList},
 						    append: true
 						});
 
-						var ractiveEditEmployee = new Ractive({
+						ractiveOverview.on("edit", function ( event ) {
+							//We are editing a cloned employee object
+							//If the user discards the changes we do not have to do anything.
+							//If the user saves the changes we just replace the original employee with the clone
+							ractiveEditEmployee.set("employee", event.context.clone());
+							ractiveEditEmployee.set("originalEmployee", event.context);
+							ractiveEditEmployee.set("nameError", false);
+							ractiveEditEmployee.set("emailError", false);
+							$('#updateEmployeeModal').modal();
+						});
+
+						ractiveOverview.on("delete", function ( event ) {
+							ractiveDeleteEmployee.set("employee", event.context);
+							$('#deleteEmployeeModal').modal();
+						});
+
+						ractiveOverview.on("graph", function(event){
+							publishShowEmployeeProgress(event.context.uri);
+						});
+
+						ractiveOverview.on( 'setLI', function ( event ) {
+							//We are editing a cloned employee object
+							//If the user discards the changes we do not have to do anything.
+							//If the user saves the changes we just replace the original employee with the clone
+							var clone = event.context.clone();
+							bindEmployeeToBCNs(clone);
+							ractiveSetLIEmployee.set("bcnList", bcnList);
+							ractiveSetLIEmployee.set("employee", clone);
+							ractiveSetLIEmployee.set("originalEmployee", event.context);
+							$('#setLIModal').modal();
+						});
+
+						//Edit employee ractive which is responsible to render the modal to edit an employee
+						ractiveEditEmployee = new Ractive({
 							el: 'containerEmployeeEdit',
 						    template: '#employeeTemplate',
 						    data: { "employee" : null,
@@ -255,7 +300,34 @@
 						    append: true
 						});
 
-						var ractiveAddEmployee = new Ractive({
+						ractiveEditEmployee.on("saveEmployee", function (event) {
+							var employee = this.get("employee");
+							if(!checkInputEmployee(employee, this))
+								return;
+							var originalEmployee = this.get("originalEmployee");
+							var buttonElement = event.node;
+							//Show the loading indicator of the save button
+							var l = Ladda.create(buttonElement);
+							l.start();
+							employee.update(function(){
+								publishEmployeeUpdated(employee.uri);
+								//Replace the old employee in the array with the modified one
+								employeeList[employeeList.indexOf(originalEmployee)] = employee;
+
+								//Tell the overview ractive that the employee was updated
+								ractiveOverview.update();
+
+								sortEmployees();
+
+								//Hide the loading indicator of the save button
+								l.stop();
+								$("#updateEmployeeModal").modal("hide");
+							});
+
+						});
+
+						//Add employee ractive which is responsible to render the modal to add a new employee
+						ractiveAddEmployee = new Ractive({
 							el: 'containerEmployeeAdd',
 						    template: '#employeeTemplate',
 						    data: { "employee" : null,
@@ -263,14 +335,6 @@
 						    		"emailError" : false
 						    	  },
 						    append: true
-						});
-
-						$("#addNewEmployeeButton").click(function(){
-							var employee = new Employee({});
-							ractiveAddEmployee.set("employee", employee);
-							ractiveAddEmployee.set("nameError", false);
-							ractiveAddEmployee.set("emailError", false);
-							$("#addEmployeeModal").modal();
 						});
 
 						ractiveAddEmployee.on("saveEmployee", function (event) {
@@ -282,7 +346,7 @@
 							//Show the loading indicator of the save button
 							var l = Ladda.create(buttonElement);
 							l.start();
-							ensureEmplyoeeBCNConsistency(employee, bcnList);
+							ensureEmplyoeeBCNConsistency(employee, bcnList, []);
 							employee.create(function(){
 								employeeList.push(employee);
 								sortEmployees();
@@ -294,7 +358,8 @@
 							});
 						});
 
-						var ractiveDeleteEmployee = new Ractive({
+						//Delete employee ractive which is responsible to render the modal used to delete an employee
+						ractiveDeleteEmployee = new Ractive({
 							el: 'containerEmployeeDelete',
 						    template: '#deleteEmployeeTemplate',
 						  	data: {
@@ -320,7 +385,9 @@
 							});
 						});
 
-						var ractiveSetLIEmployee = new Ractive({
+						//Ractive which is responsible to render the modal where the user can set the learning levels
+						//for an employee
+						ractiveSetLIEmployee = new Ractive({
 							el: 'containerEmployeeSetLI',
 						    template: '#setLITemplate',
 						    data: 	{ 	"bcnList" : null, 
@@ -354,59 +421,7 @@
 							});
 						});
 
-						ractiveOverview.on("edit", function ( event ) {
-							ractiveEditEmployee.set("employee", event.context.clone());
-							ractiveEditEmployee.set("originalEmployee", event.context);
-							ractiveEditEmployee.set("nameError", false);
-							ractiveEditEmployee.set("emailError", false);
-							$('#updateEmployeeModal').modal();
-						});
-
-						ractiveOverview.on("delete", function ( event ) {
-							ractiveDeleteEmployee.set("employee", event.context);
-							$('#deleteEmployeeModal').modal();
-						});
-
-						ractiveOverview.on("graph", function(event){
-							publishShowEmployeeProgress(event.context.uri);
-						});
-
-
-                	   
-						ractiveEditEmployee.on("saveEmployee", function (event) {
-							var employee = this.get("employee");
-							if(!checkInputEmployee(employee, this))
-								return;
-							var originalEmployee = this.get("originalEmployee");
-							var buttonElement = event.node;
-							//Show the loading indicator of the save button
-							var l = Ladda.create(buttonElement);
-							l.start();
-							employee.update(function(){
-								publishEmployeeUpdated(employee.uri);
-								//Replace the old employee in the array with the modified one
-								employeeList[employeeList.indexOf(originalEmployee)] = employee;
-
-								//Tell the overview ractive that the employee was updated
-								ractiveOverview.update();
-
-								sortEmployees();
-
-								//Hide the loading indicator of the save button
-								l.stop();
-								$("#updateEmployeeModal").modal("hide");
-							});
-
-						});
-
-						ractiveOverview.on( 'setLI', function ( event ) {
-							var clone = event.context.clone();
-							bindEmployeeToBCNs(clone);
-							ractiveSetLIEmployee.set("bcnList", bcnList);
-							ractiveSetLIEmployee.set("employee", clone);
-							ractiveSetLIEmployee.set("originalEmployee", event.context);
-							$('#setLIModal').modal();
-						});
+						bootbox.hideAll();
 					});
 				});
 

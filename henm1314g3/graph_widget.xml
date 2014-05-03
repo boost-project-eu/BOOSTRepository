@@ -126,7 +126,7 @@
 
 						//Update employees
 						for(var i = 0; i < employees.length; i++){
-							ensureEmplyoeeBCNConsistency(employees[i], bcn);
+							ensureEmplyoeeBCNConsistency(employees[i], [bcn], []);
 						}
 
 						if (isEmployeeGraph.bool){
@@ -151,7 +151,7 @@
 
 						//Update employees
 						for(var i = 0; i < employees.length; i++){
-							ensureEmplyoeeBCNConsistency(employees[i], updatedBcn);
+							ensureEmplyoeeBCNConsistency(employees[i], [updatedBcn], []);
 						}
 
 						if (isBcnGraph.bool && isBcnGraph.uri==intent.data){

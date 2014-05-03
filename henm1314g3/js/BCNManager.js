@@ -150,3 +150,16 @@ function deleteBCN(bcn, callback){
 function retrieveAllBcns(space, callback){
 	retrieveBoostResources("my:ns:bcn", function(object){return new BCN(object)}, callback);
 }
+
+function sortBcns(bcns){
+	bcns.sort(function(a, b){
+		if (a.priority==b.priority){
+			if(a.name.toLowerCase() < b.name.toLowerCase())
+				return -1; else return 1;
+		}
+		if(a.priority > b.priority)
+			return -1;
+		else
+			return 1;
+	});
+}

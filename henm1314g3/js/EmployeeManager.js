@@ -114,9 +114,10 @@ function retrieveAllEmployees(space, callback){
 	retrieveBoostResources("my:ns:employee", function(object){return new Employee(object)}, callback);
 }
 
-function ensureEmplyoeeBCNConsistency(employee, bcns){
-	for(var i = 0; i < bcns.length; i++){
-		var bcn = bcns[i];
+function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
+	//Add learning levels for new/updated BCNs
+	for(var i = 0; i < bcnsToUpdate.length; i++){
+		var bcn = bcnsToUpdate[i];
 		if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
 			employee.learningLevels[bcn.uri] = {};
 			employee.learningLevels[bcn.uri].isRelevant = true;
@@ -138,5 +139,12 @@ function ensureEmplyoeeBCNConsistency(employee, bcns){
 					learningLevel[li.id].isRelevant = true;
 			}
 		}
+	}
+
+	//Remove bcns
+	for(var i = 0; i < bcnsToRemove.length; i++){
+		var bcn = bcnsToRemove[i];
+		if(employee.learningLevels.hasOwnProperty(bcn.uri))
+			delete employee.learningLevels[bcn.uri];
 	}
 }
