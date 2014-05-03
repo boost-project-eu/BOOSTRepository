@@ -13,17 +13,21 @@ SlideshareSearch.prototype.search = function(query, callback){
     		"and api_key='KHyDu2OL' and shared_secret='EfxBfoCM' and items_per_page='" + this.resultsPerPage + "';";
 	q = encodeURIComponent(q);
 	$.get( "http://query.yahooapis.com/v1/public/yql?q=" + q + "&format=json").done(function( data ) {
-		callback(slideshareDocumentProcessor(data.query.results));
+        callback(slideshareDocumentProcessor(data.query.results));
 	});
 }
 
 function slideshareDocumentProcessor(response){
 	var resultDocumentsList = [];
+
     for(var i = 0; i < response.Slideshows.Slideshow.length; i++){
         var slideshowData = response.Slideshows.Slideshow[i];
+        var description = "";
+        if(slideshowData.Description != null)
+            description = slideshowData.Description;
         var documentItem = {
         	name : slideshowData.Title,
-        	description : slideshowData.Description,
+        	description : description,
         	type : "slideshare",
         	url : slideshowData.URL,
         	contentSpecificData: {
