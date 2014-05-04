@@ -2,7 +2,7 @@
 <Module>
     
     <ModulePrefs title="Business Employees"
-		description="Manage your employees ans assign them learning aims."
+		description="Manage your employees and assign learning goals to them."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400">
@@ -45,20 +45,6 @@
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/slider.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 
-
-		<style>
-			.dropdown-menu{
-				max-height: 80px;
-    			overflow-y: auto;
-			}
-
-			.endDropdown  {
-				position: relative;
-   				 z-index: 5000;
-			}
-
-		</style>
-
 		<!-- JavaScript Block -->
 		<script>
 			
@@ -77,7 +63,6 @@
 			gadgets.util.registerOnLoadHandler(init);
 			
 			function init(){
-				// create space
 				space = new openapp.oo.Resource(openapp.param.space());
 
 				iwcClient = new iwc.Client();
@@ -228,11 +213,11 @@
 
 				var message = "<div>Please wait.</div>"
 				message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
-				bootbox.dialog({
-					title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Loading employees.",
-					message : message,
-					closeButton : false
-				});
+				// bootbox.dialog({
+				// 	title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Loading employees.",
+				// 	message : message,
+				// 	closeButton : false
+				// });
 				retrieveAllEmployees(space, function(employees){
 					employeeList = employees;
 					sortEmployees();
@@ -421,7 +406,7 @@
 							});
 						});
 
-						bootbox.hideAll();
+						//bootbox.hideAll();
 					});
 				});
 
