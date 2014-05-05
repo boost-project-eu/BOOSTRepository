@@ -44,6 +44,7 @@
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/slider.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
 		<script>
@@ -86,7 +87,7 @@
 							bcnList.push(bcn);
 						}
 						else{
-							//Replace the BCN in the local list with the update one
+							//Replace the BCN in the local list with the updated one
 							for(var i = 0; i < bcnList.length; i++){
 								if(bcn.uri == bcnList[i].uri)
 									bcnList[i] = bcn;
@@ -203,12 +204,14 @@
 
 				var showOverallGraphTooltipOptions = {};
 				showOverallGraphTooltipOptions.title = "Show the overall progress for all your employees.";
-				showOverallGraphTooltipOptions.placement = "left";
+				showOverallGraphTooltipOptions.placement = "top";
+				showOverallGraphTooltipOptions.container = "body";
 				$("#showOverallProgressButton").tooltip(showOverallGraphTooltipOptions);
 				
 				var newEmployeeTooltipOptions = {};
 				newEmployeeTooltipOptions.title = "Add a new employee for your company.";
-				newEmployeeTooltipOptions.placement = "right";
+				newEmployeeTooltipOptions.placement = "top";
+				newEmployeeTooltipOptions.container = "body";
 				$("#addNewEmployeeButton").tooltip(newEmployeeTooltipOptions);
 
 				var message = "<div>Please wait.</div>"
@@ -406,7 +409,7 @@
 							});
 						});
 
-						//bootbox.hideAll();
+						$("#loadingEmployeeText").addClass("hidden");
 					});
 				});
 
@@ -430,22 +433,6 @@
 				});
 			}
 
-			function clearEmployeeInputWarning(){
-				// clear all warning messages					
-				$("#inputNewEmployeeName").parent().removeClass("has-error");
-				$("#inputNewEmployeeEmail").parent().removeClass("has-error");
-				$("#employeeNameInputWarning").text("");
-				$("#employeeEmailInputWarning").text("");
-			}
-
-			function clearUpdateInputWarning(){
-				// clear all warning messages					
-				$("#inputUpdateEmployeeName").parent().removeClass("has-error");
-				$("#inputUpdateEmployeeEmail").parent().removeClass("has-error");
-				$("#inputUpdateEmployeeNameWarning").text("");
-				$("#inputUpdateEmployeeEmailWarning").text("");
-			}
-
 			function checkInputEmployee(employee, ractive)
 			{
 				var nameError = (employee.name == "");
@@ -467,36 +454,6 @@
   				return !(nameError || emailError);
 			}
 
-			function checkInputUpdateEmployee()
-			{
-				var name = $("#inputUpdateEmployeeName").val();
-				var email = $("#inputUpdateEmployeeEmail").val();	
-
-				if (name == null || name == "") // empty name
-  				{				
-					$("#inputUpdateEmployeeName").parent().addClass("has-error");					
-					$("#inputUpdateEmployeeNameWarning").text("Error: Name must be filled out!");
-  	  				return false;
-   				}
-
-				var atpos = email.indexOf("@");
-				var dotpos = email.lastIndexOf(".");
-
-				if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
-  				{
-  					if (email == null || email == "") // empty email
-					{
-						$("#inputUpdateEmployeeEmail").parent().addClass("has-error");						
-						$("#inputUpdateEmployeeEmailWarning").text("Error: Email must be filled out!");
-						return false;
-					}
-					$("#inputUpdateEmployeeEmail").parent().addClass("has-error");
-  					$("#inputUpdateEmployeeEmailWarning").text("\"" + email + "\"" +" is not a valid e-mail address");
-  					return false;
-  				} 
- 				return true;
-			}
-
 		</script>
 
 		<!-- HTML Block -->
@@ -507,13 +464,19 @@
 			<div class="panel-heading">
 					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 					<h3 class="panel-title">
-					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business employees
+					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business Employees
 				</h3>
 		  	</div>
 		  	
-			<div id='panel' class="panel-body">
-				<button type="button" class="btn btn-primary" id="addNewEmployeeButton"><span class="glyphicon glyphicon-plus"></span></button>
-				<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
+				<div class='btn-group'>
+					<button type="button" class="btn btn-primary" id="addNewEmployeeButton"><span class="glyphicon glyphicon-plus"></span></button>
+					<button type="button" class="btn btn-primary" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+				</div>
+				<div id="loadingEmployeeText" class="text-muted small" style="margin-top:5px;">
+					Loading employee data ...
+					<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
+				</div>
 			</div>
 			
 		</div>
@@ -525,15 +488,29 @@
 					{{#employeeList}}
 						<tr> 
 							<td>
-								{{name}}
+								<div>
+									{{name}}
+								</div>
+								<div class="small text-muted">
+									{{email}}
+								</div>
 							</td>
-							<td style='width:215px;' align='center'>
+							<td style="width:70px;" align="center">
 								<div class='btn-group'>
-									<button class='btn btn-default' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
-									<button class='btn btn-default' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
-									<button class='btn btn-default' on-click='setLI'><span class='glyphicon glyphicon-flag'></span></button>
-									<a class='btn btn-default mail-employee-btn' href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope'></span></a>
-									<button class='btn btn-default' on-click='graph'><span class='glyphicon glyphicon-stats'></span></button>
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Show options">
+										<i class="fa fa-cogs"></i><span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu pull-right" role="menu" align="left">
+										<li style="width:200px;" align="center">
+											<div class="btn-group">
+												<button class="btn btn-default btn-sm" on-click='edit' title="Edit"><span class='glyphicon glyphicon-edit' style="margin-right:5px;"></span></button>
+												<button class="btn btn-default btn-sm" on-click='delete' title="Delete"><span class='glyphicon glyphicon-trash' style="margin-right:5px;"></span></button>
+												<button class="btn btn-default btn-sm" on-click='setLI' title="Change learning levels"><span class='glyphicon glyphicon-flag' style="margin-right:5px;"></span></button>
+												<a class="btn btn-default btn-sm" href='mailto:{{email}}' title="Write email"><span class='glyphicon glyphicon-envelope' style="margin-right:5px;"></span></a>
+												<button class="btn btn-default btn-sm" on-click='graph' title="Show learning progress"><span class='glyphicon glyphicon-stats' style="margin-right:5px;"></span></button>
+											</div>
+										<li>
+									</ul>
 								</div>
 							</td>
 						</tr>
@@ -611,24 +588,24 @@
 		{{#bcnList:num}}
 			<div class="panel panel-default">
 				<div class="panel-heading" style="padding-bottom:1px;">
-	      			<h4 class="panel-title">
-	        			<span class="glyphicon glyphicon-star" style="margin-right:5px;"></span> 
+	      			<h6 class="panel-title">
+	        			<span class="glyphicon {{employeeBcnData.isRelevant ? "glyphicon-star" : "glyphicon-star-empty"}}" style="margin-right:5px;"></span> 
 	        			<a data-toggle="collapse" data-parent="#bcnPanel" href="#bcn{{num}}"> {{name}}
 	        				<span class="caret"></span>
 	        			</a> 
-	      			</h4>
+	      			</h6>
 	      			<div class="checkbox" style="margin-bottom:1px; margin-top:1px;"> 
 						<label> 
 						 	Relevant 
 					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
 						</label> 
 					</div>
-	    		</div> 				
+	    		</div>			
 	    		<div  id="bcn{{num}}" class="panel-collapse collapse"> 
 	      			<ul style="margin-bottom:0px;" class="list-group">
 		      			{{#learningIndicators}}
 							<li class="list-group-item">
-								<h4><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span> {{name}}</h4>
+								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
 								<div class="checkbox">
 		  							<label>
 		  								Relevant
@@ -636,19 +613,19 @@
 		  					        </label>
 						        </div> 
 								Start level:
-								<select class="form-control" value="{{employeeLiData.start}}">
+								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.start}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
 								</select>
 								Current level:
-								<select class="form-control" value="{{employeeLiData.current}}">
+								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.current}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
 								</select>
 								End level:
-								<select class="form-control" value="{{employeeLiData.end}}">
+								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.end}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
 								{{/learningLevels}}		
