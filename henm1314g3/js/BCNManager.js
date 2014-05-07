@@ -73,7 +73,7 @@ BCN.prototype.create = function(callback){
 	space.create({
 		relation: openapp.ns.role + "data",
 		type: "my:ns:bcn",
-		representation: this, //The representation refers to the object
+		representation: thisBcn, //The representation refers to the object
 		callback: function(bcnResource){
 			//Now we have an URI for our BCN and we need to update the resource
 			thisBcn.uri = bcnResource.getURI();
@@ -98,8 +98,8 @@ BCN.prototype.delete = function(callback){
 }
 
 BCN.prototype.clone = function(){
-	var jsonText = JSON.stringify(this);
-	return new BCN(eval('(' + jsonText + ')'));
+	var clone = JSON.parse(JSON.stringify(this));
+	return new BCN(clone);
 }
 
 function createBCNfromUri(uri, callback){
@@ -110,43 +110,6 @@ function createBCNfromUri(uri, callback){
 	});
 }
 
-function saveBCN(bcn, space, callback){
-	//Check consistency
-	if(!bcn.hasOwnProperty("name"))
-		throw("bcn object has no name");
-	if(!bcn.hasOwnProperty("description"))
-		throw("bcn object has no description");
-	if(!bcn.hasOwnProperty("learningIndicators"))
-		throw("bcn object has no learningIndicators");
-	if(!$.isArray(bcn.learningIndicators))
-		throw("learningIndicators property must be an array");
-	if(bcn.learningIndicators.length == 0)
-		throw("bcns must have at least one learning indicator");
-	bcn.uri = "";
-	//Here we create the resource. The BCN gets stored in the space.
-	space.create({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:bcn",
-		representation: bcn, //The representation refers to the object
-		callback: function(bcnResource){
-			//Now we have an URI for our BCN and we need to update the resource
-			bcn.uri = bcnResource.getURI();
-			bcnResource.setRepresentation(bcn, "application/json", function(){
-				callback(bcn);
-			});
-		}
-	});
-}
-
-function updateBCN(bcn, callback){
-	bcnResource = new openapp.oo.Resource(bcn.uri);
-	bcnResource.setRepresentation(bcn, "application/json", callback);
-}
-
-function deleteBCN(bcn, callback){
-	openapp.resource.del(bcn.uri, callback());
-}
-
 function retrieveAllBcns(space, callback){
 	retrieveBoostResources("my:ns:bcn", function(object){return new BCN(object)}, callback);
 }
@@ -154,12 +117,13 @@ function retrieveAllBcns(space, callback){
 function sortBcns(bcns){
 	bcns.sort(function(a, b){
 		if (a.priority==b.priority){
-			if(a.name.toLowerCase() < b.name.toLowerCase())
-				return -1; else return 1;
+			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 		}
-		if(a.priority > b.priority)
+		if(a.priority > b.priority){
 			return -1;
-		else
+		}
+		else{
 			return 1;
+		}
 	});
 }

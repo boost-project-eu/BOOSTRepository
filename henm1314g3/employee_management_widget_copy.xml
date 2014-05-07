@@ -509,7 +509,7 @@
 												<a class="btn btn-default btn-sm" href='mailto:{{email}}' title="Write email"><span class='glyphicon glyphicon-envelope' style="margin-right:5px;"></span></a>
 												<button class="btn btn-default btn-sm" on-click='graph' title="Show learning progress"><span class='glyphicon glyphicon-stats' style="margin-right:5px;"></span></button>
 											</div>
-										<li>
+										</li>
 									</ul>
 								</div>
 							</td>
