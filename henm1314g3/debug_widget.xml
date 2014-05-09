@@ -60,7 +60,7 @@
 						retrieveAllEmployees(space, function(employees){
 							for(var i = 0; i < employees.length; i++){
 								var employee = employees[i];
-								ensureEmplyoeeBCNConsistency(employee, bcns);
+								ensureEmplyoeeBCNConsistency(employee, bcns, []);
 								employee.update(function(){
 									console.log("Updated: " + this.name);
 								});

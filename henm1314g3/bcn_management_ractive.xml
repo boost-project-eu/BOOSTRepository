@@ -107,7 +107,9 @@
 						  	data: { "bcn" : new BCN({}),
 						    	"priorityArray" : priorityArray,
 						    	"bcnsList" : bcnsList,
-						    	"employeesList": employeesList},
+						    	"employeesList": employeesList,
+						    	"nameError" : false
+						    },
 						    append: true
 						});
 					
@@ -115,6 +117,8 @@
 					$("#addNewBcnButton").click(function(){
 						var newBcn = new BCN({});
 						ractiveAddBcn.set("bcn", newBcn);
+						ractiveAddBcn.set("nameError", false);
+						//$("#foermchen").disableSubmitButtons(true);
 						$("#addBcnModal").modal();		
 						});
 
@@ -268,6 +272,9 @@
 						}
 					});
 						$("#loadingBcnText").addClass("hidden");
+
+						//Setup validation
+
 					});
 					
 				});	
@@ -335,7 +342,14 @@
 				};
 
 				iwcClient.publish(intent);
-			}	
+			}
+
+			function checkInputBcn(bcn, ractive){
+				var nameError = (bcn.name == "");
+				ractive.set("nameError", nameError);
+
+				return !nameError;
+			}
 
 		</script>
 
@@ -368,7 +382,13 @@
 				<tbody>
 					{{#bcnsList}}
 						<tr> 
-							<td><span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}'></span>{{name}}</td>
+							<td>
+								<div>
+									<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+								</div>
+								<div class="small text-muted">
+								</div>
+							</td>
 							<td style="width:70px;" align="center">
 								<div class='btn-group'>
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Show options">
@@ -398,15 +418,12 @@
 					<form role="form">
 						<div class="form-group">
 								<label for="inputNewBcnName" class="control-label">Name</label>
-								<input value='{{bcn.name}}' type="text" class="form-control" id="inputNewBcnName" placeholder="Enter name" proxy-click="addBcnName">
-								<span class="help-block"><h6 id="inputNewBcnNameWarning"></h6></span>	
+								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="Enter name" data-bv-notempty data-bv-notempty-message="The gender is required">
 						</div>
 							<div class="form-group">
 								<label for="inputNewBcnDescription">Description</label>
-								<textarea value='{{bcn.description}}' style="resize:none;" class="form-control" id="inputNewBcnDescription" placeholder="Enter description"></textarea>
-							</div>
-
-								<!--Added priority pushpins to the newBCNModal-->			
+								<textarea value='{{bcn.description}}' style="resize:none;" class="form-control" placeholder="Enter description"></textarea>
+							</div>			
 
 							<div class="form-group">
 										<label for="inputNewBcnPriority" >Priority</label><span class='glyphicon glyphicon-star' style='color:{{bcn.getPriorityColor()}}; margin:3px' ></span>		
@@ -416,14 +433,13 @@
 											{{/priorityArray}}
 											</select>									
 							</div>															
-							<div id="li-form-group" class="form-group">
+							<div class="form-group">
 								<label for="inputNewBcnLi">Learning indicators</label>
-								<span class="help-block"><h6></h6></span>
 									{{#bcn.learningIndicators : num}}	
 										<div id = "inputNewBcnLi">
-											<div class="input-group li-input" id="liInput" style="margin-bottom:5px;" proxy-click="li-input">
+											<div class="input-group" style="margin-bottom:5px;" proxy-click="li-input">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-flag"></span></span>
-												<input value='{{name}}' type="text" class="form-control liNameInput" placeholder="Enter learning indicator name">
+												<input value='{{name}}' type="text" class="form-control" placeholder="Enter learning indicator name">
 												{{# num!=0}}
 												<span class='input-group-btn'><button on-click="removeLI" class='btn btn-default' type='button'>&times;</button></span>
 												{{/}}
@@ -434,7 +450,7 @@
 								<button type="button" id="addLIButton" class="btn btn-primary" on-click="addLI"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button>
 							<div class="modal-footer">
 				        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveBCN"><span class="ladda-label">Save</span></button>			
+								<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveBCN" name="submitButton"><span class="ladda-label">Save</span></button>			
   							</div>
 					</form>
 			</div>
