@@ -9,7 +9,7 @@
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
+		<Service name="openapp"
 		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
@@ -33,10 +33,14 @@
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
 
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 
 		<!-- JavaScript Block -->
 		<script>
@@ -61,143 +65,220 @@
 			/* Shorthand for $( document ).ready() */
 
 			$(function(){
-				//question Icon
+
+			// Show widget description when click on question button
 				$('#question').click(function(){
 					$('#descriptionModal').modal({
 						keyboard: true
 						});
 					});
-
-				$('#newBcnModal').on('hidden.bs.modal', function (e) {
+			/*
+					$('#newBcnModal').on('hidden.bs.modal', function (e) {
 					$('#newBcnModal').find('input[type="text"],input[type="email"],textarea,select').val('');
 					$('#newBcnModal').find('.additionalLI').remove();
 				});
-				$("#addNewBcnButton").click(function(){
-					prepareBcnModal(-1);
-					clearInputNewBCNWarning();
-					$("#newBcnModal").modal();
-
-				});
-
+			*/
+				
+			// Show graph of all goals
 				$("#showOverallProgressButton").click(function(){
 					publishShowOverallBcnProgress();
 				});
-
-				var newBcnTooltipOptions = {};
-				newBcnTooltipOptions.title = "Add a new goal for your business.";
-				newBcnTooltipOptions.placement = "right";
-				$("#addNewBcnButton").tooltip(newBcnTooltipOptions);
-
-				var showOverallGraphTooltipOptions = {};
-				showOverallGraphTooltipOptions.title = "Show the overall progress for all your goals.";
-				showOverallGraphTooltipOptions.placement = "left";
-				$("#showOverallProgressButton").tooltip(showOverallGraphTooltipOptions);
-
-				var addLiTooltipOptions = {};
-				addLiTooltipOptions.title = "Add an additional learning indicator.";
-				addLiTooltipOptions.placement = "right";
-				$("#addLIButton").tooltip(addLiTooltipOptions);
-
-				$("#panel").append("<img id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>")
+			
+				//	Get the list of BCN's
 				retrieveAllBcns(space, function(bcns){
 					bcnsList = bcns;
+					sortBcns(bcnsList);
+					//	Get the list of Employee's
 					retrieveAllEmployees(space, function(employees){
 						employeesList = employees;
-						$("#loader").remove();
-						renderAllBcns();
+
+						var ractiveOverview = new Ractive({
+							el: 'containerBcnOverview',
+							template: '#templateBcnOverview',
+							data: { "bcnsList" : bcnsList},
+							append: true
+						});						
+		
+				//	Add new BCN ractive	
+
+						var ractiveAddBcn = new Ractive({
+						  	el: 'containerBcnAdd',
+						  	template: '#bcnAddEditTemplate',
+						  	data: { "bcn" : new BCN({}),
+						    	"priorityArray" : priorityArray,
+						    	"bcnsList" : bcnsList,
+						    	"employeesList": employeesList,
+						    	"nameError" : false
+						    },
+						    append: true
+						});
+					
+				// Show addBcnModal on click on addNewBcnButton 
+					$("#addNewBcnButton").click(function(){
+						var newBcn = new BCN({});
+						ractiveAddBcn.set("bcn", newBcn);
+						ractiveAddBcn.set("nameError", false);
+						//$("#foermchen").disableSubmitButtons(true);
+						$("#addBcnModal").modal();		
+						});
+
+					//Inside the addBcnModal		
+					
+						// Add LI to BCN on click on addLI button	
+					ractiveAddBcn.on("removeLI", function(event){
+						var li = event.context;
+						var bcn = this.get("bcn");
+						bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
 					});
-				});
 
-				/* Assign color, name and index to the priority pushpins */
+					ractiveAddBcn.on("addLI", function(event){
+						this.get('bcn').addLI("");
+					});
 
-				for (var i = 0; i < 2; i++) {
-					$('#priority' + i).css({'color':priorityColors[i]});
-					$('#prioritytext' + i).append(priorityNames[i]);
-					$('#prioritytext' + i).data('priorityIndex', i);				
-					};			
+					ractiveAddBcn.on("saveBCN", function(event){
+						var bcnToAdd = this.get('bcn');
+						var saveButton = event.node;
+
+						var l = Ladda.create(saveButton);
+						l.start();
+
+						bcnToAdd.create(function(){
+							//We need to update all employees
+							for(var i = 0; i < employeesList.length; i++){
+								var employee = employeesList[i];
+								ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
+							}
+
+							var updateEmployee = function(employee, done){
+								employee.update(function(){
+									done();
+								});
+							}
+							async.forEach(employeesList, updateEmployee, function(){
+								publishBcnCreated(bcnToAdd.uri);
+								bcnsList.push(bcnToAdd);
+								sortBcns(bcnsList);
+								l.stop();
+								$('#addBcnModal').modal("hide");
+							});
+						});
+						//Why do we need this? If we do not call it we get an error for some reason
+						event.original.preventDefault();
+					});
+
+			
+				//	BCN Edit
+						var ractiveEditBcn = new Ractive({
+							el: 'containerBcnEdit',
+						    template: '#bcnAddEditTemplate',
+						    data: { "bcn" : new BCN({}),
+						    		"originalBcn" : new BCN({}),
+						    		"priorityArray" : priorityArray,
+						    		"bcnsList" : bcnsList},
+						    append: true
+						});
+
+					//Inside the editBcnModal
+					// Show editBcnModal on click editBcnModal button 
+						ractiveOverview.on('edit', function ( event ) {
+							ractiveEditBcn.set("originalBcn", event.context);
+							ractiveEditBcn.set("bcn", event.context.clone());
+							$('#editBcnModal').modal();
+						});
+
+
+						ractiveEditBcn.on("addLI", function(event){
+							this.get('bcn').addLI("");
+						});
+
+						ractiveEditBcn.on("removeLI", function(event){
+							var li = event.context;
+							var bcn = this.get("bcn");
+							bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+						});
+
+						ractiveEditBcn.on("saveBCN", function(event){
+							var bcnToEdit = this.get('bcn');
+							var saveButton = event.node;
+							var originalBcn = this.get("originalBcn");
+
+							var l = Ladda.create(saveButton);
+							l.start();
+
+							bcnToEdit.update(function(){
+								//We need to update all employees
+								for(var i = 0; i < employeesList.length; i++){
+									var employee = employeesList[i];
+									ensureEmplyoeeBCNConsistency(employee, [bcnToEdit], []);
+								}
+
+								var updateEmployee = function(employee, done){
+									employee.update(function(){
+										done();
+									});
+								}
+								async.forEach(employeesList, updateEmployee, function(){
+									publishBcnUpdated(bcnToEdit.uri);
+									
+									bcnsList[bcnsList.indexOf(originalBcn)] = bcnToEdit;
+									sortBcns(bcnsList);
+									ractiveOverview.update();
+									l.stop();
+									$('#editBcnModal').modal("hide");
+								});
+							});
+						});
+
+			
+				//	Delete BCN	
+						var ractiveDeleteBcn = new Ractive({
+							el: 'containerBcnDelete',
+							template: '#deleteBcnTemplate',
+						    data: { 
+						    	"bcn" : null
+						    },
+						    append: true
+						});
+
+
+						ractiveDeleteBcn.on("deleteBCN", function(event){
+							var bcn = this.get("bcn");
+							var deleteButton = event.node;
+
+							var l = Ladda.create(deleteButton);
+							l.start();
+							bcn.delete(function(){
+								bcnsList.splice(bcnsList.indexOf(bcn),1);
+								publishBcnDeleted(bcn.uri);
+
+								//Hide the loading indicator of the delete button
+								l.stop();
+								$("#deleteBcnModal").modal("hide");
+
+							});
+					});
+
+
+					//	Show BCN graph on click on "graph" button
+
+						ractiveOverview.on({
+							graphShow: function ( event ) {
+							var bcnIndex = bcnsList.indexOf(event.context);
+							publishShowBcnProgress(bcnsList[bcnIndex].uri);
+						},
+							delete: function ( event ) {
+							ractiveDeleteBcn.set("bcn", event.context);
+							$('#deleteBcnModal').modal();
+						}
+					});
+						$("#loadingBcnText").addClass("hidden");
+
+						//Setup validation
+
+					});
+					
+				});	
 			});
-
-			function updateEmployeesForNewBcn(bcn, callback){
-				var updateCount = 0;
-				//Directly return if no employees are defined
-				if(employeesList.length == 0){
-					callback();
-					return;
-				}
-				for(var i = 0; i < employeesList.length; i++){
-					var learningLevelsForBcn = employeesList[i].learningLevels[bcn.uri] = {};
-					learningLevelsForBcn.isRelevant = true;
-					for(var j = 0; j < bcn.learningIndicators.length; j++){
-						learningLevelsForBcn[bcn.learningIndicators[j].id] = {};
-						learningLevelsForBcn[bcn.learningIndicators[j].id].start = 0;
-						learningLevelsForBcn[bcn.learningIndicators[j].id].current = 0;
-						learningLevelsForBcn[bcn.learningIndicators[j].id].end = llevel.length -1;
-					}
-					updateEmployee(employeesList[i], function(){
-						updateCount++;
-						if(updateCount == employeesList.length)
-							callback();
-					});
-				}
-			}
-
-			function updateEmployeesForUpdateBcn(bcn, callback){
-				var updateCount = 0;
-				for(var i = 0; i < employeesList.length; i++){
-					var learningLevelsForBcn = employeesList[i].learningLevels[bcn.uri];
-					for(var j = 0; j < bcn.learningIndicators.length; j++){
-						if(!learningLevelsForBcn.hasOwnProperty(bcn.learningIndicators[j].id))
-							learningLevelsForBcn[bcn.learningIndicators[j].id] = {};
-						learningLevelsForBcn[bcn.learningIndicators[j].id].start = 0;
-						learningLevelsForBcn[bcn.learningIndicators[j].id].current = 0;
-						learningLevelsForBcn[bcn.learningIndicators[j].id].end = llevel.length -1;
-					}
-					//TODO: Need to check if learning indicators have been removed, so they can be removed from the employees
-					updateEmployee(employeesList[i], function(){
-						updateCount++;
-						if(updateCount == employeesList.length)
-							callback();
-					});
-				}
-			}
-
-			function updateEmployeesForDeletedBcn(bcn, callback){
-				var updateCount = 0;
-				for(var i = 0; i < employeesList.length; i++){
-					delete employeesList[i].learningLevels[bcn.uri];
-					updateEmployee(employeesList[i], function(){
-						updateCount++;
-						if(updateCount == employeesList.length)
-							callback();
-					});
-				}
-			}
-
-			function checkInputNewBcn(){
-				var name = $("#inputNewBcnName").val();
-				if(name == ""){
-					$("#inputNewBcnName").parent().addClass("has-error");
-					$("#inputNewBcnNameWarning").text("Error: Name must be filled out!");					
-					return false
-				}
-				var result = true;
-				$(".li-input").each(function(){
-					if($(this).find("input[type='text']").val() == ""){
-						$("#li-form-group").addClass("has-error");
-						$("#li-form-group").find(".help-block > h6").text("Error: Learning indicator names must not be empty.");
-						result = false;
-					}
-				});
-				return result;
-			}
-
-			function clearInputNewBCNWarning(){
-				$("#inputNewBcnName").parent().removeClass("has-error");
-				$("#inputNewBcnNameWarning").text("");
-
-				$("#li-form-group").removeClass("has-error");
-				$("#li-form-group").find(".help-block > h6").text("");
-			}
 
 			function iwcCallback(intent){
 				if(intent.action == "EMPLOYEE_CREATE"){
@@ -263,307 +344,187 @@
 				iwcClient.publish(intent);
 			}
 
-			function renderAllBcns(){
-				$("#bcnOverviewTable").empty();
+			function checkInputBcn(bcn, ractive){
+				var nameError = (bcn.name == "");
+				ractive.set("nameError", nameError);
 
-				/* Sort accord. priority, then alphabet */
-
-				bcnsList.sort(function(a, b){
-					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
-					if(a.priority > b.priority)  return -1; else return 1;
-					
-					
-				});
-				for(var i = 0; i < bcnsList.length; i++){
-					var bcn = bcnsList[i];
-					var editButton = $("<button class='btn btn-default edit-bcn-btn'><span class='glyphicon glyphicon-edit'></span></button>");
-					editButton.data("bcnIndex", i);
-					var deleteButton = $("<button class='btn btn-default delete-bcn-btn'><span class='glyphicon glyphicon-trash'></span></button>");
-					deleteButton.data("bcnIndex", i);
-					var graphButton = $("<button class='btn btn-default show-graph-btn'><span class='glyphicon glyphicon-stats'></span></button>");
-					graphButton.data("bcnIndex", i);
-
-					/* Added pushpin before the name in main BCN modal */
-
-					var template = 	"<tr>" +
-										"<td><span class='glyphicon glyphicon-star' style='color:#{priorityPushpin}'></span> #{bcnName}</td>" +
-										"<td style='width:150px' align='center'>" +
-											"<div class='btn-group'>" +
-											"</div>" +
-										"</td>" +
-									"</tr>";
-
-					/* Replaced priorityPushpin with the value from priorityColors array according to it index */				
-
-					var entry = $(template.replace(/#{bcnName}/g, bcn.name).replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
-
-					entry.find(".btn-group").append(editButton);
-					entry.find(".btn-group").append(deleteButton);
-					entry.find(".btn-group").append(graphButton);
-					$("#bcnOverviewTable").append(entry);
-				}
-
-				var deleteBcnTooltipOptions = {};
-				deleteBcnTooltipOptions.title = "Delete";
-				deleteBcnTooltipOptions.container = "body";
-				$(".delete-bcn-btn").tooltip(deleteBcnTooltipOptions);
-
-				var editBcnTooltipOptions = {};
-				editBcnTooltipOptions.title = "View/Edit";
-				editBcnTooltipOptions.container = "body";
-				$(".edit-bcn-btn").tooltip(editBcnTooltipOptions);
-
-				var showGraphTooltipOptions = {};
-				showGraphTooltipOptions.title = "Show progress";
-				showGraphTooltipOptions.container = "body";
-				$(".show-graph-btn").tooltip(showGraphTooltipOptions);
-
-				$(".show-graph-btn").click(function(){
-					var bcnIndex = $(this).data("bcnIndex");
-					publishShowBcnProgress(bcnsList[bcnIndex].uri);
-				});
-
-				$(".edit-bcn-btn").click(function(){
-					var bcnIndex = $(this).data("bcnIndex");
-					prepareBcnModal(bcnIndex);
-					$("#newBcnModal").modal();
-				});
-
-				$(".delete-bcn-btn").click(function(){
-					// confirm delete first.
-					var bcnIndex = $(this).data("bcnIndex");
-					//$("#confirmDeleteButton").button("reset");
-					$("#alertInModal").alert();
-					$("#deleteAlertMessage").text("Do you really want to delete \"" + bcnsList[bcnIndex].name +"\"?");
-					$("#deleteAlertModal").modal();
-					$("#confirmDeleteButton").off().click(function(){
-						var l = Ladda.create(this);
-						l.start();
-						//$("#confirmDeleteButton").button("loading");
-						var bcnToDelete = bcnsList[bcnIndex];
-						bcnToDelete.delete(function(){
-							publishBcnDeleted(bcnToDelete.uri);
-							bcnsList.splice(bcnIndex, 1);
-							renderAllBcns();
-							$("#deleteAlertModal").modal("hide");
-							l.stop();
-						});
-					});
-				});
-			}
-
-			function renderAdditionalLiInput(bcn, li){
-				var liInput = $("#liInput").clone();
-				liInput.find("input[type='text']").val(li.name);
-				liInput.id = "liInput" + li.id;
-				liInput.addClass("additionalLI");
-				liInput.addClass("li-input");
-				liInput.find("input[type='text']").off("input").on("input", function(){
-					li.name = $(this).val();
-				});
-				var removeLi = $("<span class='input-group-btn'><button class='btn btn-default' type='button'>x</button></span>");
-				liInput.append(removeLi);
-				$("#inputNewBcnLi").append(liInput);
-				removeLi.find("button").click(function(){
-					bcn.removeLI(li.id);
-					$(this).closest(".additionalLI").remove();
-				});
-			}
-
-			function prepareBcnModal(bcnIndex){
-				//If bcnIndex < 0 then we prepare the create new bcn modal
-				//Otherwise we create the update modal for bcn stored at the index
-				var bcn;
-				if(bcnIndex < 0){
-					bcn = new BCN({});
-					$("#newBcnModalLabel").text("Create a new goal");
-				}
-				else{
-					$("#newBcnModalLabel").text("View/Update goal");
-					bcn = bcnsList[bcnIndex].clone();
-				}
-
-				
-				$("#inputNewBcnName").val(bcn.name);
-				$("#inputNewBcnDescription").val(bcn.description);
-				
-				$("#inputNewBcnName").off("input").on("input", function(){
-					bcn.name = $(this).val();
-				});
-				$("#inputNewBcnDescription").off("input").on("input", function(){
-					bcn.description = $(this).val();
-				});
-
-				/* Added click event on the drop-down pushpins */
-
-				$('.priorityClass').off("click").click(function(){
-					
-      				$('#mainPushpin').css({'color':priorityColors[$(this).data('priorityIndex')]});
-      				bcn.priority = $(this).data('priorityIndex');
-    			});
-				$('#mainPushpin').css({'color':priorityColors[bcn.priority]});
-	
-	
-				if(bcn.learningIndicators.length == 0)
-					bcn.addLI("");
-				//Update LIs
-				$("#liInput").find("input[type='text']").val(bcn.learningIndicators[0].name);
-				$("#liInput").find("input[type='text']").off("input").on("input", function(){
-					bcn.learningIndicators[0].name = $(this).val();
-				});
-				for(var i = 1; i < bcn.learningIndicators.length; i++){
-					renderAdditionalLiInput(bcn, bcn.learningIndicators[i]);
-				}
-
-				$("#addLIButton").off("click").click(function(){
-					renderAdditionalLiInput(bcn, bcn.addLI(""));
-				});
-
-				$("#saveNewBcnButton").off("click");
-				$("#saveNewBcnButton").click(function(){
-					//$(this).button("loading");
-					var l = Ladda.create(this);
-					clearInputNewBCNWarning();
-					if(checkInputNewBcn()){					
-					l.start();
-					if(bcnIndex < 0){
-						bcn.create(function(){
-							updateEmployeesForNewBcn(bcn, function(){
-								publishBcnCreated(bcn.uri);
-								bcnsList.push(bcn);
-								renderAllBcns();
-								$('#newBcnModal').modal("hide");
-								l.stop();
-							});
-						});
-					}
-					else{
-						bcn.update(function(){
-							updateEmployeesForUpdateBcn(bcn, function(){
-								publishBcnUpdated(bcn.uri);
-								bcnsList[bcnIndex] = bcn;
-								renderAllBcns();
-								$('#newBcnModal').modal("hide");
-								l.stop();
-							});
-						});
-					}
-					}
-				});
+				return !nameError;
 			}
 
 		</script>
 
-		<!-- HTML Block -->
+	<!-- HTML Block -->
+	<!-- Main widget view -->
+
 		<div style="overflow-y: scroll; height:400px;">
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				            <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
-
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Business goals</h3>
-		  	</div>
-		  	<div id='panel' class="panel-body">
-				<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
-		 	 
-				<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+			<div class="panel panel-primary" id="containerBcnOverview">
+				<div class="panel-heading">
+				     <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Business goals</h3>
+		  		</div>
+		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
+		  			<div class="btn-group">
+						<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
+			 	 		<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+					</div>
+					<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
+						Loading goals ...
+						<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
+					</div>
+				</div>		
 			</div>
-			<table class="table table-striped table-bordered table-condensed" id="bcnOverviewTable">
+		</div>
+	
+	<!-- Template for the BCN Overview -->
+
+		<script id="templateBcnOverview" type='text/ractive'>
+			<table class="table table-striped table-bordered table-condensed" >
+				<tbody>
+					{{#bcnsList}}
+						<tr> 
+							<td>
+								<div>
+									<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+								</div>
+								<div class="small text-muted">
+								</div>
+							</td>
+							<td style="width:70px;" align="center">
+								<div class='btn-group'>
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Show options">
+										<i class="fa fa-cogs"></i><span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
+										<li align="center" style="width:120px;">
+											<div class='btn-group'>
+												<button class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
+												<button class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
+												<button class='btn btn-default btn-sm' on-click='graphShow'><span class='glyphicon glyphicon-stats'></span></button>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+					{{/bcnsList}}
+				</tbody>
 			</table>
-		</div>
-		</div>
+		</script>		
 
+	<!-- Template for the modal-body BCN Add/Edit View -->
 
+		<script id="bcnAddEditTemplate" type="text/ractive">
+			<div class="modal-body">
+					<form role="form">
+						<div class="form-group">
+								<label for="inputNewBcnName" class="control-label">Name</label>
+								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="Enter name" data-bv-notempty data-bv-notempty-message="The gender is required">
+						</div>
+							<div class="form-group">
+								<label for="inputNewBcnDescription">Description</label>
+								<textarea value='{{bcn.description}}' style="resize:none;" class="form-control" placeholder="Enter description"></textarea>
+							</div>			
 
-		<div class="modal fade" id="newBcnModal" tabindex="-1" role="dialog" aria-labelledby="newBcnModalLabel" aria-hidden="true">
+							<div class="form-group">
+										<label for="inputNewBcnPriority" >Priority</label><span class='glyphicon glyphicon-star' style='color:{{bcn.getPriorityColor()}}; margin:3px' ></span>		
+										<select class="form-control" on-click="changePriority" value="{{bcn.priority}}">
+											{{#priorityArray : num}}					
+													<option value='{{num}}'>{{name}}</option>
+											{{/priorityArray}}
+											</select>									
+							</div>															
+							<div class="form-group">
+								<label for="inputNewBcnLi">Learning indicators</label>
+									{{#bcn.learningIndicators : num}}	
+										<div id = "inputNewBcnLi">
+											<div class="input-group" style="margin-bottom:5px;" proxy-click="li-input">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-flag"></span></span>
+												<input value='{{name}}' type="text" class="form-control" placeholder="Enter learning indicator name">
+												{{# num!=0}}
+												<span class='input-group-btn'><button on-click="removeLI" class='btn btn-default' type='button'>&times;</button></span>
+												{{/}}
+											</div>
+										</div>
+									{{/bcn.learningIndicators}}	
+			 				</div>
+								<button type="button" id="addLIButton" class="btn btn-primary" on-click="addLI"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button>
+							<div class="modal-footer">
+				        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveBCN" name="submitButton"><span class="ladda-label">Save</span></button>			
+  							</div>
+					</form>
+			</div>
+			
+		</script> 
+
+	<!-- Template for modal-basis edit Bcn Modal -->	
+		
+		<div class="modal fade" id="editBcnModal" tabindex="-1" role="dialog" aria-labelledby="newBcnModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
-				<div class="modal-content">
+				<div class="modal-content" id="containerBcnEdit">
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="newBcnModalLabel">Edit goal</h4>
+  					</div>						
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+	<!-- Template for modal-basis Add New Bcn Modal -->
+
+		<div class="modal fade" id="addBcnModal" tabindex="-1" role="dialog" aria-labelledby="newBcnModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content" id="containerBcnAdd">
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     					<h4 class="modal-title" id="newBcnModalLabel">Add a new goal</h4>
   					</div>
-  					<div class="modal-body">
-    					<form role="form">
-								<div class="form-group">
-									<label for="inputNewBcnName" class="control-label">Name</label>
-									<input type="text" class="form-control" id="inputNewBcnName" placeholder="Enter name">
-									<span class="help-block"><h6 id="inputNewBcnNameWarning"></h6></span>	
-								</div>
-								<div class="form-group">
-								<label for="inputNewBcnDescription">Description</label>
-								<textarea style="resize:none;" class="form-control" id="inputNewBcnDescription" placeholder="Enter description"></textarea>
-								</div>
-
-								<!--Added priority pushpins to the newBCNModal-->			
-
-								<div class="form-group">
-								<label for="inputNewBcnPriority" >Priority</label>
-									<div class="btn-group" id="inputNewBcnPriority">
-					            	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-					            		<span class="glyphicon glyphicon-star" id='mainPushpin'></span><span class="caret"></span></button>
-						            	<ul class="dropdown-menu">
-						                	<li><a class="priorityClass" href="#" id='prioritytext0'>
-						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority0' > </span></a></li>
-						                	<li><a class="priorityClass" href="#" id='prioritytext1'>
-						                		<span class="glyphicon glyphicon-star pull-left" style='margin-right:5px' id='priority1' > </span></a></li>
-						            	</ul>
-									</div>
-								</div>							
-								
-								<div id="li-form-group" class="form-group">
-									<label for="inputNewBcnLi">Learning indicators</label>
-									<span class="help-block"><h6></h6></span>	
-									<div id = "inputNewBcnLi">
-										<div class="input-group li-input" id="liInput" style="margin-bottom:5px;">
-											<span class="input-group-addon"><span class="glyphicon glyphicon-flag"></span></span>
-											<input type="text" class="form-control liNameInput" placeholder="Enter learning indicator name">
-										</div>
-									</div>
-			 					</div>
-								<button type="button" class="btn btn-primary" id="addLIButton"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button>
-						</form>
-					</div>
-  					<div class="modal-footer">
-				        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button class="btn btn-primary ladda-button" data-style="zoom-out" id="saveNewBcnButton"><span class="ladda-label">Save</span></button>			
-  					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
-		<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-  					<div class="modal-body">
-						<div class="alert alert-danger fade in" id="alertInModal">
-							<h4 id='deleteAlertMessage'></h4>
-						</div>
-						<div class="modal-footer">
+	<!-- Template for Delete Bcn Modal -->
+
+	<script id="deleteBcnTemplate" type="text/ractive">
+
+			<div class="modal-body">
+					<div class="alert alert-danger fade in" id="alertInModal">
+							<h4>Do you really want to delete {{bcn.name}}</h4>
+					</div>
+					<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-							<button class="btn btn-danger ladda-button" data-style="zoom-out" id="confirmDeleteButton"><span class="ladda-label">Delete</span></button>				       
-						</div>
+							<button class="btn btn-danger ladda-button" data-style="zoom-out" id="confirmDeleteButton" on-click="deleteBCN"><span class="ladda-label">Delete</span></button>				       
 					</div>
+			</div>
+	</script>
+
+		<div class="modal fade" id="deleteBcnModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content" id="containerBcnDelete">
+  					
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
-
+	<!-- Template for Description Bcn Modal -->
+		
 	 <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
        <div class="modal-dialog">
          <div class="modal-content">
-           <div class="modal-header">
-           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-     		<h4 class="modal-title">Business Goals Help</h4>
+           	<div class="modal-header">
+          	 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+     			<h4 class="modal-title">Business Goals Help</h4>
              </div>
-           <div class="modal-body">
-             <div class="panel-group" id="levelsdef" align="justify">
-             <ul style="padding: 10px;">
-			 <li>To add new business goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/addLI.PNG" alt="addLI" width="30" height="20"> icon. </li>
-             <li>To see overall progress of all employees click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the Learning Progress widget.</p></li>
-             <li>To edit goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
-             <li>To delete goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
-             <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
-             </ul>	 		
-          </div>
+	           <div class="modal-body">
+	             <div class="panel-group" id="levelsdef" align="justify">
+	             <ul style="padding: 10px;">
+				 <li>To add new business goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/addLI.PNG" alt="addLI" width="30" height="20"> icon. </li>
+	             <li>To see overall progress of all employees click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the Learning Progress widget.</p></li>
+	             <li>To edit goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
+	             <li>To delete goal click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
+	             <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
+	             </ul>	 		
+	          </div>
            <div class="modal-footer">
                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
            </div>      
