@@ -772,9 +772,17 @@
 							liEndListAvg.push(sumEnd / liEndList.length);
 						}
 					}
-					var sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
-					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
-					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
+
+					var sumStart = 0;
+					var sumCurrent = 0;
+					var sumEnd = 0;
+
+					if(liStartListAvg.length > 0)
+						sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
+					if(liCurrentListAvg.length > 0)
+						sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
+					if(liEndListAvg.length > 0)
+						sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 
 					
 
@@ -865,9 +873,16 @@
 							liEndListAvg.push(sumEnd / liEndList.length);
 						}
 					}
-					var sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
-					var sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
-					var sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
+					var sumStart = 0;
+					var sumCurrent = 0;
+					var sumEnd = 0;
+
+					if(liStartListAvg.length > 0)
+						sumStart = liStartListAvg.reduce(function(a, b) { return +a + +b });
+					if(liCurrentListAvg.length > 0)
+						sumCurrent = liCurrentListAvg.reduce(function(a, b) { return +a + +b });
+					if(liEndListAvg.length > 0)
+						sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 					liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 					liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
 					liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	

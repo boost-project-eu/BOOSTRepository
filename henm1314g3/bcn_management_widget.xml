@@ -46,7 +46,6 @@
 		<script>
 			var space;
 			var bcnsList;
-			var employeesList;
 			var iwcClient;
 			
 			gadgets.util.registerOnLoadHandler(init);
@@ -89,8 +88,6 @@
 					bcnsList = bcns;
 					sortBcns(bcnsList);
 					//	Get the list of Employee's
-					retrieveAllEmployees(space, function(employees){
-						employeesList = employees;
 
 						var ractiveOverview = new Ractive({
 							el: 'containerBcnOverview',
@@ -107,7 +104,6 @@
 						  	data: { "bcn" : new BCN({}),
 						    	"priorityArray" : priorityArray,
 						    	"bcnsList" : bcnsList,
-						    	"employeesList": employeesList,
 						    	"nameError" : false
 						    },
 						    append: true
@@ -143,23 +139,25 @@
 						l.start();
 
 						bcnToAdd.create(function(){
-							//We need to update all employees
-							for(var i = 0; i < employeesList.length; i++){
-								var employee = employeesList[i];
-								ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
-							}
+							retrieveAllEmployees(space, function(employees){
+								//We need to update all employees
+								for(var i = 0; i < employees.length; i++){
+									var employee = employees[i];
+									ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
+								}
 
-							var updateEmployee = function(employee, done){
-								employee.update(function(){
-									done();
+								var updateEmployee = function(employee, done){
+									employee.update(function(){
+										done();
+									});
+								}
+								async.forEach(employees, updateEmployee, function(){
+									publishBcnCreated(bcnToAdd.uri);
+									bcnsList.push(bcnToAdd);
+									sortBcns(bcnsList);
+									l.stop();
+									$('#addBcnModal').modal("hide");
 								});
-							}
-							async.forEach(employeesList, updateEmployee, function(){
-								publishBcnCreated(bcnToAdd.uri);
-								bcnsList.push(bcnToAdd);
-								sortBcns(bcnsList);
-								l.stop();
-								$('#addBcnModal').modal("hide");
 							});
 						});
 						//Why do we need this? If we do not call it we get an error for some reason
@@ -206,25 +204,27 @@
 							l.start();
 
 							bcnToEdit.update(function(){
-								//We need to update all employees
-								for(var i = 0; i < employeesList.length; i++){
-									var employee = employeesList[i];
-									ensureEmplyoeeBCNConsistency(employee, [bcnToEdit], []);
-								}
+								retrieveAllEmployees(space, function(employees){
+									//We need to update all employees
+									for(var i = 0; i < employees.length; i++){
+										var employee = employees[i];
+										ensureEmplyoeeBCNConsistency(employee, [bcnToEdit], []);
+									}
 
-								var updateEmployee = function(employee, done){
-									employee.update(function(){
-										done();
+									var updateEmployee = function(employee, done){
+										employee.update(function(){
+											done();
+										});
+									}
+									async.forEach(employees, updateEmployee, function(){
+										publishBcnUpdated(bcnToEdit.uri);
+										
+										bcnsList[bcnsList.indexOf(originalBcn)] = bcnToEdit;
+										sortBcns(bcnsList);
+										ractiveOverview.update();
+										l.stop();
+										$('#editBcnModal').modal("hide");
 									});
-								}
-								async.forEach(employeesList, updateEmployee, function(){
-									publishBcnUpdated(bcnToEdit.uri);
-									
-									bcnsList[bcnsList.indexOf(originalBcn)] = bcnToEdit;
-									sortBcns(bcnsList);
-									ractiveOverview.update();
-									l.stop();
-									$('#editBcnModal').modal("hide");
 								});
 							});
 						});
@@ -276,8 +276,6 @@
 						//Setup validation
 
 					});
-					
-				});	
 			});
 
 			function iwcCallback(intent){
