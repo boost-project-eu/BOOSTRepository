@@ -60,6 +60,12 @@
 			var ractiveAddEmployee;
 			var ractiveDeleteEmployee;
 			var ractiveSetLIEmployee;
+
+			var user = {
+				isEmployee: true,
+				isManager: false,
+				isTrainer: false
+			};
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
@@ -202,6 +208,16 @@
 					publishShowOverallEmployeeProgress();
 				});
 
+				var ractiveEmployeeHeader = new Ractive({
+					  el: 'containerEmployeeOverview',
+					  template: '#templateEmployeeHeader',
+					  data: {
+					   disabledForAll: true,
+					   disabledForEmployee: true
+					  },
+					  append: true
+					});
+
 				var showOverallGraphTooltipOptions = {};
 				showOverallGraphTooltipOptions.title = "Show the overall progress for all your employees.";
 				showOverallGraphTooltipOptions.placement = "top";
@@ -240,7 +256,10 @@
 						ractiveOverview = new Ractive({
 						    el: 'containerEmployeeOverview',
 						    template: '#templateEmployeeOverview',
-						    data: { "employeeList" : employeeList},
+						    data: { "employeeList" : employeeList,
+						    		disabledForAll: true,
+						    		disabledForEmployee: true
+						 			},
 						    append: true
 						});
 
@@ -313,6 +332,23 @@
 							});
 
 						});
+						//Check user role
+
+							if (user.isManager) 
+							{
+							ractiveEmployeeHeader.set("disabledForAll", false);
+							ractiveEmployeeHeader.set("disabledForEmployee", false);
+							ractiveOverview.set("disabledForAll", false);
+							ractiveOverview.set("disabledForEmployee", false);
+							
+							}; 	
+							if (user.isTrainer & !user.isManagers)
+							{
+							ractiveEmployeeHeader.set("disabledForAll", true);
+							ractiveEmployeeHeader.set("disabledForEmployee", false);
+							ractiveOverview.set("disabledForAll", true);
+							ractiveOverview.set("disabledForEmployee", false);	
+							}
 
 						//Add employee ractive which is responsible to render the modal to add a new employee
 						ractiveAddEmployee = new Ractive({
@@ -460,6 +496,8 @@
 		
 		<div style="overflow-y: scroll; height:400px;">
 		<div class="panel panel-primary" id="containerEmployeeOverview">
+		<!-- Template for the header Main widget view -->
+			<script id='templateEmployeeHeader' type='text/ractive'>	
 			
 			<div class="panel-heading">
 					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
@@ -470,15 +508,15 @@
 		  	
 			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 				<div class='btn-group'>
-					<button type="button" class="btn btn-primary" id="addNewEmployeeButton"><span class="glyphicon glyphicon-plus"></span></button>
-					<button type="button" class="btn btn-primary" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+					<button disabled='{{disabledForAll}}' type="button" class="btn btn-primary" id="addNewEmployeeButton"><span class="glyphicon glyphicon-plus"></span></button>
+					<button disabled='{{disabledForEmployee}}' type="button" class="btn btn-primary" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
 				</div>
 				<div id="loadingEmployeeText" class="text-muted small" style="margin-top:5px;">
 					Loading employee data ...
 					<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
 				</div>
 			</div>
-			
+			</script>	
 		</div>
 		</div>
 
@@ -503,11 +541,11 @@
 									<ul class="dropdown-menu pull-right" role="menu" align="left">
 										<li style="width:200px;" align="center">
 											<div class="btn-group">
-												<button class="btn btn-default btn-sm" on-click='edit' title="Edit"><span class='glyphicon glyphicon-edit' style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm" on-click='delete' title="Delete"><span class='glyphicon glyphicon-trash' style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm" on-click='setLI' title="Change learning levels"><span class='glyphicon glyphicon-flag' style="margin-right:5px;"></span></button>
+												<button disabled='{{disabledForAll}}' class="btn btn-default btn-sm" on-click='edit' title="Edit"><span class='glyphicon glyphicon-edit' style="margin-right:5px;"></span></button>
+												<button disabled='{{disabledForAll}}' class="btn btn-default btn-sm" on-click='delete' title="Delete"><span class='glyphicon glyphicon-trash' style="margin-right:5px;"></span></button>
+												<button disabled='{{disabledForEmployee}}' class="btn btn-default btn-sm" on-click='setLI' title="Change learning levels"><span class='glyphicon glyphicon-flag' style="margin-right:5px;"></span></button>
 												<a class="btn btn-default btn-sm" href='mailto:{{email}}' title="Write email"><span class='glyphicon glyphicon-envelope' style="margin-right:5px;"></span></a>
-												<button class="btn btn-default btn-sm" on-click='graph' title="Show learning progress"><span class='glyphicon glyphicon-stats' style="margin-right:5px;"></span></button>
+												<button disabled='{{disabledForEmployee}}' class="btn btn-default btn-sm" on-click='graph' title="Show learning progress"><span class='glyphicon glyphicon-stats' style="margin-right:5px;"></span></button>
 											</div>
 										</li>
 									</ul>
