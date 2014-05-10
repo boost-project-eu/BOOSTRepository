@@ -45,12 +45,13 @@
 		<!-- JavaScript Block -->
 		<script>
 			var space;
+			var employeeList;
 			var bcnsList;
 			var iwcClient;
 			var user = {
-				isEmployee: false,
+				isEmployee: true,
 				isManager: false,
-				isTrainer: true
+				isTrainer: false
 			};
 			
 			gadgets.util.registerOnLoadHandler(init);
@@ -92,7 +93,7 @@
 					  el: 'containerBcnOverview',
 					  template: '#templateBcnHeader',
 					  data: {
-					   disabled: true
+					   disabledForAll: true
 					  },
 					  append: true
 					});
@@ -108,18 +109,19 @@
 							el: 'containerBcnOverview',
 							template: '#templateBcnOverview',
 							data: { "bcnsList" : bcnsList,
-									disabled: true
+									disabledForAll: true
 									},
 							append: true
 						});		
-				//check if user is a manager and allow add and edit goals
+				//check user roles
 						
 				if (user.isManager) 
 				{
-				ractiveBcnHeader.set("disabled", false);
-				ractiveOverview.set("disabled", false);
+				ractiveBcnHeader.set("disabledForAll", false);
+				ractiveOverview.set("disabledForAll", false);
 				
-				}				
+				}
+
 		
 				//	Add new BCN ractive	
 
@@ -391,8 +393,8 @@
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 		  		 	<!-- add new bcn and view overall progress -->
 		  				<div class="btn-group">
-							<button disabled='{{disabled}}' type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
-			 	 			<button disabled='{{disabled}}' type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+							<button disabled='{{disabledForAll}}' type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
+			 	 			<button  type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
 						
 						</div>
 							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
@@ -427,8 +429,8 @@
 									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
 										<li align="center" style="width:120px;">
 											<div class='btn-group'>
-												<button disabled='{{disabled}}' class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
-												<button disabled='{{disabled}}' class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
+												<button disabled='{{disabledForAll}}' class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
+												<button disabled='{{disabledForAll}}' class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
 												<button class='btn btn-default btn-sm' on-click='graphShow'><span class='glyphicon glyphicon-stats'></span></button>
 											</div>
 										</li>
