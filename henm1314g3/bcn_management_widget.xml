@@ -47,6 +47,11 @@
 			var space;
 			var bcnsList;
 			var iwcClient;
+			var user = {
+				isEmployee: false,
+				isManager: false,
+				isTrainer: true
+			};
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
@@ -64,7 +69,7 @@
 			/* Shorthand for $( document ).ready() */
 
 			$(function(){
-
+			
 			// Show widget description when click on question button
 				$('#question').click(function(){
 					$('#descriptionModal').modal({
@@ -82,7 +87,17 @@
 				$("#showOverallProgressButton").click(function(){
 					publishShowOverallBcnProgress();
 				});
-			
+
+				var ractiveBcnHeader = new Ractive({
+					  el: 'containerBcnOverview',
+					  template: '#templateBcnHeader',
+					  data: {
+					   disabled: true
+					  },
+					  append: true
+					});
+
+
 				//	Get the list of BCN's
 				retrieveAllBcns(space, function(bcns){
 					bcnsList = bcns;
@@ -92,9 +107,19 @@
 						var ractiveOverview = new Ractive({
 							el: 'containerBcnOverview',
 							template: '#templateBcnOverview',
-							data: { "bcnsList" : bcnsList},
+							data: { "bcnsList" : bcnsList,
+									disabled: true
+									},
 							append: true
-						});						
+						});		
+				//check if user is a manager and allow add and edit goals
+						
+				if (user.isManager) 
+				{
+				ractiveBcnHeader.set("disabled", false);
+				ractiveOverview.set("disabled", false);
+				
+				}				
 		
 				//	Add new BCN ractive	
 
@@ -353,25 +378,32 @@
 
 	<!-- HTML Block -->
 	<!-- Main widget view -->
-
+	
+	
 		<div style="overflow-y: scroll; height:400px;">
 			<div class="panel panel-primary" id="containerBcnOverview">
+			<!-- Template for the header Main widget view -->
+			<script id='templateBcnHeader' type='text/ractive'>	
 				<div class="panel-heading">
 				     <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Business goals</h3>
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
-		  			<div class="btn-group">
-						<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
-			 	 		<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
-					</div>
-					<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
-						Loading goals ...
+		  		 	<!-- add new bcn and view overall progress -->
+		  				<div class="btn-group">
+							<button disabled='{{disabled}}' type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
+			 	 			<button disabled='{{disabled}}' type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
+						
+						</div>
+							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
+							Loading goals ...
 						<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
 					</div>
-				</div>		
+				</div>	
+			</script>		
 			</div>
 		</div>
+
 	
 	<!-- Template for the BCN Overview -->
 
@@ -395,8 +427,8 @@
 									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
 										<li align="center" style="width:120px;">
 											<div class='btn-group'>
-												<button class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
-												<button class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
+												<button disabled='{{disabled}}' class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
+												<button disabled='{{disabled}}' class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
 												<button class='btn btn-default btn-sm' on-click='graphShow'><span class='glyphicon glyphicon-stats'></span></button>
 											</div>
 										</li>
