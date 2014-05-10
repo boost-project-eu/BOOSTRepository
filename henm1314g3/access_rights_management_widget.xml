@@ -182,10 +182,10 @@
 		<script id="templateUserOverview" type='text/ractive'>
 			<table class="table table-striped table-bordered table-condensed" >
 			    <tbody>
-					{{#userList}}
+					{{#userList: num}}
 						<tr> 
 							<td>
-								{{name}}
+								{{num}}{{name}}
 							</td>
 							<td>
 								{{email}}
