@@ -782,13 +782,16 @@
 													<span>
 														<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
 														<div class='btn-group pull-right'>
+															<button on-click="ViewPersonalWidget" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-plus'></span>
+															</button>
 															<button on-click="WidgetView" class='btn btn-default btn-sm'>
 																<span class='glyphicon glyphicon-eye-open'></span>
 															</button>
 															<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
 																<span class='glyphicon glyphicon-edit'></span>
 															</button>
-															<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
+															<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
 																<span class='glyphicon glyphicon-trash'></span>
 															</button>
 														</div>
