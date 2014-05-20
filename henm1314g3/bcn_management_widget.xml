@@ -47,6 +47,13 @@
 			var space;
 			var bcnsList;
 			var iwcClient;
+
+			var accessRights = {
+				bcnManagement : {
+					read : true,
+					write : false
+				}
+			}
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
@@ -227,6 +234,8 @@
 									});
 								});
 							});
+							//Why do we need this? If we do not call it we get an error for some reason
+							event.original.preventDefault();
 						});
 
 			

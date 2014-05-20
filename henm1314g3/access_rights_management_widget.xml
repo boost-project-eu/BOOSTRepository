@@ -39,6 +39,7 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
 
 		<!-- Define CSS -->
@@ -53,6 +54,7 @@
 			var space;
 			var iwcClient;
 			var userList;
+			var accessRights;
 
 			//Define the ractives as globals
 			var ractiveOverview;
@@ -65,7 +67,6 @@
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
 
-				retrieveAllUsers(space, function(){});
 			}
 
 			function iwcCallback(intent){
@@ -73,91 +74,31 @@
 
 			$(function(){
 				retrieveAllUsers(space, function(users){
-					userList = users;
+					retrieveAccessRights(function(access){
+						userList = users;
+						accessRights = access;
+						//Match all users with their access rights which are stored in the config
+						//resource
 
-					ractiveOverview = new Ractive({
-						el: 'containerUserOverview',
-					    template: '#templateUserOverview',
-					    data: { "userList" : userList},
-					    append: true
+						for(var i = 0; i < userList.length; i++){
+							var user = userList[i];
+							user.accessRights = accessRights.getUserAccessRights(user.uri);
+						}
+						ractiveOverview = new Ractive({
+							el: 'containerUserOverview',
+						    template: '#templateUserOverview',
+						    data: { "userList" : userList},
+						    append: true
+						});
 					});
 				});
 
-			});
-
-			function sortEmployees(){
-				employeeList.sort(function (a, b){
-					if(a.name.toLowerCase() < b.name.toLowerCase()) 
-						return -1; else return 1;
+				$("#save").click(function(event){
+					accessRights.update(function(){
+						console.log("Saved access rights");
+					});
 				});
-			}
-
-			function clearEmployeeInputWarning(){
-				// clear all warning messages					
-				$("#inputNewEmployeeName").parent().removeClass("has-error");
-				$("#inputNewEmployeeEmail").parent().removeClass("has-error");
-				$("#employeeNameInputWarning").text("");
-				$("#employeeEmailInputWarning").text("");
-			}
-
-			function clearUpdateInputWarning(){
-				// clear all warning messages					
-				$("#inputUpdateEmployeeName").parent().removeClass("has-error");
-				$("#inputUpdateEmployeeEmail").parent().removeClass("has-error");
-				$("#inputUpdateEmployeeNameWarning").text("");
-				$("#inputUpdateEmployeeEmailWarning").text("");
-			}
-
-			function checkInputEmployee(employee, ractive)
-			{
-				var nameError = (employee.name == "");
-				ractive.set("nameError", nameError);
-
-				var emailError = false;
-				var email = employee.email;	
-
-				var atpos = email.indexOf("@");
-				var dotpos = email.lastIndexOf(".");
-
-				if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
-  				{
-  					emailError = true;
-  				}
-
-  				ractive.set("emailError", emailError);
-
-  				return !(nameError || emailError);
-			}
-
-			function checkInputUpdateEmployee()
-			{
-				var name = $("#inputUpdateEmployeeName").val();
-				var email = $("#inputUpdateEmployeeEmail").val();	
-
-				if (name == null || name == "") // empty name
-  				{				
-					$("#inputUpdateEmployeeName").parent().addClass("has-error");					
-					$("#inputUpdateEmployeeNameWarning").text("Error: Name must be filled out!");
-  	  				return false;
-   				}
-
-				var atpos = email.indexOf("@");
-				var dotpos = email.lastIndexOf(".");
-
-				if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
-  				{
-  					if (email == null || email == "") // empty email
-					{
-						$("#inputUpdateEmployeeEmail").parent().addClass("has-error");						
-						$("#inputUpdateEmployeeEmailWarning").text("Error: Email must be filled out!");
-						return false;
-					}
-					$("#inputUpdateEmployeeEmail").parent().addClass("has-error");
-  					$("#inputUpdateEmployeeEmailWarning").text("\"" + email + "\"" +" is not a valid e-mail address");
-  					return false;
-  				} 
- 				return true;
-			}
+			});
 
 		</script>
 
@@ -174,6 +115,7 @@
 		  	</div>
 		  	
 			<div id='panel' class="panel-body">
+				<button id="save" class="btn btn-default">Save</button>
 			</div>
 			
 		</div>
@@ -188,7 +130,15 @@
 								{{name}}
 							</td>
 							<td>
-								{{email}}
+								<label class="checkbox-inline">
+								  <input type="checkbox" checked='{{accessRights.isManager}}'> Manager
+								</label>
+								<label class="checkbox-inline">
+								  <input type="checkbox" checked='{{accessRights.isTrainer}}'> Trainer
+								</label>
+								<label class="checkbox-inline">
+								  <input type="checkbox" checked='{{accessRights.isEmployee}}'> Employee
+								</label>
 							</td>
 						</tr>
 					{{/userList}}

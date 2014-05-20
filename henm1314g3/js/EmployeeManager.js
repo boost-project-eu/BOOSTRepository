@@ -7,11 +7,14 @@
 	llevel[4] = 4;
 	llevel[5] = 5;
 
+Employee.prototype = new BoostObject({});
+
+Employee.prototype.getTypeName = function(){
+	return "employee";
+}
+
 function Employee(object){
-	if(object.hasOwnProperty("uri"))
-		this.uri = object.uri;
-	else
-		this.uri = "";
+	BoostObject.call(this, object);
 
 	if(object.hasOwnProperty("name"))
 		this.name = object.name;
@@ -29,46 +32,9 @@ function Employee(object){
 		this.learningLevels = {};
 }
 
-Employee.prototype.create = function(callback){
-	var space = new openapp.oo.Resource(openapp.param.space());
-	var thisEmployee = this;
-	space.create({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:employee",
-		representation: this, //The representation refers to the object
-		callback: function(employeeResource){
-			//Now we have an URI for our Employee and we need to update the resource
-			thisEmployee.uri = employeeResource.getURI();
-			employeeResource.setRepresentation(thisEmployee, "application/json", function(){
-				callback();
-			});
-		}
-	});
-}
-
-Employee.prototype.update = function(callback){
-	var employee = this;
-	var employeeResource = new openapp.oo.Resource(this.uri);
-	employeeResource.setRepresentation(this, "application/json", function(){
-		callback.call(employee);
-	});
-}
-
-Employee.prototype.delete = function(callback){
-	openapp.resource.del(this.uri, function(){
-		callback();
-	});
-}
-
 Employee.prototype.clone = function(){
 	var clone = JSON.parse(JSON.stringify(this));
 	return new Employee(clone);
-}
-
-function deleteEmployee(employee, callback){
-	openapp.resource.del(employee.uri, function(){
-		callback();
-	});
 }
 
 function createEmployeefromUri(uri, callback){
@@ -76,37 +42,6 @@ function createEmployeefromUri(uri, callback){
 
 	employeeResource.getRepresentation("rdfjson", function(employeeObject){
 		callback(employeeObject);
-	});
-}
-
-function saveEmployee(employee, space, callback){
-	//Check consistency
-	if(!employee.hasOwnProperty("name"))
-		throw("employee object has no name");
-	if(!employee.hasOwnProperty("email"))
-		throw("employee object has no email");
-	if(!employee.hasOwnProperty("learningLevels"))
-		throw("employee object has no learningLevels");
-	employee.uri = "";	
-	//Here we create the resource. The BCN gets stored in the space.
-	space.create({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:employee",
-		representation: employee, //The representation refers to the object
-		callback: function(employeeResource){
-			//Now we have an URI for our BCN and we need to update the resource
-			employee.uri = employeeResource.getURI();
-			employeeResource.setRepresentation(employee, "application/json", function(){
-				callback(employee);
-			});
-		}
-	});
-}
-
-function updateEmployee(employee, callback){
-	employeeResource = new openapp.oo.Resource(employee.uri);
-	employeeResource.setRepresentation(employee, "application/json", function(){
-		callback();
 	});
 }
 
