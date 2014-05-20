@@ -50,8 +50,8 @@
 			var iwcClient;
 			var user = {
 				isEmployee: true,
-				isManager: false,
-				isTrainer: false
+				isManager: true,
+				isTrainer: true
 			};
 			
 			gadgets.util.registerOnLoadHandler(init);
@@ -82,22 +82,16 @@
 					$('#newBcnModal').find('input[type="text"],input[type="email"],textarea,select').val('');
 					$('#newBcnModal').find('.additionalLI').remove();
 				});
-			*/
-				
-			// Show graph of all goals
-				$("#showOverallProgressButton").click(function(){
-					publishShowOverallBcnProgress();
-				});
-
-				var ractiveBcnHeader = new Ractive({
+			*/	
+				//	addBCN and showProgress activities	
+						var ractiveBcnHeader = new Ractive({
 					  el: 'containerBcnOverview',
 					  template: '#templateBcnHeader',
 					  data: {
-					   disabledForAll: true
+					  	accessRights: user
 					  },
 					  append: true
 					});
-
 
 				//	Get the list of BCN's
 				retrieveAllBcns(space, function(bcns){
@@ -109,20 +103,11 @@
 							el: 'containerBcnOverview',
 							template: '#templateBcnOverview',
 							data: { "bcnsList" : bcnsList,
-									disabledForAll: true
+									"accessRights" : user
 									},
 							append: true
 						});		
-				//check user roles
-						
-				if (user.isManager) 
-				{
-				ractiveBcnHeader.set("disabledForAll", false);
-				ractiveOverview.set("disabledForAll", false);
-				
-				}
 
-		
 				//	Add new BCN ractive	
 
 						var ractiveAddBcn = new Ractive({
@@ -135,15 +120,26 @@
 						    },
 						    append: true
 						});
-					
-				// Show addBcnModal on click on addNewBcnButton 
-					$("#addNewBcnButton").click(function(){
-						var newBcn = new BCN({});
-						ractiveAddBcn.set("bcn", newBcn);
-						ractiveAddBcn.set("nameError", false);
-						//$("#foermchen").disableSubmitButtons(true);
-						$("#addBcnModal").modal();		
-						});
+
+					ractiveBcnHeader.on({
+						showOverallProgress: function ( event ) {
+							publishShowOverallBcnProgress();
+						},
+						addNewBcn: function ( event ) {
+							// Show addBcnModal on click on addNewBcnButton 
+							var newBcn = new BCN({});
+							ractiveAddBcn.set("bcn", newBcn);
+							ractiveAddBcn.set("nameError", false);
+							$("#addBcnModal").modal();		
+						},
+						showHelpAddBcn: function( event ){
+							$('.tooltip-addBCN').tooltip();
+							
+						},
+						showHelpShowOverallProgress: function (event){
+							$('.tooltip-showOverallProgress').tooltip();
+						}
+					});
 
 					//Inside the addBcnModal		
 					
@@ -296,7 +292,18 @@
 							delete: function ( event ) {
 							ractiveDeleteBcn.set("bcn", event.context);
 							$('#deleteBcnModal').modal();
+						},
+							showHelpGoalGraph: function ( event ) {
+							$('.tooltip-showGoalProgress').tooltip();
+
+						}, 
+							showHelpDeleteGoal: function ( event ) {
+							$('.tooltip-deleteGoal').tooltip();
+						},
+							showHelpEditGoal: function ( event ) {
+							$('.tooltip-editGoal').tooltip();
 						}
+
 					});
 						$("#loadingBcnText").addClass("hidden");
 
@@ -392,11 +399,15 @@
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 		  		 	<!-- add new bcn and view overall progress -->
+		  		 	{{^accessRights.isManager}}
+		  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>
+		  		 	{{/accessRights.isManager}}
+		  		 	{{#accessRights.isManager}}
 		  				<div class="btn-group">
-							<button disabled='{{disabledForAll}}' type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
-			 	 			<button  type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
-						
+							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
+			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>		
 						</div>
+					{{/accessRights.isManager}}
 							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
 							Loading goals ...
 						<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
@@ -405,7 +416,6 @@
 			</script>		
 			</div>
 		</div>
-
 	
 	<!-- Template for the BCN Overview -->
 
@@ -422,20 +432,25 @@
 								</div>
 							</td>
 							<td style="width:70px;" align="center">
+								 {{^accessRights.isManager}} 
+									<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress for the {{name}}"></span></button>
+								 {{/accessRights.isManager}}
+							{{#accessRights.isManager}} 
 								<div class='btn-group'>
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Show options">
 										<i class="fa fa-cogs"></i><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
-										<li align="center" style="width:120px;">
+											<li align="center" style="width:120px;">
 											<div class='btn-group'>
-												<button disabled='{{disabledForAll}}' class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
-												<button disabled='{{disabledForAll}}' class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
-												<button class='btn btn-default btn-sm' on-click='graphShow'><span class='glyphicon glyphicon-stats'></span></button>
+												<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit the {{name}}"></span></button>
+												<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete the {{name}}"></span></button>
+												<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress for the {{name}}"></span></button>
 											</div>
-										</li>
-									</ul>
+											</li>
+										</ul>
 								</div>
+							 {{/accessRights.isManager}}
 							</td>
 						</tr>
 					{{/bcnsList}}
