@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Welcome Widget"
+		description="Wlcome Widget."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400"
+		width="600">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+			
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ExpertsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/WidgetsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
+		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+
+		<!-- Define CSS -->
+		
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
+		<!-- JavaScript Block -->
+		<script>
+			
+			var space;
+			var iwcClient;
+			
+			
+			
+			gadgets.util.registerOnLoadHandler(init);
+			function init(){
+			    
+				space = new openapp.oo.Resource(openapp.param.space());
+				iwcClient = new iwc.Client();
+				iwcClient.connect(iwcCallback);
+			}
+
+			
+			
+			$(function(){
+
+			      // help button click 
+
+			      $('#question').click(function(){
+			        $('#descriptionModal').modal({
+			        keyboard: true
+			          });
+			        }); 
+
+				
+		</script>
+			
+		<!-- HTML Block -->
+		<div style="overflow-y: scroll; height:400px;">
+		<div class ="panel panel-primary">
+			<div class="panel-heading">
+				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+
+				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
+			</div>
+		
+			<div id ="panel" class="panel-body">
+				<div class="modal-body">
+							<table class="table table-striped table-condensed" cellspacing="0" cellpadding="0">
+								<tbody>
+								
+									
+									<tr> 
+										<td  align="center">
+											<div>
+												 <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png"
+											</div>
+										</td>
+									</tr>
+									<tr> 
+										<td>
+											<div align="center">
+												 
+											</div>
+										</td>
+									</tr>
+									<tr> 
+										<td width="10%">
+											<div>
+												<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/rwth.jpg"
+											</div>
+										</td>
+										<td width="10%">
+											<div>
+												<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/asset.jpg" 
+											</div>
+										</td>
+										<td width="10%">
+											<div>
+												<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/grafia.jpg" 
+											</div>
+										</td>
+										<td width="10%">
+											<div>
+												<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/mrs.jpg"
+											</div>
+										</td>
+										<td width="10%">
+											<div>
+												<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/greta.jpg"
+											</div>
+										</td>
+									</tr>
+									<tr> 
+										<td>
+											<div>
+												I have read the <a href=# >.....</a> 
+											</div>
+										</td>
+										<td>
+											<div>
+												<button type="button" class="btn btn-default" data-dismiss="modal">Next</button>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+				</div>
+		</div>
+		
+		
+
+		<div class="modal fade" id="viewExpertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					
+  						<div id="viewExpertTemplateContainer">
+  						<script id='viewExpertTemplate' type='text/ractive'>
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 value=""> Contact information of {{Expert.name}}</h4>
+						</div>
+						<div class="modal-body">
+							<table class="table table-striped table-bordered table-condensed">
+								<tbody>
+								{{#Expert}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Name: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{name}}
+											</div>
+										</td>
+									</tr>
+									<tr> 
+										<td width="20%">
+											<div>
+												Email: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{email}}
+											</div>
+										</td>
+									</tr>
+									{{#tel}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Phone: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{tel}}
+											</div>
+										</td>
+									</tr>
+									{{/tel}}
+									{{#address}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Address: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{address}} (<a href='https://maps.google.de/maps?q={{Expert.address}}&z=11' target='_blank'>See Map</a>)
+											</div>
+										</td>
+									</tr>
+									{{/address}}
+									{{#website}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Website: 
+											</div>
+										</td>
+										<td>
+											<div>
+												<a href='http://{{website}}' target='_blank'>{{website}}</a>
+											</div>
+										</td>
+									</tr>
+									{{/website}}
+									{{#skype}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Skype: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{skype}}
+											</div>
+										</td>
+									</tr>
+									{{/skype}}
+									{{/Expert}}
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+								
+						</script>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="viewWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					
+  						<div id="viewWidgetTemplateContainer">
+  						<script id='viewWidgetTemplate' type='text/ractive'>
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 value=""> Information of {{Widget.name}}</h4>
+						</div>
+						<div class="modal-body">
+							<table class="table table-striped table-bordered table-condensed">
+								<tbody>
+								{{#Widget}}
+									{{#name}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Name: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{name}}
+											</div>
+										</td>
+									</tr>
+									{{/name}}
+									{{#url}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Url Address: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{url}} 
+											</div>
+										</td>
+									</tr>
+									{{/url}}
+									{{/Expert}}
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Learning Resources Help</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+            <ul style="padding: 10px;">
+            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents and experts assigned to the goal and learning indicators. </li>
+          		<li>To see the list of learning indicators assigned to the goal click on its name.</li>
+          		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
+          		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
+				<li>To add new learning document click on <i>Add new document</i> menu item. In the <i>Add a new Learning Document</i> view 
+				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
+				<li>To add new expert click on <i>Add new expert</i> menu item. 
+				<ul style="padding: 10px;">
+				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li> 
+				<li>Click on <i>Save</i> button to save changes.</li>
+				</ul>
+				<li>To see expert contact informations, click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/view.PNG" alt="overall" width="30" height="20"> icon.
+				</li>
+            </ul>         
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
+		
+		
+	]]>
+  </Content>
+</Module>
