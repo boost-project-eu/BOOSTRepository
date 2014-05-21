@@ -116,8 +116,12 @@
 						ractiveOverview = new Ractive({
 							el: 'containerUserOverview',
 						    template: '#templateUserOverview',
-						    data: { "userList" : userList},
+						    data: { "userList" : userList },
 						    append: true
+						});
+
+						ractiveOverview.on("accessRightsChanged", function(event){
+							accessRights.update(function(){});
 						});
 					});
 				});
@@ -144,7 +148,7 @@
 		  	</div>
 		  	
 			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
-				<button id="save" class="btn btn-default">Save</button>
+				<!-- <button id="save" class="btn btn-default">Save</button> -->
 			</div>
 			
 		</div>
@@ -164,17 +168,17 @@
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isManager}}'>
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}'>
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isTrainer}}'>
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}'>
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isEmployee}}'>
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}'>
 								</label>
 							</td>
 						</tr>
