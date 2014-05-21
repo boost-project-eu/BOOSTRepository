@@ -77,13 +77,33 @@
 					retrieveAccessRights(function(access){
 						userList = users;
 						accessRights = access;
+
 						//Match all users with their access rights which are stored in the config
 						//resource
 
+						var managerExists = false;
+						var owner = null;
 						for(var i = 0; i < userList.length; i++){
 							var user = userList[i];
 							user.accessRights = accessRights.getUserAccessRights(user.uri);
+							managerExists = (user.accessRights.isManager);
+							if(user.isOwner)
+								owner = user;
 						}
+
+						if(!managerExists)
+							owner.accessRights.isManager = true;
+
+						if(!accessRights.getUserAccessRights().isManager){
+							bootbox.dialog({
+								title : "Sorry",
+								message : "You do not have rights to access this widget.",
+								closeButton : false
+							});
+							return;
+						}
+
+
 						ractiveOverview = new Ractive({
 							el: 'containerUserOverview',
 						    template: '#templateUserOverview',
@@ -122,22 +142,30 @@
 		</div>
 
 		<script id="templateUserOverview" type='text/ractive'>
-			<table class="table table-striped table-bordered table-condensed" >
+			<table class="table table-striped table-bordered" >
 			    <tbody>
+			    	<tr><th>Name</th><th>Manager</th><th>Trainer</th><th>Employee</th></tr>
 					{{#userList}}
 						<tr> 
 							<td>
 								{{name}}
+								{{#isOwner}}
+								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
+								{{/isOwner}}
 							</td>
-							<td>
+							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isManager}}'> Manager
+								  <input type="checkbox" checked='{{accessRights.isManager}}'>
 								</label>
+							</td>
+							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isTrainer}}'> Trainer
+								  <input type="checkbox" checked='{{accessRights.isTrainer}}'>
 								</label>
+							</td>
+							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isEmployee}}'> Employee
+								  <input type="checkbox" checked='{{accessRights.isEmployee}}'>
 								</label>
 							</td>
 						</tr>

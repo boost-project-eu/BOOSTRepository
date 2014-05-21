@@ -14,6 +14,11 @@ function User(object){
 	else
 		this.email = "";
 
+	if(object.hasOwnProperty("isOwner"))
+		this.isOwner = object.isOwner;
+	else
+		this.isOwner = false;
+
 	if(object.hasOwnProperty("accessRights")){
 		this.accessRights = object.accessRights;
 	}
@@ -34,41 +39,54 @@ User.prototype.saveAccessRights = function(callback){
 }
 
 function retrieveAllUsers(space, callback){
-	//First get the URIs of all the user which are in the space
+	//Get the owner of the space
 	space.getSubResources({
-		relation : "http://xmlns.com/foaf/0.1/member",
-		type : "http://purl.org/role/terms/Person",
-		followReference : true,
-		onAll : function(resources){
-			var userUris = [];
+		relation : "http://purl.org/openapp/owner",
+		onAll : function(ownerResource){
+			var ownerUri = ownerResource[0].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value;
+		
 
-			for(var i = 0; i < resources.length; i++){
-				userUris.push(resources[i].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value);
-			}
-			//Get all the users in the space based on their URI
-			var users = [];
 
-			var getUser = function(item, done){
-				var userResource = new openapp.oo.Resource(item);
-				userResource.getInfo(function(info){
-					var email = info["http://xmlns.com/foaf/0.1/mbox"];
-					if(!email)
-						email = "";
-					//Remove 'mailto:' prefix from the email
-					email = email.substring(7);
-					var user = new User({
-						uri : item,
-						name : info["http://purl.org/dc/terms/title"],
-						email : email
+	
+			//First get the URIs of all the user which are in the space
+			space.getSubResources({
+				relation : "http://xmlns.com/foaf/0.1/member",
+				type : "http://purl.org/role/terms/Person",
+				followReference : true,
+				onAll : function(resources){
+					var userUris = [];
+
+					for(var i = 0; i < resources.length; i++){
+						userUris.push(resources[i].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value);
+					}
+					//Get all the users in the space based on their URI
+					var users = [];
+
+					var getUser = function(item, done){
+						var userResource = new openapp.oo.Resource(item);
+						userResource.getInfo(function(info){
+							var email = info["http://xmlns.com/foaf/0.1/mbox"];
+							if(!email)
+								email = "";
+							//Remove 'mailto:' prefix from the email
+							email = email.substring(7);
+							var isOwner = (ownerUri == item);
+							var user = new User({
+								uri : item,
+								name : info["http://purl.org/dc/terms/title"],
+								email : email,
+								isOwner : isOwner
+							});
+
+							users.push(user);
+							done();
+						});
+					}
+
+					async.forEach(userUris, getUser, function(error){
+						callback(users);
 					});
-
-					users.push(user);
-					done();
-				});
-			}
-
-			async.forEach(userUris, getUser, function(error){
-				callback(users);
+				}
 			});
 		}
 	});
