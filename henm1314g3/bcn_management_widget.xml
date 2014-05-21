@@ -30,6 +30,8 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
+
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
@@ -50,11 +52,6 @@
 			var iwcClient;
 			var userAccessRights; 
 
-			var user = {
-				isEmployee: true,
-				isManager: false,
-				isTrainer: false
-			};
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
@@ -85,18 +82,22 @@
 					$('#newBcnModal').find('.additionalLI').remove();
 				});
 			*/	
-				//	addBCN and showProgress activities	
-						var ractiveBcnHeader = new Ractive({
+			
+				// Get the access rights: 
+				retrieveAccessRights(function(accessRights){
+
+				userAccessRights = accessRights.getUserAccessRights();
+
+					//	addBCN and showProgress activities	
+					var ractiveBcnHeader = new Ractive({
 					  el: 'containerBcnOverview',
 					  template: '#templateBcnHeader',
 					  data: {
-					  	accessRights: user
+					  	accessRights: userAccessRights
 					  },
 					  append: true
 					});
 
-				// Get the access rights: 
-				
 
 				//	Get the list of BCN's
 				retrieveAllBcns(space, function(bcns){
@@ -108,7 +109,7 @@
 							el: 'containerBcnOverview',
 							template: '#templateBcnOverview',
 							data: { "bcnsList" : bcnsList,
-									"accessRights" : user
+									"accessRights" : userAccessRights
 									},
 							append: true
 						});		
@@ -315,6 +316,7 @@
 						//Setup validation
 
 					});
+				});  // end of the retrieveAccessRights
 			});
 
 			function iwcCallback(intent){
