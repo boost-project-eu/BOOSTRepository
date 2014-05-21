@@ -48,10 +48,12 @@
 			var employeeList;
 			var bcnsList;
 			var iwcClient;
+			var userAccessRights; 
+
 			var user = {
 				isEmployee: true,
-				isManager: true,
-				isTrainer: true
+				isManager: false,
+				isTrainer: false
 			};
 			
 			gadgets.util.registerOnLoadHandler(init);
@@ -92,6 +94,9 @@
 					  },
 					  append: true
 					});
+
+				// Get the access rights: 
+				
 
 				//	Get the list of BCN's
 				retrieveAllBcns(space, function(bcns){
