@@ -66,22 +66,7 @@
 				iwcClient.connect(iwcCallback);
 			}
 
-			/* Shorthand for $( document ).ready() */
-
 			$(function(){
-			
-			// Show widget description when click on question button
-				$('#question').click(function(){
-					$('#descriptionModal').modal({
-						keyboard: true
-						});
-					});
-			/*
-					$('#newBcnModal').on('hidden.bs.modal', function (e) {
-					$('#newBcnModal').find('input[type="text"],input[type="email"],textarea,select').val('');
-					$('#newBcnModal').find('.additionalLI').remove();
-				});
-			*/	
 			
 				// Get the access rights: 
 				retrieveAccessRights(function(accessRights){
@@ -144,6 +129,15 @@
 						},
 						showHelpShowOverallProgress: function (event){
 							$('.tooltip-showOverallProgress').tooltip();
+						},
+						showHelpForHelp: function (event){
+							$('.tooltip-showHelp').tooltip();
+						},
+						showHelp: function(event){
+							$('#descriptionModal').modal({
+								keyboard: true
+							});
+
 						}
 					});
 
@@ -189,7 +183,8 @@
 								});
 							});
 						});
-						//Why do we need this? If we do not call it we get an error for some reason
+						//Why do we need this? If we do not call it we get an error for some reason:
+						//It's like onClick (off)
 						event.original.preventDefault();
 					});
 
@@ -401,7 +396,7 @@
 			<!-- Template for the header Main widget view -->
 			<script id='templateBcnHeader' type='text/ractive'>	
 				<div class="panel-heading">
-				     <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
 					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Business goals</h3>
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
@@ -440,7 +435,7 @@
 							</td>
 							<td style="width:70px;" align="center">
 								 {{^accessRights.isManager}} 
-									<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress for the {{name}}"></span></button>
+									<button class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
 								 {{/accessRights.isManager}}
 							{{#accessRights.isManager}} 
 								<div class='btn-group'>
@@ -450,9 +445,9 @@
 									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
 											<li align="center" style="width:120px;">
 											<div class='btn-group'>
-												<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit the {{name}}"></span></button>
-												<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete the {{name}}"></span></button>
-												<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress for the {{name}}"></span></button>
+												<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
+												<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
+												<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
 											</div>
 											</li>
 										</ul>
