@@ -3,12 +3,14 @@ var priorityNames = ["normal", "high"];
 
 var priorityArray = [{"color" : "#b2b2b2", "name" : "normal"}, {"color" : "#333333", "name" : "high"}];
 
+BCN.prototype = new BoostObject({});
+
+BCN.prototype.getTypeName = function(){
+	return "bcn";
+}
 
 function BCN(object){
-	if(object.hasOwnProperty("uri"))
-		this.uri = object.uri;
-	else
-		this.uri = "";
+	BoostObject.call(this, object);
 
 	if(object.hasOwnProperty("name"))
 		this.name = object.name;
@@ -66,37 +68,6 @@ BCN.prototype.removeLI = function(id){
 		}
 	}
 }
-
-BCN.prototype.create = function(callback){
-	var space = new openapp.oo.Resource(openapp.param.space());
-	var thisBcn = this;
-	space.create({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:bcn",
-		representation: thisBcn, //The representation refers to the object
-		callback: function(bcnResource){
-			//Now we have an URI for our BCN and we need to update the resource
-			thisBcn.uri = bcnResource.getURI();
-			bcnResource.setRepresentation(thisBcn, "application/json", function(){
-				callback();
-			});
-		}
-	});
-}
-
-BCN.prototype.update = function(callback){
-	var bcnResource = new openapp.oo.Resource(this.uri);
-	bcnResource.setRepresentation(this, "application/json", function(){
-		callback();
-	});
-}
-
-BCN.prototype.delete = function(callback){
-	openapp.resource.del(this.uri, function(){
-		callback();
-	});
-}
-
 BCN.prototype.clone = function(){
 	var clone = JSON.parse(JSON.stringify(this));
 	return new BCN(clone);

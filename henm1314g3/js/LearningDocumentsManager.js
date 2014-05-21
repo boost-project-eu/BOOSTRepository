@@ -1,8 +1,11 @@
+LearningDocument.prototype = new BoostObject({});
+
+LearningDocument.prototype.getTypeName = function(){
+	return "learningDocument";
+}
+
 function LearningDocument(object){
-	if(object.hasOwnProperty("uri"))
-		this.uri = object.uri;
-	else
-		this.uri = "";
+	BoostObject.call(this, object);
 
 	if(object.hasOwnProperty("bcnUri"))
 		this.bcnUri = object.bcnUri;
@@ -38,36 +41,6 @@ function LearningDocument(object){
 		this.contentSpecificData = object.contentSpecificData;
 	else
 		this.contentSpecificData = {};
-}
-
-LearningDocument.prototype.create = function(callback){
-	var space = new openapp.oo.Resource(openapp.param.space());
-	var thisLearningDocument = this;
-	space.create({
-		relation: openapp.ns.role + "data",
-		type: "my:ns:learningDocument",
-		representation: this, //The representation refers to the object
-		callback: function(learningDocumentResource){
-			//Now we have an URI for our Employee and we need to update the resource
-			thisLearningDocument.uri = learningDocumentResource.getURI();
-			learningDocumentResource.setRepresentation(thisLearningDocument, "application/json", function(){
-				callback();
-			});
-		}
-	});
-}
-
-LearningDocument.prototype.update = function(callback){
-	var learningDocumentResource = new openapp.oo.Resource(this.uri);
-	learningDocumentResource.setRepresentation(this, "application/json", function(){
-		callback();
-	});
-}
-
-LearningDocument.prototype.delete = function(callback){
-	openapp.resource.del(this.uri, function(){
-		callback();
-	});
 }
 
 function retrieveAllLearningDocuments(callback){

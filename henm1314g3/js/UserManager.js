@@ -13,6 +13,24 @@ function User(object){
 		this.email = object.email;
 	else
 		this.email = "";
+
+	if(object.hasOwnProperty("accessRights")){
+		this.accessRights = object.accessRights;
+	}
+	else {
+		this.accessRights = new AccessRights({});
+	}
+}
+
+User.prototype.saveAccessRights = function(callback){
+	if(this.accessRights.uri == "")
+		this.accessRights.create(function(){
+			callback();
+		}, this);
+	else
+		this.accessRights.update(function(){
+			callback();
+		});
 }
 
 function retrieveAllUsers(space, callback){
@@ -43,6 +61,7 @@ function retrieveAllUsers(space, callback){
 						name : info["http://purl.org/dc/terms/title"],
 						email : email
 					});
+
 					users.push(user);
 					done();
 				});
