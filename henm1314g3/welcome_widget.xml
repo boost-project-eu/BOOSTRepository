@@ -90,69 +90,54 @@
 
 			var frameSrc = "/login";
 
-			$('#openBtn').click(function(){
-			    $('#myModal').on('show', function () {
+			$('#aboutBtn').click(function(){
+			    $('#aboutModal').on('show', function () {
 
 			        $('iframe').attr("src",frameSrc);
 			      
 				});
-			    $('#myModal').modal({show:true})
+			    $('#aboutModal').modal({show:true})
 			});
 
 				
 		</script>
 			
 		<!-- HTML Block -->
-		<div style="overflow-y: scroll; height:400px;">
+	<div style="overflow-y: scroll; height:400px;">
 		<div class ="panel panel-primary">
 			<div class="panel-heading">
-				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 5 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.gif" alt="overall" width="45" height="25" alt="BOOST website"></a>
 
 				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
 			</div>
 		
 			<div id ="panel" class="panel-body">
 				<div class="modal-body">
-				<iframe src="" style="zoom:0.60" width="99.6%" height="250" frameborder="1"></iframe>
+				<iframe src="" style="zoom:0.60" width="99.6%" height="250" frameborder="2"></iframe>
+				<p></p>
+				<button type="button" id="aboutBtn" class="btn btn-primary btn-sm active" data-dismiss="modal">About</button>
+				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Agreement</button>
 							
+			</div>
+	</div>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-header">
+    					<h4 class="modal-title" id="myModalLabel">Quick start quide</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+								<div class="form-group">
+									jghhjgkgjkg
+
+								</div>
+						</form>
+					</div>
 				</div>
-		</div>
-		
-
-		
-
-
-		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Learning Resources Help</h4>
-            </div>
-          <div class="modal-body">
-            <div class="panel-group" id="levelsdef" align="justify">
-            <ul style="padding: 10px;">
-            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents and experts assigned to the goal and learning indicators. </li>
-          		<li>To see the list of learning indicators assigned to the goal click on its name.</li>
-          		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
-          		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
-				<li>To add new learning document click on <i>Add new document</i> menu item. In the <i>Add a new Learning Document</i> view 
-				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
-				<li>To add new expert click on <i>Add new expert</i> menu item. 
-				<ul style="padding: 10px;">
-				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li> 
-				<li>Click on <i>Save</i> button to save changes.</li>
-				</ul>
-				<li>To see expert contact informations, click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/view.PNG" alt="overall" width="30" height="20"> icon.
-				</li>
-            </ul>         
-          </div>
-          <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-          </div>      
-        </div>      
-      </div>
-    </div>
+			</div>
+	</div>
 		
 		
 	]]>
