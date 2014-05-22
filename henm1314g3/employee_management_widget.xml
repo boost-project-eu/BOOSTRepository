@@ -502,15 +502,18 @@
 			<div class="panel-heading">
 				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
 					<h3 class="panel-title">
-					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business Employees
+					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business employees
 				</h3>
 		  	</div>
 		  	
 			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 			<!-- add new bcn and view overall progress -->
-		  		 	{{^accessRights.isManager}}
-		  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>
-		  		 	{{/accessRights.isManager}}
+
+					{{#accessRights.isTrainer}}
+			  		 	{{^accessRights.isManager}}
+			  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>
+			  		 	{{/accessRights.isManager}}
+			  		{{/accessRights.isTrainer}}
 
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
@@ -542,30 +545,53 @@
 								</div>
 							</td>
 							<td style="width:70px;" align="center">
-								 {{^accessRights.isManager}} 
-									<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
-								 {{/accessRights.isManager}}
-
-							 {{#accessRights.isManager}} 
+						
+						{{#accessRights.isManager}} 
 								<div class='btn-group'>
 									<button type="button" class="btn btn-default dropdown-toggle"  on-mouseover="showHelpOptions"  data-toggle="dropdown">
 										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu" align="left">
 										<li style="width:200px;" align="center">
-											<div class="btn-group">
+											<div class="btn-group">		
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEditEmployee" on-click='edit' ><span class='glyphicon glyphicon-edit tooltip-editEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpDeleteEmployee" on-click='delete' ><span class='glyphicon glyphicon-trash tooltip-deleteEmployee'  data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px;"></span></button>
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
+											</div>
+										</li>
+									</ul>
+								</div>						
+						{{/accessRights.isManager}}
 
-												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>
-											
+						{{#accessRights.isEmployee}}
+							{{^accessRights.isManager}}
+								{{^accessRights.isTrainer}}
+												<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
+								{{/accessRights.isTrainer}}
+							{{/accessRights.isManager}}
+						{{/accessRights.isEmployee}}
+
+						{{#accessRights.isTrainer}}
+							{{^accessRights.isManager}}
+									<div class='btn-group'>
+									<button type="button" class="btn btn-default dropdown-toggle"  on-mouseover="showHelpOptions"  data-toggle="dropdown">
+										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu pull-right" role="menu">
+										<li style="width:115px;" align="center">
+											<div class="btn-group">	
+												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" ></span></button>
+												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" ></span></button>
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" ></span></button>	
 											</div>
 										</li>
 									</ul>
 								</div>
 							{{/accessRights.isManager}}
+						{{/accessRights.isTrainer}}
+	 
 							</td>
 						</tr>
 					{{/employeeList}}
