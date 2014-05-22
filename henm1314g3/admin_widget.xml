@@ -44,6 +44,23 @@
     <!-- Define CSS -->
    <link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
  
+    <style>
+
+    #addKeywordsModal,{
+      -ms-word-break: break-all;
+
+     /* Be VERY careful with this, breaks normal words wh_erever */
+     word-break: break-all;
+
+     /* Non standard for webkit */
+     word-break: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+        hyphens: auto;
+    }
+
+    </style>
 
     <!-- JavaScript Block -->
     <script>
@@ -160,9 +177,11 @@
           
         });
 
-        var template =   "<tr>" +
+        var template =  
+                          "<table id='keywordsTable' width='100%'>" +
+                           "<tr>" +
                             "<td><h5>Choose goal: </h5><h5 id='someGoal' style='color:#3677AF; font-weight:bold;'></h5></td>" +
-                            "<td style='width:100px;' align='center'>" +
+                            "<td id='superTd' style='width:100px ; ' align='center'>" +
                                  "<div id='goal-btn-group' class='btn-group'>" +
                                  "</div>" +
                            "</td>" +
@@ -183,7 +202,8 @@
                 "</tr>"+
                 "<tr>" +
                 "<td colspan='2'><textarea class='form-control hide' id='textInput' rows='3'></textarea></td>" +
-                "</tr>";
+                "</tr>" +
+                "</table>";
 
         /* add dropdown list with BCNs */
 
@@ -202,7 +222,7 @@
     
           var bcn = bcnsList[key];
 
-          goal = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
+          goal = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1" >'+bcn.name+'</a></li>');
           goal.find("a").data("dataBCNselected", bcn);
           goalDropDownMenu.append(goal);
        }
@@ -239,7 +259,7 @@
              for (var j=0; j<temp.length; j++) {
               var selectedLearningIndicator = temp[j];
 
-               learningIndicator = $('<li role="presentation"> <a role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
+               learningIndicator = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
                liDropDownMenu.append(learningIndicator);
                learningIndicator.find("a").data("dataLearningIndicator", selectedLearningIndicator);
 
@@ -332,9 +352,9 @@
                       <h4 class="modal-title">Assign description to learning indicators:</h4>
                   </div>
                   <div class="modal-body" id="bodyKeywordsModal">
-                  <table id='keywordsTable' width='100%'>
+                  
 
-                  </table>
+                  
                   </div>
                   <div class="modal-footer">
                     <div class="form-actions">
