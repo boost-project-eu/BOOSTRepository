@@ -26,7 +26,7 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-2.1.1.js" type="text/javascript"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
@@ -354,6 +354,22 @@
 					        	$("#viewWidgetModal").modal();
 					        });
 
+					        treeRactive.on("ViewPersonalWidget", function(event){
+					        	
+					        	var kp = event.keypath;
+					        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+					        	var widgetUrl = event.context.url;
+					        	var spaceURI = openapp.param.user();
+					        	addWidgetToSpace(spaceURI,widgetUrl);
+								viewWidgetRactive.set({
+					        		"WidgetArray": this.get(WidgetsKeypath),
+					        		"Widget": event.context,
+
+					        	});
+
+					   
+					        });
+
 					        treeRactive.on("documentShow", function(event){
 					        	if(event.context.type == "weblink"){
 					        		var url = event.context.url;
@@ -601,9 +617,9 @@
 					        });
 					        addWidgetRactive.on("saveWidget", function(event){
 					        	
-					        	var widgetUrl = this.get("newWidget").url;
-					        	var spaceURI = openapp.param.user();
-					        	addWidgetToSpace(spaceURI,widgetUrl);
+					        	// var widgetUrl = this.get("newWidget").url;
+					        	// var spaceURI = openapp.param.user();
+					        	// addWidgetToSpace(spaceURI,widgetUrl);
 					        	var node = event.node;
 					        	var l = Ladda.create(node);
 					        	l.start();

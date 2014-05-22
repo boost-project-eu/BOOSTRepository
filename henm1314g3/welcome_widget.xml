@@ -75,6 +75,7 @@
 			        keyboard: true
 			          });
 			        }); 
+			});
 
 			// var ruleRactive = new Ractive({
 			// 		            el: 'viewRulesTemplateContainer',
@@ -88,19 +89,26 @@
 			// 		        	$("#viewRulesModal").modal();
 			// 		        });
 
-			var frameSrc = "/login";
+			function iwcCallback(intent){
+				if(intent.action == "WELCOME_CREATE"){
+					
+				}
+			}
 
-			$('#aboutBtn').click(function(){
-			    $('#aboutModal').on('show', function () {
+			function aboutFunction()
+			{
+			document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/about.html";
+			}
 
-			        $('iframe').attr("src",frameSrc);
-			      
-				});
-			    $('#aboutModal').modal({show:true})
-			});
+			function agreementFunction()
+			{
+			document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/agreement.html";
+			document.getElementById("agreement").class="btn btn-primary btn-sm active";
+			document.getElementById("about").class="btn btn-primary btn-sm";
+			}
 
-				
-		</script>
+
+			</script>
 			
 		<!-- HTML Block -->
 	<div style="overflow-y: scroll; height:400px;">
@@ -113,10 +121,10 @@
 		
 			<div id ="panel" class="panel-body">
 				<div class="modal-body">
-				<iframe src="" style="zoom:0.60" width="99.6%" height="250" frameborder="2"></iframe>
+				<iframe id="welcomeIframe" src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/about.html" style="zoom:0.60" width="99.6%" height="390" frameborder="2"></iframe>
 				<p></p>
-				<button type="button" id="aboutBtn" class="btn btn-primary btn-sm active" data-dismiss="modal">About</button>
-				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Agreement</button>
+				<button type="button" id="about" onclick="aboutFunction()" class="btn btn-primary btn-sm active" data-dismiss="modal">About</button>
+				<button type="button" id="agreement" onclick="agreementFunction()" class="btn btn-default btn-sm" data-dismiss="modal">Agreement</button>
 							
 			</div>
 	</div>
