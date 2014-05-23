@@ -34,6 +34,7 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ExpertsManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/WidgetsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
@@ -55,6 +56,8 @@
 			
 			var space;
 			var iwcClient;
+			var userAccessRights;
+			var agreed;
 			
 			gadgets.util.registerOnLoadHandler(init);
 			function init(){
@@ -63,6 +66,19 @@
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
 			}
+
+	$(function(){
+			
+		// Get the access rights: 
+		retrieveAccessRights(function(accessRights){
+
+		userAccessRights = accessRights.getUserAccessRights();
+		agreed = userAccessRights.hasAgreedToLicense;
+
+			if (!agreed)
+				$("#agreeLisenceModal").modal();
+			else
+				$("#agreeLisenceModal").modal("hide");
 
 			
 			
@@ -89,11 +105,7 @@
 			// 		        	$("#viewRulesModal").modal();
 			// 		        });
 
-			function iwcCallback(intent){
-				if(intent.action == "WELCOME_CREATE"){
-					
-				}
-			}
+			
 
 			// function aboutFunction()
 			// {
@@ -106,6 +118,15 @@
 			// document.getElementById("agreement").class="btn btn-primary btn-sm active";
 			// document.getElementById("about").class="btn btn-primary btn-sm";
 			// }
+		});  // end of the retrieveAccessRights
+	});
+
+		function iwcCallback(intent){
+				if(intent.action == "WELCOME_CREATE"){
+					
+				}
+			}
+
 
 
 			</script>
@@ -121,10 +142,11 @@
 		
 			<div id ="panel" class="panel-body">
 				<div class="modal-body">
-				<iframe id="welcomeIframe" src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/about.html" style="zoom:0.60" width="99.6%" height="390" frameborder="2"></iframe>
-				<p></p>
-				<button type="button" id="about" onclick="aboutFunction()" class="btn btn-primary btn-sm active" data-dismiss="modal">About</button>
-				<button type="button" id="agreement" onclick="agreementFunction()" class="btn btn-default btn-sm" data-dismiss="modal">Agreement</button>
+				<p>jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+				jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+				jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+				jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+				</p>
 							
 			</div>
 	</div>
@@ -147,7 +169,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-				        <button on-click="saveDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
+				        <button on-click="agree" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
   					</div>
 				</div>
 			</div>
