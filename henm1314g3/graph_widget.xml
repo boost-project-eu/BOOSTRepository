@@ -35,6 +35,10 @@
     <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
 	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
 	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
+	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
 		
 	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/highcharts.js" type="text/javascript"></script>
 	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/modules/exporting.js" type="text/javascript"></script>
@@ -44,6 +48,8 @@
 
 		<!-- JavaScript Block -->
 		<script>
+			var userAccessRights; 
+			var userList;
 
 			var colorStart = '#808080'; 	//start
 			var colorEnd = '#f5f5f5';		//end
@@ -271,6 +277,40 @@
 
 			$(function(){
 
+				retrieveAllUsers(space, function(users){
+					userList = users;
+			
+					// Get the access rights: 
+					retrieveAccessRights(function(accessRights){
+
+					userAccessRights = accessRights.getUserAccessRights();
+
+					//Match all users with their access rights which are stored in the config
+							//resource
+
+							var managerExists = false;
+							var owner = null;
+							for(var i = 0; i < userList.length; i++){
+								var user = userList[i];
+								user.accessRights = accessRights.getUserAccessRights(user.uri);
+								managerExists = (user.accessRights.isManager);
+								if(user.isOwner)
+									owner = user;
+							}
+
+							//Debug
+						//owner.accessRights.hasAgreedToLicense = true;
+
+					//Check if user has agreed to license
+						console.log(userAccessRights.hasAgreedToLicense);
+						if(!userAccessRights.hasAgreedToLicense){
+								showModalAcceptTermsOfUse();							
+						}
+
+
+					});  // end of the retrieveAccessRights
+				
+				}); //end of the retrieveUsers
 
 			      // help button click 
 

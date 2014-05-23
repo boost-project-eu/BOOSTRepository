@@ -108,12 +108,7 @@
 
 						//Check if user has agreed to license
 						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
-							bootbox.dialog({
-								title : "Sorry",
-								message : "You need to accept the terms of use before you can use the BOOST widgets.",
-								closeButton : false
-							});
-							return;
+							showModalAcceptTermsOfUse();							
 						}
 
 						if(!accessRights.getUserAccessRights().isManager){
