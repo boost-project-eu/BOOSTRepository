@@ -55,6 +55,12 @@
 			var space;
 			var check=false;
 
+			var user = {
+				isEmployee: false,
+				isManager: false,
+				isTrainer: false
+			};
+
 				
 			//Those boolean tell us if we are currently displaying a BCN or Employee graph.
 			var isOverviewGraph={};
@@ -67,6 +73,7 @@
 
 			
 			function init(){
+
 				space = new openapp.oo.Resource(openapp.param.space());
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
@@ -901,8 +908,9 @@
 				//isOverview.isBcn=true;
 				//isOverview.isEmployee=false;
 				var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
-
+				if (!user.isEmployee){
 				printGraph(isOverview, 0, title, subtitle, uriEmployee, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
+				}
 			}
 			
 			function showBcnGraph(bcnUri){
@@ -989,7 +997,9 @@
 				isOverview.isEmployee=true;
 				var uriList=[];
 				var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
+
 				printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
+				
 			}
 			
 			function showDetailedEmployeeGraph(employeeUri, bcnUri){
