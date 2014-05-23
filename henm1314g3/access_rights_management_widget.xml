@@ -100,8 +100,21 @@
 								owner = user;
 						}
 
+						//Debug
+						//owner.accessRights.hasAgreedToLicense = true;
+
 						if(!managerExists)
 							owner.accessRights.isManager = true;
+
+						//Check if user has agreed to license
+						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
+							bootbox.dialog({
+								title : "Sorry",
+								message : "You need to accept the terms of use before you can use the BOOST widgets.",
+								closeButton : false
+							});
+							return;
+						}
 
 						if(!accessRights.getUserAccessRights().isManager){
 							bootbox.dialog({
@@ -152,25 +165,29 @@
 					{{#userList}}
 						<tr> 
 							<td>
-								{{name}}
+								<p class="{{!accessRights.hasAgreedToLicense ? "text-muted" : ""}}">{{name}}
 								{{#isOwner}}
 								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
 								{{/isOwner}}
+								{{^accessRights.hasAgreedToLicense}}
+								<i title="This user has not agreed to the terms of use yet so he can not be given access rights." class="fa fa-exclamation-circle"></i>
+								{{/accessRights.hasAgreedToLicense}}
+								</p>
 
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}'>
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled="{{!accessRights.hasAgreedToLicense}}">
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}'>
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}' disabled="{{!accessRights.hasAgreedToLicense}}">
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}'>
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled="{{!accessRights.hasAgreedToLicense}}">
 								</label>
 							</td>
 						</tr>
