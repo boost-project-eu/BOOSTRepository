@@ -125,12 +125,6 @@
 						});
 					});
 				});
-
-				$("#save").click(function(event){
-					accessRights.update(function(){
-						console.log("Saved access rights");
-					});
-				});
 			});
 
 		</script>
@@ -147,9 +141,6 @@
 				</h3>
 		  	</div>
 		  	
-			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
-				<!-- <button id="save" class="btn btn-default">Save</button> -->
-			</div>
 			
 		</div>
 		</div>
