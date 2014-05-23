@@ -156,6 +156,7 @@
 								{{#isOwner}}
 								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
 								{{/isOwner}}
+
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">

@@ -30,6 +30,8 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
+
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
@@ -45,15 +47,11 @@
 		<!-- JavaScript Block -->
 		<script>
 			var space;
+			var employeeList;
 			var bcnsList;
 			var iwcClient;
+			var userAccessRights; 
 
-			var accessRights = {
-				bcnManagement : {
-					read : true,
-					write : false
-				}
-			}
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
@@ -68,28 +66,24 @@
 				iwcClient.connect(iwcCallback);
 			}
 
-			/* Shorthand for $( document ).ready() */
-
 			$(function(){
-
-			// Show widget description when click on question button
-				$('#question').click(function(){
-					$('#descriptionModal').modal({
-						keyboard: true
-						});
-					});
-			/*
-					$('#newBcnModal').on('hidden.bs.modal', function (e) {
-					$('#newBcnModal').find('input[type="text"],input[type="email"],textarea,select').val('');
-					$('#newBcnModal').find('.additionalLI').remove();
-				});
-			*/
-				
-			// Show graph of all goals
-				$("#showOverallProgressButton").click(function(){
-					publishShowOverallBcnProgress();
-				});
 			
+				// Get the access rights: 
+				retrieveAccessRights(function(accessRights){
+
+				userAccessRights = accessRights.getUserAccessRights();
+
+					//	addBCN and showProgress activities	
+					var ractiveBcnHeader = new Ractive({
+					  el: 'containerBcnOverview',
+					  template: '#templateBcnHeader',
+					  data: {
+					  	accessRights: userAccessRights
+					  },
+					  append: true
+					});
+
+
 				//	Get the list of BCN's
 				retrieveAllBcns(space, function(bcns){
 					bcnsList = bcns;
@@ -99,10 +93,12 @@
 						var ractiveOverview = new Ractive({
 							el: 'containerBcnOverview',
 							template: '#templateBcnOverview',
-							data: { "bcnsList" : bcnsList},
+							data: { "bcnsList" : bcnsList,
+									"accessRights" : userAccessRights
+									},
 							append: true
-						});						
-		
+						});		
+
 				//	Add new BCN ractive	
 
 						var ractiveAddBcn = new Ractive({
@@ -115,15 +111,35 @@
 						    },
 						    append: true
 						});
-					
-				// Show addBcnModal on click on addNewBcnButton 
-					$("#addNewBcnButton").click(function(){
-						var newBcn = new BCN({});
-						ractiveAddBcn.set("bcn", newBcn);
-						ractiveAddBcn.set("nameError", false);
-						//$("#foermchen").disableSubmitButtons(true);
-						$("#addBcnModal").modal();		
-						});
+
+					ractiveBcnHeader.on({
+						showOverallProgress: function ( event ) {
+							publishShowOverallBcnProgress();
+						},
+						addNewBcn: function ( event ) {
+							// Show addBcnModal on click on addNewBcnButton 
+							var newBcn = new BCN({});
+							ractiveAddBcn.set("bcn", newBcn);
+							ractiveAddBcn.set("nameError", false);
+							$("#addBcnModal").modal();		
+						},
+						showHelpAddBcn: function( event ){
+							$('.tooltip-addBCN').tooltip();
+							
+						},
+						showHelpShowOverallProgress: function (event){
+							$('.tooltip-showOverallProgress').tooltip();
+						},
+						showHelpForHelp: function (event){
+							$('.tooltip-showHelp').tooltip();
+						},
+						showHelp: function(event){
+							$('#descriptionModal').modal({
+								keyboard: true
+							});
+
+						}
+					});
 
 					//Inside the addBcnModal		
 					
@@ -167,7 +183,8 @@
 								});
 							});
 						});
-						//Why do we need this? If we do not call it we get an error for some reason
+						//Why do we need this? If we do not call it we get an error for some reason:
+						//It's like onClick (off)
 						event.original.preventDefault();
 					});
 
@@ -234,8 +251,6 @@
 									});
 								});
 							});
-							//Why do we need this? If we do not call it we get an error for some reason
-							event.original.preventDefault();
 						});
 
 			
@@ -278,13 +293,25 @@
 							delete: function ( event ) {
 							ractiveDeleteBcn.set("bcn", event.context);
 							$('#deleteBcnModal').modal();
+						},
+							showHelpGoalGraph: function ( event ) {
+							$('.tooltip-showGoalProgress').tooltip();
+
+						}, 
+							showHelpDeleteGoal: function ( event ) {
+							$('.tooltip-deleteGoal').tooltip();
+						},
+							showHelpEditGoal: function ( event ) {
+							$('.tooltip-editGoal').tooltip();
 						}
+
 					});
 						$("#loadingBcnText").addClass("hidden");
 
 						//Setup validation
 
 					});
+				});  // end of the retrieveAccessRights
 			});
 
 			function iwcCallback(intent){
@@ -362,23 +389,33 @@
 
 	<!-- HTML Block -->
 	<!-- Main widget view -->
-
+	
+	
 		<div style="overflow-y: scroll; height:400px;">
 			<div class="panel panel-primary" id="containerBcnOverview">
+			<!-- Template for the header Main widget view -->
+			<script id='templateBcnHeader' type='text/ractive'>	
 				<div class="panel-heading">
-				     <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
 					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Business goals</h3>
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
-		  			<div class="btn-group">
-						<button type="button" class="btn btn-primary" id="addNewBcnButton"><span class="glyphicon glyphicon-plus"></span></button>
-			 	 		<button type="button" class="btn btn-primary pull-right" id="showOverallProgressButton"><span class="glyphicon glyphicon-stats"></span></button>
-					</div>
-					<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
-						Loading goals ...
+		  		 	<!-- add new bcn and view overall progress -->
+		  		 	{{^accessRights.isManager}}
+		  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>
+		  		 	{{/accessRights.isManager}}
+		  		 	{{#accessRights.isManager}}
+		  				<div class="btn-group">
+							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
+			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>		
+						</div>
+					{{/accessRights.isManager}}
+							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
+							Loading goals ...
 						<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
 					</div>
-				</div>		
+				</div>	
+			</script>		
 			</div>
 		</div>
 	
@@ -397,20 +434,25 @@
 								</div>
 							</td>
 							<td style="width:70px;" align="center">
+								 {{^accessRights.isManager}} 
+									<button class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+								 {{/accessRights.isManager}}
+							{{#accessRights.isManager}} 
 								<div class='btn-group'>
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Show options">
 										<i class="fa fa-cogs"></i><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
-										<li align="center" style="width:120px;">
+											<li align="center" style="width:120px;">
 											<div class='btn-group'>
-												<button class='btn btn-default btn-sm' on-click='edit'><span class='glyphicon glyphicon-edit'></span></button>
-												<button class='btn btn-default btn-sm' on-click='delete'><span class='glyphicon glyphicon-trash'></span></button>
-												<button class='btn btn-default btn-sm' on-click='graphShow'><span class='glyphicon glyphicon-stats'></span></button>
+												<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
+												<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
+												<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
 											</div>
-										</li>
-									</ul>
+											</li>
+										</ul>
 								</div>
+							 {{/accessRights.isManager}}
 							</td>
 						</tr>
 					{{/bcnsList}}
