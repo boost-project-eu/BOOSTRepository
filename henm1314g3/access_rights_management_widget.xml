@@ -72,30 +72,70 @@
 			function iwcCallback(intent){
 			}
 
+			function sortUsers(users){
+				users.sort(function (a, b){
+					if(a.name.toLowerCase() < b.name.toLowerCase()) 
+						return -1; else return 1;
+				});
+			}
+
 			$(function(){
 				retrieveAllUsers(space, function(users){
 					retrieveAccessRights(function(access){
 						userList = users;
 						accessRights = access;
+
+						sortUsers(userList);
+
 						//Match all users with their access rights which are stored in the config
 						//resource
 
+						var managerExists = false;
+						var owner = null;
 						for(var i = 0; i < userList.length; i++){
 							var user = userList[i];
 							user.accessRights = accessRights.getUserAccessRights(user.uri);
+							managerExists = (user.accessRights.isManager);
+							if(user.isOwner)
+								owner = user;
 						}
+
+						//Debug
+						//owner.accessRights.hasAgreedToLicense = true;
+
+						if(!managerExists)
+							owner.accessRights.isManager = true;
+
+						//Check if user has agreed to license
+						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
+							bootbox.dialog({
+								title : "Sorry",
+								message : "You need to accept the terms of use before you can use the BOOST widgets.",
+								closeButton : false
+							});
+							return;
+						}
+
+						if(!accessRights.getUserAccessRights().isManager){
+							bootbox.dialog({
+								title : "Sorry",
+								message : "You do not have rights to access this widget.",
+								closeButton : false
+							});
+							return;
+						}
+
+
 						ractiveOverview = new Ractive({
 							el: 'containerUserOverview',
 						    template: '#templateUserOverview',
-						    data: { "userList" : userList},
+						    data: { "userList" : userList },
 						    append: true
 						});
-					});
-				});
 
-				$("#save").click(function(event){
-					accessRights.update(function(){
-						console.log("Saved access rights");
+						ractiveOverview.on("accessRightsChanged", function(event){
+							accessRights.update(function(){});
+						});
 					});
 				});
 			});
@@ -114,30 +154,40 @@
 				</h3>
 		  	</div>
 		  	
-			<div id='panel' class="panel-body">
-				<button id="save" class="btn btn-default">Save</button>
-			</div>
 			
 		</div>
 		</div>
 
 		<script id="templateUserOverview" type='text/ractive'>
-			<table class="table table-striped table-bordered table-condensed" >
+			<table class="table table-striped table-bordered" >
 			    <tbody>
-					{{#userList: num}}
+			    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Trainer</th><th style="text-align:center">Employee</th></tr>
+					{{#userList}}
 						<tr> 
 							<td>
-								{{num}}{{name}}
+								<p class="{{!accessRights.hasAgreedToLicense ? "text-muted" : ""}}">{{name}}
+								{{#isOwner}}
+								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
+								{{/isOwner}}
+								{{^accessRights.hasAgreedToLicense}}
+								<i title="This user has not agreed to the terms of use yet so he can not be given access rights." class="fa fa-exclamation-circle"></i>
+								{{/accessRights.hasAgreedToLicense}}
+								</p>
+
 							</td>
-							<td>
+							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isManager}}'> Manager
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled="{{!accessRights.hasAgreedToLicense}}">
 								</label>
+							</td>
+							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isTrainer}}'> Trainer
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}' disabled="{{!accessRights.hasAgreedToLicense}}">
 								</label>
+							</td>
+							<td align="center">
 								<label class="checkbox-inline">
-								  <input type="checkbox" checked='{{accessRights.isEmployee}}'> Employee
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled="{{!accessRights.hasAgreedToLicense}}">
 								</label>
 							</td>
 						</tr>
