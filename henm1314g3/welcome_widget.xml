@@ -59,6 +59,7 @@
 			var iwcClient;
 			var userAccessRights;
 			var agreed;
+			var accessRights;
 			
 			gadgets.util.registerOnLoadHandler(init);
 			function init(){
@@ -71,15 +72,15 @@
 	$(function(){
 			
 		// Get the access rights: 
-		retrieveAccessRights(function(accessRights){
-
-		userAccessRights = accessRights.getUserAccessRights();
+		retrieveAccessRights(function(access){
+		accessRights = access;
+		userAccessRights = access.getUserAccessRights();
 		agreed = userAccessRights.hasAgreedToLicense;
 
 			if (!agreed)
 				$("#agreeLisenceModal").modal();
-			else
-				$("#agreeLisenceModal").modal("hide");
+			
+				
 
 			
 			
@@ -108,11 +109,6 @@
 
 			
 
-			// function aboutFunction()
-			// {
-			// document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/about.html";
-			// }
-
 			// function agreementFunction()
 			// {
 			// document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/agreement.html";
@@ -129,6 +125,14 @@
 			}
 
 
+		function agreeFunction()
+			{
+			userAccessRights.hasAgreedToLicense = true;
+			accessRights.update(function (){
+				$("#agreeLisenceModal").modal("hide");
+			});
+			}
+
 
 			</script>
 			
@@ -143,10 +147,13 @@
 		
 			<div id ="panel" class="panel-body">
 				<div class="modal-body">
-				<p>jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
-				jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
-				jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
-				jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+				<p>
+				jghhjgkgjkgjghhjgkg
+				jkgjghhjgkgjkgjghhjgkgjkg jghhjgkgjkgjghhjgkg
+				jkgjghhjgkgjkgjghhjgkgjkg
+				jghhjgkgjkgjghhjgkg
+				jkgjghhjgkgjkgjghhjgkgjkg jghhjgkgjkgjghhjgk
+				gjkgjghhjgkgjkgjghhjgkgjkg
 				</p>
 							
 			</div>
@@ -170,7 +177,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-				        <button on-click="agree" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
+				        <button onclick="agreeFunction()" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
   					</div>
 				</div>
 			</div>
