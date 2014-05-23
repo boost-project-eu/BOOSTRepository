@@ -40,6 +40,7 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
 
 		<!-- Define CSS -->
 		
