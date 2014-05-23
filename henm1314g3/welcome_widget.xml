@@ -66,16 +66,16 @@
 
 			
 			
-			$(function(){
+			// $(function(){
 
-			      // help button click 
+			//       // help button click 
 
-			      $('#question').click(function(){
-			        $('#descriptionModal').modal({
-			        keyboard: true
-			          });
-			        }); 
-			});
+			//       $('#question').click(function(){
+			//         $('#descriptionModal').modal({
+			//         keyboard: true
+			//           });
+			//         }); 
+			// });
 
 			// var ruleRactive = new Ractive({
 			// 		            el: 'viewRulesTemplateContainer',
@@ -95,17 +95,17 @@
 				}
 			}
 
-			function aboutFunction()
-			{
-			document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/about.html";
-			}
+			// function aboutFunction()
+			// {
+			// document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/about.html";
+			// }
 
-			function agreementFunction()
-			{
-			document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/agreement.html";
-			document.getElementById("agreement").class="btn btn-primary btn-sm active";
-			document.getElementById("about").class="btn btn-primary btn-sm";
-			}
+			// function agreementFunction()
+			// {
+			// document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/agreement.html";
+			// document.getElementById("agreement").class="btn btn-primary btn-sm active";
+			// document.getElementById("about").class="btn btn-primary btn-sm";
+			// }
 
 
 			</script>
@@ -129,20 +129,26 @@
 			</div>
 	</div>
 
-    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="agreeLisenceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
   					<div class="modal-header">
-    					<h4 class="modal-title" id="myModalLabel">Quick start quide</h4>
+    					<h4 class="modal-title" id="myModalLabel">User agreement rules</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
 								<div class="form-group">
-									jghhjgkgjkg
+									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
 
 								</div>
 						</form>
 					</div>
+					<div class="modal-footer">
+				        <button on-click="saveDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
+  					</div>
 				</div>
 			</div>
 	</div>
