@@ -110,14 +110,15 @@
 						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
 							showModalAcceptTermsOfUse();							
 
+
 						} else if(!accessRights.getUserAccessRights().isManager){
+
 							bootbox.dialog({
 								title : "Sorry",
 								message : "You do not have rights to access this widget.",
 								closeButton : false
 							});
 							return;
-
 						}
 
 						ractiveOverview = new Ractive({

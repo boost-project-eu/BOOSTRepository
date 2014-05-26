@@ -133,6 +133,18 @@
 			
 			$(function(){
 
+				// Get the access rights: 
+					retrieveAccessRights(function(accessRights){
+					userAccessRights = accessRights.getUserAccessRights();
+					
+					//Check if user has agreed to license
+	
+						if(!userAccessRights.hasAgreedToLicense){
+							showModalAcceptTermsOfUse();							
+						}	
+
+					});  // end of the retrieveAccessRights
+
 			      // help button click 
 
 			      $('#question').click(function(){

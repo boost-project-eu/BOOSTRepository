@@ -77,6 +77,7 @@
 				userAccessRights = accessRights.getUserAccessRights();
 					
 					//Check if user has agreed to license
+					console.log(userAccessRights.hasAgreedToLicense);
 	
 					if(!userAccessRights.hasAgreedToLicense){
 							showModalAcceptTermsOfUse();							

@@ -535,7 +535,7 @@
 
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
-							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddEmployee" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addEmployee" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Employee"></span></button>
+							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddEmployee" on-click="addNewEmployee"><span class="glyphicon glyphicon-plus tooltip-addEmployee" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Employee"></span></button>
 			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>		
 						</div>
 					{{/accessRights.isManager}}
@@ -773,10 +773,12 @@
              <ul style="padding: 10px;">
 			 <li>To add new business employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Email</i> for your employee. Click on the <i>Save</i> button to save the changes.</li>
              <li>To see overall progress of all goals click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the <i>Learning Progress</i> widget.</p></li>
+             <li>To see more options click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/settings.PNG" alt="overall" width="30" height="20"> icon.</li>
+             <ul style="padding: 10px;">
              <li>To edit employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
              <li>To delete employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
              <li>To assign goals to employee and define learning levels click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/flag.PNG" alt="assign" width="30" height="20"> icon. 
-              In the new view check in relevant goals for this employee and define learning levels by clicking on the goal name and selecting start, current and end level accordingly. 
+              In the new view check in relevant goals for this employee. Check in relevant learning indicators and define learning levels for this employee by clicking on the goal name and selecting start, current and end level accordingly. 
               <br>The description of learning level as follows: 
               	<ul style="padding: 10px;">
                 	<li><b>Level 0:</b> I have not started to address the skills / knowledge required for this indicator.</li> 
@@ -788,6 +790,7 @@
               	</ul>
               </li>
              <li>To monitor the learning progress of employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
+             </ul>
              </ul>	
           </div>
           <div class="modal-footer">
