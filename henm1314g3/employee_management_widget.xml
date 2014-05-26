@@ -517,7 +517,7 @@
 
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
-							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddEmployee" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addEmployee" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Employee"></span></button>
+							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddEmployee" on-click="addNewEmployee"><span class="glyphicon glyphicon-plus tooltip-addEmployee" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Employee"></span></button>
 			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>		
 						</div>
 					{{/accessRights.isManager}}
