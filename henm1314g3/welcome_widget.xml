@@ -76,6 +76,8 @@
 		accessRights = access;
 		userAccessRights = access.getUserAccessRights();
 		agreed = userAccessRights.hasAgreedToLicense;
+		//debug
+		//agreed = false; 
 
 			if (!agreed)
 				$("#agreeLisenceModal").modal();
@@ -148,12 +150,7 @@
 			<div id ="panel" class="panel-body">
 				<div class="modal-body">
 				<p>
-				jghhjgkgjkgjghhjgkg
-				jkgjghhjgkgjkgjghhjgkgjkg jghhjgkgjkgjghhjgkg
-				jkgjghhjgkgjkgjghhjgkgjkg
-				jghhjgkgjkgjghhjgkg
-				jkgjghhjgkgjkgjghhjgkgjkg jghhjgkgjkgjghhjgk
-				gjkgjghhjgkgjkgjghhjgkgjkg
+					Quick Guide 
 				</p>
 							
 			</div>
@@ -168,10 +165,8 @@
   					<div class="modal-body">
     					<form role="form">
 								<div class="form-group">
-									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
-									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
-									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
-									jghhjgkgjkgjghhjgkgjkgjghhjgkgjkgjghhjgkgjkg
+									
+									License Text 
 
 								</div>
 						</form>
