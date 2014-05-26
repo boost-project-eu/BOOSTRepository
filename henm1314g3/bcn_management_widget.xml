@@ -70,32 +70,18 @@
 			}
 
 			$(function(){
-			retrieveAllUsers(space, function(users){
-				userList = users;
+			
 			
 				// Get the access rights: 
 				retrieveAccessRights(function(accessRights){
 
 				userAccessRights = accessRights.getUserAccessRights();
 
-				//Match all users with their access rights which are stored in the config
-						//resource
-
-						var managerExists = false;
-						var owner = null;
-						for(var i = 0; i < userList.length; i++){
-							var user = userList[i];
-							user.accessRights = accessRights.getUserAccessRights(user.uri);
-							managerExists = (user.accessRights.isManager);
-							if(user.isOwner)
-								owner = user;
-						}
-
-						//Debug
-					//owner.accessRights.hasAgreedToLicense = true;
+				userAccessRights.hasAgreedToLicense = false; 
 
 				//Check if user has agreed to license
 					console.log(userAccessRights.hasAgreedToLicense);
+
 					if(!userAccessRights.hasAgreedToLicense){
 							showModalAcceptTermsOfUse();							
 					}
@@ -339,8 +325,7 @@
 
 					});
 				});  // end of the retrieveAccessRights
-				
-				}); //end of the retrieveUsers
+
 			});
 
 			function iwcCallback(intent){
