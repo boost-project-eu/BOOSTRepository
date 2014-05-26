@@ -77,10 +77,12 @@
 				userAccessRights = accessRights.getUserAccessRights();
 					
 					//Check if user has agreed to license
-					console.log(userAccessRights.hasAgreedToLicense);
+					//console.log(userAccessRights.hasAgreedToLicense);
 	
 					if(!userAccessRights.hasAgreedToLicense){
-							showModalAcceptTermsOfUse();							
+						showModalAcceptTermsOfUse();							
+					} else if (!userAccessRights.isManager && !userAccessRights.isTrainer && !userAccessRights.isEmployee) {
+						showModalContactManager();		
 					}
 
 					//	addBCN and showProgress activities	
@@ -313,6 +315,9 @@
 						},
 							showHelpEditGoal: function ( event ) {
 							$('.tooltip-editGoal').tooltip();
+						},
+							showHelpOptions: function ( event ) {
+							$('.tooltip-showOptions').tooltip();	
 						}
 
 					});
@@ -450,8 +455,9 @@
 								 {{/accessRights.isManager}}
 							{{#accessRights.isManager}} 
 								<div class='btn-group'>
-									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Show options">
-										<i class="fa fa-cogs"></i><span class="caret"></span>
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
+										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
+
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
 											<li align="center" style="width:120px;">

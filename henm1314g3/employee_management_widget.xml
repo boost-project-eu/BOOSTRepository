@@ -207,7 +207,9 @@
 					//Check if user has agreed to license
 	
 					if(!userAccessRights.hasAgreedToLicense){
-							showModalAcceptTermsOfUse();							
+						showModalAcceptTermsOfUse();							
+					} else if (!userAccessRights.isManager && !userAccessRights.isTrainer && !userAccessRights.isEmployee) {
+						showModalContactManager();		
 					}
 
 					});  // end of the retrieveAccessRights

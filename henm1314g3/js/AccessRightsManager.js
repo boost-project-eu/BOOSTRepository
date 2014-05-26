@@ -51,3 +51,13 @@ function showModalAcceptTermsOfUse(){
 			});
 	return;
 }
+
+function showModalContactManager(){
+	bootbox.dialog({
+			title : "Sorry, you do not have rights to access this widget",
+			message : "Before proceeding please contact your manager or administrator",
+			closeButton : false
+			});
+	return;
+}
+
