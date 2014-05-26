@@ -42,3 +42,12 @@ function retrieveAccessRights(callback){
 		}
 	});
 }
+
+function showModalAcceptTermsOfUse(){
+	bootbox.dialog({
+			title : "Sorry, the license for BOOST was not accepted",
+			message : "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
+			closeButton : false
+			});
+	return;
+}

@@ -35,16 +35,32 @@
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify.js" type="text/javascript"></script>
     	<script type="text/javascript" src='http://www.scribd.com/javascripts/scribd_api.js'></script>
 
+    	<!-- Config stuff -->
+ 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
+ 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
+ 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
+
+
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
+	
+
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
 		<script>
 			var iwcClient;
+			var userAccessRights;
+			var userList;
+			var space;
 			
 			gadgets.util.registerOnLoadHandler(init);
 			
 			function init(){
+				space = new openapp.oo.Resource(openapp.param.space());
 				iwcClient = new iwc.Client();
 				iwcClient.connect(iwcCallback);
 			}
@@ -154,6 +170,16 @@
 
 			$(function(){
 
+			// Get the access rights: 
+				retrieveAccessRights(function(accessRights){
+				 userAccessRights = accessRights.getUserAccessRights();
+					
+					//Check if user has agreed to license
+	
+					if(!userAccessRights.hasAgreedToLicense){
+							showModalAcceptTermsOfUse();							
+					}
+			
 			      // help button click 
 
 			      $('#question').click(function(){
@@ -162,6 +188,7 @@
 			          });
 			        }); 
 			});
+		});
 
 
 

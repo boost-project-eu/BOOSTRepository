@@ -31,6 +31,8 @@
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
 
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
@@ -51,6 +53,7 @@
 			var bcnsList;
 			var iwcClient;
 			var userAccessRights; 
+			var userList;
 
 			
 			gadgets.util.registerOnLoadHandler(init);
@@ -68,10 +71,16 @@
 
 			$(function(){
 			
+			
 				// Get the access rights: 
 				retrieveAccessRights(function(accessRights){
-
 				userAccessRights = accessRights.getUserAccessRights();
+					
+					//Check if user has agreed to license
+	
+					if(!userAccessRights.hasAgreedToLicense){
+							showModalAcceptTermsOfUse();							
+					}
 
 					//	addBCN and showProgress activities	
 					var ractiveBcnHeader = new Ractive({
@@ -312,6 +321,7 @@
 
 					});
 				});  // end of the retrieveAccessRights
+
 			});
 
 			function iwcCallback(intent){

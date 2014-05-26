@@ -1,0 +1,1356 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    
+    <ModulePrefs title="Learning Resources"
+		description="Widget to manage learning Documents and Experts."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		height="400"
+		width="600">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"                     
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+    
+    <Content type="html">
+    <![CDATA[
+		
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-2.1.1.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ExpertsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/WidgetsManager.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree.js" type="text/javascript"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
+		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+
+		<!-- Define CSS -->
+		
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
+		<!-- JavaScript Block -->
+		<script>
+			
+			var space;
+			var iwcClient;
+			var bcnsList = new Array();
+			var ldsList = {};
+			var ldToBeSaved;
+			var learningDocumentFromSearchWidget;
+			var learningDocuments = [];
+			var Experts = [];
+			var ExpertsList = {};
+			var Widgets = [];
+			var WidgetsList = {};
+			
+			
+			gadgets.util.registerOnLoadHandler(init);
+			function init(){
+			    
+				space = new openapp.oo.Resource(openapp.param.space());
+				iwcClient = new iwc.Client();
+				iwcClient.connect(iwcCallback);
+			}
+
+			function publishShowLearningDocument(learningDocument){
+				var intent = {
+					component: "",
+					data: "",
+					dataType: "text/json",
+					action: "SHOW_LEARNING_DOCUMENT",
+					extras: learningDocument
+				};
+
+				iwcClient.publish(intent);
+			}
+
+			function publishShowExperts(Expert){
+				var intent = {
+					component: "",
+					data: "",
+					dataType: "text/json",
+					action: "SHOW_EXPERTS",
+					extras: Expert
+				};
+
+				iwcClient.publish(intent);
+			}
+			
+			function iwcCallback(intent){
+				if(intent.action == "LEARNING_DOCUMENT_SELECTED"){
+					learningDocumentFromSearchWidget = new LearningDocument(intent.extras);
+				}
+
+				if(intent.action == "BCN_CREATE"){
+					createBCNfromUri(intent.data, function(bcn){
+						bcnsList.push(bcn);
+						renderAllBCNs();
+					});
+				}
+
+				if(intent.action == "BCN_UPDATE"){
+					createBCNfromUri(intent.data, function(updatedBcn){
+						for(var i = 0; i < bcnsList.length; i++){
+							var bcn = bcnsList[i];
+							if(bcn.uri == intent.data) {
+								var oldBcn = bcnsList[i];
+								bcnsList[i] = updatedBcn;
+							}
+						}
+						renderAllBCNs();
+					});
+				}
+
+				if(intent.action == "BCN_DELETE"){
+					for(var i = 0; i < bcnsList.length; i++){
+						var bcn = bcnsList[i];
+						if(bcn.uri == intent.data){
+							bcnsList.splice(i, 1);
+						}
+					}
+					renderAllBCNs();
+					if(bcnsList.length==0)
+						$("#bcns").append("<td>No goals defined.</td>");
+				}
+			}
+			
+			$(function(){
+
+				// Get the access rights: 
+					retrieveAccessRights(function(accessRights){
+					userAccessRights = accessRights.getUserAccessRights();
+					
+					//Check if user has agreed to license
+	
+						if(!userAccessRights.hasAgreedToLicense){
+							showModalAcceptTermsOfUse();							
+						}	
+
+					});  // end of the retrieveAccessRights
+
+			      // help button click 
+
+			      $('#question').click(function(){
+			        $('#descriptionModal').modal({
+			        keyboard: true
+			          });
+			        }); 
+
+				$("#importLearningDocumentButton").click(function(){
+					if(learningDocumentFromSearchWidget != null){
+						$("#inputLdName").val(learningDocumentFromSearchWidget.name);
+						$("#inputLdDescription").val(learningDocumentFromSearchWidget.description);
+						$("#inputLdLink").val(learningDocumentFromSearchWidget.url)
+						ldToBeSaved.type = learningDocumentFromSearchWidget.type;
+						ldToBeSaved.contentSpecificData = learningDocumentFromSearchWidget.contentSpecificData;
+					}
+				});
+				retrieveAllBcns(space, function(bcns){
+						retrieveAllLearningDocuments(function(lds){
+							bcnsList = bcns;
+							learningDocuments = lds;
+							
+
+							//We add the learning documents to their respective learning indicators
+							//to get a nice tree-like structure of BCN->LI->Document
+							for(var i = 0; i < bcns.length; i++){
+								var currentBcn = bcns[i];
+								ldsList[currentBcn.uri] = {};
+								for(var j = 0; j < currentBcn.learningIndicators.length; j++){
+									var currentLi = currentBcn.learningIndicators[j];
+									currentLi.learningDocuments = [];
+									for(var k = learningDocuments.length -1; k >= 0 ; k--){
+									    if(learningDocuments[k].bcnUri == currentBcn.uri &&
+									    	learningDocuments[k].liId == currentLi.id){
+									        currentLi.learningDocuments.push(learningDocuments[k]);
+									    	learningDocuments.splice(k, 1);
+									    }
+									}
+								}
+							}
+
+
+						
+						retrieveAllExperts(function(Exp){
+						
+							Experts = Exp;
+							//We add the Experts to their respective learning indicators
+							//to get a nice tree-like structure of BCN->LI->Expert
+							for(var i = 0; i < bcns.length; i++){
+								var currentBcn = bcns[i];
+								ExpertsList[currentBcn.uri] = {};
+								for(var j = 0; j < currentBcn.learningIndicators.length; j++){
+									var currentLi = currentBcn.learningIndicators[j];
+									currentLi.Experts = [];
+									for(var k = Experts.length -1; k >= 0 ; k--){
+									    if(Experts[k].bcnUri == currentBcn.uri &&
+									    	Experts[k].liId == currentLi.id){
+									        currentLi.Experts.push(Experts[k]);
+									    	Experts.splice(k, 1);
+									    }
+									}
+								}
+							}
+
+						retrieveAllWidgets(function(Wdg){
+					
+							Widgets = Wdg;
+							//We add the Widgets to their respective learning indicators
+							//to get a nice tree-like structure of BCN->LI->Widget
+							for(var i = 0; i < bcns.length; i++){
+								var currentBcn = bcns[i];
+								WidgetsList[currentBcn.uri] = {};
+								for(var j = 0; j < currentBcn.learningIndicators.length; j++){
+									var currentLi = currentBcn.learningIndicators[j];
+									currentLi.Widgets = [];
+									for(var k = Widgets.length -1; k >= 0 ; k--){
+									    if(Widgets[k].bcnUri == currentBcn.uri &&
+									    	Widgets[k].liId == currentLi.id){
+									        currentLi.Widgets.push(Widgets[k]);
+									    	Widgets.splice(k, 1);
+									    }
+									}
+								}
+							}
+
+							
+
+							var treeRactive = new Ractive({
+					            el: 'bcns',
+					            template: '#documentsTreeTemplate',
+					            data: { bcns: bcnsList }
+					        });
+					        treeRactive.on("documentAdd", function(event){
+					        	var newDocument = new LearningDocument({});
+					        	newDocument.type = "weblink";
+					        	var learningIndicatorId = event.context.id;
+
+					        	var kp = event.keypath;
+					        	//Keypath has the following form "bcns.0.learningIndicators.0"
+					        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
+					        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
+					        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
+
+					        	//Now we can get the BCN by providing its keypath to the Ractive .get function
+					        	var bcnUri = this.get(bcnKp).uri;
+
+					        	newDocument.bcnUri = bcnUri;
+					        	newDocument.liId = learningIndicatorId;
+
+					        	addDocumentRactive.set({
+					        		"newDocument": newDocument,
+					        		"learningDocumentsArray" : event.context.learningDocuments
+					        	});
+								$("#addLdModal").modal();
+							});
+
+
+
+							treeRactive.on("expertAdd", function(event){
+					        	var newExpert = new Expert({});
+					        	var learningIndicatorId = event.context.id;
+
+					        	var kp = event.keypath;
+					        	//Keypath has the following form "bcns.0.learningIndicators.0"
+					        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
+					        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
+					        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
+
+					        	//Now we can get the BCN by providing its keypath to the Ractive .get function
+					        	var bcnUri = this.get(bcnKp).uri;
+
+					        	newExpert.bcnUri = bcnUri;
+					        	newExpert.liId = learningIndicatorId;
+
+					        	addExpertRactive.set({
+					        		"newExpert": newExpert,
+					        		"ExpertsArray" : event.context.Experts
+					        	});
+								addExpertRactive.set("nameError", false);
+							    addExpertRactive.set("emailError", false);
+								$("#addExpertModal").modal();
+					        });
+	
+							treeRactive.on("widgetAdd", function(event){
+					        	var newWidget = new Widget({});
+					        	var learningIndicatorId = event.context.id;
+
+					        	var kp = event.keypath;
+					        	//Keypath has the following form "bcns.0.learningIndicators.0"
+					        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
+					        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
+					        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
+
+					        	//Now we can get the BCN by providing its keypath to the Ractive .get function
+					        	var bcnUri = this.get(bcnKp).uri;
+
+					        	newWidget.bcnUri = bcnUri;
+					        	newWidget.liId = learningIndicatorId;
+
+					        	addWidgetRactive.set({
+					        		"newWidget": newWidget,
+					        		"WidgetsArray" : event.context.Widgets
+					        	});
+								$("#addWidgetModal").modal();
+					        });
+
+
+					        treeRactive.on("documentDelete", function(event){
+					        	var kp = event.keypath;
+					        	learningDocumentsKeypath = kp.slice(0, kp.lastIndexOf("."));
+
+					        	deleteDocumentRactive.set({
+					        		"documentArray": this.get(learningDocumentsKeypath),
+					        		"document": event.context
+					        	});
+					        	$("#deleteDocumentModal").modal();
+					        });
+					        treeRactive.on("WidgetDelete", function(event){
+					        	var kp = event.keypath;
+					        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+
+					        	deleteWidgetRactive.set({
+					        		"WidgetArray": this.get(WidgetsKeypath),
+					        		"Widget": event.context
+					        	});
+					        	$("#deleteWidgetModal").modal();
+					        });
+					        treeRactive.on("ExpertDelete", function(event){
+					        	var kp = event.keypath;
+					        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
+
+					        	deleteExpertRactive.set({
+					        		"ExpertArray": this.get(ExpertsKeypath),
+					        		"Expert": event.context
+					        	});
+					        	$("#deleteExpertModal").modal();
+					        });
+
+
+					        treeRactive.on("ExpertView", function(event){
+					        	var kp = event.keypath;
+					        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
+								viewExpertRactive.set({
+					        		"ExpertArray": this.get(ExpertsKeypath),
+					        		"Expert": event.context,
+
+					        	});
+					        	$("#viewExpertModal").modal();
+					        });
+
+					        treeRactive.on("WidgetView", function(event){
+					        	var kp = event.keypath;
+					        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+								viewWidgetRactive.set({
+					        		"WidgetArray": this.get(WidgetsKeypath),
+					        		"Widget": event.context,
+
+					        	});
+					        	$("#viewWidgetModal").modal();
+					        });
+
+					        treeRactive.on("ViewPersonalWidget", function(event){
+					        	
+					        	var kp = event.keypath;
+					        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+					        	var widgetUrl = event.context.url;
+					        	var spaceURI = openapp.param.user();
+					        	addWidgetToSpace(spaceURI,widgetUrl);
+								viewWidgetRactive.set({
+					        		"WidgetArray": this.get(WidgetsKeypath),
+					        		"Widget": event.context,
+
+					        	});
+
+					   
+					        });
+
+					        treeRactive.on("documentShow", function(event){
+					        	if(event.context.type == "weblink"){
+					        		var url = event.context.url;
+					        		var http = "http://"
+					        		if(!(url.substring(0, http.length) == http))
+					        			url = http + url;
+					        		window.open(url,'_blank');
+					        	}
+					        	else
+					        		publishShowLearningDocument(event.context);
+					        	console.log(event.context.url);
+					        });
+
+					        treeRactive.on("documentEdit", function(event){
+					        	editDocumentRactive.set("editDocument", event.context);
+					        	editDocumentRactive.set("keypath", event.keypath);
+					        	$("#editDocumentModal").modal();
+					        });
+					        
+					        $("#documentsTree").tree();
+					        treeRactive.on("ExpertEdit", function(event){
+					        	editExpertRactive.set("editExpert", event.context);
+					        	editExpertRactive.set("keypath", event.keypath);
+					        	editExpertRactive.set("nameError", false);
+							    editExpertRactive.set("emailError", false);
+								$("#editExpertModal").modal();
+					        });
+
+					        $("#ExpertsTree").tree();
+					        treeRactive.on("WidgetEdit", function(event){
+					        	editWidgetRactive.set("editWidget", event.context);
+					        	editWidgetRactive.set("keypath", event.keypath);
+								$("#editWidgetModal").modal();
+					        });
+
+					        $("#WidgetsTree").tree();
+
+					        var deleteDocumentRactive = new Ractive({
+					        	el: 'deleteDocumentTemplateContainer',
+					        	template: '#deleteDocumentTemplate',
+					        	data: {
+					        		documentArray: null,
+					        		document: null
+					        	}
+					        });
+					        var deleteExpertRactive = new Ractive({
+					        	el: 'deleteExpertTemplateContainer',
+					        	template: '#deleteExpertTemplate',
+					        	data: {
+					        		ExpertArray: null,
+					        		Expert: null
+					        	}
+					        });
+
+					        var deleteWidgetRactive = new Ractive({
+					        	el: 'deleteWidgetTemplateContainer',
+					        	template: '#deleteWidgetTemplate',
+					        	data: {
+					        		WidgetArray: null,
+					        		Widget: null
+					        	}
+					        });
+
+					        var viewExpertRactive = new Ractive({
+					        	el: 'viewExpertTemplateContainer',
+					        	template: '#viewExpertTemplate',
+					        	data: {
+					        		ExpertArray: null,
+					        		Expert: null
+					        	},
+					        	append: true
+					        });
+
+					        viewExpertRactive.on()
+
+					        var viewWidgetRactive = new Ractive({
+					        	el: 'viewWidgetTemplateContainer',
+					        	template: '#viewWidgetTemplate',
+					        	data: {
+					        		WidgetArray: null,
+					        		Widget: null
+					        	},
+					        	append: true
+					        });
+
+					        viewWidgetRactive.on()
+
+					        deleteDocumentRactive.on("deleteDocument", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+
+					        	var document = this.get("document");
+					        	var documentArray = this.get("documentArray");
+					        	document.delete(function(){
+					        		documentArray.splice(documentArray.indexOf(document), 1);
+					        		l.stop();
+					        		$("#deleteDocumentModal").modal("hide");
+					        	});
+
+					        });
+					        deleteExpertRactive.on("deleteExpert", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+
+					        	var Expert = this.get("Expert");
+					        	var ExpertArray = this.get("ExpertArray");
+					        	Expert.delete(function(){
+					        		ExpertArray.splice(ExpertArray.indexOf(Expert), 1);
+					        		l.stop();
+					        		$("#deleteExpertModal").modal("hide");
+					        	});
+
+					        });
+					        deleteWidgetRactive.on("deleteWidget", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+
+					        	var Widget = this.get("Widget");
+					        	var WidgetArray = this.get("WidgetArray");
+					        	Widget.delete(function(){
+					        		WidgetArray.splice(WidgetArray.indexOf(Widget), 1);
+					        		l.stop();
+					        		$("#deleteWidgetModal").modal("hide");
+					        	});
+
+					        });
+
+					        var editDocumentRactive = new Ractive({
+					        	el: 'editDocumentTemplateContainer',
+					        	template: '#editDocumentTemplate',
+					        	data: {
+					        		editDocument: null,
+					        		keypath: null
+					        	}
+					        });
+
+					        var editExpertRactive = new Ractive({
+					        	el: 'editExpertTemplateContainer',
+					        	template: '#editExpertTemplate',
+					        	data: {
+					        		editExpert: new Expert({}),
+					        		keypath: null,
+					        		"nameError" : false,
+						    		"emailError" : false
+					        	}
+					        });
+
+					        var editWidgetRactive = new Ractive({
+					        	el: 'editWidgetTemplateContainer',
+					        	template: '#editWidgetTemplate',
+					        	data: {
+					        		editWidget: new Widget({}),
+					        		keypath: null
+					        	}
+					        });
+
+					        editDocumentRactive.on("updateDocument", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var document = this.get("editDocument");
+					        	var kp = this.get("keypath");
+					        	document.update(function(){
+					        		l.stop();
+					        		treeRactive.update(kp);
+					        		$("#editDocumentModal").modal("hide");
+					        	});
+					        });
+					        editExpertRactive.on("updateExpert", function(event){
+					        	var exp = this.get("editExpert");
+					        	if(!checkInputExpert(exp, this))
+								return;
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var Expert = this.get("editExpert");
+					        	var kp = this.get("keypath");
+					        	Expert.update(function(){
+					        		l.stop();
+					        		treeRactive.update(kp);
+					        		$("#editExpertModal").modal("hide");
+					        	});
+					        });
+					        editWidgetRactive.on("updateWidget", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var Widget = this.get("editWidget");
+					        	var kp = this.get("keypath");
+					        	Widget.update(function(){
+					        		l.stop();
+					        		treeRactive.update(kp);
+					        		$("#editWidgetModal").modal("hide");
+					        	});
+					        });
+
+					        var addDocumentRactive = new Ractive({
+					        	el: 'addDocumentTemplateContainer',
+					        	template: '#addDocumentTemplate',
+					        	data: {newDocument: null}
+					        });
+					        var addExpertRactive = new Ractive({
+					        	el: 'addExpertTemplateContainer',
+					        	template: '#addExpertTemplate',
+					        	data: {newExpert: new Expert({}),
+					        		"nameError" : false,
+						    		"emailError" : false
+					        	}
+					        });
+					        var addWidgetRactive = new Ractive({
+					        	el: 'addWidgetTemplateContainer',
+					        	template: '#addWidgetTemplate',
+					        	data: {newWidget: new Widget({})}
+					        });
+
+					        addDocumentRactive.on("saveDocument", function(event){
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var documentArray = this.get("learningDocumentsArray");
+					        	var document = this.get("newDocument");
+					        	document.create(function(){
+					        		l.stop();
+					        		documentArray.push(document);
+					        		$("#addLdModal").modal("hide");
+					        	});
+					        });
+					        addExpertRactive.on("saveExpert", function(event){
+					        	var exp = this.get("newExpert");
+					        	if(!checkInputExpert(exp, this))
+								return;
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var ExpertArray = this.get("ExpertsArray");
+					        	var Expert = this.get("newExpert");
+					        	Expert.create(function(){
+					        		l.stop();
+					        		ExpertArray.push(Expert);
+					        		$("#addExpertModal").modal("hide");
+					        	});
+					        });
+					        addWidgetRactive.on("saveWidget", function(event){
+					        	
+					        	// var widgetUrl = this.get("newWidget").url;
+					        	// var spaceURI = openapp.param.user();
+					        	// addWidgetToSpace(spaceURI,widgetUrl);
+					        	var node = event.node;
+					        	var l = Ladda.create(node);
+					        	l.start();
+					        	var WidgetArray = this.get("WidgetsArray");
+					        	var Widget = this.get("newWidget");
+					        	Widget.create(function(){
+					        		l.stop();
+					        		WidgetArray.push(Widget);
+					        		$("#addWidgetModal").modal("hide");
+					        	});
+					        });
+
+					        addDocumentRactive.on("importDocument", function(event){
+					        	var document = this.get("newDocument");
+					        	learningDocumentFromSearchWidget.bcnUri = document.bcnUri;
+					        	learningDocumentFromSearchWidget.liId = document.liId;
+					        	this.set("newDocument", learningDocumentFromSearchWidget);
+					        });
+						});
+						});
+						});
+					}
+				);
+				
+			});
+
+			function checkInputExpert(exp, ractive)
+			{
+				var nameError = (exp.name == "");
+				ractive.set("nameError", nameError);
+
+				var emailError = false;
+				var email = exp.email;	
+
+				var atpos = email.indexOf("@");
+				var dotpos = email.lastIndexOf(".");
+
+				if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length)
+  				{
+  					emailError = true;
+  				}
+
+  				ractive.set("emailError", emailError);
+
+  				return !(nameError || emailError);
+			}
+
+
+			function addWidgetToSpace(spaceURI,widgetURL){
+                var deferred = $.Deferred();
+                openapp.resource.post(
+                        spaceURI,
+                        function(data){
+                            deferred.resolve(data.uri);
+                        },{
+                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate":"http://purl.org/role/terms/tool",
+                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type":"http://purl.org/role/terms/OpenSocialGadget",
+                            "http://www.w3.org/2000/01/rdf-schema#seeAlso":widgetURL
+                        }
+
+                );
+                return deferred.promise();
+            }
+
+			
+		</script>
+			
+		<!-- HTML Block -->
+		<div style="overflow-y: scroll; height:400px;">
+		<div class ="panel panel-primary">
+			<div class="panel-heading">
+				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+
+				<h3 class="panel-title"><span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span> Learning Resources</h3>
+			</div>
+		
+			<div id ="panel" class="panel-body">
+			<div id="bcns">
+				<script id='documentsTreeTemplate' type='text/ractive'>
+				<div id="documentsTree" class='tree'>
+					<ul>
+						{{#bcns}}
+				        <li>
+							<span>
+								<p style="margin-bottom:0px">
+									<span style='margin-right:5px; color:{{this.getPriorityColor()}};' class='glyphicon glyphicon-star'></span>{{name}}
+								</p>
+							</span>
+							<ul>
+								{{#learningIndicators}}
+								 <li>
+									<span>
+										<p style="margin-bottom:0px">
+											<span style='margin-right:5px;' class='glyphicon glyphicon-flag'></span>{{name}}
+										</p>
+										<p style="margin-bottom:0px; overflow:hidden">
+											<small>{{description}}</small>
+										</p>
+									</span>
+									<ul>
+										<li>
+											<span style="cursor:pointer;">
+												<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+											</span>
+											<ul>
+												<li>
+												<span style="cursor:pointer;" on-click="documentAdd">
+													<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new document
+												</span>
+												</li>
+												{{#learningDocuments}}
+												<li>
+													<span>
+														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+														<div class='btn-group pull-right'>
+															<button on-click="documentShow" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-play-circle'></span>
+															</button>
+															<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-edit'></span>
+															</button>
+															<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-trash'></span>
+															</button>
+														</div>
+													</span>
+												</li>
+												{{/learningDocuments}}
+											</ul>
+										</li>
+										<li>
+											<span style="cursor:pointer;">
+												<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
+											</span>
+											<ul>
+												<li>
+												<span style="cursor:pointer;" on-click="expertAdd">
+													<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new expert
+												</span>
+												</li>
+												{{#Experts}}
+												<li>
+													<span>
+														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
+														<div class='btn-group pull-right'>
+															<button on-click="ExpertView" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-eye-open'></span>
+															</button>
+															<button on-click="ExpertEmail" class='btn btn-default btn-sm'>
+																<a class='glyphicon glyphicon-envelope' style="color:#000;" href='mailto:{{email}}'></a>
+															</button>
+															<button on-click="ExpertEdit" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-edit'></span>
+															</button>
+															<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-trash'></span>
+															</button>
+														</div>
+													</span>
+												</li>
+												{{/Experts}}
+											</ul>
+										</li>
+										<li>
+											<span style="cursor:pointer;">
+												<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>Widgets
+											</span>
+											<ul>
+												<li>
+												<span style="cursor:pointer;" on-click="widgetAdd">
+													<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new widget
+												</span>
+												</li>
+												{{#Widgets}}
+												<li>
+													<span>
+														<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
+														<div class='btn-group pull-right'>
+															<button on-click="ViewPersonalWidget" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-plus'></span>
+															</button>
+															<button on-click="WidgetView" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-eye-open'></span>
+															</button>
+															<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-edit'></span>
+															</button>
+															<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
+																<span class='glyphicon glyphicon-trash'></span>
+															</button>
+														</div>
+													</span>
+												</li>
+												{{/Widgets}}
+											</ul>
+										</li>
+									</ul>
+								</li>
+								{{/learningIndicators}}
+							</ul>
+						</li>
+						{{/bcns}}
+					</ul>
+				</div>
+				</script>
+			</div> 
+		</div>
+		</div>
+		</div>
+		
+		<div class="modal fade" id="addLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div id="addDocumentTemplateContainer">
+					<script id='addDocumentTemplate' type='text/ractive'>
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Add a new Learning Document</h4>
+  						<p>
+  						<button on-click="importDocument" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>Import from viewer</button>
+  						</p>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+								<div class="form-group">
+									<label for="inputLdName">Name</label>
+									<input value="{{newDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputLdDescription">Description</label>
+									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="inputLdLink">Link</label>
+									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
+			 					</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button on-click="saveDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+  					</div>
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="addExpertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div id="addExpertTemplateContainer">
+					<script id='addExpertTemplate' type='text/ractive'>
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Add a new expert</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+    						<h4 class="modal-title"></h4>
+    							<div class="form-group {{ nameError ? "has-error" : "" }}">
+									<label for="inputExpertName">Name *</label>
+									<input value="{{newExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="Enter Name">
+									{{#nameError}}
+									<span class="help-block"><h6>Name must not be empty.</h6></span>
+									{{/nameError}}
+								</div>
+								<div class="form-group {{ emailError ? "has-error" : "" }}">
+									<label for="inputExpertEmail">Email *</label>
+									<input value="{{newExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="Enter Email Address">
+									{{#emailError}}
+									<span class="help-block"><h6>Please enter a valid email address.</h6></span>
+									{{/emailError}}
+								</div>
+								<div class="form-group">
+									<label for="inputExpertTel">Phone number</label>
+									<input value="{{newExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
+									<label for="inputExpertAddress">Address</label>
+									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"></textarea>
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
+									<label for="inputExpertWebsite">Website</label>
+									<input value="{{newExpert.website}}" type="text" class="form-control" id="inputExpertWebsite" placeholder="Enter Website url">
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
+									<label for="inputExpertSkype">Skype</label>
+									<input value="{{newExpert.skype}}" type="text" class="form-control" id="inputExpertSkype" placeholder="Enter Skype ID">
+									<span class="help-block"></span>
+								</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button on-click="saveExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+  					</div>
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div id="addWidgetTemplateContainer">
+					<script id='addWidgetTemplate' type='text/ractive'>
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Add a new Widget</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+								<div class="form-group">
+									<label for="inputWidgetName">Name</label>
+									<input value="{{newWidget.name}}" type="text" class="form-control" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputWidgetUrl">Link</label>
+									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"></textarea>
+								</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button on-click="saveWidget" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+  					</div>
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="editDocumentModal" tabindex="-1" role="dialog" aria-labelledby="editDocumentModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div id="editDocumentTemplateContainer">
+					<script id='editDocumentTemplate' type='text/ractive'>
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="editDocumentModalLabel">Edit learning Document</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+								<div class="form-group">
+									<label for="inputLdName">Name</label>
+									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputLdDescription">Description</label>
+									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="inputLdLink">Link</label>
+									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
+			 					</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button on-click="updateDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Update</span></button>
+  					</div>
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="editExpertModal" tabindex="-1" role="dialog" aria-labelledby="editExpertModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div id="editExpertTemplateContainer">
+					<script id='editExpertTemplate' type='text/ractive'>
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="editExpertModalLabel">Edit expert information</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+    						<h4 class="modal-title">Contact Informations</h4>
+								<div class="form-group {{ nameError ? "has-error" : "" }}">
+									<label for="inputExpertName">Name *</label>
+									<input value="{{editExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="Enter Name">
+									{{#nameError}}
+									<span class="help-block"><h6>Name must not be empty.</h6></span>
+									{{/nameError}}
+								</div>
+								<div class="form-group {{ emailError ? "has-error" : "" }}">
+									<label for="inputExpertEmail">Email *</label>
+									<input value="{{editExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="Enter Email Address">
+									{{#emailError}}
+									<span class="help-block"><h6>Please enter a valid email address.</h6></span>
+									{{/emailError}}
+								</div>
+								<div class="form-group">
+									<label for="inputExpertTel">Phone number</label>
+									<input value="{{editExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
+									<label for="inputExpertAddress">Address</label>
+									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"></textarea>
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
+									<label for="inputExpertWebsite">Website</label>
+									<input value="{{editExpert.website}}" type="text" class="form-control" id="inputExpertWebsite" placeholder="Enter Website url">
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
+									<label for="inputExpertSkype">Skype</label>
+									<input value="{{editExpert.skype}}" type="text" class="form-control" id="inputExpertSkype" placeholder="Enter Skype ID">
+									<span class="help-block"></span>
+								</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button on-click="updateExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Update</span></button>
+  					</div>
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="editWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div id="editWidgetTemplateContainer">
+					<script id='editWidgetTemplate' type='text/ractive'>
+  					<div class="modal-header">
+    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    					<h4 class="modal-title" id="myModalLabel">Edit widget information</h4>
+  					</div>
+  					<div class="modal-body">
+    					<form role="form">
+								<div class="form-group">
+									<label for="inputWidgetName">Name</label>
+									<input value="{{editWidget.name}}" type="text" class="form-control" placeholder="Enter name">
+								</div>
+								<div class="form-group">
+									<label for="inputWidgetUrl">Link</label>
+									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"></textarea>
+								</div>
+						</form>
+					</div>
+  					<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button on-click="updateWidget" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+  					</div>
+  					</script>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+		<div class="modal fade" id="deleteDocumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-body">
+  						<div id="deleteDocumentTemplateContainer">
+  						<script id='deleteDocumentTemplate' type='text/ractive'>
+						<div class="alert alert-danger fade in" id="alertInModal">
+							<h4 value="" id="deleteAlertText">Do you really want to delete this Learning Document?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				       <button type="button" on-click="deleteDocument" data-style="zoom-out" class="btn btn-danger ladda-button"><span class="ladda-label">Delete</span></button>
+						</div>
+						</script>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="deleteExpertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-body">
+  						<div id="deleteExpertTemplateContainer">
+  						<script id='deleteExpertTemplate' type='text/ractive'>
+						<div class="alert alert-danger fade in" id="alertInModal">
+							<h4 value="" id="deleteAlertText">Do you really want to delete {{Expert.name}}?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				       <button type="button" on-click="deleteExpert" data-style="zoom-out" class="btn btn-danger ladda-button"><span class="ladda-label">Delete</span></button>
+						</div>
+						</script>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+		<div class="modal fade" id="deleteWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					<div class="modal-body">
+  						<div id="deleteWidgetTemplateContainer">
+  						<script id='deleteWidgetTemplate' type='text/ractive'>
+						<div class="alert alert-danger fade in" id="alertInModal">
+							<h4 value="" id="deleteAlertText">Do you really want to delete {{Widget.name}}?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				       <button type="button" on-click="deleteWidget" data-style="zoom-out" class="btn btn-danger ladda-button"><span class="ladda-label">Delete</span></button>
+						</div>
+						</script>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="viewExpertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					
+  						<div id="viewExpertTemplateContainer">
+  						<script id='viewExpertTemplate' type='text/ractive'>
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 value=""> Contact information of {{Expert.name}}</h4>
+						</div>
+						<div class="modal-body">
+							<table class="table table-striped table-bordered table-condensed">
+								<tbody>
+								{{#Expert}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Name: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{name}}
+											</div>
+										</td>
+									</tr>
+									<tr> 
+										<td width="20%">
+											<div>
+												Email: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{email}}
+											</div>
+										</td>
+									</tr>
+									{{#tel}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Phone: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{tel}}
+											</div>
+										</td>
+									</tr>
+									{{/tel}}
+									{{#address}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Address: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{address}} (<a href='https://maps.google.de/maps?q={{Expert.address}}&z=11' target='_blank'>See Map</a>)
+											</div>
+										</td>
+									</tr>
+									{{/address}}
+									{{#website}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Website: 
+											</div>
+										</td>
+										<td>
+											<div>
+												<a href='http://{{website}}' target='_blank'>{{website}}</a>
+											</div>
+										</td>
+									</tr>
+									{{/website}}
+									{{#skype}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Skype: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{skype}}
+											</div>
+										</td>
+									</tr>
+									{{/skype}}
+									{{/Expert}}
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+								
+						</script>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="viewWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+  					
+  						<div id="viewWidgetTemplateContainer">
+  						<script id='viewWidgetTemplate' type='text/ractive'>
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 value=""> Information of {{Widget.name}}</h4>
+						</div>
+						<div class="modal-body">
+							<table class="table table-striped table-bordered table-condensed">
+								<tbody>
+								{{#Widget}}
+									{{#name}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Name: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{name}}
+											</div>
+										</td>
+									</tr>
+									{{/name}}
+									{{#url}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Url Address: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{url}} 
+											</div>
+										</td>
+									</tr>
+									{{/url}}
+									{{/Widget}}
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+
+		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Learning Resources Help</h4>
+            </div>
+          <div class="modal-body">
+            <div class="panel-group" id="levelsdef" align="justify">
+            <ul style="padding: 10px;">
+            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents and experts assigned to the goal and learning indicators. </li>
+          		<li>To see the list of learning indicators assigned to the goal click on its name.</li>
+          		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
+          		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
+				<li>To add new learning document click on <i>Add new document</i> menu item. In the <i>Add a new Learning Document</i> view 
+				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
+				<li>To add new expert click on <i>Add new expert</i> menu item. 
+				<ul style="padding: 10px;">
+				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li> 
+				<li>Click on <i>Save</i> button to save changes.</li>
+				</ul>
+				<li>To see expert contact informations, click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/view.PNG" alt="overall" width="30" height="20"> icon.
+				</li>
+            </ul>         
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+          </div>      
+        </div>      
+      </div>
+    </div>
+		
+		
+	]]>
+  </Content>
+</Module>
