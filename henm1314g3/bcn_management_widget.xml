@@ -74,14 +74,10 @@
 			
 				// Get the access rights: 
 				retrieveAccessRights(function(accessRights){
-
 				userAccessRights = accessRights.getUserAccessRights();
-
-				userAccessRights.hasAgreedToLicense = false; 
-
-				//Check if user has agreed to license
-					console.log(userAccessRights.hasAgreedToLicense);
-
+					
+					//Check if user has agreed to license
+	
 					if(!userAccessRights.hasAgreedToLicense){
 							showModalAcceptTermsOfUse();							
 					}
