@@ -5,7 +5,8 @@
 		description="Manage the access rights of all the different users."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
-		height="400">
+		height="400"
+		width="500">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
@@ -109,9 +110,7 @@
 						//Check if user has agreed to license
 						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
 							showModalAcceptTermsOfUse();							
-						}
-
-						if(!accessRights.getUserAccessRights().isManager){
+						} else if(!accessRights.getUserAccessRights().isManager){
 							bootbox.dialog({
 								title : "Sorry",
 								message : "You do not have rights to access this widget.",
