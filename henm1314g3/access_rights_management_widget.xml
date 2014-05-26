@@ -109,6 +109,7 @@
 						//Check if user has agreed to license
 						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
 							showModalAcceptTermsOfUse();							
+
 						} else if(!accessRights.getUserAccessRights().isManager){
 							bootbox.dialog({
 								title : "Sorry",
@@ -116,8 +117,8 @@
 								closeButton : false
 							});
 							return;
-						}
 
+						}
 
 						ractiveOverview = new Ractive({
 							el: 'containerUserOverview',
