@@ -1338,10 +1338,11 @@
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
             <ul style="padding: 10px;">
-            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents and experts assigned to the goal and learning indicators. </li>
+            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents, experts and widgets assigned to the goal and learning indicators. </li>
           		<li>To see the list of learning indicators assigned to the goal click on its name.</li>
           		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
           		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
+          		<li>To see the list of widgets assigned to particular learning indicator click on its name.</li>
 				<li>To add new learning document click on <i>Add new document</i> menu item. In the <i>Add a new Learning Document</i> view 
 				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
 				<li>To add new expert click on <i>Add new expert</i> menu item. 
@@ -1349,7 +1350,12 @@
 				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li> 
 				<li>Click on <i>Save</i> button to save changes.</li>
 				</ul>
-				<li>To see expert contact informations, click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/view.PNG" alt="overall" width="30" height="20"> icon.
+				<li>To add new widget click on <i>Add new widget</i> menu item. 
+				<ul style="padding: 10px;">
+				<li>In the <i>Add a new Widget</i> enter the widget name and its Url address in appropriate text fields.</li> 
+				<li>Click on <i>Save</i> button to save changes.</li>
+				</ul>
+				<li>To see expert or widget informations, click on <button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></button> icon.
 				</li>
             </ul>         
           </div>
