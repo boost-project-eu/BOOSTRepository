@@ -128,6 +128,12 @@
 						});
 					});
 				});
+
+				$('#question').click(function(){
+			        $('#descriptionModal').modal({
+			        keyboard: true
+			          });
+			    }); 
 			});
 
 		</script>
@@ -191,28 +197,22 @@
         <div class="modal-content">
           <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    		<h4 class="modal-title">Business Employees Help</h4>
+    		<h4 class="modal-title">Access Rights Help</h4>
             </div>
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
              <ul style="padding: 10px;">
-			 <li>To add new business employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/add.PNG" alt="add" width="30" height="20"> icon. In the new view enter <i>Name</i>, <i>Email</i> for your employee. Click on the <i>Save</i> button to save the changes.</li>
-             <li>To see overall progress of all goals click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/overall.PNG" alt="overall" width="30" height="20"> icon. The graph will be shown in the <i>Learning Progress</i> widget.</p></li>
-             <li>To edit employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/edite.PNG" alt="edite" width="30" height="20"> icon.</li>
-             <li>To delete employee click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/delete.PNG" alt="delete" width="30" height="20"> icon.</li>
-             <li>To assign goals to employee and define learning levels click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/flag.PNG" alt="assign" width="30" height="20"> icon. 
-              In the new view check in relevant goals for this employee and define learning levels by clicking on the goal name and selecting start, current and end level accordingly. 
-              <br>The description of learning level as follows: 
-              	<ul style="padding: 10px;">
-                	<li><b>Level 0:</b> I have not started to address the skills / knowledge required for this indicator.</li> 
-               	  	<li><b>Level 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
-                	<li><b>Level 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
-                	<li><b>Level 3:</b> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>
-                	<li><b>Level 4:</b> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</li>
-               		<li><b>Level 5:</b> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</li>
+			 <li>To assing a user role, check the checkbox <input type="checkbox">. There are three different roles: employee, manager, trainer. Roles can be combined for one user.</li>
+			 	<ul style="padding: 10px;">
+                	<li><b>Employee: </b>
+                		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system. Watch own learning progress and the progress of the goals.</p></li> 
+               	  	<li><b>Trainer: </b>
+               	  		<p>In addition to the functions that employee does can disable access to the learning repositories and assign description to the learning indicators.</p> </li>
+                	<li><b>Manager: </b>
+                		<p>Has full control over the system. Can assing access rights to the users. Can add/edit/delete employees and assign learning levels to them. Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</li></p>
               	</ul>
-              </li>
-             <li>To monitor the learning progress of employee straight forward in <i>Learning Progress</i> widget click on <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/chart.PNG" alt="chart" width="30" height="20"> icon.</li>
+             <li><span class="glyphicon glyphicon-asterisk"></span> this user is the owner of the space.</li>
+             <li><i class="fa fa-exclamation-circle" style="color: gray;"></i> this user has not agreed to the terms of use yet.</li>
              </ul>	
           </div>
           <div class="modal-footer">
