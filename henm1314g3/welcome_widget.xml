@@ -103,7 +103,7 @@
 	<div style="overflow-y: scroll; height:400px;">
 		<div class ="panel panel-primary">
 			<div class="panel-heading">
-				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.png" alt="overall" width="40" height="30" alt="BOOST website"></a>
+				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
 				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
 			</div>		
 			<div id ="panel" class="panel-body">
