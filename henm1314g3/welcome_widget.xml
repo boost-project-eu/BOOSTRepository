@@ -48,11 +48,7 @@
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 		<!-- JavaScript Block -->
-		<style type="text/css">
-		#table1 {
-					 border:none;
-					}
-		</style>
+		
 		<script>
 			
 			var space;
@@ -82,41 +78,6 @@
 			if (!agreed)
 				$("#agreeLisenceModal").modal();
 			
-				
-
-			
-			
-			// $(function(){
-
-			//       // help button click 
-
-			//       $('#question').click(function(){
-			//         $('#descriptionModal').modal({
-			//         keyboard: true
-			//           });
-			//         }); 
-			// });
-
-			// var ruleRactive = new Ractive({
-			// 		            el: 'viewRulesTemplateContainer',
-			// 		            template: '#viewRulesTemplate',
-			// 		            append: true
-					           
-			// 		        });
-
-			// ruleRactive.on("viewRules", function(event){
-					        	
-			// 		        	$("#viewRulesModal").modal();
-			// 		        });
-
-			
-
-			// function agreementFunction()
-			// {
-			// document.getElementById("welcomeIframe").src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/agreement.html";
-			// document.getElementById("agreement").class="btn btn-primary btn-sm active";
-			// document.getElementById("about").class="btn btn-primary btn-sm";
-			// }
 		});  // end of the retrieveAccessRights
 	});
 
@@ -142,17 +103,48 @@
 	<div style="overflow-y: scroll; height:400px;">
 		<div class ="panel panel-primary">
 			<div class="panel-heading">
-				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 5 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.gif" alt="overall" width="45" height="25" alt="BOOST website"></a>
-
+				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.png" alt="overall" width="40" height="30" alt="BOOST website"></a>
 				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
-			</div>
-		
+			</div>		
 			<div id ="panel" class="panel-body">
 				<div class="modal-body">
-				<p>
-					Quick Guide 
-				</p>
-							
+					<div class="container">
+						<div class="panel-group" id="levelsdef" align="justify">
+							<h4><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png" alt="BOOST Logo" style="margin-right:50px">Quick Start Guide</h4>
+							<p><b>BOOST</b> stands for  <b>B</b>usiness perf<b>O</b>rmance impr<b>O</b>vement through individual employee <b>S</b>kills <b>T</b>raining. A technical prototype, that used to organise, manage and monitor training process in the small and micro enterprises.</p>
+							<p> Below are a few steps to help you get started.</p>
+
+				            <ul style="padding: 10px;">
+				            	<li><b>If you are a Manager:</b> 
+				            		<ul style="padding: 10px;">
+				            			<li>Assign user roles to employees and trainers using the <b>Access Rights</b> widget.</li>
+				            			<li>Define business goals and add learning indicators to them using the <b>Business Goals</b> widget. Assign priority to the goals, specifying the most improtant with a high priority.</li>
+					               	  	<li>Monitor business goals progress and employees competence in the <b>Learning Progress</b> widget. It works together with <b>Business Goals</b> and <b>Business Employees</b> widgets. </li>
+					                	<li>Edit information about employees and assign goals to them, adjust their learning levels in the <b>Business Employees</b> widget.</li>
+					              	</ul>
+					            </li>
+					            <li><b>If you are an Employee: </b>
+				            		<ul style="padding: 10px;">
+					                	<li>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</li> 
+					               	  	<li>Watch and read interesting resources using <b>Boost Viewer</b> widget.</li>
+					                	<li>Save and organise your learning resources in the <b>Learning Repository:</b>. You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</li>
+					              		<li>Monitor your learning progress with the <b>Learning Progress</b> widget.</li>
+					              	</ul>
+					            </li>
+					            <li><b>If you are a Trainer: </b>  
+				            		<ul style="padding: 10px;">
+					                	<li>Provide access to the learning repositories in the <b>Boost Search</b> widget.</li> 
+					               	  	<li>Add description to learning indicators in the <b>Business Goals</b> widget.</li> 
+					               	  	<li>Adjust learning levels of employees in the <b>Business Employees</b> widget.</li> 
+					              	</ul>
+				            	</li>
+				            </ul> 
+				            <p>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily. 
+				            For more detailed information please see Help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</p>        
+
+					    </div>
+					</div>
+				</div>		
 			</div>
 	</div>
 
