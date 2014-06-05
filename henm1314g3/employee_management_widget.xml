@@ -296,7 +296,7 @@
 							ractiveDeleteEmployee.set("employee", event.context);
 							$('#deleteEmployeeModal').modal();
 						},
-							graph: function(event){
+							graphShow: function(event){
 							publishShowEmployeeProgress(event.context.uri);
 						},
 							setLI: function ( event ) {
