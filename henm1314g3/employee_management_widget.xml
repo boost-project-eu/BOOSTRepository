@@ -234,7 +234,27 @@
 					});
 
 				retrieveAllEmployees(space, function(employees){
-					employeeList = employees;
+					employeeList = []
+
+					// Filter out all the employees for which the user is not
+					// set as an employee
+					if((userAccessRights.isManager || userAccessRights.isTrainer)){
+						for(var i = 0; i < employees.length; i++){
+							var employee = employees[i];
+							access = accessRights.getUserAccessRights(employee.userUri)
+
+							if(access.isEmployee)
+								employeeList.push(employee);
+						}
+					}
+					else if(userAccessRights.isEmployee){
+						for(var i = 0; i < employees.length; i++){
+							var employee = employees[i];
+							if(openapp.param.user() == employee.userUri)
+								employeeList.push(employee)
+						}
+					}
+
 					sortEmployees();
 					retrieveAllBcns(space, function(bcns){
 						bcnList = bcns;
