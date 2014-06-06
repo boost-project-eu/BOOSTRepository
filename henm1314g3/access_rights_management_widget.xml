@@ -56,6 +56,8 @@
 			var iwcClient;
 			var userList;
 			var accessRights;
+			var employeesList;
+			var bcnsList;
 
 			//Define the ractives as globals
 			var ractiveOverview;
@@ -83,48 +85,72 @@
 			$(function(){
 				retrieveAllUsers(space, function(users){
 					retrieveAccessRights(function(access){
-						userList = users;
-						accessRights = access;
+						retrieveAllEmployees(space, function(employees){
+							retrieveAllBcns(space, function(bcns){
+								userList = users;
+								accessRights = access;
+								employeesList = employees;
+								bcnsList = bcns;
 
-						sortUsers(userList);
+								sortUsers(userList);
 
-						//Match all users with their access rights which are stored in the config
-						//resource
+								//Match all users with their access rights which are stored in the config
+								//resource
 
-						var managerExists = false;
-						var owner = null;
-						for(var i = 0; i < userList.length; i++){
-							var user = userList[i];
-							user.accessRights = accessRights.getUserAccessRights(user.uri);
-							managerExists = (user.accessRights.isManager);
-							if(user.isOwner)
-								owner = user;
-						}
+								var managerExists = false;
+								var owner = null;
+								for(var i = 0; i < userList.length; i++){
+									var user = userList[i];
+									user.accessRights = accessRights.getUserAccessRights(user.uri);
+									managerExists = (user.accessRights.isManager);
+									if(user.isOwner)
+										owner = user;
+								}
 
-						//Debug
-						//owner.accessRights.hasAgreedToLicense = true;
+								//Debug
+								//owner.accessRights.hasAgreedToLicense = true;
 
-						if(!managerExists)
-							owner.accessRights.isManager = true;
+								if(!managerExists)
+									owner.accessRights.isManager = true;
 
-						//Check if user has agreed to license
-						if(!accessRights.getUserAccessRights().hasAgreedToLicense){
-							showModalAcceptTermsOfUse();							
+								//Check if user has agreed to license
+								if(!accessRights.getUserAccessRights().hasAgreedToLicense){
+									showModalAcceptTermsOfUse();							
 
-						} else if(!accessRights.getUserAccessRights().isManager){
+								} else if(!accessRights.getUserAccessRights().isManager){
 
-							showModalContactManager();
-						}
+									showModalContactManager();
+								}
 
-						ractiveOverview = new Ractive({
-							el: 'containerUserOverview',
-						    template: '#templateUserOverview',
-						    data: { "userList" : userList },
-						    append: true
-						});
+								ractiveOverview = new Ractive({
+									el: 'containerUserOverview',
+								    template: '#templateUserOverview',
+								    data: { "userList" : userList },
+								    append: true
+								});
 
-						ractiveOverview.on("accessRightsChanged", function(event){
-							accessRights.update(function(){});
+								ractiveOverview.on("accessRightsChanged", function(event){
+									accessRights.update(function(){});
+
+									user = event.context;
+
+									if(accessRights.getUserAccessRights(user.uri).isEmployee){
+										var foundEmployeeData = false;
+										for(var i = 0; i < employeesList.length; i++){
+											var employee = employeesList[i];
+											if(employee.userUri == user.uri){
+												foundEmployeeData = true;
+											}
+										}
+
+										if(!foundEmployeeData){
+											createEmployeeFromUser(user, bcnsList, function(employee){
+												// Nothing to do
+											});
+										}
+									}
+								});
+							});
 						});
 					});
 				});

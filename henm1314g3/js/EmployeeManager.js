@@ -30,6 +30,11 @@ function Employee(object){
 		this.learningLevels = object.learningLevels;
 	else
 		this.learningLevels = {};
+
+	if(object.hasOwnProperty("userUri"))
+		this.userUri = object.userUri;
+	else
+		this.userUri = "";
 }
 
 Employee.prototype.clone = function(){
@@ -42,6 +47,20 @@ function createEmployeefromUri(uri, callback){
 
 	employeeResource.getRepresentation("rdfjson", function(employeeObject){
 		callback(employeeObject);
+	});
+}
+
+function createEmployeeFromUser(user, bcns, callback){
+	employee = new Employee({
+		name : user.name,
+		email : user.email,
+		userUri : user.uri
+	});
+
+	ensureEmplyoeeBCNConsistency(employee, bcns, []);
+
+	employee.create(function(){
+		callback(employee)
 	});
 }
 
