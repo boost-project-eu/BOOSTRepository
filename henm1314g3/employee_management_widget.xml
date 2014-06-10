@@ -597,7 +597,7 @@
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEditEmployee" on-click='edit' ><span class='glyphicon glyphicon-edit tooltip-editEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpDeleteEmployee" on-click='delete' ><span class='glyphicon glyphicon-trash tooltip-deleteEmployee'  data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></button>
+												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
 												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
 											</div>
 										</li>
@@ -623,7 +623,7 @@
 										<li style="width:115px;" align="center">
 											<div class="btn-group">	
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" ></span></button>
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" ></span></button>
+												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" ></span></a></button>
 												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" ></span></button>	
 											</div>
 										</li>
