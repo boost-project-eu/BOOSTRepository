@@ -187,29 +187,26 @@
 					{{#userList}}
 						<tr> 
 							<td>
-								<p class="{{!accessRights.hasAgreedToLicense ? "text-muted" : ""}}">{{name}}
+								<p>{{name}}
 								{{#isOwner}}
 								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
 								{{/isOwner}}
-								{{^accessRights.hasAgreedToLicense}}
-								<i title="This user has not agreed to the terms of use yet so he can not be given access rights." class="fa fa-exclamation-circle"></i>
-								{{/accessRights.hasAgreedToLicense}}
 								</p>
 
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled="{{!accessRights.hasAgreedToLicense}}">
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}'>
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}' disabled="{{!accessRights.hasAgreedToLicense}}">
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}'>
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled="{{!accessRights.hasAgreedToLicense}}">
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}'>
 								</label>
 							</td>
 						</tr>
