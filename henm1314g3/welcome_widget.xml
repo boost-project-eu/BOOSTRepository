@@ -110,7 +110,7 @@
 				<div class="modal-body">
 					<div class="container">
 						<div class="panel-group" id="levelsdef" align="justify">
-							<h4><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png" alt="BOOST Logo" style="margin-right:50px">Quick Start Guide</h4>
+							<h4><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png" alt="BOOST Logo" width="110" height="50" style="margin-right:50px">Quick Start Guide<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/LLPlogo.png" alt="LLL Logo" width="130" height="50" style="margin-left:40px"></h4>
 							<p><b>BOOST</b> stands for  <b>B</b>usiness perf<b>O</b>rmance impr<b>O</b>vement through individual employee <b>S</b>kills <b>T</b>raining. A technical prototype, that used to organise, manage and monitor training process in the small and micro enterprises.</p>
 							<p> Below are a few steps to help you get started.</p>
 
