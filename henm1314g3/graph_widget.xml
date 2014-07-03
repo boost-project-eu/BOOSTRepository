@@ -326,11 +326,13 @@
 					
 
 						if (employee.learningLevels[bcn.uri].isRelevant){
-							liStartList.push(start);
-							liCurrentList.push(current);
-							liEndList.push(end);
-							cont++;
-						}
+							if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+								liStartList.push(start);
+								liCurrentList.push(current);
+								liEndList.push(end);
+								cont++;
+							}
+						}	
 					}
 					if (cont>0){
 						var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
@@ -382,13 +384,15 @@
 						var end = employee.learningLevels[bcn.uri][li.id].end;
 
 						
-
 						if (employee.learningLevels[bcn.uri].isRelevant){
-							liStartList.push(start);
-							liCurrentList.push(current);
-							liEndList.push(end);
-							cont++;
-						}
+							if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+
+								liStartList.push(start);
+								liCurrentList.push(current);
+								liEndList.push(end);
+								cont++;
+							}
+						}	
 					}
 					
 					if (cont>0){
@@ -565,7 +569,7 @@
 													if (bcns[i].name==liNameList[this.x]){
 
 														showBcnGraph(bcns[i].uri);
-													//	alert("Point: showBcnGraph");
+														alert("Point: showBcnGraph");
 													}
 												}
 											}
@@ -747,6 +751,9 @@
 			
 			function showDefaultGraph(){
 
+
+				// here should be made changes
+
 				isOverviewGraph.bool=true;
 				isEmployeeOverviewGraph.bool=false;
 				isBcnGraph.bool=false;
@@ -784,10 +791,13 @@
 							
 
 							if (employee.learningLevels[bcn.uri].isRelevant){
+								if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+
 								liStartList.push(start);
 								liCurrentList.push(current);
 								liEndList.push(end);
 								cont++;
+							}
 							
 							}
 						}
@@ -883,12 +893,15 @@
 							
 
 							if (employee.learningLevels[bcn.uri].isRelevant){
+								if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+
 								liStartList.push(start);
 
 								liCurrentList.push(current);
 								liEndList.push(end);
 								cont++;
-							}
+								}
+							}	
 						}
 						if (cont>0){
 						
@@ -1001,13 +1014,15 @@
 				var liCurrentListAvg=[];
 				var liStartListAvg=[];
 				var liNameList=[];
-				for (var i=0; i<data[0].length; i++){
-					liEndListAvg[i]=data[0][i][1];
-					liStartListAvg[i]=data[1][i][1];
-					liCurrentListAvg[i]=data[2][i][1];
+				
+					for (var i=0; i<data[0].length; i++){
+						liEndListAvg[i]=data[0][i][1];
+						liStartListAvg[i]=data[1][i][1];
+						liCurrentListAvg[i]=data[2][i][1];
 					
-					liNameList[i]=data[0][i][0];
-				}
+						liNameList[i]=data[0][i][0];
+					}
+				
 				var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
 				var subtitle='Average for goals';
 				var isOverview={};
