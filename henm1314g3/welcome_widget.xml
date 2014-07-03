@@ -157,12 +157,15 @@
   					<div class="modal-body">
     					<form role="form">
 								<div class="form-group"  align="justify">
+									<p> Copyright (c) <2013-2014>
+									This project has been funded with support from the European Commission.This web site reflects the views only of the authors, and the Commission cannot be held responsible for any use which may be made of the information contained therein.
+									</p>
+
+									<p>Kateryna Neulinger, Advanced Community Information Systems (ACIS) Group, Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany</p>
+									<p>Andre Tebart, Master of Software Systems, RWTH Aachen University, Germany</p>
+									<p>Seyed Ehsan Badakhshan, Master of Media Informatics, RWTH Aachen University, Germany 
+									All rights reserved.</p>
 									
-									<ul style="padding: 10px; list-style-type:none;"> Copyright (c) <2013-2014>
-									<li>< Kateryna Neulinger, Advanced Community Information Systems (ACIS) Group, Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany</li>
-									<li>Andre Tebart, Master of Software Systems, RWTH Aachen University, Germany</li> 
-									<li>Seyed Ehsan Badakhshan, Master of Media Informatics, RWTH Aachen University, Germany ></li>
-									All rights reserved.</ul>
 
 									<p>Redistribution and use in source and binary forms, with or without modification, are permitted 
 
