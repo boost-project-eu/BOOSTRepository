@@ -5,7 +5,7 @@
 		description="This widget gives an overview of the learning process.."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
-		height="400"
+		height="450"
 		width="600"
 		>
   	<Require feature="opensocial-0.8" />
@@ -1106,7 +1106,7 @@
 		</script>
 
 		<!-- HTML Block -->
-		<div style="overflow-y: scroll; height: 400px;">
+		<div style="overflow-y: scroll; height: 450px;">
 		<div class="panel panel-primary" style="margin-bottom: 0px">
 			<div class="panel-heading">
 			    <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
@@ -1114,7 +1114,7 @@
 
 		  	</div>
 		  	<div class="panel-body">
-				<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+				<div id="container" style="min-width: 310px; height: 370px; margin: 0 auto">
 				</div>
 			</div>
 		</div>
