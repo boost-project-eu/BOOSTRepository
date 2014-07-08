@@ -74,10 +74,10 @@ function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
 		var bcn = bcnsToUpdate[i];
 		if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
 			employee.learningLevels[bcn.uri] = {};
-			employee.learningLevels[bcn.uri].isRelevant = true;
+			employee.learningLevels[bcn.uri].isRelevant = false;
 		}
 		if(!employee.learningLevels[bcn.uri].hasOwnProperty("isRelevant"))
-			employee.learningLevels[bcn.uri].isRelevant = true;
+			employee.learningLevels[bcn.uri].isRelevant = false;
 		var learningLevel = employee.learningLevels[bcn.uri];
 		for(var j = 0; j < bcn.learningIndicators.length; j++){
 			var li = bcn.learningIndicators[j];
@@ -86,11 +86,11 @@ function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
 				learningLevel[li.id].start = 0;
 				learningLevel[li.id].current = 0;
 				learningLevel[li.id].end = llevel.length -1
-				learningLevel[li.id].isRelevant = true;
+				learningLevel[li.id].isRelevant = false;
 			}
 			else{ //Quick fix to update old employee data. To be removed later on
 				if(!learningLevel[li.id].hasOwnProperty("isRelevant"))
-					learningLevel[li.id].isRelevant = true;
+					learningLevel[li.id].isRelevant = false;
 			}
 		}
 	}
