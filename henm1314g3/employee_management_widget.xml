@@ -732,9 +732,9 @@
 							<li class="list-group-item">
 								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
 								<div class="checkbox">
-		  							<label>
+		  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">
 		  								Relevant
-		    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}">
+		    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}" disabled={{!employeeBcnData.isRelevant}}>
 		  					        </label>
 						        </div> 
 								Start level:
