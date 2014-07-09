@@ -138,6 +138,21 @@
 
 					bootbox.hideAll();
 				}
+
+				if(intent.action=="ACCESS_RIGHTS_CHANGED"){
+					retrieveAccessRights(function(accessRights){
+
+					userAccessRights = accessRights.getUserAccessRights();
+
+						retrieveAllEmployees(space, function(employees){
+							employeeList = filterEmployees(employees, accessRights);
+
+							sortEmployees();
+
+							ractiveOverview.set("employeeList", employeeList);
+						});
+					});
+				}
 			}
 
 			function publishEmployeeCreated(employeeUri){
@@ -234,26 +249,7 @@
 					});
 
 				retrieveAllEmployees(space, function(employees){
-					employeeList = []
-
-					// Filter out all the employees for which the user is not
-					// set as an employee
-					if((userAccessRights.isManager || userAccessRights.isTrainer)){
-						for(var i = 0; i < employees.length; i++){
-							var employee = employees[i];
-							access = accessRights.getUserAccessRights(employee.userUri)
-
-							if(access.isEmployee)
-								employeeList.push(employee);
-						}
-					}
-					else if(userAccessRights.isEmployee){
-						for(var i = 0; i < employees.length; i++){
-							var employee = employees[i];
-							if(openapp.param.user() == employee.userUri)
-								employeeList.push(employee)
-						}
-					}
+					employeeList = filterEmployees(employees, accessRights);
 
 					sortEmployees();
 					retrieveAllBcns(space, function(bcns){
@@ -530,6 +526,22 @@
   				return !(nameError || emailError);
 			}
 
+			function filterEmployees(employees, accessRights){
+				var employeeList = [];
+				var userAccessRights = accessRights.getUserAccessRights();
+				if(userAccessRights.isManager){
+					employeeList = filterEmployeesBasedOnAccessRights(employees, accessRights);
+				}
+				else if(userAccessRights.isEmployee){
+					for(var i = 0; i < employees.length; i++){
+						var employee = employees[i];
+						if(openapp.param.user() == employee.userUri)
+							employeeList.push(employee)
+					}
+				}
+				return employeeList;
+			}
+
 		</script>
 
 		<!-- HTML Block -->
@@ -557,7 +569,6 @@
 
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
-							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddEmployee" on-click="addNewEmployee"><span class="glyphicon glyphicon-plus tooltip-addEmployee" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Employee"></span></button>
 			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>		
 						</div>
 					{{/accessRights.isManager}}
@@ -593,9 +604,7 @@
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu" align="left">
 										<li style="width:200px;" align="center">
-											<div class="btn-group">		
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEditEmployee" on-click='edit' ><span class='glyphicon glyphicon-edit tooltip-editEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}" style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpDeleteEmployee" on-click='delete' ><span class='glyphicon glyphicon-trash tooltip-deleteEmployee'  data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}" style="margin-right:5px;"></span></button>
+											<div class="btn-group">	
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
 												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	

@@ -75,6 +75,18 @@
 			function iwcCallback(intent){
 			}
 
+			function publishAccessRightsChanged(){
+				var intent = {
+					component: "",
+					data: "",
+					dataType: "text/json",
+					flags :["PUBLISH_GLOBAL"],
+					action: "ACCESS_RIGHTS_CHANGED"
+				};
+
+				iwcClient.publish(intent);
+			}
+
 			function sortUsers(users){
 				users.sort(function (a, b){
 					if(a.name.toLowerCase() < b.name.toLowerCase()) 
@@ -130,25 +142,33 @@
 								});
 
 								ractiveOverview.on("accessRightsChanged", function(event){
-									accessRights.update(function(){});
+									accessRights.update(function(){
 
-									user = event.context;
+										user = event.context;
 
-									if(accessRights.getUserAccessRights(user.uri).isEmployee){
-										var foundEmployeeData = false;
-										for(var i = 0; i < employeesList.length; i++){
-											var employee = employeesList[i];
-											if(employee.userUri == user.uri){
-												foundEmployeeData = true;
+										if(accessRights.getUserAccessRights(user.uri).isEmployee){
+											var foundEmployeeData = false;
+											for(var i = 0; i < employeesList.length; i++){
+												var employee = employeesList[i];
+												if(employee.userUri == user.uri){
+													foundEmployeeData = true;
+												}
+											}
+
+											if(!foundEmployeeData){
+												createEmployeeFromUser(user, bcnsList, function(employee){
+													employeesList.push(employee);
+													publishAccessRightsChanged();
+												});
+											}
+											else{
+												publishAccessRightsChanged();
 											}
 										}
-
-										if(!foundEmployeeData){
-											createEmployeeFromUser(user, bcnsList, function(employee){
-												// Nothing to do
-											});
+										else{
+											publishAccessRightsChanged();
 										}
-									}
+									});
 								});
 							});
 						});
@@ -183,33 +203,28 @@
 		<script id="templateUserOverview" type='text/ractive'>
 			<table class="table table-striped table-bordered" >
 			    <tbody>
-			    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Trainer</th><th style="text-align:center">Employee</th></tr>
+			    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Employee</th></tr>
 					{{#userList}}
 						<tr> 
 							<td>
-								<p class="{{!accessRights.hasAgreedToLicense ? "text-muted" : ""}}">{{name}}
+								<p class="{{accessRights.hasAgreedToLicense ? "" : "text-muted"}}">{{name}}
+								{{^accessRights.hasAgreedToLicense}}
+								<span title="This user needs to agree to the terms of use first." class="glyphicon glyphicon-exclamation-sign"></span>
+								{{/accessRights.hasAgreedToLicense}}
 								{{#isOwner}}
 								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
 								{{/isOwner}}
-								{{^accessRights.hasAgreedToLicense}}
-								<i title="This user has not agreed to the terms of use yet so he can not be given access rights." class="fa fa-exclamation-circle"></i>
-								{{/accessRights.hasAgreedToLicense}}
 								</p>
 
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled="{{!accessRights.hasAgreedToLicense}}">
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled={{!accessRights.hasAgreedToLicense}}>
 								</label>
 							</td>
 							<td align="center">
 								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isTrainer}}' disabled="{{!accessRights.hasAgreedToLicense}}">
-								</label>
-							</td>
-							<td align="center">
-								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled="{{!accessRights.hasAgreedToLicense}}">
+								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled={{!accessRights.hasAgreedToLicense}}>
 								</label>
 							</td>
 						</tr>

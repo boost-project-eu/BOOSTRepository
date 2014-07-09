@@ -102,3 +102,15 @@ function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
 			delete employee.learningLevels[bcn.uri];
 	}
 }
+
+function filterEmployeesBasedOnAccessRights(employees, accessRights){
+	var filteredEmployeeList = [];
+	for(var i = 0; i < employees.length; i++){
+		var employee = employees[i];
+		access = accessRights.getUserAccessRights(employee.userUri)
+
+		if(access.isEmployee)
+			filteredEmployeeList.push(employee);
+	}
+	return filteredEmployeeList;
+}
