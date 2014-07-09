@@ -63,8 +63,7 @@
 
 			var user = {
 				isEmployee: false,
-				isManager: false,
-				isTrainer: false
+				isManager: false
 			};
 
 				
@@ -314,7 +313,7 @@
 	
 						if(!userAccessRights.hasAgreedToLicense){
 						showModalAcceptTermsOfUse();							
-					} else if (!userAccessRights.isManager && !userAccessRights.isTrainer && !userAccessRights.isEmployee) {
+					} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
 						showModalContactManager();		
 					}	
 

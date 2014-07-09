@@ -23,7 +23,6 @@ AccessRights.prototype.getUserAccessRights = function(userUri){
 	else{
 		var newRights = {};
 		newRights.isManager = false;
-		newRights.isTrainer = false;
 		newRights.isEmployee = false;
 		newRights.hasAgreedToLicense = false;
 		this.userRights[userUri] = newRights;

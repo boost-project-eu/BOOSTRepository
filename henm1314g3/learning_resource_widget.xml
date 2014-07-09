@@ -152,7 +152,7 @@
 	
 						if(!userAccessRights.hasAgreedToLicense){
 						showModalAcceptTermsOfUse();							
-					} else if (!userAccessRights.isManager && !userAccessRights.isTrainer && !userAccessRights.isEmployee) {
+					} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
 						showModalContactManager();		
 					}	
 

@@ -73,6 +73,30 @@
 			}
 
 			function iwcCallback(intent){
+				if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
+
+					var message = "<div>Goals have changed. Please wait.</div>"
+					message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
+					bootbox.dialog({
+						title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
+						message : message,
+						closeButton : false
+					});
+					createBCNfromUri(intent.data, function(bcn){
+						if(intent.action == "BCN_CREATE"){
+							//Add the new BCN to the local list
+							bcnsList.push(bcn);
+						}
+						else{
+							//Replace the BCN in the local list with the updated one
+							for(var i = 0; i < bcnsList.length; i++){
+								if(bcn.uri == bcnsList[i].uri)
+									bcnsList[i] = bcn;
+							}
+						}
+						bootbox.hideAll();
+					});
+				}
 			}
 
 			function publishAccessRightsChanged(){
@@ -243,12 +267,10 @@
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
              <ul style="padding: 10px;">
-			 <li>To assing a user role, check the checkbox <input type="checkbox">. There are three different roles: employee, manager, trainer. Roles can be combined for one user.</li>
+			 <li>To assing a user role, check the checkbox <input type="checkbox">. There are two different roles: employee and manager. Roles can be combined for one user.</li>
 			 	<ul style="padding: 10px;">
                 	<li><b>Employee: </b>
                 		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system. Watch own learning progress and the progress of the goals.</p></li> 
-               	  	<li><b>Trainer: </b>
-               	  		<p>In addition to the functions that employee does can disable access to the learning repositories and assign description to the learning indicators.</p> </li>
                 	<li><b>Manager: </b>
                 		<p>Has full control over the system. Can assing access rights to the users. Can add/edit/delete employees and assign learning levels to them. Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</li></p>
               	</ul>
