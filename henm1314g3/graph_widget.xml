@@ -91,21 +91,27 @@
 					if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
 					if(a.priority > b.priority)  return -1; else return 1;
 				});
-					
-					retrieveAllEmployees(space, function(employeesList){
-					employees=employeesList;
-					employees.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
-					
-					isBcnGraph.bool=false;
-					isEmployeeGraph.bool=false;
-					isOverviewGraph.bool=false;
-					isEmployeeOverviewGraph.bool=false;
-					isDetailedGraph.bool=false;
-					check=true;
-					console.log('Widget "Boost Progress" loaded.');
+					retrieveAccessRights(function(accessRights){
 
-					showEmployeeOverviewGraph();
-					});				
+					var userAccessRights = accessRights.getUserAccessRights();
+
+						retrieveAllEmployees(space, function(employeesList){
+
+							employees = filterEmployeesBasedOnAccessRights(employeesList, accessRights);
+
+							employees.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
+							
+							isBcnGraph.bool=false;
+							isEmployeeGraph.bool=false;
+							isOverviewGraph.bool=false;
+							isEmployeeOverviewGraph.bool=false;
+							isDetailedGraph.bool=false;
+							check=true;
+
+							showEmployeeOverviewGraph();	
+
+						});
+					});		
 				});
 			}
 
@@ -272,6 +278,29 @@
 					if (isEmployeeOverviewGraph.bool){
 						showEmployeeOverviewGraph();
 					}
+				}
+
+				if(intent.action == "ACCESS_RIGHTS_CHANGED"){
+					retrieveAccessRights(function(accessRights){
+
+					var userAccessRights = accessRights.getUserAccessRights();
+
+						retrieveAllEmployees(space, function(employeesList){
+							employees = filterEmployeesBasedOnAccessRights(employeesList, accessRights);
+
+							employees.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
+							
+							isBcnGraph.bool=false;
+							isEmployeeGraph.bool=false;
+							isOverviewGraph.bool=false;
+							isEmployeeOverviewGraph.bool=false;
+							isDetailedGraph.bool=false;
+							check=true;
+
+							showEmployeeOverviewGraph();	
+
+						});
+					});	
 				}
 			}
 
