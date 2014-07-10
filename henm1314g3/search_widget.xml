@@ -253,7 +253,7 @@
 	
 						if(!userAccessRights.hasAgreedToLicense){
 						showModalAcceptTermsOfUse();							
-					} else if (!userAccessRights.isManager && !userAccessRights.isTrainer && !userAccessRights.isEmployee) {
+					} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
 						showModalContactManager();		
 					}	
 
@@ -371,7 +371,6 @@
             <ul style="padding: 10px;">
             	<li>To choose learning repository click on <i>YouTube</i>, <i>SlideShare</i> or <i>Scribd</i> tabs under the input field.</li>
             	<li>To search learning document enter keywords in the input field and click on the <i>Go</i> button.</li>
-            	<li>Trainer can disable or enable access to learning repositories in the <i>Configuration Boost</i> widget.</li>
             	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
             </ul>	 	
           </div>
