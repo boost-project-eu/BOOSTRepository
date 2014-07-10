@@ -6,7 +6,7 @@
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400"
-		width="600">
+		width="500">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
@@ -47,8 +47,17 @@
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
-		<!-- JavaScript Block -->
 		
+		<!-- CSS Block -->
+
+		<style>
+			@-moz-document url-prefix() {
+	 			 fieldset { display: table-cell; }
+			}
+		</style>
+
+		<!-- JavaScript Block -->
+
 		<script>
 			
 			var space;
@@ -105,47 +114,54 @@
 			<div class="panel-heading">
 				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
 				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
-			</div>		
-			<div id ="panel" class="panel-body">
-				<div class="modal-body">
-					<div class="container">
-						<div class="panel-group" id="levelsdef" align="justify">
-							<h4><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png" alt="BOOST Logo" width="110" height="50" style="margin-right:80px">Quick Start Guide<img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/LLPlogo.png" alt="LLL Logo" width="130" height="50" style="margin-left:160px"></h4>
-							<p><b>BOOST</b> stands for  <b>B</b>usiness perf<b>O</b>rmance impr<b>O</b>vement through individual employee <b>S</b>kills <b>T</b>raining. A technical prototype, that used to organise, manage and monitor training process in the small and micro enterprises.</p>
-							<p> Below are a few steps to help you get started.</p>
+			</div>	
 
-				            <ul style="padding: 10px;">
-				            	<li><b>If you are a Manager:</b> 
-				            		<ul style="padding: 10px;">
-				            			<li>Assign user roles to employees and trainers using the <b>Access Rights</b> widget.</li>
-				            			<li>Define business goals and add learning indicators to them using the <b>Business Goals</b> widget. Assign priority to the goals, specifying the most improtant with a high priority.</li>
-					               	  	<li>Monitor business goals progress and employees competence in the <b>Learning Progress</b> widget. It works together with <b>Business Goals</b> and <b>Business Employees</b> widgets. </li>
-					                	<li>Edit information about employees and assign goals to them, adjust their learning levels in the <b>Business Employees</b> widget.</li>
-					              	</ul>
-					            </li>
-					            <li><b>If you are an Employee: </b>
-				            		<ul style="padding: 10px;">
-					                	<li>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</li> 
-					               	  	<li>Watch and read interesting resources using <b>Boost Viewer</b> widget.</li>
-					                	<li>Save and organise your learning resources in the <b>Learning Repository:</b>. You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</li>
-					              		<li>Monitor your learning progress with the <b>Learning Progress</b> widget.</li>
-					              	</ul>
-					            </li>
-					            <li><b>If you are a Trainer: </b>  
-				            		<ul style="padding: 10px;">
-					                	<li>Provide access to the learning repositories in the <b>Boost Search</b> widget.</li> 
-					               	  	<li>Add description to learning indicators in the <b>Business Goals</b> widget.</li> 
-					               	  	<li>Adjust learning levels of employees in the <b>Business Employees</b> widget.</li> 
-					              	</ul>
-				            	</li>
-				            </ul> 
-				            <p>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily. 
-				            For more detailed information please see Help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</p>        
+				<table class="table table-responsive" >
+			    	<tbody>
+			    		<tr class="active">
+			    			<td><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/LLPlogo.png" class="img-responsive img-thumbnail" alt="LLL Logo" style="width:50%;"></td>
+			    			<td><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png" class="img-responsive img-thumbnail" alt="BOOST Logo"></td>
+						</tr>
+						<tr>
+							<td colspan=2><small><strong>BOOST</strong> stands for  <strong>B</strong>usiness perf<strong>O</strong>rmance impr<strong>O</strong>vement through individual employee <strong>S</strong>kills <strong>T</strong>raining.</small></td>
+			   		 	</tr>
+			   		 	<tr>
+			   		 		<td colspan=2><small>With BOOST you can organise, manage and monitor training process in the small and micro enterprises. Below are a few steps to help you get started.</small></td>
+						</tr>
+						<tr class="active">
+							<td colspan=2><small><strong>If you are a Manager:</strong></small></td>
+						</tr>
+						<tr>
+							<td colspan=2>
+				            		<ol style="padding: 20px;">
+				            			<li><small>Assign user roles to employees using the <b>Access Rights</b> widget.</small></li>
+				            			<li><small>Define business goals and add learning indicators to them using the <b>Business Goals</b> widget. Assign priority to the goals, specifying the most improtant with a high priority.</small></li>
+					               	  	<li><small>Monitor business goals progress and employees competence in the <b>Learning Progress</b> widget. It works together with <b>Business Goals</b> and <b>Business Employees</b> widgets.</small> </li>
+					                	<li><small>Edit information about employees and assign goals to them, adjust their learning levels in the <b>Business Employees</b> widget.</small></li>
+					              	</ol>
+					        </td>
+						</tr>
+						<tr class="active">
+							<td colspan=2><small><strong>If you are an Employee:</strong></small></td>
+						</tr>
+						<tr>
+							<td colspan=2>
+							<ol style="padding: 20px;">
+					                	<li><small>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</small></li> 
+					               	  	<li><small>Watch and read interesting resources using <b>Boost Viewer</b> widget.</small></li>
+					                	<li><small>Save and organise your learning resources in the <b>Learning Repository:</b>. You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li>
+					              		<li><small>Monitor your learning progress with the <b>Learning Progress</b> widget.</small></li>
+					              	</ol>
+					        </td>
+						</tr>
+						<tr >
+							<td colspan=2><small>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily. 
+				            For more detailed information please see Help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</small></td>
+						</tr>
 
-					    </div>
-					</div>
-				</div>		
-			</div>
+			   		 </tbody>
+				</table>
+	
 	</div>
 
     <div class="modal fade" id="agreeLisenceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
