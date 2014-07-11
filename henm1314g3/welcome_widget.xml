@@ -54,6 +54,7 @@
 			@-moz-document url-prefix() {
 	 			 fieldset { display: table-cell; }
 			}
+	
 		</style>
 
 		<!-- JavaScript Block -->
@@ -133,12 +134,12 @@
 						</tr>
 						<tr>
 							<td colspan=2>
-				            		<ol style="padding: 20px;">
+				            		<ul style="padding: 20px;">
 				            			<li><small>Assign user roles to employees using the <b>Access Rights</b> widget.</small></li>
 				            			<li><small>Define business goals and add learning indicators to them using the <b>Business Goals</b> widget. Assign priority to the goals, specifying the most improtant with a high priority.</small></li>
 					               	  	<li><small>Monitor business goals progress and employees competence in the <b>Learning Progress</b> widget. It works together with <b>Business Goals</b> and <b>Business Employees</b> widgets.</small> </li>
 					                	<li><small>Edit information about employees and assign goals to them, adjust their learning levels in the <b>Business Employees</b> widget.</small></li>
-					              	</ol>
+					              	</ul>
 					        </td>
 						</tr>
 						<tr class="active">
@@ -146,17 +147,17 @@
 						</tr>
 						<tr>
 							<td colspan=2>
-							<ol style="padding: 20px;">
+							<ul style="padding: 20px;">
 					                	<li><small>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</small></li> 
 					               	  	<li><small>Watch and read interesting resources using <b>Boost Viewer</b> widget.</small></li>
 					                	<li><small>Save and organise your learning resources in the <b>Learning Repository:</b>. You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li>
 					              		<li><small>Monitor your learning progress with the <b>Learning Progress</b> widget.</small></li>
-					              	</ol>
+					              	</ul>
 					        </td>
 						</tr>
 						<tr >
 							<td colspan=2><small>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily. 
-				            For more detailed information please see Help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</small></td>
+				            For more detailed information please see help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</small></td>
 						</tr>
 
 			   		 </tbody>
