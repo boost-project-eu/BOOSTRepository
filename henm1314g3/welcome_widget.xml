@@ -42,6 +42,8 @@
 		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
 
+
+		<script data-main="config" src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 		<!-- Define CSS -->
 		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
@@ -60,54 +62,69 @@
 		<!-- JavaScript Block -->
 
 		<script>
+			require( [
+			    "jquery",
+			    "jqueryUi",
+			    "bootstrap",
+			    "bootShared",
+			    "tree",
+			    "spin",
+			    "ladda",
+			    "ractive",
+			    "async",
+			    "BCNManager",
+			    "LearningDocumentsManager",
+			    "WidgetsManager",
+			    "ExpertsManager",
+			    "AccessRightsManager",
+			    "iwc"
+			    ], function() {
 			
-			var space;
-			var iwcClient;
-			var userAccessRights;
-			var agreed;
-			var accessRights;
-			
-			gadgets.util.registerOnLoadHandler(init);
-			function init(){
-			    
-				space = new openapp.oo.Resource(openapp.param.space());
-				iwcClient = new iwc.Client();
-				iwcClient.connect(iwcCallback);
-			}
-
-	$(function(){
-			
-		// Get the access rights: 
-		retrieveAccessRights(function(access){
-		accessRights = access;
-		userAccessRights = access.getUserAccessRights();
-		agreed = userAccessRights.hasAgreedToLicense;
-		//debug
-		//agreed = false; 
-
-			if (!agreed)
-				$("#agreeLisenceModal").modal();
-			
-		});  // end of the retrieveAccessRights
-	});
-
-		function iwcCallback(intent){
-				if(intent.action == "WELCOME_CREATE"){
+					var space;
+					var iwcClient;
+					var userAccessRights;
+					var agreed;
+					var accessRights;
 					
-				}
-			}
+					gadgets.util.registerOnLoadHandler(init);
+					function init(){
+					    
+						space = new openapp.oo.Resource(openapp.param.space());
+						iwcClient = new iwc.Client();
+						iwcClient.connect(iwcCallback);
+					}
 
+					$(function(){
+							
+						// Get the access rights: 
+						retrieveAccessRights(function(access){
+						accessRights = access;
+						userAccessRights = access.getUserAccessRights();
+						agreed = userAccessRights.hasAgreedToLicense;
+						//debug
+						//agreed = false; 
 
-		function agreeFunction()
-			{
-			userAccessRights.hasAgreedToLicense = true;
-			accessRights.update(function (){
-				$("#agreeLisenceModal").modal("hide");
-			});
-			}
+							if (!agreed)
+								$("#agreeLisenceModal").modal();
+							
+						});  // end of the retrieveAccessRights
+					});
 
+					function iwcCallback(intent){
+							if(intent.action == "WELCOME_CREATE"){}
+						}
 
-			</script>
+					function agreeFunction()
+					{
+						userAccessRights.hasAgreedToLicense = true;
+						accessRights.update(function (){
+							$("#agreeLisenceModal").modal("hide");
+						});
+					}
+
+				});
+
+		</script>
 			
 		<!-- HTML Block -->
 	<div style="overflow-y: scroll; height:400px;">
