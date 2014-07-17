@@ -4,7 +4,7 @@ require.config({
         jqueryUi: "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
         async: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async",
         bootstrap: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min",
-        bootShared: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared",
+        boostShared: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared",
         bootstrapSlider: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-slider",
         tree: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree",
         spin: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min",
@@ -13,7 +13,11 @@ require.config({
         bootbox: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min",
         rivets: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/rivets.min",
         repositories: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories",
-        
+        search_youtube: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_youtube",
+        search_slideshare: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_slideshare",
+        linkify: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify",
+        scribd_api: "http://www.scribd.com/javascripts/scribd_api",
+
         UserManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager",       
         BCNManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager",
         LearningDocumentsManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager",
@@ -23,6 +27,38 @@ require.config({
         AccessRightsManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager",
         ConfigManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager",
         iwc : "http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc"        
+    },
+    shim: {
+        async : {
+            exports: 'async'
+        },
+        UserManager: {
+            deps: ['boostShared']
+        },
+        BCNManager: {
+            deps: ['boostShared']
+        },
+        LearningDocumentsManager: {
+            deps: ['boostShared']
+        },
+        ExpertsManager: {
+            deps: ['boostShared']
+        },
+        EmployeeManager: {
+            deps: ['boostShared']
+        },
+        WidgetsManager: {
+            deps: ['boostShared']
+        },
+        AccessRightsManager: {
+            deps: ['boostShared']
+        },
+        ConfigManager: {
+            deps: ['boostShared']
+        },
+        boostShared: {
+            deps: ['async']
+        }
     }
 
 });

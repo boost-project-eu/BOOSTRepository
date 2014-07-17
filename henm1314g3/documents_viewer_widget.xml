@@ -26,173 +26,176 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_youtube.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_slideshare.js" type="text/javascript"></script>
     	<script src="https://apis.google.com/js/client.js?onload=onYouTubeClientLoad" type="text/javascript"></script>
-    	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify.js" type="text/javascript"></script>
-    	<script type="text/javascript" src='http://www.scribd.com/javascripts/scribd_api.js'></script>
-
-    	<!-- Config stuff -->
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
-
-
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
-	
-
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    	
+    	
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
 		<script>
-			var iwcClient;
-			var userAccessRights;
-			var userList;
-			var space;
-			
-			gadgets.util.registerOnLoadHandler(init);
-			
-			function init(){
-				space = new openapp.oo.Resource(openapp.param.space());
-				iwcClient = new iwc.Client();
-				iwcClient.connect(iwcCallback);
-			}
+			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"async",
+			    "jquery",
+			    "search_youtube",
+			    "search_slideshare",
+			    "linkify",
+			    "scribd_api",
+			    "bootstrap",
+			    "repositories",
+			    "ConfigManager",
+			    "UserManager",
+			    "bootbox",
+			    "AccessRightsManager",
+			    "iwc"
+			    ], function(a) {
+			    	async = a;
 
-			function iwcCallback(intent){
-				if(intent.action == "LEARNING_DOCUMENT_SELECTED" ||
-					intent.action == "SHOW_LEARNING_DOCUMENT"){
-					var document = intent.extras;
-					if(document.type == "youtube")
-						showYoutubeVideo(document.contentSpecificData.videoId);
-					if(document.type == "slideshare")
-						showSlideshareSlideshow(document.contentSpecificData.id);
-					if(document.type == "scribd")
-						showScribdDocument(document.contentSpecificData.id, document.contentSpecificData.accessKey, document.description);
-				}
 
-				if(intent.action == "SHOW_YOUTUBE_VIDEO"){
-					showYoutubeVideo(intent.extras.id);
-				}
-
-				if(intent.action == "SHOW_SLIDESHARE_SLIDESHOW"){
-					showSlideshareSlideshow(intent.extras.id);
-				}
-
-				if(intent.action == "SHOW_SCRIBD_DOCUMENT"){
-					showScribdDocument(intent.extras.id, intent.extras.accessKey, intent.extras.description);
-				}
-			}
-
-			function showYoutubeVideo(id){
-				$("#content").empty();
-				//Retrieve video data
-				YouTubeSearch.getVideoDetails(id, function(videoDetails){
-					var title = videoDetails.items[0].snippet.description;
-					var description = videoDetails.items[0].snippet.description;
-					var youtubeTemplate = 	"<div class='well'>" +
-											"<center>" +
-											"<div>" +
-											"<iframe type='text/html' width='480' height='270' src='https://www.youtube.com/embed/" + id + "' " +
-		                                    "frameborder='0' allowfullscreen></iframe>" +
-				                        	"</div>" +
-		                                    "</center>" +
-				                        	"<h4>Description</h4>" +
-				                        	"<p>" +
-				                        		description.replace(/\n/g, "<br>").linkify() +
-				                        	"</p>" +
-				                        	"</div>";
-				    var $youtubeElement = $(youtubeTemplate);
-				    //If the user clicks on a link, open a new tab in the browser
-				    assignLinkClickEvents($youtubeElement);
-				    $("#content").append($youtubeElement);
-				});
-			}
-
-			function showSlideshareSlideshow(id){
-				$("#content").empty();
-				SlideShareSearch.getSlideshowDetails(id, function(slideshowDetails){
-					var description = slideshowDetails.Slideshow.Description;
-					if(!description)
-						description = "No description available.";
-					var slideshowTemplate =	"<div class='well'>" +
-											"<center>" +
-											slideshowDetails.Slideshow.Embed +
-		                                    "</center>" +
-				                        	"<h4>Description</h4>" +
-				                        	"<p>" +
-				                        		description.replace(/\n/g, "<br>").linkify() +
-				                        	"</p>" +
-				                        	"</div>";
-
-				    var $slideShowElement = $(slideshowTemplate);
-                	//If the user clicks on a link, open a new tab in the browser
-				    assignLinkClickEvents($slideShowElement);
-				    $("#content").append($slideShowElement);
-				});
-			}
-
-			function showScribdDocument(id, accessKey, description){
-				$("#content").empty();
-				var scribdTemplate = 	"<div class='well'>" +
-										"<div id='scribdContainer'>" +
-	                                    "</div>" +
-			                        	"<h4>Description</h4>" +
-			                        	"<p>" +
-			                        		description.replace(/\n/g, "<br>").linkify() +
-			                        	"</p>" +
-			                        	"</div>";
-			    
-			    var $scribdElement = $(scribdTemplate);
-			    //If the user clicks on a link, open a new tab in the browser
-			    assignLinkClickEvents($scribdElement);
-			    $("#content").append($scribdElement);
-			    
-			    var scribd_doc = scribd.Document.getDoc(id, accessKey);
-				scribd_doc.addParam('jsapi_version', 2);
-				scribd_doc.write('scribdContainer');
-			}
-
-			function assignLinkClickEvents(element){
-				element.find('a').click(function(e){
-			    	var url = $(this).attr("href");
-			    	window.open(url,'_blank');
-			    	//Prevent default click behaviour which opens the link inside the widget
-			    	e.preventDefault();
-			    });
-			}
-
-			$(function(){
-
-			// Get the access rights: 
-				retrieveAccessRights(function(accessRights){
-				 userAccessRights = accessRights.getUserAccessRights();
+					var iwcClient;
+					var userAccessRights;
+					var userList;
+					var space;
 					
-					//Check if user has agreed to license
-	
-					if(!userAccessRights.hasAgreedToLicense){
-						showModalAcceptTermsOfUse();							
-					} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-						showModalContactManager();		
+					gadgets.util.registerOnLoadHandler(init);
+					
+					function init(){
+						space = new openapp.oo.Resource(openapp.param.space());
+						iwcClient = new iwc.Client();
+						iwcClient.connect(iwcCallback);
 					}
-			
-			      // help button click 
 
-			      $('#question').click(function(){
-			        $('#descriptionModal').modal({
-			        keyboard: true
-			          });
-			        }); 
+					function iwcCallback(intent){
+						if(intent.action == "LEARNING_DOCUMENT_SELECTED" ||
+							intent.action == "SHOW_LEARNING_DOCUMENT"){
+							var document = intent.extras;
+							if(document.type == "youtube")
+								showYoutubeVideo(document.contentSpecificData.videoId);
+							if(document.type == "slideshare")
+								showSlideshareSlideshow(document.contentSpecificData.id);
+							if(document.type == "scribd")
+								showScribdDocument(document.contentSpecificData.id, document.contentSpecificData.accessKey, document.description);
+						}
+
+						if(intent.action == "SHOW_YOUTUBE_VIDEO"){
+							showYoutubeVideo(intent.extras.id);
+						}
+
+						if(intent.action == "SHOW_SLIDESHARE_SLIDESHOW"){
+							showSlideshareSlideshow(intent.extras.id);
+						}
+
+						if(intent.action == "SHOW_SCRIBD_DOCUMENT"){
+							showScribdDocument(intent.extras.id, intent.extras.accessKey, intent.extras.description);
+						}
+					}
+
+					function showYoutubeVideo(id){
+						$("#content").empty();
+						//Retrieve video data
+						YouTubeSearch.getVideoDetails(id, function(videoDetails){
+							var title = videoDetails.items[0].snippet.description;
+							var description = videoDetails.items[0].snippet.description;
+							var youtubeTemplate = 	"<div class='well'>" +
+													"<center>" +
+													"<div>" +
+													"<iframe type='text/html' width='480' height='270' src='https://www.youtube.com/embed/" + id + "' " +
+				                                    "frameborder='0' allowfullscreen></iframe>" +
+						                        	"</div>" +
+				                                    "</center>" +
+						                        	"<h4>Description</h4>" +
+						                        	"<p>" +
+						                        		description.replace(/\n/g, "<br>").linkify() +
+						                        	"</p>" +
+						                        	"</div>";
+						    var $youtubeElement = $(youtubeTemplate);
+						    //If the user clicks on a link, open a new tab in the browser
+						    assignLinkClickEvents($youtubeElement);
+						    $("#content").append($youtubeElement);
+						});
+					}
+
+					function showSlideshareSlideshow(id){
+						$("#content").empty();
+						SlideShareSearch.getSlideshowDetails(id, function(slideshowDetails){
+							var description = slideshowDetails.Slideshow.Description;
+							if(!description)
+								description = "No description available.";
+							var slideshowTemplate =	"<div class='well'>" +
+													"<center>" +
+													slideshowDetails.Slideshow.Embed +
+				                                    "</center>" +
+						                        	"<h4>Description</h4>" +
+						                        	"<p>" +
+						                        		description.replace(/\n/g, "<br>").linkify() +
+						                        	"</p>" +
+						                        	"</div>";
+
+						    var $slideShowElement = $(slideshowTemplate);
+		                	//If the user clicks on a link, open a new tab in the browser
+						    assignLinkClickEvents($slideShowElement);
+						    $("#content").append($slideShowElement);
+						});
+					}
+
+					function showScribdDocument(id, accessKey, description){
+						$("#content").empty();
+						var scribdTemplate = 	"<div class='well'>" +
+												"<div id='scribdContainer'>" +
+			                                    "</div>" +
+					                        	"<h4>Description</h4>" +
+					                        	"<p>" +
+					                        		description.replace(/\n/g, "<br>").linkify() +
+					                        	"</p>" +
+					                        	"</div>";
+					    
+					    var $scribdElement = $(scribdTemplate);
+					    //If the user clicks on a link, open a new tab in the browser
+					    assignLinkClickEvents($scribdElement);
+					    $("#content").append($scribdElement);
+					    
+					    var scribd_doc = scribd.Document.getDoc(id, accessKey);
+						scribd_doc.addParam('jsapi_version', 2);
+						scribd_doc.write('scribdContainer');
+					}
+
+					function assignLinkClickEvents(element){
+						element.find('a').click(function(e){
+					    	var url = $(this).attr("href");
+					    	window.open(url,'_blank');
+					    	//Prevent default click behaviour which opens the link inside the widget
+					    	e.preventDefault();
+					    });
+					}
+
+					$(function(){
+
+					// Get the access rights: 
+						retrieveAccessRights(function(accessRights){
+						 userAccessRights = accessRights.getUserAccessRights();
+							
+							//Check if user has agreed to license
+			
+							if(!userAccessRights.hasAgreedToLicense){
+								showModalAcceptTermsOfUse();							
+							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
+								showModalContactManager();		
+							}
+					
+					      // help button click 
+
+					      $('#question').click(function(){
+					        $('#descriptionModal').modal({
+					        keyboard: true
+					          });
+					        }); 
+					});
+				});
 			});
 		});
-
-
 
 		</script>
 

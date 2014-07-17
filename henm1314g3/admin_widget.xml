@@ -54,20 +54,19 @@
 
     require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
       require( [
-          "jquery",
           "async",
+          "rivets",
+          "jquery",
           "bootstrap",
-          "bootShared",
           "EmployeeManager",
           "spin",
           "ladda",
           "BCNManager",
           "iwc",
-          "rivets",
           "repositories",
           "ConfigManager"
-          ], function() {
-
+          ], function(a,rivets) {
+            async = a;
 
             var space;
             var iwcClient;

@@ -41,11 +41,10 @@
 			
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"async",
 			    "jquery",
-			    "async",
 			    "bootstrap",
 			    "bootstrapSlider",
-			    "bootShared",
 			    "EmployeeManager",
 			    "bootbox",
 			    "spin",
@@ -55,8 +54,8 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager"
-			    ], function() {
-
+			    ], function(a) {
+			    	async = a;
 					var space;
 					var iwcClient;
 					var userList;
