@@ -25,294 +25,299 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_youtube.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_slideshare.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_scribd.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify.js" type="text/javascript"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/rivets.min.js" type="text/javascript"></script>
     	<script src="https://apis.google.com/js/client.js?onload=onYouTubeClientLoad" type="text/javascript"></script>
-    	<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-
- 		<!-- Config stuff -->
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
- 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
-
-
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
 
 		<!-- Define CSS -->
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
 		<script>
-		var userAccessRights; 
-		var userList;
-		//Globals
-		var ITEMS_PER_PAGE = 5;
-		var NUM_PAGES = 5;
-		var ITEMS_PER_SEARCH = ITEMS_PER_PAGE * NUM_PAGES;
-		var repositories = [];
-		var model = {};
-		model.selectedRepository = {};
-		model.repositories = repositories;
-		model.config = {};
-		var iwcClient;
-		var config;
-		var space;
-		var searchResultEntryTemplate =    	"<a href='#' class='list-group-item' style='min-height:150px;'>" +
-			    								"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
-			    								"<h4>#title</h4>" +
-	    										"<p>" +
-	    											"#description" +
-	    										"</p>" +
-	    									"</a>";
+			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"async",
+				"rivets",
+			    "jquery",
+			    "search_youtube",
+			    "search_slideshare",
+			    "search_scribd",
+			    "linkify",
+			    "bootstrap",
+			    "bootbox",
+			    "AccessRightsManager",
+			    "ConfigManager",
+			    "repositories",
+			    "UserManager",
+			    "iwc"
+			    ], function(a, rivets) {
+			    	async = a;
 
-		gadgets.util.registerOnLoadHandler(init);
 
-		function init(){
+					var userAccessRights; 
+					var userList;
+					//Globals
+					var ITEMS_PER_PAGE = 5;
+					var NUM_PAGES = 5;
+					var ITEMS_PER_SEARCH = ITEMS_PER_PAGE * NUM_PAGES;
+					var repositories = [];
+					var model = {};
+					model.selectedRepository = {};
+					model.repositories = repositories;
+					model.config = {};
+					var iwcClient;
+					var config;
+					var space;
+					var searchResultEntryTemplate =    	"<a href='#' class='list-group-item' style='min-height:150px;'>" +
+						    								"<img style='margin-right:10px; height:100px;' class='pull-left' src='#imageURL' alt=''>" +
+						    								"<h4>#title</h4>" +
+				    										"<p>" +
+				    											"#description" +
+				    										"</p>" +
+				    									"</a>";
 
-			space = new openapp.oo.Resource(openapp.param.space());
-			iwcClient = new iwc.Client();
-			iwcClient.connect(iwcCallback);
-			retrieveConfig(space, function(configObject){
-				model.config = configObject;
-				//Add new repositories here
-				addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
-				addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
-				addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
-				
-				for(var i = 0; i < repositories.length; i++){
-					if(repositories[i].isEnabled){
-						repositories[i].activate();
-						break;
+					gadgets.util.registerOnLoadHandler(init);
+
+					function init(){
+
+						space = new openapp.oo.Resource(openapp.param.space());
+						iwcClient = new iwc.Client();
+						iwcClient.connect(iwcCallback);
+						retrieveConfig(space, function(configObject){
+							model.config = configObject;
+							//Add new repositories here
+							addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
+							addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
+							addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
+							
+							for(var i = 0; i < repositories.length; i++){
+								if(repositories[i].isEnabled){
+									repositories[i].activate();
+									break;
+								}
+							}
+			     		});
 					}
-				}
-     		});
-		}
 
-		function addRepository(repository){
-			var newRepository = {};
-			newRepository.activate = function(){
-				model.selectedRepository.isActive = false;
-				newRepository.isActive = true;
-				model.selectedRepository = newRepository;
+					function addRepository(repository){
+						var newRepository = {};
+						newRepository.activate = function(){
+							model.selectedRepository.isActive = false;
+							newRepository.isActive = true;
+							model.selectedRepository = newRepository;
 
-			}
-			newRepository.index = repositories.length;
-			newRepository.searchFunctions = repository;
-			newRepository.currentPageIndex = 0;
-			newRepository.pageOffset = 1;
-			newRepository.searchResults = [];
-			newRepository.visibleResults = [];
-			newRepository.hasNextPage = false;
-			newRepository.hasPrevPage = false;
-			newRepository.hasResults = false;
-			newRepository.searching = false;
-			for(var i = 0; i < model.config.repositorySelection.length; i++){
-				var selection = model.config.repositorySelection[i];
-				if(selection.name == repository.name)
-					newRepository.isEnabled = selection.isSelected;
-			}
-			newRepository.isActive = false;
+						}
+						newRepository.index = repositories.length;
+						newRepository.searchFunctions = repository;
+						newRepository.currentPageIndex = 0;
+						newRepository.pageOffset = 1;
+						newRepository.searchResults = [];
+						newRepository.visibleResults = [];
+						newRepository.hasNextPage = false;
+						newRepository.hasPrevPage = false;
+						newRepository.hasResults = false;
+						newRepository.searching = false;
+						for(var i = 0; i < model.config.repositorySelection.length; i++){
+							var selection = model.config.repositorySelection[i];
+							if(selection.name == repository.name)
+								newRepository.isEnabled = selection.isSelected;
+						}
+						newRepository.isActive = false;
 
-			var updateVisibleResults = function(){
-				newRepository.visibleResults = [];
-				var maxIndex = newRepository.currentPageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE;
-				if (maxIndex > newRepository.searchResults.length)
-					maxIndex = newRepository.searchResults.length;
-				for(var i = newRepository.currentPageIndex * ITEMS_PER_PAGE; 
-					i < maxIndex; i++){
-					newRepository.visibleResults.push(newRepository.searchResults[i]);
-				}
-			};
+						var updateVisibleResults = function(){
+							newRepository.visibleResults = [];
+							var maxIndex = newRepository.currentPageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE;
+							if (maxIndex > newRepository.searchResults.length)
+								maxIndex = newRepository.searchResults.length;
+							for(var i = newRepository.currentPageIndex * ITEMS_PER_PAGE; 
+								i < maxIndex; i++){
+								newRepository.visibleResults.push(newRepository.searchResults[i]);
+							}
+						};
 
-			var createPage =  function(index, offset){
-				var page = {};
-				page.index = index;
-				page.value = index + offset;
-				page.isSelected = (index==0);
-				page.click = function(event, model){
-					newRepository.currentPageIndex = page.index;
-					page.isSelected = true;
-					for(var i = 0; i < newRepository.pages.length; i++){
-						if(i != page.index)
-							newRepository.pages[i].isSelected = false;
+						var createPage =  function(index, offset){
+							var page = {};
+							page.index = index;
+							page.value = index + offset;
+							page.isSelected = (index==0);
+							page.click = function(event, model){
+								newRepository.currentPageIndex = page.index;
+								page.isSelected = true;
+								for(var i = 0; i < newRepository.pages.length; i++){
+									if(i != page.index)
+										newRepository.pages[i].isSelected = false;
+								}
+								updateVisibleResults();
+								$("#content").animate({ scrollTop: 0 }, "fast");
+							}
+							return page;
+						}
+
+						var updatePagination = function(){
+							newRepository.pages = [];
+							for(var i = 0; i < NUM_PAGES ; i++){
+								newRepository.pages.push(createPage(i, newRepository.pageOffset));
+							}
+						};
+
+						newRepository.nextResultsPage = function(){
+							this.searching = true;
+							this.visibleResults = [];
+							newRepository.searchFunctions.nextResultsPage(function(results){
+								newRepository.pageOffset += ITEMS_PER_PAGE;
+								newRepository.initNewResults(results);
+								newRepository.searching = false;
+								$("#content").animate({ scrollTop: 0 }, "fast");
+							});
+						}
+						newRepository.prevResultsPage = function(){
+							this.searching = true;
+							this.visibleResults = [];
+							newRepository.searchFunctions.prevResultsPage(function(results){
+								newRepository.pageOffset -= ITEMS_PER_PAGE;
+								newRepository.initNewResults(results);
+								newRepository.searching = false;
+								$("#content").animate({ scrollTop: 0 }, "fast");
+							});
+						}
+
+						newRepository.initNewResults = function(results){
+							for(var i = 0; i < results.length; i ++){
+								results[i] = processResult(results[i]);
+							}
+							newRepository.searchResults = results;
+							newRepository.currentPageIndex = 0;
+							newRepository.hasPrevPage = newRepository.searchFunctions.hasPrevPage();
+							newRepository.hasNextPage = newRepository.searchFunctions.hasNextPage();
+							newRepository.hasResults = (results.length > 0);
+							updatePagination();
+							updateVisibleResults();
+						}
+
+						var processResult = function(result){
+							//Add a click event to the result which sends a "learning document selected" message
+							//to other widgets.
+							result.click = function(){
+								publishLearningDocumentSelected(result);
+							}
+							
+							//Shorten the description of the result if it is too long
+							var maxDescriptionLength = 500;
+							if(result.description.length > maxDescriptionLength){
+								result.description = result.description.substring(0, maxDescriptionLength) + "...";
+							}
+
+							return result;
+						}
+						newRepository.search = function(query, callback){
+							this.searching = true;
+							this.visibleResults = [];
+							newRepository.searchFunctions.search(query, function(results){
+								newRepository.searching = false;
+								newRepository.pageOffset = 1;
+								newRepository.initNewResults(results);
+							});
+						}
+
+						newRepository.initNewResults([]);
+
+						//alert(JSON.stringify(newRepository));
+						
+						repositories.push(newRepository);
 					}
-					updateVisibleResults();
-					$("#content").animate({ scrollTop: 0 }, "fast");
-				}
-				return page;
-			}
 
-			var updatePagination = function(){
-				newRepository.pages = [];
-				for(var i = 0; i < NUM_PAGES ; i++){
-					newRepository.pages.push(createPage(i, newRepository.pageOffset));
-				}
-			};
+					function iwcCallback(intent){
+						if (intent.action == "CONFIG_CHANGE"){
 
-			newRepository.nextResultsPage = function(){
-				this.searching = true;
-				this.visibleResults = [];
-				newRepository.searchFunctions.nextResultsPage(function(results){
-					newRepository.pageOffset += ITEMS_PER_PAGE;
-					newRepository.initNewResults(results);
-					newRepository.searching = false;
-					$("#content").animate({ scrollTop: 0 }, "fast");
-				});
-			}
-			newRepository.prevResultsPage = function(){
-				this.searching = true;
-				this.visibleResults = [];
-				newRepository.searchFunctions.prevResultsPage(function(results){
-					newRepository.pageOffset -= ITEMS_PER_PAGE;
-					newRepository.initNewResults(results);
-					newRepository.searching = false;
-					$("#content").animate({ scrollTop: 0 }, "fast");
-				});
-			}
+						}
+						
+					}
 
-			newRepository.initNewResults = function(results){
-				for(var i = 0; i < results.length; i ++){
-					results[i] = processResult(results[i]);
-				}
-				newRepository.searchResults = results;
-				newRepository.currentPageIndex = 0;
-				newRepository.hasPrevPage = newRepository.searchFunctions.hasPrevPage();
-				newRepository.hasNextPage = newRepository.searchFunctions.hasNextPage();
-				newRepository.hasResults = (results.length > 0);
-				updatePagination();
-				updateVisibleResults();
-			}
+					function publishLearningDocumentSelected(learningDocument){
+						var intent = {
+							component: "",
+							data: "",
+							dataType: "text/json",
+							action: "LEARNING_DOCUMENT_SELECTED",
+							extras: learningDocument
+						};
 
-			var processResult = function(result){
-				//Add a click event to the result which sends a "learning document selected" message
-				//to other widgets.
-				result.click = function(){
-					publishLearningDocumentSelected(result);
-				}
+						iwcClient.publish(intent);
+					}
+
+					$(function(){
+
+						
+						// Get the access rights: 
+							retrieveAccessRights(function(accessRights){
+								userAccessRights = accessRights.getUserAccessRights();
+								
+								//Check if user has agreed to license
 				
-				//Shorten the description of the result if it is too long
-				var maxDescriptionLength = 500;
-				if(result.description.length > maxDescriptionLength){
-					result.description = result.description.substring(0, maxDescriptionLength) + "...";
-				}
+									if(!userAccessRights.hasAgreedToLicense){
+									showModalAcceptTermsOfUse();							
+								} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
+									showModalContactManager();		
+								}	
 
-				return result;
-			}
-			newRepository.search = function(query, callback){
-				this.searching = true;
-				this.visibleResults = [];
-				newRepository.searchFunctions.search(query, function(results){
-					newRepository.searching = false;
-					newRepository.pageOffset = 1;
-					newRepository.initNewResults(results);
-				});
-			}
+								});  // end of the retrieveAccessRights
 
-			newRepository.initNewResults([]);
+						rivets.binders.highlight = function(el, value){
+							if(value)
+								$(el).addClass("active");
+							else
+								$(el).removeClass("active");
+						}
 
-			//alert(JSON.stringify(newRepository));
-			
-			repositories.push(newRepository);
-		}
+						rivets.binders.enable = function(el, value){
+							if(value)
+								$(el).removeClass("disabled");
+							else
+								$(el).addClass("disabled");
 
-		function iwcCallback(intent){
-			if (intent.action == "CONFIG_CHANGE"){
+							console.log($(el).find("input").text());
+						}
 
-			}
-			
-		}
+						rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
+						rivets.bind($("#resultsList").get(), {model:model});
+						rivets.bind($("#pagination").get(),  {model:model});
+						rivets.bind($("#progressbar").get(),  {model:model});
 
-		function publishLearningDocumentSelected(learningDocument){
-			var intent = {
-				component: "",
-				data: "",
-				dataType: "text/json",
-				action: "LEARNING_DOCUMENT_SELECTED",
-				extras: learningDocument
-			};
+						 // help button click 
 
-			iwcClient.publish(intent);
-		}
-
-		$(function(){
-
-			
-			// Get the access rights: 
-				retrieveAccessRights(function(accessRights){
-					userAccessRights = accessRights.getUserAccessRights();
-					
-					//Check if user has agreed to license
-	
-						if(!userAccessRights.hasAgreedToLicense){
-						showModalAcceptTermsOfUse();							
-					} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-						showModalContactManager();		
-					}	
-
-					});  // end of the retrieveAccessRights
-
-			rivets.binders.highlight = function(el, value){
-				if(value)
-					$(el).addClass("active");
-				else
-					$(el).removeClass("active");
-			}
-
-			rivets.binders.enable = function(el, value){
-				if(value)
-					$(el).removeClass("disabled");
-				else
-					$(el).addClass("disabled");
-
-				console.log($(el).find("input").text());
-			}
-
-			rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
-			rivets.bind($("#resultsList").get(), {model:model});
-			rivets.bind($("#pagination").get(),  {model:model});
-			rivets.bind($("#progressbar").get(),  {model:model});
-
-			 // help button click 
-
-    	  $('#question').click(function(){
-        	$('#descriptionModal').modal({
-        		keyboard: true
-          	});
-        	}); 
+			    	  $('#question').click(function(){
+			        	$('#descriptionModal').modal({
+			        		keyboard: true
+			          	});
+			        	}); 
 
 
-			$("#search_button").click(function(){
-				model.selectedRepository.search($("#search_field").val(), function(){
-					
+						$("#search_button").click(function(){
+							model.selectedRepository.search($("#search_field").val(), function(){
+								
+							});
+						});
+
+						$("#search_field").keypress(function(event){
+							if(event.which == 13){
+								model.selectedRepository.search($("#search_field").val(), function(){
+								
+							});
+							}
+						});
+					});
+
+					function renderSearchProgressBar(){
+							var progressBar =       "<div class='progress progress-striped active'>" +
+					                                    "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
+					                                        "<span>Searching...</span>" +
+					                                    "</div>" +
+					                                "</div>";
+					        $("#resultsFooter").empty();
+					        $("#resultsFooter").append(progressBar);
+					}
 				});
 			});
-
-			$("#search_field").keypress(function(event){
-				if(event.which == 13){
-					model.selectedRepository.search($("#search_field").val(), function(){
-					
-				});
-				}
-			});
-		});
-
-		function renderSearchProgressBar(){
-				var progressBar =       "<div class='progress progress-striped active'>" +
-		                                    "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
-		                                        "<span>Searching...</span>" +
-		                                    "</div>" +
-		                                "</div>";
-		        $("#resultsFooter").empty();
-		        $("#resultsFooter").append(progressBar);
-		}
 
 
 		</script>

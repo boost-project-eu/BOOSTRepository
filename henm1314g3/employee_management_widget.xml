@@ -38,6 +38,8 @@
 
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"async",
+				"ractive",
 			    "jquery",
 			    "bootstrap",
 			    "bootstrapSlider",
@@ -46,13 +48,12 @@
 			    "bootbox",
 			    "spin",
 			    "ladda",
-			    "ractive",
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager"
-			    ], function() {
-			
+			    ], function(a, Ractive) {
+					async = a;			
 					var space;
 					var employeeList;
 					var bcnList;

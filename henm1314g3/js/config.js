@@ -15,8 +15,11 @@ require.config({
         repositories: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories",
         search_youtube: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_youtube",
         search_slideshare: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_slideshare",
+        search_scribd: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_scribd",
         linkify: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify",
         scribd_api: "http://www.scribd.com/javascripts/scribd_api",
+        highcharts: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/highcharts",
+        highcharts_exporting: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/modules/exporting",
 
         UserManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager",       
         BCNManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager",
