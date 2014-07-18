@@ -49,8 +49,9 @@
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc"
-			    ], function(a, Highcharts) {
+			    ], function(a, highCharts) {
 			    	async = a;
+			    	Highcharts =  highCharts;
 
 					var userAccessRights; 
 					var userList;
