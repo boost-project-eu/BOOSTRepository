@@ -61,6 +61,13 @@ require.config({
         },
         boostShared: {
             deps: ['async']
+        },
+        highcharts: {
+               exports: "Highcharts",
+                deps: ['jquery'] 
+        },
+        highcharts_exporting: {
+               deps: ['highcharts']
         }
     }
 

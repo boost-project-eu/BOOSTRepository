@@ -40,6 +40,7 @@
 			require( [
 				"async",
 				"ractive",
+				"ladda",
 			    "jquery",
 			    "bootstrap",
 			    "bootstrapSlider",
@@ -47,12 +48,11 @@
 			    "EmployeeManager",
 			    "bootbox",
 			    "spin",
-			    "ladda",
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager"
-			    ], function(a, Ractive) {
+			    ], function(a, Ractive, Ladda) {
 					async = a;			
 					var space;
 					var employeeList;
@@ -68,14 +68,13 @@
 					var ractiveDeleteEmployee;
 					var ractiveSetLIEmployee;
 					
-					gadgets.util.registerOnLoadHandler(init);
+		//			gadgets.util.registerOnLoadHandler(init);
 					
-					function init(){
+		//			function init(){
 						space = new openapp.oo.Resource(openapp.param.space());
-
 						iwcClient = new iwc.Client();
 						iwcClient.connect(iwcCallback);
-					}
+		//			}
 
 					function iwcCallback(intent){
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){

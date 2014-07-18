@@ -38,24 +38,27 @@
 
 		<!-- JavaScript Block -->
 		<script>
+	
 			
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
 				"async",
+				 "bootbox",
+				 "ractive",
 			    "jquery",
 			    "bootstrap",
-			    "bootstrapSlider",
+	//		    "bootstrapSlider",
 			    "EmployeeManager",
-			    "bootbox",
 			    "spin",
 			    "ladda",
-			    "ractive",
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager"
-			    ], function(a) {
+			    ], function(a, b, r) {
 			    	async = a;
+			    	bootbox = b;
+			    	Ractive = r;
 					var space;
 					var iwcClient;
 					var userList;
@@ -65,16 +68,19 @@
 
 					//Define the ractives as globals
 					var ractiveOverview;
-					
-					gadgets.util.registerOnLoadHandler(init);
-					
-					function init(){
-						space = new openapp.oo.Resource(openapp.param.space());
 
+		//				function init(){
+
+						space = new openapp.oo.Resource(openapp.param.space());
+						console.log(space);
 						iwcClient = new iwc.Client();
 						iwcClient.connect(iwcCallback);
 
-					}
+		//			}
+					
+			//		gadgets.util.registerOnLoadHandler(init);
+				
+									
 
 					function iwcCallback(intent){
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
@@ -123,10 +129,12 @@
 					}
 
 					$(function(){
+
 						retrieveAllUsers(space, function(users){
 							retrieveAccessRights(function(access){
 								retrieveAllEmployees(space, function(employees){
 									retrieveAllBcns(space, function(bcns){
+
 										userList = users;
 										accessRights = access;
 										employeesList = employees;

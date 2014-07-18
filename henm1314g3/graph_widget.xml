@@ -79,10 +79,10 @@
 					var isEmployeeGraph={};
 					var isDetailedGraph={};
 					
-					gadgets.util.registerOnLoadHandler(init);
+		//			gadgets.util.registerOnLoadHandler(init);
 
 					
-					function init(){
+		//			function init(){
 
 						space = new openapp.oo.Resource(openapp.param.space());
 						iwcClient = new iwc.Client();
@@ -117,7 +117,7 @@
 								});
 							});		
 						});
-					}
+		//			}
 
 					function iwcCallback(intent){
 						if (!check){
@@ -813,7 +813,7 @@
 								var liEndList=[];
 
 								var li = bcn.learningIndicators[j];
-							//	var cont=0;
+								var cont=0;
 
 								for (var k = 0; k<employees.length; k++){
 									var employee = employees[k];
