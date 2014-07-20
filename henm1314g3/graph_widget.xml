@@ -28,7 +28,6 @@
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
     	
 
 		<!-- Define CSS -->		

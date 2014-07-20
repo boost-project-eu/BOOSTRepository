@@ -68,7 +68,13 @@ require.config({
         },
         highcharts_exporting: {
                deps: ['highcharts']
-        }
+        },
+        bootstrap: {
+            deps: ['jquery']
+        },
+        jqueryUi: {
+            deps: ['jquery']
+        } 
     }
 
 });
