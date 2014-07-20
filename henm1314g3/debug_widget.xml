@@ -43,16 +43,16 @@
 				
 					var space;
 					
-					gadgets.util.registerOnLoadHandler(init);
+					//gadgets.util.registerOnLoadHandler(init);
 					
-					function init(){
+					//function init(){
 						
 						/*
 							Here we get the space resource.
 							It is the top level resource which is shared by all users.
 						*/
-						space = new openapp.oo.Resource(openapp.param.space());
-					}
+					space = new openapp.oo.Resource(openapp.param.space());
+					//}
 
 					$(function(){
 						$("#deleteAllSpaceResourcesButton").click(function(){

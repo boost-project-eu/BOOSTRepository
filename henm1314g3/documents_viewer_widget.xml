@@ -60,13 +60,13 @@
 					var userList;
 					var space;
 					
-					gadgets.util.registerOnLoadHandler(init);
+					//gadgets.util.registerOnLoadHandler(init);
 					
-					function init(){
-						space = new openapp.oo.Resource(openapp.param.space());
-						iwcClient = new iwc.Client();
-						iwcClient.connect(iwcCallback);
-					}
+					//function init(){
+					space = new openapp.oo.Resource(openapp.param.space());
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
 
 					function iwcCallback(intent){
 						if(intent.action == "LEARNING_DOCUMENT_SELECTED" ||

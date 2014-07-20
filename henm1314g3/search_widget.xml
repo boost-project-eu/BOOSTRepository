@@ -76,28 +76,28 @@
 				    										"</p>" +
 				    									"</a>";
 
-					gadgets.util.registerOnLoadHandler(init);
+					//gadgets.util.registerOnLoadHandler(init);
 
-					function init(){
+					//function init(){
 
-						space = new openapp.oo.Resource(openapp.param.space());
-						iwcClient = new iwc.Client();
-						iwcClient.connect(iwcCallback);
-						retrieveConfig(space, function(configObject){
-							model.config = configObject;
-							//Add new repositories here
-							addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
-							addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
-							addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
-							
-							for(var i = 0; i < repositories.length; i++){
-								if(repositories[i].isEnabled){
-									repositories[i].activate();
-									break;
-								}
+					space = new openapp.oo.Resource(openapp.param.space());
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					retrieveConfig(space, function(configObject){
+						model.config = configObject;
+						//Add new repositories here
+						addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
+						addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
+						addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
+						
+						for(var i = 0; i < repositories.length; i++){
+							if(repositories[i].isEnabled){
+								repositories[i].activate();
+								break;
 							}
-			     		});
-					}
+						}
+		     		});
+					//}
 
 					function addRepository(repository){
 						var newRepository = {};

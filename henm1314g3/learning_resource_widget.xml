@@ -40,6 +40,7 @@
 			require( [
 				"async",
 				"ractive",
+			    "ladda",
 			    "jquery",
 			    "jqueryUi",
 			    "bootstrap",
@@ -51,12 +52,11 @@
 			    "ConfigManager",
 			    "ExpertsManager",
 			    "WidgetsManager",
-			    "ladda",
 			    "spin",
 			    "tree",
 			    "repositories",
 			    "iwc"
-			    ], function(a, Ractive) {
+			    ], function(a, Ractive, Ladda) {
 			    	async = a;
 			
 					var space;
@@ -72,13 +72,13 @@
 					var WidgetsList = {};
 					
 					
-					gadgets.util.registerOnLoadHandler(init);
-					function init(){
+					//gadgets.util.registerOnLoadHandler(init);
+					//function init(){
 					    
-						space = new openapp.oo.Resource(openapp.param.space());
-						iwcClient = new iwc.Client();
-						iwcClient.connect(iwcCallback);
-					}
+					space = new openapp.oo.Resource(openapp.param.space());
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
 
 					function publishShowLearningDocument(learningDocument){
 						var intent = {

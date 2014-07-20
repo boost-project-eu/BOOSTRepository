@@ -74,13 +74,13 @@
 					var agreed;
 					var accessRights;
 					
-					gadgets.util.registerOnLoadHandler(init);
-					function init(){
+					//gadgets.util.registerOnLoadHandler(init);
+					//function init(){
 					    
-						space = new openapp.oo.Resource(openapp.param.space());
-						iwcClient = new iwc.Client();
-						iwcClient.connect(iwcCallback);
-					}
+					space = new openapp.oo.Resource(openapp.param.space());
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
 
 					$(function(){
 							
