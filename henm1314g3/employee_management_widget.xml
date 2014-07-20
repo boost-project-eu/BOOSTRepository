@@ -41,18 +41,18 @@
 				"async",
 				"ractive",
 				"ladda",
+			    "bootbox",
 			    "jquery",
 			    "bootstrap",
 			    "bootstrapSlider",
 			    "boostShared",
 			    "EmployeeManager",
-			    "bootbox",
 			    "spin",
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager"
-			    ], function(a, Ractive, Ladda) {
+			    ], function(a, Ractive, Ladda, bootbox) {
 					async = a;			
 					var space;
 					var employeeList;

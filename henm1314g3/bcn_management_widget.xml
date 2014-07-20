@@ -42,17 +42,17 @@
 			require( [
 				"async",
 				"ractive",
+			    "ladda",
 			    "jquery",
 			    "bootstrap",
 			    "EmployeeManager",
 			    "bootbox",
 			    "spin",
-			    "ladda",
 			    "BCNManager",
 			    "LearningDocumentsManager",
 			    "AccessRightsManager",
 			    "iwc"
-			    ], function(a, Ractive) {
+			    ], function(a, Ractive, Ladda) {
 			    	async = a;
 
 					var space;
@@ -63,18 +63,18 @@
 					var userList;
 
 					
-					gadgets.util.registerOnLoadHandler(init);
+					//gadgets.util.registerOnLoadHandler(init);
 					
-					function init(){
+					//function init(){
 						/*
 							Here we get the space resource.
 							It is the top level resource which is shared by all users.
 						*/
-						space = new openapp.oo.Resource(openapp.param.space());
+					space = new openapp.oo.Resource(openapp.param.space());
 
-						iwcClient = new iwc.Client();
-						iwcClient.connect(iwcCallback);
-					}
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
 
 					$(function(){
 					
