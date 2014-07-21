@@ -26,7 +26,6 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="https://apis.google.com/js/client.js?onload=onYouTubeClientLoad" type="text/javascript"></script>
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
     	
     	
@@ -65,6 +64,8 @@
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
+					//Init youtube api
+					onYouTubeClientLoad();
 					//}
 
 					function iwcCallback(intent){
