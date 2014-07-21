@@ -76,6 +76,12 @@ require.config({
         jqueryUi: {
             deps: ['jquery']
         },
+        tree: {
+            deps: ['jquery']
+        },
+        rivets: {
+            deps: ['jquery']
+        },
         search_youtube: {
             deps: ['google_api']
         }
