@@ -25,20 +25,7 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
-
-		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
@@ -48,358 +35,379 @@
 
 		<!-- JavaScript Block -->
 		<script>
-			var space;
-			var employeeList;
-			var bcnsList;
-			var iwcClient;
-			var userAccessRights; 
-			var userList;
 
-			
-			gadgets.util.registerOnLoadHandler(init);
-			
-			function init(){
-				/*
-					Here we get the space resource.
-					It is the top level resource which is shared by all users.
-				*/
-				space = new openapp.oo.Resource(openapp.param.space());
+			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"async",
+				"ractive",
+			    "ladda",
+			    "jquery",
+			    "bootstrap",
+			    "EmployeeManager",
+			    "bootbox",
+			    "spin",
+			    "BCNManager",
+			    "LearningDocumentsManager",
+			    "AccessRightsManager",
+			    "iwc"
+			    ], function(a, Ractive, Ladda) {
+			    	async = a;
 
-				iwcClient = new iwc.Client();
-				iwcClient.connect(iwcCallback);
-			}
+					var space;
+					var employeeList;
+					var bcnsList;
+					var iwcClient;
+					var userAccessRights; 
+					var userList;
 
-			$(function(){
-			
-			
-				// Get the access rights: 
-				retrieveAccessRights(function(accessRights){
-				userAccessRights = accessRights.getUserAccessRights();
 					
-					//Check if user has agreed to license
-					//console.log(userAccessRights.hasAgreedToLicense);
-	
-					if(!userAccessRights.hasAgreedToLicense){
-						showModalAcceptTermsOfUse();							
-					} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-						showModalContactManager();		
+					//gadgets.util.registerOnLoadHandler(init);
+					
+					//function init(){
+						/*
+							Here we get the space resource.
+							It is the top level resource which is shared by all users.
+						*/
+					space = new openapp.oo.Resource(openapp.param.space());
+
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
+
+					$(function(){
+					
+					
+						// Get the access rights: 
+						retrieveAccessRights(function(accessRights){
+						userAccessRights = accessRights.getUserAccessRights();
+							
+							//Check if user has agreed to license
+							//console.log(userAccessRights.hasAgreedToLicense);
+			
+							if(!userAccessRights.hasAgreedToLicense){
+								showModalAcceptTermsOfUse();							
+							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
+								showModalContactManager();		
+							}
+
+							//	addBCN and showProgress activities	
+							var ractiveBcnHeader = new Ractive({
+							  el: 'containerBcnOverview',
+							  template: '#templateBcnHeader',
+							  data: {
+							  	accessRights: userAccessRights
+							  },
+							  append: true
+							});
+
+
+						//	Get the list of BCN's
+						retrieveAllBcns(space, function(bcns){
+							bcnsList = bcns;
+							sortBcns(bcnsList);
+							//	Get the list of Employee's
+
+								var ractiveOverview = new Ractive({
+									el: 'containerBcnOverview',
+									template: '#templateBcnOverview',
+									data: { "bcnsList" : bcnsList,
+											"accessRights" : userAccessRights
+											},
+									append: true
+								});		
+
+						//	Add new BCN ractive	
+
+								var ractiveAddBcn = new Ractive({
+								  	el: 'containerBcnAdd',
+								  	template: '#bcnAddEditTemplate',
+								  	data: { "bcn" : new BCN({}),
+								    	"priorityArray" : priorityArray,
+								    	"bcnsList" : bcnsList,
+								    	"nameError" : false
+								    },
+								    append: true
+								});
+
+							ractiveBcnHeader.on({
+								showOverallProgress: function ( event ) {
+									publishShowOverallBcnProgress();
+								},
+								addNewBcn: function ( event ) {
+									// Show addBcnModal on click on addNewBcnButton 
+									var newBcn = new BCN({});
+									ractiveAddBcn.set("bcn", newBcn);
+									ractiveAddBcn.set("nameError", false);
+									$("#addBcnModal").modal();		
+								},
+								showHelpAddBcn: function( event ){
+									$('.tooltip-addBCN').tooltip();
+									
+								},
+								showHelpShowOverallProgress: function (event){
+									$('.tooltip-showOverallProgress').tooltip();
+								},
+								showHelpForHelp: function (event){
+									$('.tooltip-showHelp').tooltip();
+								},
+								showHelp: function(event){
+									$('#descriptionModal').modal({
+										keyboard: true
+									});
+
+								}
+							});
+
+							//Inside the addBcnModal		
+							
+								// Add LI to BCN on click on addLI button	
+							ractiveAddBcn.on("removeLI", function(event){
+								var li = event.context;
+								var bcn = this.get("bcn");
+								bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+							});
+
+							ractiveAddBcn.on("addLI", function(event){
+								this.get('bcn').addLI("");
+							});
+
+							ractiveAddBcn.on("saveBCN", function(event){
+								var bcnToAdd = this.get('bcn');
+								var saveButton = event.node;
+
+								var l = Ladda.create(saveButton);
+								l.start();
+
+								bcnToAdd.create(function(){
+									retrieveAllEmployees(space, function(employees){
+										//We need to update all employees
+										for(var i = 0; i < employees.length; i++){
+											var employee = employees[i];
+											ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
+										}
+
+										var updateEmployee = function(employee, done){
+											employee.update(function(){
+												done();
+											});
+										}
+										async.forEach(employees, updateEmployee, function(){
+											publishBcnCreated(bcnToAdd.uri);
+											bcnsList.push(bcnToAdd);
+											sortBcns(bcnsList);
+											l.stop();
+											$('#addBcnModal').modal("hide");
+										});
+									});
+								});
+								//Why do we need this? If we do not call it we get an error for some reason:
+								//It's like onClick (off)
+								event.original.preventDefault();
+							});
+
+					
+						//	BCN Edit
+								var ractiveEditBcn = new Ractive({
+									el: 'containerBcnEdit',
+								    template: '#bcnAddEditTemplate',
+								    data: { "bcn" : new BCN({}),
+								    		"originalBcn" : new BCN({}),
+								    		"priorityArray" : priorityArray,
+								    		"bcnsList" : bcnsList},
+								    append: true
+								});
+
+							//Inside the editBcnModal
+							// Show editBcnModal on click editBcnModal button 
+								ractiveOverview.on('edit', function ( event ) {
+									ractiveEditBcn.set("originalBcn", event.context);
+									ractiveEditBcn.set("bcn", event.context.clone());
+									$('#editBcnModal').modal();
+								});
+
+
+								ractiveEditBcn.on("addLI", function(event){
+									this.get('bcn').addLI("");
+								});
+
+								ractiveEditBcn.on("removeLI", function(event){
+									var li = event.context;
+									var bcn = this.get("bcn");
+									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+								});
+
+								ractiveEditBcn.on("saveBCN", function(event){
+									var bcnToEdit = this.get('bcn');
+									var saveButton = event.node;
+									var originalBcn = this.get("originalBcn");
+
+									var l = Ladda.create(saveButton);
+									l.start();
+
+									bcnToEdit.update(function(){
+										retrieveAllEmployees(space, function(employees){
+											//We need to update all employees
+											for(var i = 0; i < employees.length; i++){
+												var employee = employees[i];
+												ensureEmplyoeeBCNConsistency(employee, [bcnToEdit], []);
+											}
+
+											var updateEmployee = function(employee, done){
+												employee.update(function(){
+													done();
+												});
+											}
+											async.forEach(employees, updateEmployee, function(){
+												publishBcnUpdated(bcnToEdit.uri);
+												
+												bcnsList[bcnsList.indexOf(originalBcn)] = bcnToEdit;
+												sortBcns(bcnsList);
+												ractiveOverview.update();
+												l.stop();
+												$('#editBcnModal').modal("hide");
+											});
+										});
+									});
+								});
+
+					
+						//	Delete BCN	
+								var ractiveDeleteBcn = new Ractive({
+									el: 'containerBcnDelete',
+									template: '#deleteBcnTemplate',
+								    data: { 
+								    	"bcn" : null
+								    },
+								    append: true
+								});
+
+
+								ractiveDeleteBcn.on("deleteBCN", function(event){
+									var bcn = this.get("bcn");
+									var deleteButton = event.node;
+
+									var l = Ladda.create(deleteButton);
+									l.start();
+									bcn.delete(function(){
+										bcnsList.splice(bcnsList.indexOf(bcn),1);
+										publishBcnDeleted(bcn.uri);
+
+										//Hide the loading indicator of the delete button
+										l.stop();
+										$("#deleteBcnModal").modal("hide");
+
+									});
+							});
+
+
+							//	Show BCN graph on click on "graph" button
+
+								ractiveOverview.on({
+									graphShow: function ( event ) {
+									var bcnIndex = bcnsList.indexOf(event.context);
+									publishShowBcnProgress(bcnsList[bcnIndex].uri);
+								},
+									delete: function ( event ) {
+									ractiveDeleteBcn.set("bcn", event.context);
+									$('#deleteBcnModal').modal();
+								},
+									showHelpGoalGraph: function ( event ) {
+									$('.tooltip-showGoalProgress').tooltip();
+
+								}, 
+									showHelpDeleteGoal: function ( event ) {
+									$('.tooltip-deleteGoal').tooltip();
+								},
+									showHelpEditGoal: function ( event ) {
+									$('.tooltip-editGoal').tooltip();
+								},
+									showHelpOptions: function ( event ) {
+									$('.tooltip-showOptions').tooltip();	
+								}
+
+							});
+								$("#loadingBcnText").addClass("hidden");
+
+								//Setup validation
+
+							});
+						});  // end of the retrieveAccessRights
+
+					});
+
+					function iwcCallback(intent){
+						if(intent.action == "EMPLOYEE_CREATE"){
+							
+						}
 					}
 
-					//	addBCN and showProgress activities	
-					var ractiveBcnHeader = new Ractive({
-					  el: 'containerBcnOverview',
-					  template: '#templateBcnHeader',
-					  data: {
-					  	accessRights: userAccessRights
-					  },
-					  append: true
-					});
+					function publishBcnCreated(bcnUri){
+						var intent = {
+							component: "",
+							data: bcnUri,
+							dataType: "text/json",
+							flags :["PUBLISH_GLOBAL"],
+							action: "BCN_CREATE"
+						};
 
+						iwcClient.publish(intent);
+					}
 
-				//	Get the list of BCN's
-				retrieveAllBcns(space, function(bcns){
-					bcnsList = bcns;
-					sortBcns(bcnsList);
-					//	Get the list of Employee's
+					function publishBcnUpdated(bcnUri){
+						var intent = {
+							component: "",
+							data: bcnUri,
+							dataType: "text/json",
+							flags :["PUBLISH_GLOBAL"],
+							action: "BCN_UPDATE"
+						};
 
-						var ractiveOverview = new Ractive({
-							el: 'containerBcnOverview',
-							template: '#templateBcnOverview',
-							data: { "bcnsList" : bcnsList,
-									"accessRights" : userAccessRights
-									},
-							append: true
-						});		
+						iwcClient.publish(intent);
+					}
 
-				//	Add new BCN ractive	
+					function publishBcnDeleted(bcnUri){
+						var intent = {
+							component: "",
+							data: bcnUri,
+							dataType: "text/json",
+							flags :["PUBLISH_GLOBAL"],
+							action: "BCN_DELETE"
+						};
 
-						var ractiveAddBcn = new Ractive({
-						  	el: 'containerBcnAdd',
-						  	template: '#bcnAddEditTemplate',
-						  	data: { "bcn" : new BCN({}),
-						    	"priorityArray" : priorityArray,
-						    	"bcnsList" : bcnsList,
-						    	"nameError" : false
-						    },
-						    append: true
-						});
+						iwcClient.publish(intent);
+					}
 
-					ractiveBcnHeader.on({
-						showOverallProgress: function ( event ) {
-							publishShowOverallBcnProgress();
-						},
-						addNewBcn: function ( event ) {
-							// Show addBcnModal on click on addNewBcnButton 
-							var newBcn = new BCN({});
-							ractiveAddBcn.set("bcn", newBcn);
-							ractiveAddBcn.set("nameError", false);
-							$("#addBcnModal").modal();		
-						},
-						showHelpAddBcn: function( event ){
-							$('.tooltip-addBCN').tooltip();
-							
-						},
-						showHelpShowOverallProgress: function (event){
-							$('.tooltip-showOverallProgress').tooltip();
-						},
-						showHelpForHelp: function (event){
-							$('.tooltip-showHelp').tooltip();
-						},
-						showHelp: function(event){
-							$('#descriptionModal').modal({
-								keyboard: true
-							});
+					function publishShowBcnProgress(bcnUri){
+						var intent = {
+							component: "",
+							data: bcnUri,
+							dataType: "text/json",
+							action: "SHOW_BCN_PROGRESS"
+						};
 
-						}
-					});
+						iwcClient.publish(intent);
+					}
 
-					//Inside the addBcnModal		
-					
-						// Add LI to BCN on click on addLI button	
-					ractiveAddBcn.on("removeLI", function(event){
-						var li = event.context;
-						var bcn = this.get("bcn");
-						bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
-					});
+					function publishShowOverallBcnProgress(){
+						var intent = {
+							component: "",
+							data: "",
+							dataType: "text/json",
+							action: "SHOW_OVERALL_BCN_PROGRESS"
+						};
 
-					ractiveAddBcn.on("addLI", function(event){
-						this.get('bcn').addLI("");
-					});
+						iwcClient.publish(intent);
+					}
 
-					ractiveAddBcn.on("saveBCN", function(event){
-						var bcnToAdd = this.get('bcn');
-						var saveButton = event.node;
+					function checkInputBcn(bcn, ractive){
+						var nameError = (bcn.name == "");
+						ractive.set("nameError", nameError);
 
-						var l = Ladda.create(saveButton);
-						l.start();
+						return !nameError;
+					}
 
-						bcnToAdd.create(function(){
-							retrieveAllEmployees(space, function(employees){
-								//We need to update all employees
-								for(var i = 0; i < employees.length; i++){
-									var employee = employees[i];
-									ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
-								}
-
-								var updateEmployee = function(employee, done){
-									employee.update(function(){
-										done();
-									});
-								}
-								async.forEach(employees, updateEmployee, function(){
-									publishBcnCreated(bcnToAdd.uri);
-									bcnsList.push(bcnToAdd);
-									sortBcns(bcnsList);
-									l.stop();
-									$('#addBcnModal').modal("hide");
-								});
-							});
-						});
-						//Why do we need this? If we do not call it we get an error for some reason:
-						//It's like onClick (off)
-						event.original.preventDefault();
-					});
-
-			
-				//	BCN Edit
-						var ractiveEditBcn = new Ractive({
-							el: 'containerBcnEdit',
-						    template: '#bcnAddEditTemplate',
-						    data: { "bcn" : new BCN({}),
-						    		"originalBcn" : new BCN({}),
-						    		"priorityArray" : priorityArray,
-						    		"bcnsList" : bcnsList},
-						    append: true
-						});
-
-					//Inside the editBcnModal
-					// Show editBcnModal on click editBcnModal button 
-						ractiveOverview.on('edit', function ( event ) {
-							ractiveEditBcn.set("originalBcn", event.context);
-							ractiveEditBcn.set("bcn", event.context.clone());
-							$('#editBcnModal').modal();
-						});
-
-
-						ractiveEditBcn.on("addLI", function(event){
-							this.get('bcn').addLI("");
-						});
-
-						ractiveEditBcn.on("removeLI", function(event){
-							var li = event.context;
-							var bcn = this.get("bcn");
-							bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
-						});
-
-						ractiveEditBcn.on("saveBCN", function(event){
-							var bcnToEdit = this.get('bcn');
-							var saveButton = event.node;
-							var originalBcn = this.get("originalBcn");
-
-							var l = Ladda.create(saveButton);
-							l.start();
-
-							bcnToEdit.update(function(){
-								retrieveAllEmployees(space, function(employees){
-									//We need to update all employees
-									for(var i = 0; i < employees.length; i++){
-										var employee = employees[i];
-										ensureEmplyoeeBCNConsistency(employee, [bcnToEdit], []);
-									}
-
-									var updateEmployee = function(employee, done){
-										employee.update(function(){
-											done();
-										});
-									}
-									async.forEach(employees, updateEmployee, function(){
-										publishBcnUpdated(bcnToEdit.uri);
-										
-										bcnsList[bcnsList.indexOf(originalBcn)] = bcnToEdit;
-										sortBcns(bcnsList);
-										ractiveOverview.update();
-										l.stop();
-										$('#editBcnModal').modal("hide");
-									});
-								});
-							});
-						});
-
-			
-				//	Delete BCN	
-						var ractiveDeleteBcn = new Ractive({
-							el: 'containerBcnDelete',
-							template: '#deleteBcnTemplate',
-						    data: { 
-						    	"bcn" : null
-						    },
-						    append: true
-						});
-
-
-						ractiveDeleteBcn.on("deleteBCN", function(event){
-							var bcn = this.get("bcn");
-							var deleteButton = event.node;
-
-							var l = Ladda.create(deleteButton);
-							l.start();
-							bcn.delete(function(){
-								bcnsList.splice(bcnsList.indexOf(bcn),1);
-								publishBcnDeleted(bcn.uri);
-
-								//Hide the loading indicator of the delete button
-								l.stop();
-								$("#deleteBcnModal").modal("hide");
-
-							});
-					});
-
-
-					//	Show BCN graph on click on "graph" button
-
-						ractiveOverview.on({
-							graphShow: function ( event ) {
-							var bcnIndex = bcnsList.indexOf(event.context);
-							publishShowBcnProgress(bcnsList[bcnIndex].uri);
-						},
-							delete: function ( event ) {
-							ractiveDeleteBcn.set("bcn", event.context);
-							$('#deleteBcnModal').modal();
-						},
-							showHelpGoalGraph: function ( event ) {
-							$('.tooltip-showGoalProgress').tooltip();
-
-						}, 
-							showHelpDeleteGoal: function ( event ) {
-							$('.tooltip-deleteGoal').tooltip();
-						},
-							showHelpEditGoal: function ( event ) {
-							$('.tooltip-editGoal').tooltip();
-						},
-							showHelpOptions: function ( event ) {
-							$('.tooltip-showOptions').tooltip();	
-						}
-
-					});
-						$("#loadingBcnText").addClass("hidden");
-
-						//Setup validation
-
-					});
-				});  // end of the retrieveAccessRights
-
+				});
 			});
-
-			function iwcCallback(intent){
-				if(intent.action == "EMPLOYEE_CREATE"){
-					
-				}
-			}
-
-			function publishBcnCreated(bcnUri){
-				var intent = {
-					component: "",
-					data: bcnUri,
-					dataType: "text/json",
-					flags :["PUBLISH_GLOBAL"],
-					action: "BCN_CREATE"
-				};
-
-				iwcClient.publish(intent);
-			}
-
-			function publishBcnUpdated(bcnUri){
-				var intent = {
-					component: "",
-					data: bcnUri,
-					dataType: "text/json",
-					flags :["PUBLISH_GLOBAL"],
-					action: "BCN_UPDATE"
-				};
-
-				iwcClient.publish(intent);
-			}
-
-			function publishBcnDeleted(bcnUri){
-				var intent = {
-					component: "",
-					data: bcnUri,
-					dataType: "text/json",
-					flags :["PUBLISH_GLOBAL"],
-					action: "BCN_DELETE"
-				};
-
-				iwcClient.publish(intent);
-			}
-
-			function publishShowBcnProgress(bcnUri){
-				var intent = {
-					component: "",
-					data: bcnUri,
-					dataType: "text/json",
-					action: "SHOW_BCN_PROGRESS"
-				};
-
-				iwcClient.publish(intent);
-			}
-
-			function publishShowOverallBcnProgress(){
-				var intent = {
-					component: "",
-					data: "",
-					dataType: "text/json",
-					action: "SHOW_OVERALL_BCN_PROGRESS"
-				};
-
-				iwcClient.publish(intent);
-			}
-
-			function checkInputBcn(bcn, ractive){
-				var nameError = (bcn.name == "");
-				ractive.set("nameError", nameError);
-
-				return !nameError;
-			}
 
 		</script>
 

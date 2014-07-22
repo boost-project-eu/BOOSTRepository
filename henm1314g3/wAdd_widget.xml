@@ -26,15 +26,7 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-2.1.1.js" type="text/javascript"></script>
-		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
-		
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
-		
-		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
+    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
 		<!-- Define CSS -->
 		
@@ -43,100 +35,111 @@
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 		<!-- JavaScript Block -->
 		<script>
-			
-			var space;
-			var iwcClient;
-			
-			gadgets.util.registerOnLoadHandler(init);
-			function init(){
-			    
-				space = new openapp.oo.Resource(openapp.param.space());
-				iwcClient = new iwc.Client();
-				iwcClient.connect(iwcCallback);
-			}
+			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"jqueryUi",
+			    "jquery",
+			    "bootstrap",
+			    "spin",
+			    "ladda",
+			    "iwc"
+			    ], function() {
 
-			
-			
-		function iwcCallback(intent){
-				if(intent.action == "AUTOADDER_CREATE"){
+					var space;
+					var iwcClient;
 					
-				}
-			}
-				
+					//gadgets.util.registerOnLoadHandler(init);
+					//function init(){
+					    
+					space = new openapp.oo.Resource(openapp.param.space());
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
 
-	        $(document).ready(function() {
-			    $('#Employee').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/employee_management_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#BCNManager').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/bcn_management_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#LearningResource').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/learning_resource_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
+					
+					
+				function iwcCallback(intent){
+						if(intent.action == "AUTOADDER_CREATE"){
+							
+						}
+					}
+						
 
-			    $('#Search').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/search_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#debug').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/debug_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#Welcome').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/welcome_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#Admin').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/admin_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#Viewer').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/documents_viewer_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#Graph').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/graph_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
-			    $('#AccessRight').click(function() {
-				    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/access_rights_management_widget.xml";
-		        	var spaceURI = openapp.param.space();
-		        	addWidgetToSpace(spaceURI,widgetUrl);
-			    });
+			        $(document).ready(function() {
+					    $('#Employee').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/employee_management_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#BCNManager').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/bcn_management_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#LearningResource').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/learning_resource_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+
+					    $('#Search').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/search_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#debug').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/debug_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#Welcome').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/welcome_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#Admin').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/admin_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#Viewer').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/documents_viewer_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#Graph').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/graph_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
+					    $('#AccessRight').click(function() {
+						    var widgetUrl = "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/access_rights_management_widget.xml";
+				        	var spaceURI = openapp.param.space();
+				        	addWidgetToSpace(spaceURI,widgetUrl);
+					    });
 
 
+					});
+			   	
+
+					function addWidgetToSpace(spaceURI,widgetURL){
+		                var deferred = $.Deferred();
+		                openapp.resource.post(
+		                        spaceURI,
+		                        function(data){
+		                            deferred.resolve(data.uri);
+		                        },{
+		                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate":"http://purl.org/role/terms/tool",
+		                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type":"http://purl.org/role/terms/OpenSocialGadget",
+		                            "http://www.w3.org/2000/01/rdf-schema#seeAlso":widgetURL
+		                        }
+
+		                );
+		                return deferred.promise();
+		            }
+		        });
 			});
-	   	
-
-			function addWidgetToSpace(spaceURI,widgetURL){
-                var deferred = $.Deferred();
-                openapp.resource.post(
-                        spaceURI,
-                        function(data){
-                            deferred.resolve(data.uri);
-                        },{
-                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate":"http://purl.org/role/terms/tool",
-                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type":"http://purl.org/role/terms/OpenSocialGadget",
-                            "http://www.w3.org/2000/01/rdf-schema#seeAlso":widgetURL
-                        }
-
-                );
-                return deferred.promise();
-            }
-			
+					
 		</script>
 			
 		<!-- HTML Block -->

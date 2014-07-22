@@ -25,23 +25,8 @@
     <Content type="html">
     <![CDATA[
 		
-		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ExpertsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/WidgetsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
-		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
-
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
+		
 		<!-- Define CSS -->
 		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
@@ -60,54 +45,75 @@
 		<!-- JavaScript Block -->
 
 		<script>
-			
-			var space;
-			var iwcClient;
-			var userAccessRights;
-			var agreed;
-			var accessRights;
-			
-			gadgets.util.registerOnLoadHandler(init);
-			function init(){
+
+
+		require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"async",
+			    "jquery",
+			    "jqueryUi",
+			    "bootstrap",
+			    "tree",
+			    "spin",
+			    "ladda",
+			    "ractive",
+			    "BCNManager",
+			    "LearningDocumentsManager",
+			    "WidgetsManager",
+			    "ExpertsManager",
+			    "AccessRightsManager",
+			    "iwc"
 			    
-				space = new openapp.oo.Resource(openapp.param.space());
-				iwcClient = new iwc.Client();
-				iwcClient.connect(iwcCallback);
-			}
-
-	$(function(){
+			    ], function(a) {
+			    	async = a;
 			
-		// Get the access rights: 
-		retrieveAccessRights(function(access){
-		accessRights = access;
-		userAccessRights = access.getUserAccessRights();
-		agreed = userAccessRights.hasAgreedToLicense;
-		//debug
-		//agreed = false; 
-
-			if (!agreed)
-				$("#agreeLisenceModal").modal();
-			
-		});  // end of the retrieveAccessRights
-	});
-
-		function iwcCallback(intent){
-				if(intent.action == "WELCOME_CREATE"){
+					var space;
+					var iwcClient;
+					var userAccessRights;
+					var agreed;
+					var accessRights;
 					
-				}
-			}
+					//gadgets.util.registerOnLoadHandler(init);
+					//function init(){
+					    
+					space = new openapp.oo.Resource(openapp.param.space());
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+					//}
 
+					$(function(){
+							
+						// Get the access rights: 
+						retrieveAccessRights(function(access){
+						accessRights = access;
+						userAccessRights = access.getUserAccessRights();
+						agreed = userAccessRights.hasAgreedToLicense;
+						//debug
+						//agreed = false; 
 
-		function agreeFunction()
-			{
-			userAccessRights.hasAgreedToLicense = true;
-			accessRights.update(function (){
-				$("#agreeLisenceModal").modal("hide");
+							if (!agreed)
+								$("#agreeLisenceModal").modal();
+							
+						});  // end of the retrieveAccessRights
+					});
+
+					function iwcCallback(intent){
+							if(intent.action == "WELCOME_CREATE"){}
+						}
+
+					function agreeFunction()
+					{
+						userAccessRights.hasAgreedToLicense = true;
+						accessRights.update(function (){
+							$("#agreeLisenceModal").modal("hide");
+						});
+					}
+
+				});
 			});
-			}
+			
 
-
-			</script>
+		</script>
 			
 		<!-- HTML Block -->
 	<div style="overflow-y: scroll; height:400px;">

@@ -24,28 +24,12 @@
   <Content type="html">
     <![CDATA[
 
-    <!-- We use jQuery to manipulate DOM and Bootstrap for the interface. -->
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js"></script>
-   
-    <script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/rivets.min.js" type="text/javascript"></script>
-            
-    <!-- Managers for BCN and Employee related stuff -->
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js" type="text/javascript"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories.js"></script>
-    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager.js"></script>
-
+    <script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
     <!-- Define CSS -->
    <link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
  
-     <style>
+    <style>
 
         #addKeywordsModal {
           -ms-word-break: break-all;
@@ -56,9 +40,9 @@
          /* Non standard for webkit */
          word-break: break-word;
 
-    -webkit-hyphens: auto;
-       -moz-hyphens: auto;
-            hyphens: auto;
+        -webkit-hyphens: auto;
+           -moz-hyphens: auto;
+                hyphens: auto;
         }
 
     </style>
@@ -66,220 +50,239 @@
     <!-- JavaScript Block -->
     <script>
 
-    var space;
-    var iwcClient;
-    var bcnsList = new Array();
-    var selectedLI;
-    var selectedBCN;
-    var config;  //used to allow/restrict search repositories
-    var model = {};
-    model.config = [];
+    require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+      require( [
+          "async",
+          "rivets",
+          "repositories",
+          "ladda",
+          "jquery",
+          "bootstrap",
+          "EmployeeManager",
+          "spin",
+          "ladda",
+          "BCNManager",
+          "iwc",
+          "ConfigManager"
+          ], function(a,rivets) {
+            async = a;
 
-    gadgets.util.registerOnLoadHandler(init);
- 
-    function init(){
+            var space;
+            var iwcClient;
+            var bcnsList = new Array();
+            var selectedLI;
+            var selectedBCN;
+            var config;  //used to allow/restrict search repositories
+            var model = {};
+            model.config = [];
+
+            //gadgets.util.registerOnLoadHandler(init);
+         
+            //function init(){
+                  
+            space = new openapp.oo.Resource(openapp.param.space());
+            iwcClient = new iwc.Client();
+            retrieveConfig(space, function(configObject){
+              model.config = configObject;
+            });
+
+              //}
+
+            function publishConfigChanged(configUri){
+                var intent = {
+                  component: "",
+                  data: configUri,
+                  dataType: "text/json",
+                  flags :["PUBLISH_GLOBAL"],
+                  action: "CONFIG_CHANGE"
+                };
+
+                iwcClient.publish(intent);
+              }
+              
+
+            $(document).ready(function(){
+
+              rivets.bind($("#manageRepoModal").get(), {model:model});
+
+              // help button click 
+
+              $('#question').click(function(){
+                $('#descriptionModal').modal({
+                keyboard: true
+                  });
+                }); 
+
+              /* manage search repositories */
+
+            $("#saveRepoButton").click(function(){
+                model.config.update(function(){
+                  publishConfigChanged(model.config.uri);
+                  $("#manageRepoModal").modal("hide");
+                });
+             });
+
+
+              $("#repoIDmenu").click(function() {
+                $("#manageRepoModal").modal();
+              });
+
+               /* open modal to add descriptions to LI's */
+
+              $("#keywordsIDmenu").click(function() {
+                $("#addKeywordsModal").modal();
+                $("#textInput").val('');
+                $('#textInput').addClass('hide');
+                $('#disabledText').addClass('hide');
+                $('#someLI').text("");              // remove previous li label
+                $('#someGoal').text("");              // remove previous goal label
+                $('#liDropClass').addClass('hide');    // remove previous li-dropdown list
+
+             }); 
+
+
+              retrieveAllBcns(space, function(bcns){
+                    bcnsList = bcns;
+                    
+                    
+                    for(var i = 0; i < bcnsList.length; i++){
+                     var bcn = bcnsList[i];
           
-        space = new openapp.oo.Resource(openapp.param.space());
-        iwcClient = new iwc.Client();
-        retrieveConfig(space, function(configObject){
-          model.config = configObject;
-        });
+                     };
+                     keywordsModal();
+                  });
 
-      }
+              /* assign description to selectedBCN-LI */
 
-    function publishConfigChanged(configUri){
-        var intent = {
-          component: "",
-          data: configUri,
-          dataType: "text/json",
-          flags :["PUBLISH_GLOBAL"],
-          action: "CONFIG_CHANGE"
-        };
+              $("#assignButton").click(function(){
+                if ($('#someLI').text()===""){
+                  alert ("Please choose LI");
+                } else if ($("#textInput").val()) {
+                  selectedLI.description = $("#textInput").val();
 
-        iwcClient.publish(intent);
-      }
-      
+                  selectedBCN.update(function(){ 
+                    $("#addKeywordsModal").modal('hide');
+                });
+                 } else alert("Please enter description!");
 
-    $(document).ready(function(){
+              });
 
-      rivets.bind($("#manageRepoModal").get(), {model:model});
+            });
 
-      // help button click 
+            function keywordsModal() {
 
-      $('#question').click(function(){
-        $('#descriptionModal').modal({
-        keyboard: true
-          });
-        }); 
+                 /* Sort according priority index and name */
 
-      /* manage search repositories */
+                bcnsList.sort(function(a, b){
+                  if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
+                  if(a.priority > b.priority)  return -1; else return 1;
+                  
+                });
 
-    $("#saveRepoButton").click(function(){
-        model.config.update(function(){
-          publishConfigChanged(model.config.uri);
-          $("#manageRepoModal").modal("hide");
-        });
-     });
+                var template =    "<table id='keywordsTable' width='100%'>" +
+                                  "<tr>" +
+                                    "<td><h5>Choose goal: </h5><h5 id='someGoal' style='color:#3677AF; font-weight:bold;'></h5></td>" +
+                                    "<td style='width:100px;' align='center'>" +
+                                         "<div id='goal-btn-group' class='btn-group'>" +
+                                         "</div>" +
+                                   "</td>" +
+                                  "</tr>" +
+                                   "<tr>" +
+                                     "<td><h5>Choose learning indicator: </h5><h5 id='someLI' style='color:#3677AF; font-weight:bold;'></h5></td>" +
+                                     "<td style='width:100px;' align='center'>" +
+                                       "<div id='li-btn-group' class='btn-group'>" +
+                                       "</div>" +
+                                     "</td>" +
+                                  "</tr>" +
+                                    "<tr>" +
+                        "<td colspan='2'><h5 id ='disabledText' class='hide'>Enter related description: </h5></td>" +
+                        "</tr>"+
+                        "<tr>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "</tr>"+
+                        "<tr>" +
+                        "<td colspan='2'><textarea class='form-control hide' id='textInput' rows='3'></textarea></td>" +
+                        "</tr>" +
+                        "</table>";
 
+                /* add dropdown list with BCNs */
 
-      $("#repoIDmenu").click(function() {
-        $("#manageRepoModal").modal();
-      });
-
-       /* open modal to add descriptions to LI's */
-
-      $("#keywordsIDmenu").click(function() {
-        $("#addKeywordsModal").modal();
-        $("#textInput").val('');
-        $('#textInput').addClass('hide');
-        $('#disabledText').addClass('hide');
-        $('#someLI').text("");              // remove previous li label
-        $('#someGoal').text("");              // remove previous goal label
-        $('#liDropClass').addClass('hide');    // remove previous li-dropdown list
-
-     }); 
-
-
-      retrieveAllBcns(space, function(bcns){
-            bcnsList = bcns;
-            
-            
-            for(var i = 0; i < bcnsList.length; i++){
-             var bcn = bcnsList[i];
-  
-             };
-             keywordsModal();
-          });
-
-      /* assign description to selectedBCN-LI */
-
-      $("#assignButton").click(function(){
-        if ($('#someLI').text()===""){
-          alert ("Please choose LI");
-        } else if ($("#textInput").val()) {
-          selectedLI.description = $("#textInput").val();
-
-          selectedBCN.update(function(){ 
-            $("#addKeywordsModal").modal('hide');
-        });
-         } else alert("Please enter description!");
-
-      });
-
-    });
-
-    function keywordsModal() {
-
-         /* Sort according priority index and name */
-
-        bcnsList.sort(function(a, b){
-          if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
-          if(a.priority > b.priority)  return -1; else return 1;
+                var entry = $(template);
+                var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>'); 
+                var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="goalDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
           
-        });
+                
+                goalDropClass.append(goalButton);
+            
+               
+                var goalDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="goalDropDown"></ul>');
+                var goal;
+           
+                for (key in bcnsList) {
+            
+                  var bcn = bcnsList[key];
 
-        var template =    "<table id='keywordsTable' width='100%'>" +
-                          "<tr>" +
-                            "<td><h5>Choose goal: </h5><h5 id='someGoal' style='color:#3677AF; font-weight:bold;'></h5></td>" +
-                            "<td style='width:100px;' align='center'>" +
-                                 "<div id='goal-btn-group' class='btn-group'>" +
-                                 "</div>" +
-                           "</td>" +
-                          "</tr>" +
-                           "<tr>" +
-                             "<td><h5>Choose learning indicator: </h5><h5 id='someLI' style='color:#3677AF; font-weight:bold;'></h5></td>" +
-                             "<td style='width:100px;' align='center'>" +
-                               "<div id='li-btn-group' class='btn-group'>" +
-                               "</div>" +
-                             "</td>" +
-                          "</tr>" +
-                            "<tr>" +
-                "<td colspan='2'><h5 id ='disabledText' class='hide'>Enter related description: </h5></td>" +
-                "</tr>"+
-                "<tr>" +
-                "<td></td>" +
-                "<td></td>" +
-                "</tr>"+
-                "<tr>" +
-                "<td colspan='2'><textarea class='form-control hide' id='textInput' rows='3'></textarea></td>" +
-                "</tr>" +
-                "</table>";
+                  goal = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
+                  goal.find("a").data("dataBCNselected", bcn);
+                  goalDropDownMenu.append(goal);
+               }
 
-        /* add dropdown list with BCNs */
+             goalDropClass.append(goalDropDownMenu);
+             
+             entry.find("#goal-btn-group").append(goalDropClass);
+             
+            $("#bodyKeywordsModal").append(entry);
 
-        var entry = $(template);
-        var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>'); 
-        var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="goalDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
-  
-        
-        goalDropClass.append(goalButton);
-    
-       
-        var goalDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="goalDropDown"></ul>');
-        var goal;
-   
-        for (key in bcnsList) {
-    
-          var bcn = bcnsList[key];
+              /* add dropdown list with LIs */
 
-          goal = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
-          goal.find("a").data("dataBCNselected", bcn);
-          goalDropDownMenu.append(goal);
-       }
+              var liDropClass = $('<div id="liDropClass" class="btn-group"></div>');
+              var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>'); 
+              liDropClass.append(liButton);
+              var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
+              var learningIndicator;
 
-     goalDropClass.append(goalDropDownMenu);
-     
-     entry.find("#goal-btn-group").append(goalDropClass);
-     
-    $("#bodyKeywordsModal").append(entry);
+            $('#goalDropClass li a').click(function()
+             { 
+              $('#someLI').text("");              // remove previous li label
+              $('#liDropClass li a').remove();    // remove previous li from li-dropdown list
+              $('#liDropClass').removeClass('hide');
 
-      /* add dropdown list with LIs */
+              selectedBCN =  $(this).data("dataBCNselected");
 
-      var liDropClass = $('<div id="liDropClass" class="btn-group"></div>');
-      var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>'); 
-      liDropClass.append(liButton);
-      var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
-      var learningIndicator;
+              $('#someGoal').text(selectedBCN.name);
+             
+              for(var key in bcnsList) {
+                if (bcnsList[key].name === selectedBCN.name) {
+               
+                    var temp = bcnsList[key].learningIndicators;
+              
+                     for (var j=0; j<temp.length; j++) {
+                      var selectedLearningIndicator = temp[j];
 
-    $('#goalDropClass li a').click(function()
-     { 
-      $('#someLI').text("");              // remove previous li label
-      $('#liDropClass li a').remove();    // remove previous li from li-dropdown list
-      $('#liDropClass').removeClass('hide');
+                       learningIndicator = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
+                       liDropDownMenu.append(learningIndicator);
+                       learningIndicator.find("a").data("dataLearningIndicator", selectedLearningIndicator);
 
-      selectedBCN =  $(this).data("dataBCNselected");
+                     }
+                  }
+               }
 
-      $('#someGoal').text(selectedBCN.name);
-     
-      for(var key in bcnsList) {
-        if (bcnsList[key].name === selectedBCN.name) {
-       
-            var temp = bcnsList[key].learningIndicators;
-      
-             for (var j=0; j<temp.length; j++) {
-              var selectedLearningIndicator = temp[j];
+              liDropClass.append(liDropDownMenu);
+              entry.find("#li-btn-group").append(liDropClass); 
 
-               learningIndicator = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1">'+selectedLearningIndicator.name+'</a></li>');
-               liDropDownMenu.append(learningIndicator);
-               learningIndicator.find("a").data("dataLearningIndicator", selectedLearningIndicator);
+               $('#liDropClass li a').click(function()
+                  { 
+                    selectedLI = $(this).data("dataLearningIndicator");
+                    $('#someLI').text(selectedLI.name);
+                    $('#textInput').removeClass('hide');
+                    $('#disabledText').removeClass('hide');
+                   });
+             });
 
-             }
-          }
-       }
-
-      liDropClass.append(liDropDownMenu);
-      entry.find("#li-btn-group").append(liDropClass); 
-
-       $('#liDropClass li a').click(function()
-          { 
-            selectedLI = $(this).data("dataLearningIndicator");
-            $('#someLI').text(selectedLI.name);
-            $('#textInput').removeClass('hide');
-            $('#disabledText').removeClass('hide');
-           });
-     });
-
-   }               
+            }
+          });
+        });               
 
   </script>
 

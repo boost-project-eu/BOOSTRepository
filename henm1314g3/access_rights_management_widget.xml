@@ -26,22 +26,7 @@
     <![CDATA[
 		
 		<!-- We use jQuery to manipulate DOM and Bootstrap for the interface. -->
-    	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min.js" type="text/javascript"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-slider.js"></script>
-		<script src="http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min.js"></script>
-						
-		<!-- Managers for BCN and Employee related stuff -->
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/EmployeeManager.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager.js"></script>
-		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager.js"></script>
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
 		<!-- Define CSS -->
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
@@ -51,160 +36,188 @@
 
 		<!-- JavaScript Block -->
 		<script>
+	
 			
-			var space;
-			var iwcClient;
-			var userList;
-			var accessRights;
-			var employeesList;
-			var bcnsList;
+			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"async",
+				 "bootbox",
+				 "ractive",
+			    "jquery",
+			    "bootstrap",
+	//		    "bootstrapSlider",
+			    "EmployeeManager",
+			    "spin",
+			    "ladda",
+			    "BCNManager",
+			    "AccessRightsManager",
+			    "iwc",
+			    "UserManager"
+			    ], function(a, b, r) {
+			    	async = a;
+			    	bootbox = b;
+			    	Ractive = r;
+					var space;
+					var iwcClient;
+					var userList;
+					var accessRights;
+					var employeesList;
+					var bcnsList;
 
-			//Define the ractives as globals
-			var ractiveOverview;
-			
-			gadgets.util.registerOnLoadHandler(init);
-			
-			function init(){
-				space = new openapp.oo.Resource(openapp.param.space());
+					//Define the ractives as globals
+					var ractiveOverview;
 
-				iwcClient = new iwc.Client();
-				iwcClient.connect(iwcCallback);
+					//function init(){
 
-			}
+					space = new openapp.oo.Resource(openapp.param.space());
+					console.log(space);
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
 
-			function iwcCallback(intent){
-				if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
+					//}
+					
+					//gadgets.util.registerOnLoadHandler(init);
+				
+									
 
-					var message = "<div>Goals have changed. Please wait.</div>"
-					message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
-					bootbox.dialog({
-						title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
-						message : message,
-						closeButton : false
-					});
-					createBCNfromUri(intent.data, function(bcn){
-						if(intent.action == "BCN_CREATE"){
-							//Add the new BCN to the local list
-							bcnsList.push(bcn);
-						}
-						else{
-							//Replace the BCN in the local list with the updated one
-							for(var i = 0; i < bcnsList.length; i++){
-								if(bcn.uri == bcnsList[i].uri)
-									bcnsList[i] = bcn;
-							}
-						}
-						bootbox.hideAll();
-					});
-				}
-			}
+					function iwcCallback(intent){
+						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
 
-			function publishAccessRightsChanged(){
-				var intent = {
-					component: "",
-					data: "",
-					dataType: "text/json",
-					flags :["PUBLISH_GLOBAL"],
-					action: "ACCESS_RIGHTS_CHANGED"
-				};
-
-				iwcClient.publish(intent);
-			}
-
-			function sortUsers(users){
-				users.sort(function (a, b){
-					if(a.name.toLowerCase() < b.name.toLowerCase()) 
-						return -1; else return 1;
-				});
-			}
-
-			$(function(){
-				retrieveAllUsers(space, function(users){
-					retrieveAccessRights(function(access){
-						retrieveAllEmployees(space, function(employees){
-							retrieveAllBcns(space, function(bcns){
-								userList = users;
-								accessRights = access;
-								employeesList = employees;
-								bcnsList = bcns;
-
-								sortUsers(userList);
-
-								//Match all users with their access rights which are stored in the config
-								//resource
-
-								var managerExists = false;
-								var owner = null;
-								for(var i = 0; i < userList.length; i++){
-									var user = userList[i];
-									user.accessRights = accessRights.getUserAccessRights(user.uri);
-									managerExists = (user.accessRights.isManager);
-									if(user.isOwner)
-										owner = user;
+							var message = "<div>Goals have changed. Please wait.</div>"
+							message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
+							bootbox.dialog({
+								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
+								message : message,
+								closeButton : false
+							});
+							createBCNfromUri(intent.data, function(bcn){
+								if(intent.action == "BCN_CREATE"){
+									//Add the new BCN to the local list
+									bcnsList.push(bcn);
 								}
-
-								//Debug
-								//owner.accessRights.hasAgreedToLicense = true;
-
-								if(!managerExists)
-									owner.accessRights.isManager = true;
-
-								//Check if user has agreed to license
-								if(!accessRights.getUserAccessRights().hasAgreedToLicense){
-									showModalAcceptTermsOfUse();							
-
-								} else if(!accessRights.getUserAccessRights().isManager){
-
-									showModalContactManager();
+								else{
+									//Replace the BCN in the local list with the updated one
+									for(var i = 0; i < bcnsList.length; i++){
+										if(bcn.uri == bcnsList[i].uri)
+											bcnsList[i] = bcn;
+									}
 								}
+								bootbox.hideAll();
+							});
+						}
+					}
 
-								ractiveOverview = new Ractive({
-									el: 'containerUserOverview',
-								    template: '#templateUserOverview',
-								    data: { "userList" : userList },
-								    append: true
-								});
+					function publishAccessRightsChanged(){
+						var intent = {
+							component: "",
+							data: "",
+							dataType: "text/json",
+							flags :["PUBLISH_GLOBAL"],
+							action: "ACCESS_RIGHTS_CHANGED"
+						};
 
-								ractiveOverview.on("accessRightsChanged", function(event){
-									accessRights.update(function(){
+						iwcClient.publish(intent);
+					}
 
-										user = event.context;
+					function sortUsers(users){
+						users.sort(function (a, b){
+							if(a.name.toLowerCase() < b.name.toLowerCase()) 
+								return -1; else return 1;
+						});
+					}
 
-										if(accessRights.getUserAccessRights(user.uri).isEmployee){
-											var foundEmployeeData = false;
-											for(var i = 0; i < employeesList.length; i++){
-												var employee = employeesList[i];
-												if(employee.userUri == user.uri){
-													foundEmployeeData = true;
+					$(function(){
+
+						retrieveAllUsers(space, function(users){
+							retrieveAccessRights(function(access){
+								retrieveAllEmployees(space, function(employees){
+									retrieveAllBcns(space, function(bcns){
+
+										userList = users;
+										accessRights = access;
+										employeesList = employees;
+										bcnsList = bcns;
+
+										sortUsers(userList);
+
+										//Match all users with their access rights which are stored in the config
+										//resource
+
+										var managerExists = false;
+										var owner = null;
+										for(var i = 0; i < userList.length; i++){
+											var user = userList[i];
+											user.accessRights = accessRights.getUserAccessRights(user.uri);
+											managerExists = (user.accessRights.isManager);
+											if(user.isOwner)
+												owner = user;
+										}
+
+										//Debug
+										//owner.accessRights.hasAgreedToLicense = true;
+
+										if(!managerExists)
+											owner.accessRights.isManager = true;
+
+										//Check if user has agreed to license
+										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
+											showModalAcceptTermsOfUse();							
+
+										} else if(!accessRights.getUserAccessRights().isManager){
+
+											showModalContactManager();
+										}
+
+										ractiveOverview = new Ractive({
+											el: 'containerUserOverview',
+										    template: '#templateUserOverview',
+										    data: { "userList" : userList },
+										    append: true
+										});
+
+										ractiveOverview.on("accessRightsChanged", function(event){
+											accessRights.update(function(){
+
+												user = event.context;
+
+												if(accessRights.getUserAccessRights(user.uri).isEmployee){
+													var foundEmployeeData = false;
+													for(var i = 0; i < employeesList.length; i++){
+														var employee = employeesList[i];
+														if(employee.userUri == user.uri){
+															foundEmployeeData = true;
+														}
+													}
+
+													if(!foundEmployeeData){
+														createEmployeeFromUser(user, bcnsList, function(employee){
+															employeesList.push(employee);
+															publishAccessRightsChanged();
+														});
+													}
+													else{
+														publishAccessRightsChanged();
+													}
 												}
-											}
-
-											if(!foundEmployeeData){
-												createEmployeeFromUser(user, bcnsList, function(employee){
-													employeesList.push(employee);
+												else{
 													publishAccessRightsChanged();
-												});
-											}
-											else{
-												publishAccessRightsChanged();
-											}
-										}
-										else{
-											publishAccessRightsChanged();
-										}
+												}
+											});
+										});
 									});
 								});
 							});
 						});
+
+						$('#question').click(function(){
+					        $('#descriptionModal').modal({
+					        keyboard: true
+					          });
+					    }); 
 					});
 				});
-
-				$('#question').click(function(){
-			        $('#descriptionModal').modal({
-			        keyboard: true
-			          });
-			    }); 
 			});
+			
 
 		</script>
 
