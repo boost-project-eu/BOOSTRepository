@@ -317,6 +317,44 @@
 					        $("#resultsFooter").empty();
 					        $("#resultsFooter").append(progressBar);
 					}
+
+
+					//======================================
+					//Manage repositories functions
+					//======================================
+
+					function publishConfigChanged(configUri){
+		                var intent = {
+		                  component: "",
+		                  data: configUri,
+		                  dataType: "text/json",
+		                  flags :["PUBLISH_GLOBAL"],
+		                  action: "CONFIG_CHANGE"
+		                };
+
+	                iwcClient.publish(intent);
+              		}
+
+					$(document).ready(function(){
+
+						rivets.bind($("#manageRepoModal").get(), {model:model});
+
+						$("#saveRepoButton").click(function(){
+			                model.config.update(function(){
+			                  publishConfigChanged(model.config.uri);
+			                  $("#manageRepoModal").modal("hide");
+			                });
+			             });
+
+						rivets.bind($("#manageRepoModal").get(), {model:model});
+
+						$("#repoIDmenu").click(function() {
+			                $("#manageRepoModal").modal();
+			              });
+
+
+					});
+
 				});
 			});
 
@@ -328,9 +366,13 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+
 		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
 		  	</div>
 		  	<div class="panel-body" id="panelBody">
+		  		<div class="btn-group">
+			 	 	<button id="repoIDmenu" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
+				</div>
 		  		<div class="input-group" style="padding-top:5px;">
 			      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
 			      <span class="input-group-btn">
@@ -365,6 +407,7 @@
 				</center>
 			</div>
 		</div>
+
 		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -374,11 +417,12 @@
             </div>
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
-            <ul style="padding: 10px;">
-            	<li>To choose learning repository click on <i>YouTube</i>, <i>SlideShare</i> or <i>Scribd</i> tabs under the input field.</li>
-            	<li>To search learning document enter keywords in the input field and click on the <i>Go</i> button.</li>
-            	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
-            </ul>	 	
+	            <ul style="padding: 10px;">
+	            	<li>To choose learning repository click on <i>YouTube</i>, <i>SlideShare</i> or <i>Scribd</i> tabs under the input field.</li>
+	            	<li>To search learning document enter keywords in the input field and click on the <i>Go</i> button.</li>
+	            	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
+	            </ul>
+	         </div>   	 	
           </div>
           <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
@@ -386,6 +430,34 @@
         </div>      
       </div>
     </div>
+
+    <!-- Modal to manage repositories -->
+
+      <div class="modal fade" id="manageRepoModal" >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h5 class="modal-title">Choose repositories that you would like to access:</h5>
+            </div>
+            <div class="modal-body">
+                <li rv-each-repository="model.config.repositorySelection" class="list-group-item">
+                  <div class="checkbox">
+                    <label>
+                      <input class="repositorySelection" rv-data-name="repository.name" rv-checked="repository.isSelected" type="checkbox"> {repository.name}
+                    </label>
+                  </div>
+                </li>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button id="saveRepoButton" type="button" class="btn btn-primary">Save changes</button>
+              
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal    
+
 	]]>
   </Content>
 </Module>
