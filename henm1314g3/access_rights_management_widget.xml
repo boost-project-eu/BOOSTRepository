@@ -67,6 +67,7 @@
 					//Define the ractives as globals
 					var ractiveOverview;
 
+					//closeAutorisationWindow();					
 					//function init(){
 
 					space = new openapp.oo.Resource(openapp.param.space());
