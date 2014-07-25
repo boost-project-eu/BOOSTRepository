@@ -73,10 +73,11 @@
 					var agreed;
 					var accessRights;
 
-					closeAutorisationWindow();
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){
-					    
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);

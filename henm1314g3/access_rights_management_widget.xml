@@ -71,7 +71,6 @@
 					//function init(){
 
 					space = new openapp.oo.Resource(openapp.param.space());
-					console.log(space);
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
 
