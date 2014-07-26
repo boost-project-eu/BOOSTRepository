@@ -10,6 +10,8 @@ require.config({
         spin: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min",
         ladda: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min",
         ractive: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/Ractive",
+        ractiveValidator: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ractive-validator",
+        moment: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/moment.min",
         bootbox: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootbox.min",
         rivets: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/rivets.min",
         repositories: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/repositories",
