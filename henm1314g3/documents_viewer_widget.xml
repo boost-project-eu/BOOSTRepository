@@ -48,7 +48,8 @@
 			    "UserManager",
 			    "bootbox",
 			    "AccessRightsManager",
-			    "iwc"
+			    "iwc",
+			    "utils"
 			    ], function(a) {
 			    	async = a;
 
@@ -58,8 +59,12 @@
 					var userList;
 					var space;
 					
-					//gadgets.util.registerOnLoadHandler(init);
 					
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
+
+					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();

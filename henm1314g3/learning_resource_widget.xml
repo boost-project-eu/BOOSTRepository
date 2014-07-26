@@ -55,7 +55,8 @@
 			    "spin",
 			    "tree",
 			    "repositories",
-			    "iwc"
+			    "iwc",
+			    "utils"
 			    ], function(a, Ractive, Ladda, bootbox) {
 			    	async = a;
 			
@@ -71,6 +72,10 @@
 					var Widgets = [];
 					var WidgetsList = {};
 					
+					
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					
 					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){

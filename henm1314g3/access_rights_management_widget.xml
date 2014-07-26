@@ -52,7 +52,8 @@
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
-			    "UserManager"
+			    "UserManager",
+			    "utils"
 			    ], function(a, b, r) {
 			    	async = a;
 			    	bootbox = b;
@@ -67,7 +68,10 @@
 					//Define the ractives as globals
 					var ractiveOverview;
 
-					//closeAutorisationWindow();					
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
+					
 					//function init(){
 
 					space = new openapp.oo.Resource(openapp.param.space());
