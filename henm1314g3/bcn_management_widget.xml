@@ -29,6 +29,7 @@
 
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/datepicker3.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
@@ -49,7 +50,8 @@
 			    "BCNManager",
 			    "LearningDocumentsManager",
 			    "AccessRightsManager",
-			    "iwc"
+			    "iwc",
+			    "bootstrapDatepicker"
 			    ], function(a, Ractive, Ladda) {
 			    	async = a;
 
@@ -138,6 +140,12 @@
 									var newBcn = new BCN({});
 									ractiveAddBcn.set("bcn", newBcn);
 									ractiveAddBcn.set("nameError", false);
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false
+									}).off().on("changeDate", function(e){
+										ractiveAddBcn.set("bcn.deadline", e.date);
+
+									});
 									$("#addBcnModal").modal();		
 								},
 								showHelpAddBcn: function( event ){
@@ -174,6 +182,7 @@
 							ractiveAddBcn.on("saveBCN", function(event){
 								var bcnToAdd = this.get('bcn');
 								var saveButton = event.node;
+								console.log(bcnToAdd.deadline);
 
 								var l = Ladda.create(saveButton);
 								l.start();
@@ -222,6 +231,13 @@
 								ractiveOverview.on('edit', function ( event ) {
 									ractiveEditBcn.set("originalBcn", event.context);
 									ractiveEditBcn.set("bcn", event.context.clone());
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false
+									}).off().on("changeDate", function(e){
+										ractiveEditBcn.set("bcn.deadline", e.date);
+
+									});
+									$('.input-group.date').datepicker('update', event.context.deadline);
 									$('#editBcnModal').modal();
 								});
 
@@ -506,7 +522,13 @@
 													<option value='{{num}}'>{{name}}</option>
 											{{/priorityArray}}
 											</select>									
-							</div>															
+							</div>
+							<div class="form-group">
+								<label>Deadline</label>
+								<div class="input-group date">
+								  <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>
+							</div>										
 							<div class="form-group">
 								<label for="inputNewBcnLi">Learning indicators</label>
 									{{#bcn.learningIndicators : num}}	
