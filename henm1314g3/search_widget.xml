@@ -36,6 +36,7 @@
 			require( [
 				"async",
 				"rivets",
+				"ractive",
 			    "jquery",
 			    "search_youtube",
 			    "search_slideshare",
@@ -48,7 +49,7 @@
 			    "repositories",
 			    "UserManager",
 			    "iwc"
-			    ], function(a, rivets) {
+			    ], function(a, rivets, Ractive) {
 			    	async = a;
 
 
@@ -82,7 +83,7 @@
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
 
-					//Init youtube api
+
 					onYouTubeClientLoad();
 					retrieveConfig(space, function(configObject){
 						model.config = configObject;
@@ -250,18 +251,33 @@
 
 						
 						// Get the access rights: 
-							retrieveAccessRights(function(accessRights){
-								userAccessRights = accessRights.getUserAccessRights();
-								
-								//Check if user has agreed to license
-				
-									if(!userAccessRights.hasAgreedToLicense){
-									showModalAcceptTermsOfUse();							
-								} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-									showModalContactManager();		
-								}	
+						retrieveAccessRights(function(accessRights){
+							userAccessRights = accessRights.getUserAccessRights();
+							
+							//Check if user has agreed to license
+			
+								if(!userAccessRights.hasAgreedToLicense){
+								showModalAcceptTermsOfUse();							
+							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
+								showModalContactManager();		
+							}	
 
-								});  // end of the retrieveAccessRights
+							console.log(userAccessRights);
+							console.log("u======================serAccessRights");
+						
+							var ractiveBcnHeader = new Ractive({
+									el: 'containerSearch',
+									template: '#templateSearch',
+									data: {
+										accessRights: userAccessRights
+									},
+									append: true
+							});
+
+						});  // end of the retrieveAccessRights
+
+
+						
 
 						rivets.binders.highlight = function(el, value){
 							if(value)
@@ -346,8 +362,6 @@
 			                });
 			             });
 
-						rivets.bind($("#manageRepoModal").get(), {model:model});
-
 						$("#repoIDmenu").click(function() {
 			                $("#manageRepoModal").modal();
 			              });
@@ -363,49 +377,56 @@
 		
 		<!-- HTML Block -->
 		<div style="overflow-y: scroll; height:400px;" id="content">
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+		<div class="panel panel-primary" id="containerSearch">
+			<!-- Template for the header Main widget view -->
+				<div class="panel-heading">
+					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 
-		    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
-		  	</div>
-		  	<div class="panel-body" id="panelBody">
-		  		<div class="btn-group">
-			 	 	<button id="repoIDmenu" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
+			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
+			  	</div>
+			  	<div class="panel-body" id="panelBody">
+				<script id='templateSearch' type='text/ractive'>	
+			  	{{#accessRights.isManager}}
+			  		<div class="btn-group">
+				 	 	<button id="repoIDmenu" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
+					</div>
+				{{/accessRights.isManager}}
+				</script>
+			  		<div class="input-group" style="padding-top:5px;">
+				      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
+				      <span class="input-group-btn">
+				        <button class="btn btn-default" type="button" id="search_button">Go</button>
+				      </span>
+				    </div>
+				    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
+					  <button rv-highlight="repository.isActive" rv-each-repository="model.repositories" rv-enabled="repository.isEnabled" class="btn btn-xs btn-primary">
+					    <input rv-on-change="repository.activate" type="radio" name="opt">{repository.searchFunctions.name}</input>
+					  </button>
+					</div>
+					<div id="progressbar" style="margin-top:10px;" rv-if="model.selectedRepository.searching" class='progress progress-striped active'>
+	                	<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>
+			            	<span>Searching...</span>
+			            </div>
+			        </div>
 				</div>
-		  		<div class="input-group" style="padding-top:5px;">
-			      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
-			      <span class="input-group-btn">
-			        <button class="btn btn-default" type="button" id="search_button">Go</button>
-			      </span>
-			    </div>
-			    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
-				  <button rv-highlight="repository.isActive" rv-each-repository="model.repositories" rv-enabled="repository.isEnabled" class="btn btn-xs btn-primary">
-				    <input rv-on-change="repository.activate" type="radio" name="opt">{repository.searchFunctions.name}</input>
-				  </button>
+				<div class="list-group" id="resultsList">
+					<a rv-each-result="model.selectedRepository.visibleResults" rv-on-click="result.click" href='#' class='list-group-item' style='min-height:150px;'>
+						<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+						<h5>{result.name}</h5>
+						<p><small>{result.description}</small></p>
+					</a>
 				</div>
-				<div id="progressbar" style="margin-top:10px;" rv-if="model.selectedRepository.searching" class='progress progress-striped active'>
-                	<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>
-		            	<span>Searching...</span>
-		            </div>
-		        </div>
-			</div>
-			<div class="list-group" id="resultsList">
-				<a rv-each-result="model.selectedRepository.visibleResults" rv-on-click="result.click" href='#' class='list-group-item' style='min-height:150px;'>
-					<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:50px;' class='pull-left' alt=''>
-					<h5>{result.name}</h5>
-					<p><small>{result.description}</small></p>
-				</a>
-			</div>
-			<div class="panel-footer" id="resultsFooter"></div>
-				<center>
-					<ul rv-show="model.selectedRepository.hasResults" id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
-						<li rv-if="model.selectedRepository.hasPrevPage"><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
-						<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
-						<li rv-if="model.selectedRepository.hasNextPage"><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
-					</ul>
-				</center>
-			</div>
+				<div class="panel-footer" id="resultsFooter"></div>
+					<center>
+						<ul rv-show="model.selectedRepository.hasResults" id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
+							<li rv-if="model.selectedRepository.hasPrevPage"><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
+							<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
+							<li rv-if="model.selectedRepository.hasNextPage"><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
+						</ul>
+					</center>
+				</div>
+			
+		</div>
 		</div>
 
 		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
