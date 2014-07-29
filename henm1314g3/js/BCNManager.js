@@ -35,6 +35,11 @@ function BCN(object){
 		this.priority = object.priority;
 	else
 		this.priority = 0;
+
+	if(object.hasOwnProperty("deadline"))
+		this.deadline = object.deadline;
+	else
+		this.deadline = "";
 }
 
 BCN.prototype.getPriorityColor = function(){

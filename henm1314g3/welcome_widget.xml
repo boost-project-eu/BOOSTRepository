@@ -101,13 +101,12 @@
 							if(intent.action == "WELCOME_CREATE"){}
 						}
 
-					function agreeFunction()
-					{
+					$("#agreeButton").click(function(){
 						userAccessRights.hasAgreedToLicense = true;
 						accessRights.update(function (){
 							$("#agreeLisenceModal").modal("hide");
 						});
-					}
+					})
 
 				});
 			});
@@ -232,7 +231,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-				        <button onclick="agreeFunction()" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
+				        <button id="agreeButton" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
   					</div>
 				</div>
 			</div>
