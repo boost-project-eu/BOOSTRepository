@@ -51,11 +51,10 @@
 			    "BCNManager",
 			    "LearningDocumentsManager",
 			    "AccessRightsManager",
-
 			    "iwc",
-			    "bootstrapDatepicker"
+			    "bootstrapDatepicker",
+			    "utils"
 			    ], function(a, Ractive, RactiveValidator, Ladda) {
-
 			    	async = a;
 
 					var space;
@@ -65,9 +64,11 @@
 					var userAccessRights; 
 					var userList;
 
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					
-					//gadgets.util.registerOnLoadHandler(init);
-					
+					//gadgets.util.registerOnLoadHandler(init);					
 					//function init(){
 						/*
 							Here we get the space resource.

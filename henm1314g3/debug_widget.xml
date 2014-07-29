@@ -36,14 +36,18 @@
 		        "EmployeeManager",
 		        "BCNManager",
 		        "repositories",
-		        "ConfigManager"
+		        "ConfigManager",
+		        "utils"
 		        ], function(a) {
 		        async = a;
 				
 					var space;
+
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					
 					//gadgets.util.registerOnLoadHandler(init);
-					
 					//function init(){
 						
 						/*

@@ -47,7 +47,8 @@
 			    "UserManager",
 			    "BCNManager",
 			    "AccessRightsManager",
-			    "iwc"
+			    "iwc",
+			    "utils"
 			    ], function(a, highCharts) {
 			    	async = a;
 			    	Highcharts =  highCharts;
@@ -77,6 +78,11 @@
 					var isBcnGraph={};
 					var isEmployeeGraph={};
 					var isDetailedGraph={};
+					
+
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					
 		//			gadgets.util.registerOnLoadHandler(init);
 

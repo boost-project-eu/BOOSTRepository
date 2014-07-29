@@ -47,7 +47,8 @@
 			    "ConfigManager",
 			    "repositories",
 			    "UserManager",
-			    "iwc"
+			    "iwc",
+			    "utils"
 			    ], function(a, rivets) {
 			    	async = a;
 
@@ -75,6 +76,11 @@
 				    									"</a>";
 
 					//gadgets.util.registerOnLoadHandler(init);
+
+
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 
 					//function init(){
 
