@@ -40,6 +40,7 @@
 			require( [
 				"async",
 				"ractive",
+				"ractiveValidator",
 			    "ladda",
 			    "jquery",
 			    "bootstrap",
@@ -50,7 +51,7 @@
 			    "LearningDocumentsManager",
 			    "AccessRightsManager",
 			    "iwc"
-			    ], function(a, Ractive, Ladda) {
+			    ], function(a, Ractive, RactiveValidator, Ladda) {
 			    	async = a;
 
 					var space;
@@ -123,10 +124,14 @@
 								  	template: '#bcnAddEditTemplate',
 								  	data: { "bcn" : new BCN({}),
 								    	"priorityArray" : priorityArray,
-								    	"bcnsList" : bcnsList,
 								    	"nameError" : false
 								    },
 								    append: true
+								});
+
+								var bcnValidator = new RactiveValidator(ractiveAddBcn, {
+								  'bcn.name': {required: true},
+								  'bcn.learningIndicators.*.name': {required: true}
 								});
 
 							ractiveBcnHeader.on({
@@ -137,7 +142,6 @@
 									// Show addBcnModal on click on addNewBcnButton 
 									var newBcn = new BCN({});
 									ractiveAddBcn.set("bcn", newBcn);
-									ractiveAddBcn.set("nameError", false);
 									$("#addBcnModal").modal();		
 								},
 								showHelpAddBcn: function( event ){
@@ -172,6 +176,10 @@
 							});
 
 							ractiveAddBcn.on("saveBCN", function(event){
+								if(!bcnValidator.valid()){
+									event.original.preventDefault();
+									return;
+								}
 								var bcnToAdd = this.get('bcn');
 								var saveButton = event.node;
 
