@@ -262,18 +262,21 @@
 								showModalContactManager();		
 							}	
 
-							console.log(userAccessRights);
-							console.log("u======================serAccessRights");
-						
-							var ractiveBcnHeader = new Ractive({
+							var ractiveSearchHeader = new Ractive({
 									el: 'containerSearch',
 									template: '#templateSearch',
 									data: {
-										accessRights: userAccessRights
+										accessRights: userAccessRights,
+										repositories: model.repositories
 									},
 									append: true
 							});
 
+							ractiveSearchHeader.on({
+								manageRepos: function (event){
+									$("#manageRepoModal").modal();
+								}
+							});
 						});  // end of the retrieveAccessRights
 
 
@@ -365,8 +368,6 @@
 						$("#repoIDmenu").click(function() {
 			                $("#manageRepoModal").modal();
 			              });
-
-
 					});
 
 				});
@@ -378,6 +379,7 @@
 		<!-- HTML Block -->
 		<div style="overflow-y: scroll; height:400px;" id="content">
 		<div class="panel panel-primary" id="containerSearch">
+			<script id='templateSearch' type='text/ractive'>	
 			<!-- Template for the header Main widget view -->
 				<div class="panel-heading">
 					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
@@ -385,13 +387,11 @@
 			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
-				<script id='templateSearch' type='text/ractive'>	
 			  	{{#accessRights.isManager}}
 			  		<div class="btn-group">
-				 	 	<button id="repoIDmenu" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
+				 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
 					</div>
 				{{/accessRights.isManager}}
-				</script>
 			  		<div class="input-group" style="padding-top:5px;">
 				      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
 				      <span class="input-group-btn">
@@ -399,10 +399,13 @@
 				      </span>
 				    </div>
 				    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
-					  <button rv-highlight="repository.isActive" rv-each-repository="model.repositories" rv-enabled="repository.isEnabled" class="btn btn-xs btn-primary">
-					    <input rv-on-change="repository.activate" type="radio" name="opt">{repository.searchFunctions.name}</input>
-					  </button>
+					  {{#repositories}}
+						  <button class='btn btn-xs btn-primary {{#isActive}}active{{/isActive}} {{^isEnabled}}disabled{{/isEnabled}}'>
+						    <input rv-on-change="activate" type="radio" name="opt">{{searchFunctions.name}}</input>
+						  </button>
+					  {{/repositories}}
 					</div>
+
 					<div id="progressbar" style="margin-top:10px;" rv-if="model.selectedRepository.searching" class='progress progress-striped active'>
 	                	<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>
 			            	<span>Searching...</span>
@@ -425,7 +428,7 @@
 						</ul>
 					</center>
 				</div>
-			
+			</script>
 		</div>
 		</div>
 
@@ -453,6 +456,7 @@
     </div>
 
     <!-- Modal to manage repositories -->
+
 
       <div class="modal fade" id="manageRepoModal" >
         <div class="modal-dialog">
