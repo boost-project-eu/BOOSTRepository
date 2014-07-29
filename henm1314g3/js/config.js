@@ -32,7 +32,8 @@ require.config({
         AccessRightsManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/AccessRightsManager",
         ConfigManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ConfigManager",
         iwc : "http://dbis.rwth-aachen.de/gadgets/iwc/lib/iwc",
-        google_api: "https://apis.google.com/js/client"      
+        google_api: "https://apis.google.com/js/client",
+        bootstrapDatepicker: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-datepicker"
     },
     shim: {
         async : {
