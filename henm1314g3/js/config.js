@@ -60,7 +60,7 @@ require.config({
             deps: ['boostShared']
         },
         AccessRightsManager: {
-            deps: ['boostShared']
+            deps: ['boostShared', 'bootbox']
         },
         ConfigManager: {
             deps: ['boostShared']
@@ -89,6 +89,12 @@ require.config({
         },
         search_youtube: {
             deps: ['google_api']
+        },
+        bootstrapDatepicker: {
+            deps: ['jquery']
+        },
+        bootstrapSlider: {
+            deps: ['jquery']
         }
     }
 
