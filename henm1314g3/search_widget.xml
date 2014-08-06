@@ -404,10 +404,10 @@
 				        <button class="btn btn-default" type="button" id="search_button">Go</button>
 				      </span>
 				    </div>
-				    <div id="selectRepositoryButtonGroup" class="btn-group" style="padding-top:5px;">
+				    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
 					  {{#repositories}}
-						  <button class='btn btn-xs btn-primary {{#isActive}}active{{/isActive}} {{^isEnabled}}disabled{{/isEnabled}}'>
-						    <input on-change="activate" type="radio" name="opt">{{searchFunctions.name}}
+						  <button on-click="activate" class='btn btn-xs btn-primary {{#isActive}}active{{/isActive}} {{^isEnabled}}disabled{{/isEnabled}}'>
+						    <input type="radio" name="opt">{{searchFunctions.name}}
 						  </button>
 					  {{/repositories}}
 					</div>
