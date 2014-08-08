@@ -121,7 +121,7 @@
 						newRepository.hasPrevPage = false;
 						newRepository.hasResults = false;
 						newRepository.searching = false;
-						ractiveSearchHeader.set({model: model});
+						if (ractiveSearchHeader) {ractiveSearchHeader.set({model: model})};
 						for(var i = 0; i < model.config.repositorySelection.length; i++){
 							var selection = model.config.repositorySelection[i];
 							if(selection.name == repository.name)
@@ -138,7 +138,7 @@
 								i < maxIndex; i++){
 								newRepository.visibleResults.push(newRepository.searchResults[i]);
 							}
-							ractiveSearchHeader.set({model: model});
+							if(ractiveSearchHeader) {ractiveSearchHeader.set({model: model})};
 						};
 
 						var createPage =  function(index, offset){
@@ -208,6 +208,7 @@
 							//Add a click event to the result which sends a "learning document selected" message
 							//to other widgets.
 							result.click = function(){
+								console.log("resultClick");
 								publishLearningDocumentSelected(result);
 							}
 							
@@ -298,6 +299,18 @@
 									model.selectedRepository.search($("#search_field").val(), function(){
 										console.log("search button click");
 									});
+								},
+								pageclick: function(event){
+									event.context.click();
+								},
+								nextPage: function(event){
+									model.selectedRepository.nextResultsPage();
+								},
+								prevPage: function(event){
+									model.selectedRepository.prevResultsPage();
+								},
+								resultClick: function(event){
+									event.context.click();
 								}
 							});
 						});  // end of the retrieveAccessRights
@@ -421,7 +434,7 @@
 				</div>
 				<div class="list-group" id="resultsList">
 					{{#model.selectedRepository.visibleResults}}
-						<a on-click="click" href='#' class='list-group-item' style='min-height:150px;'>
+						<a on-click="resultClick" href='#' class='list-group-item' style='min-height:150px;'>
 							<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
 							<h5>{{name}}</h5>
 							<p><small>{{description}}</small></p>
@@ -433,15 +446,15 @@
 						{{#model.selectedRepository.hasResults}}
 							<ul id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
 								{{#model.selectedRepository.hasPrevPage}}
-									<li><a on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
+									<li><a on-click="prevPage" href='#'>&laquo;</a></li>
 								{{/model.selectedRepository.hasPrevPage}}
 
 								{{#model.selectedRepository.pages}}
-									<li class='{{#isActive}}isSelected{{/isActive}}'><a on-click="click" href='#'>{page.value}</a></li>
+									<li class='{{#isActive}}isSelected{{/isActive}}'><a on-click="pageclick" href='#'>{{value}}</a></li>
 								{{/model.selectedRepository.pages}}
 
 								{{#model.selectedRepository.hasNextPage}}
-									<li><a on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
+									<li><a on-click="nextPage" href='#'>&raquo;</a></li>
 								{{/model.selectedRepository.hasNextPage}}
 							</ul>
 						{{/model.selectedRepository.hasResults}}
