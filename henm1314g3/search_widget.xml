@@ -74,6 +74,8 @@
 				    											"#description" +
 				    										"</p>" +
 				    									"</a>";
+				    var ractiveSearchHeader;
+
 
 					//gadgets.util.registerOnLoadHandler(init);
 
@@ -119,6 +121,7 @@
 						newRepository.hasPrevPage = false;
 						newRepository.hasResults = false;
 						newRepository.searching = false;
+						ractiveSearchHeader.set({model: model});
 						for(var i = 0; i < model.config.repositorySelection.length; i++){
 							var selection = model.config.repositorySelection[i];
 							if(selection.name == repository.name)
@@ -135,6 +138,7 @@
 								i < maxIndex; i++){
 								newRepository.visibleResults.push(newRepository.searchResults[i]);
 							}
+							ractiveSearchHeader.set({model: model});
 						};
 
 						var createPage =  function(index, offset){
@@ -164,21 +168,25 @@
 
 						newRepository.nextResultsPage = function(){
 							this.searching = true;
+							ractiveSearchHeader.set({model: model});
 							this.visibleResults = [];
 							newRepository.searchFunctions.nextResultsPage(function(results){
 								newRepository.pageOffset += ITEMS_PER_PAGE;
 								newRepository.initNewResults(results);
 								newRepository.searching = false;
+								ractiveSearchHeader.set({model: model});
 								$("#content").animate({ scrollTop: 0 }, "fast");
 							});
 						}
 						newRepository.prevResultsPage = function(){
 							this.searching = true;
+							ractiveSearchHeader.set({model: model});
 							this.visibleResults = [];
 							newRepository.searchFunctions.prevResultsPage(function(results){
 								newRepository.pageOffset -= ITEMS_PER_PAGE;
 								newRepository.initNewResults(results);
 								newRepository.searching = false;
+								ractiveSearchHeader.set({model: model});
 								$("#content").animate({ scrollTop: 0 }, "fast");
 							});
 						}
@@ -213,9 +221,14 @@
 						}
 						newRepository.search = function(query, callback){
 							this.searching = true;
+							ractiveSearchHeader.set({model: model});
+							console.log(model.selectedRepository.searching);
 							this.visibleResults = [];
 							newRepository.searchFunctions.search(query, function(results){
+								
 								newRepository.searching = false;
+								ractiveSearchHeader.set({model: model});
+								console.log(model.selectedRepository.searching);
 								newRepository.pageOffset = 1;
 								newRepository.initNewResults(results);
 							});
@@ -262,12 +275,13 @@
 								showModalContactManager();		
 							}	
 
-							var ractiveSearchHeader = new Ractive({
+							ractiveSearchHeader = new Ractive({
 									el: 'containerSearch',
 									template: '#templateSearch',
 									data: {
 										accessRights: userAccessRights,
-										repositories: model.repositories
+										repositories: model.repositories,
+										model: model
 									},
 									append: true
 							});
@@ -277,37 +291,22 @@
 									$("#manageRepoModal").modal();
 								},
 								activate: function (event){
-									
-									console.log (event.context);
-									console.log ("=================================");
-
+									event.context.activate();
+								},
+								searchInRepo: function (event){
+									console.log("search button click");
+									model.selectedRepository.search($("#search_field").val(), function(){
+										console.log("search button click");
+									});
 								}
 							});
 						});  // end of the retrieveAccessRights
 
 
-						
-
-						rivets.binders.highlight = function(el, value){
-							if(value)
-								$(el).addClass("active");
-							else
-								$(el).removeClass("active");
-						}
-
-						rivets.binders.enable = function(el, value){
-							if(value)
-								$(el).removeClass("disabled");
-							else
-								$(el).addClass("disabled");
-
-							console.log($(el).find("input").text());
-						}
-
-						rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
-						rivets.bind($("#resultsList").get(), {model:model});
-						rivets.bind($("#pagination").get(),  {model:model});
-						rivets.bind($("#progressbar").get(),  {model:model});
+						// rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
+						// rivets.bind($("#resultsList").get(), {model:model});
+						// rivets.bind($("#pagination").get(),  {model:model});
+						// rivets.bind($("#progressbar").get(),  {model:model});
 
 						 // help button click 
 
@@ -319,8 +318,10 @@
 
 
 						$("#search_button").click(function(){
+							
+							console.log("search button click");
 							model.selectedRepository.search($("#search_field").val(), function(){
-								
+								console.log("search button click");
 							});
 						});
 
@@ -389,7 +390,6 @@
 			<!-- Template for the header Main widget view -->
 				<div class="panel-heading">
 					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
-
 			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
@@ -401,7 +401,7 @@
 			  		<div class="input-group" style="padding-top:5px;">
 				      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
 				      <span class="input-group-btn">
-				        <button class="btn btn-default" type="button" id="search_button">Go</button>
+				        <button class="btn btn-default" type="button" id="search_button" on-click="searchInRepo">Go</button>
 				      </span>
 				    </div>
 				    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
@@ -411,27 +411,40 @@
 						  </button>
 					  {{/repositories}}
 					</div>
-
-					<div id="progressbar" style="margin-top:10px;" rv-if="model.selectedRepository.searching" class='progress progress-striped active'>
+				{{#model.selectedRepository.searching}}
+					<div id="progressbar" style="margin-top:10px;" class='progress progress-striped active'>
 	                	<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>
 			            	<span>Searching...</span>
 			            </div>
 			        </div>
+			    {{/model.selectedRepository.searching}}
 				</div>
 				<div class="list-group" id="resultsList">
-					<a rv-each-result="model.selectedRepository.visibleResults" rv-on-click="result.click" href='#' class='list-group-item' style='min-height:150px;'>
-						<img rv-src="result.contentSpecificData.imageUrl" style='margin-right:10px; height:50px;' class='pull-left' alt=''>
-						<h5>{result.name}</h5>
-						<p><small>{result.description}</small></p>
-					</a>
+					{{#model.selectedRepository.visibleResults}}
+						<a on-click="click" href='#' class='list-group-item' style='min-height:150px;'>
+							<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+							<h5>{{name}}</h5>
+							<p><small>{{description}}</small></p>
+						</a>
+					{{/model.selectedRepository.visibleResults}}
 				</div>
 				<div class="panel-footer" id="resultsFooter"></div>
 					<center>
-						<ul rv-show="model.selectedRepository.hasResults" id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
-							<li rv-if="model.selectedRepository.hasPrevPage"><a rv-on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
-							<li rv-each-page="model.selectedRepository.pages" rv-highlight="page.isSelected"><a rv-on-click="page.click" href='#'>{page.value}</a></li>
-							<li rv-if="model.selectedRepository.hasNextPage"><a rv-on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
-						</ul>
+						{{#model.selectedRepository.hasResults}}
+							<ul id="pagination" class='pagination' style='margin-top:5px; margin-bottom:5px;'>
+								{{#model.selectedRepository.hasPrevPage}}
+									<li><a on-click="model.selectedRepository.prevResultsPage" href='#'>&laquo;</a></li>
+								{{/model.selectedRepository.hasPrevPage}}
+
+								{{#model.selectedRepository.pages}}
+									<li class='{{#isActive}}isSelected{{/isActive}}'><a on-click="click" href='#'>{page.value}</a></li>
+								{{/model.selectedRepository.pages}}
+
+								{{#model.selectedRepository.hasNextPage}}
+									<li><a on-click="model.selectedRepository.nextResultsPage" href='#'>&raquo;</a></li>
+								{{/model.selectedRepository.hasNextPage}}
+							</ul>
+						{{/model.selectedRepository.hasResults}}
 					</center>
 				</div>
 			</script>
