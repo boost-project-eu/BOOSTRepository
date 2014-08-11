@@ -100,6 +100,8 @@
 								break;
 							}
 						}
+						console.log(model.config.repositorySelection);
+						console.log("==================================");
 		     		});
 					//}
 
@@ -208,7 +210,6 @@
 							//Add a click event to the result which sends a "learning document selected" message
 							//to other widgets.
 							result.click = function(){
-								console.log("resultClick");
 								publishLearningDocumentSelected(result);
 							}
 							
@@ -223,13 +224,11 @@
 						newRepository.search = function(query, callback){
 							this.searching = true;
 							ractiveSearchHeader.set({model: model});
-							console.log(model.selectedRepository.searching);
 							this.visibleResults = [];
 							newRepository.searchFunctions.search(query, function(results){
 								
 								newRepository.searching = false;
 								ractiveSearchHeader.set({model: model});
-								console.log(model.selectedRepository.searching);
 								newRepository.pageOffset = 1;
 								newRepository.initNewResults(results);
 							});
@@ -287,6 +286,15 @@
 									append: true
 							});
 
+							manageRepos = new Ractive({
+									el: 'containerRepoManage',
+									template: '#templateManage',
+									data: {
+										model: model
+									},
+									append: true
+							});
+
 							ractiveSearchHeader.on({
 								manageRepos: function (event){
 									$("#manageRepoModal").modal();
@@ -295,9 +303,7 @@
 									event.context.activate();
 								},
 								searchInRepo: function (event){
-									console.log("search button click");
 									model.selectedRepository.search($("#search_field").val(), function(){
-										console.log("search button click");
 									});
 								},
 								pageclick: function(event){
@@ -311,6 +317,11 @@
 								},
 								resultClick: function(event){
 									event.context.click();
+								},
+								questionModal: function(event){
+									$('#descriptionModal').modal({
+						        		keyboard: true
+						          	});
 								}
 							});
 						});  // end of the retrieveAccessRights
@@ -331,10 +342,7 @@
 
 
 						$("#search_button").click(function(){
-							
-							console.log("search button click");
 							model.selectedRepository.search($("#search_field").val(), function(){
-								console.log("search button click");
 							});
 						});
 
@@ -402,7 +410,7 @@
 			<script id='templateSearch' type='text/ractive'>	
 			<!-- Template for the header Main widget view -->
 				<div class="panel-heading">
-					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					<button id="question" on-click="questionModal" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
@@ -489,6 +497,18 @@
 
     <!-- Modal to manage repositories -->
 
+	<script id='templateManage' type='text/ractive'>
+		<p></p>
+        {{#model.config.repositorySelection}}
+            <li class="list-group-item">
+              <div class="checkbox">
+                <label>
+                  <input class="repositorySelection" rv-data-name="repository.name" rv-checked="repository.isSelected" type="checkbox"> {{name}}
+                </label>
+              </div>
+            </li>
+        {{/model.config.repositorySelection}}
+	</script>
 
       <div class="modal fade" id="manageRepoModal" >
         <div class="modal-dialog">
@@ -497,14 +517,8 @@
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h5 class="modal-title">Choose repositories that you would like to access:</h5>
             </div>
-            <div class="modal-body">
-                <li rv-each-repository="model.config.repositorySelection" class="list-group-item">
-                  <div class="checkbox">
-                    <label>
-                      <input class="repositorySelection" rv-data-name="repository.name" rv-checked="repository.isSelected" type="checkbox"> {repository.name}
-                    </label>
-                  </div>
-                </li>
+            <div class="modal-body" id="containerRepoManage">
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -514,7 +528,7 @@
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal    
-
+	
 	]]>
   </Content>
 </Module>
