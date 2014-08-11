@@ -63,7 +63,8 @@
           "ladda",
           "BCNManager",
           "iwc",
-          "ConfigManager"
+          "ConfigManager",
+          "utils"
           ], function(a,rivets) {
             async = a;
 
@@ -76,8 +77,11 @@
             var model = {};
             model.config = [];
 
-            //gadgets.util.registerOnLoadHandler(init);
-         
+            if (openapp.param.user()) {    
+              closeAutorisationWindow();
+            }
+
+            //gadgets.util.registerOnLoadHandler(init);         
             //function init(){
                   
             space = new openapp.oo.Resource(openapp.param.space());

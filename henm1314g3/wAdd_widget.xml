@@ -42,11 +42,17 @@
 			    "bootstrap",
 			    "spin",
 			    "ladda",
-			    "iwc"
+			    "iwc",
+			    "utils"
 			    ], function() {
 
 					var space;
 					var iwcClient;
+
+					
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					
 					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){

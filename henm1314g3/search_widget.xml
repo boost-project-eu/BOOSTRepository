@@ -48,8 +48,10 @@
 			    "ConfigManager",
 			    "repositories",
 			    "UserManager",
-			    "iwc"
+			    "iwc",
+			    "utils"
 			    ], function(a, rivets, Ractive) {
+
 			    	async = a;
 
 
@@ -78,6 +80,11 @@
 
 
 					//gadgets.util.registerOnLoadHandler(init);
+
+
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 
 					//function init(){
 

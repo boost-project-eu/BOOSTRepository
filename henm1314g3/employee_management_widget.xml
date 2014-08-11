@@ -50,7 +50,8 @@
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
-			    "UserManager"
+			    "UserManager",
+			    "utils"
 			    ], function(a, Ractive, Ladda, bootbox) {
 					async = a;			
 					var space;
@@ -66,6 +67,11 @@
 					var ractiveAddEmployee;
 					var ractiveDeleteEmployee;
 					var ractiveSetLIEmployee;
+					
+					
+					if (openapp.param.user()) {    
+						closeAutorisationWindow();
+					}
 					
 		//			gadgets.util.registerOnLoadHandler(init);
 					
