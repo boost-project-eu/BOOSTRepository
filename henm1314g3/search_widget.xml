@@ -107,8 +107,6 @@
 								break;
 							}
 						}
-						console.log(model.config.repositorySelection);
-						console.log("==================================");
 		     		});
 					//}
 
@@ -510,7 +508,7 @@
             <li class="list-group-item">
               <div class="checkbox">
                 <label>
-                  <input class="repositorySelection" rv-data-name="repository.name" rv-checked="repository.isSelected" type="checkbox"> {{name}}
+                  <input class="repositorySelection" name="repository.name" checked={{isSelected}} type="checkbox"> {{name}}
                 </label>
               </div>
             </li>

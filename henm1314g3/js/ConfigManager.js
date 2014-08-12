@@ -6,9 +6,14 @@ Config.prototype.getTypeName = function(){
 
 function Config(object){
 	BoostObject.call(this, object);
-
-	if(object.hasOwnProperty("repositorySelection"))
+	if(object.hasOwnProperty("repositorySelection")){
 		this.repositorySelection = object.repositorySelection;
+		for(var i = 0; i < repositories.length; i++){
+			if (!this.repositorySelection[i].name[0]){
+				this.repositorySelection[i].name[0] = repositories[i].name;
+			}
+		}
+	}
 	else{
 		this.repositorySelection = [];
 		for(var i = 0; i < repositories.length; i++){
