@@ -35,7 +35,6 @@
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
 				"async",
-				"rivets",
 				"ractive",
 			    "jquery",
 			    "search_youtube",
@@ -50,7 +49,7 @@
 			    "UserManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, rivets, Ractive) {
+			    ], function(a, Ractive) {
 
 			    	async = a;
 
@@ -331,12 +330,6 @@
 							});
 						});  // end of the retrieveAccessRights
 
-
-						// rivets.bind($("#selectRepositoryButtonGroup").get(), {model:model});
-						// rivets.bind($("#resultsList").get(), {model:model});
-						// rivets.bind($("#pagination").get(),  {model:model});
-						// rivets.bind($("#progressbar").get(),  {model:model});
-
 						 // help button click 
 
 			    	  $('#question').click(function(){
@@ -388,8 +381,6 @@
               		}
 
 					$(document).ready(function(){
-
-						rivets.bind($("#manageRepoModal").get(), {model:model});
 
 						$("#saveRepoButton").click(function(){
 			                model.config.update(function(){
