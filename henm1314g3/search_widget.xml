@@ -37,6 +37,7 @@
 				"async",
 				"rivets",
 			    "bootbox",
+			    "ractive",
 			    "bootstrap",
 			    "jquery",
 			    "search_youtube",
@@ -49,7 +50,7 @@
 			    "UserManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, rivets, b) {
+			    ], function(a, rivets, b, Ractive) {
 			    	async = a;
 			    	bootbox = b;
 
