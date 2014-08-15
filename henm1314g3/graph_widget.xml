@@ -39,18 +39,19 @@
 			require( [
 				"async",
 				"highcharts",
+			    "bootbox",
 				"highcharts_exporting",
 			    "jquery",
 			    "bootstrap",
 			    "EmployeeManager",
-			    "bootbox",
 			    "UserManager",
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, highCharts) {
+			    ], function(a, highCharts, b) {
 			    	async = a;
+			    	bootbox = b;
 			    	Highcharts =  highCharts;
 
 					var userAccessRights; 

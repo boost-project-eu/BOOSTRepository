@@ -43,10 +43,10 @@
 				"ractive",
 				"ractiveValidator",
 			    "ladda",
+			    "bootbox",
 			    "jquery",
 			    "bootstrap",
 			    "EmployeeManager",
-			    "bootbox",
 			    "spin",
 			    "BCNManager",
 			    "LearningDocumentsManager",
@@ -54,9 +54,9 @@
 			    "iwc",
 			    "bootstrapDatepicker",
 			    "utils"
-			    ], function(a, Ractive, RactiveValidator, Ladda) {
+			    ], function(a, Ractive, RactiveValidator, Ladda, b) {
 			    	async = a;
-
+			    	bootbox = b;
 					var space;
 					var employeeList;
 					var bcnsList;

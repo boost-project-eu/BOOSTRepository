@@ -35,24 +35,23 @@
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
 				"async",
-				"ractive",
+				"rivets",
+			    "bootbox",
+			    "bootstrap",
 			    "jquery",
 			    "search_youtube",
 			    "search_slideshare",
 			    "search_scribd",
 			    "linkify",
-			    "bootstrap",
-			    "bootbox",
 			    "AccessRightsManager",
 			    "ConfigManager",
 			    "repositories",
 			    "UserManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, Ractive) {
-
+			    ], function(a, rivets, b) {
 			    	async = a;
-
+			    	bootbox = b;
 
 					var userAccessRights; 
 					var userList;
@@ -91,7 +90,7 @@
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
 
-
+					//Init youtube api
 					onYouTubeClientLoad();
 					retrieveConfig(space, function(configObject){
 						model.config = configObject;
