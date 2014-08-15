@@ -36,22 +36,22 @@
 			require( [
 				"async",
 				"rivets",
+			    "bootbox",
+			    "bootstrap",
 			    "jquery",
 			    "search_youtube",
 			    "search_slideshare",
 			    "search_scribd",
 			    "linkify",
-			    "bootstrap",
-			    "bootbox",
 			    "AccessRightsManager",
 			    "ConfigManager",
 			    "repositories",
 			    "UserManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, rivets) {
+			    ], function(a, rivets, b) {
 			    	async = a;
-
+			    	bootbox = b;
 
 					var userAccessRights; 
 					var userList;

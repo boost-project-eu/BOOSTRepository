@@ -57,8 +57,9 @@
 			    "repositories",
 			    "iwc",
 			    "utils"
-			    ], function(a, Ractive, Ladda, bootbox) {
+			    ], function(a, Ractive, Ladda, b) {
 			    	async = a;
+			    	bootbox = b;
 			
 					var space;
 					var iwcClient;

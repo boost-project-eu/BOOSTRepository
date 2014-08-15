@@ -54,6 +54,7 @@
       require( [
           "async",
           "rivets",
+          "bootbox",
           "repositories",
           "ladda",
           "jquery",
@@ -65,9 +66,9 @@
           "iwc",
           "ConfigManager",
           "utils"
-          ], function(a,rivets) {
+          ], function(a,rivets, b) {
             async = a;
-
+            bootbox = b;
             var space;
             var iwcClient;
             var bcnsList = new Array();
