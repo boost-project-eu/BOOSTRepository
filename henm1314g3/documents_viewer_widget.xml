@@ -50,9 +50,9 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, bootbox) {
+			    ], function(a, b) {
 			    	async = a;
-
+			    	bootbox = b;
 
 					var iwcClient;
 					var userAccessRights;

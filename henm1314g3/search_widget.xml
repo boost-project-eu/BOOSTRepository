@@ -49,9 +49,9 @@
 			    "UserManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, rivets, bootbox) {
+			    ], function(a, rivets, b) {
 			    	async = a;
-
+			    	bootbox = b;
 
 					var userAccessRights; 
 					var userList;

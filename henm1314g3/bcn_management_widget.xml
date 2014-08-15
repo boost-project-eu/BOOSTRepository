@@ -54,9 +54,9 @@
 			    "iwc",
 			    "bootstrapDatepicker",
 			    "utils"
-			    ], function(a, Ractive, RactiveValidator, Ladda, bootbox) {
+			    ], function(a, Ractive, RactiveValidator, Ladda, b) {
 			    	async = a;
-
+			    	bootbox = b;
 					var space;
 					var employeeList;
 					var bcnsList;

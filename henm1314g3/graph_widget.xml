@@ -49,8 +49,9 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, highCharts, bootbox) {
+			    ], function(a, highCharts, b) {
 			    	async = a;
+			    	bootbox = b;
 			    	Highcharts =  highCharts;
 
 					var userAccessRights; 
