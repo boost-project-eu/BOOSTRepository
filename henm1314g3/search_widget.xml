@@ -76,6 +76,7 @@
 				    										"</p>" +
 				    									"</a>";
 				    var ractiveSearchHeader;
+				    var ractiveManageRepos;
 
 
 					//gadgets.util.registerOnLoadHandler(init);
@@ -302,7 +303,7 @@
 									append: true
 							});
 
-							manageRepos = new Ractive({
+							ractiveManageRepos = new Ractive({
 									el: 'containerRepoManage',
 									template: '#templateManage',
 									data: {
@@ -313,6 +314,7 @@
 
 							ractiveSearchHeader.on({
 								manageRepos: function (event){
+									ractiveManageRepos.set({model: model});
 									$("#manageRepoModal").modal();
 								},
 								activate: function (event){
@@ -370,8 +372,9 @@
 
 						$("#saveRepoButton").click(function(){
 			                model.config.update(function(){
-			                  publishConfigChanged(model.config.uri);
-			                  $("#manageRepoModal").modal("hide");
+			                  	publishConfigChanged(model.config.uri);
+								ractiveSearchHeader.set({model: model});
+			                 	$("#manageRepoModal").modal("hide");
 			                });
 			             });
 
