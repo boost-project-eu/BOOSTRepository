@@ -264,6 +264,18 @@
 						iwcClient.publish(intent);
 					}
 
+					function publishConfigChanged(configUri){
+		                var intent = {
+		                  component: "",
+		                  data: configUri,
+		                  dataType: "text/json",
+		                  flags :["PUBLISH_GLOBAL"],
+		                  action: "CONFIG_CHANGE"
+		                };
+
+	                iwcClient.publish(intent);
+              		}
+
 					$(function(){
 
 						
@@ -330,7 +342,7 @@
 							});
 						});  // end of the retrieveAccessRights
 
-						 // help button click 
+						// help button click 
 
 			    	  $('#question').click(function(){
 			        	$('#descriptionModal').modal({
@@ -351,36 +363,10 @@
 							});
 							}
 						});
-					});
-
-					function renderSearchProgressBar(){
-							var progressBar =       "<div class='progress progress-striped active'>" +
-					                                    "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
-					                                        "<span>Searching...</span>" +
-					                                    "</div>" +
-					                                "</div>";
-					        $("#resultsFooter").empty();
-					        $("#resultsFooter").append(progressBar);
-					}
-
 
 					//======================================
 					//Manage repositories functions
 					//======================================
-
-					function publishConfigChanged(configUri){
-		                var intent = {
-		                  component: "",
-		                  data: configUri,
-		                  dataType: "text/json",
-		                  flags :["PUBLISH_GLOBAL"],
-		                  action: "CONFIG_CHANGE"
-		                };
-
-	                iwcClient.publish(intent);
-              		}
-
-					$(document).ready(function(){
 
 						$("#saveRepoButton").click(function(){
 			                model.config.update(function(){
@@ -394,6 +380,15 @@
 			              });
 					});
 
+					function renderSearchProgressBar(){
+							var progressBar =       "<div class='progress progress-striped active'>" +
+					                                    "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
+					                                        "<span>Searching...</span>" +
+					                                    "</div>" +
+					                                "</div>";
+					        $("#resultsFooter").empty();
+					        $("#resultsFooter").append(progressBar);
+					}
 				});
 			});
 
