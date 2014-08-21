@@ -283,10 +283,10 @@
 						// Get the access rights: 
 						retrieveAccessRights(function(accessRights){
 							userAccessRights = accessRights.getUserAccessRights();
-							
+							agreed = userAccessRights.hasAgreedToLicense;
 							//Check if user has agreed to license
-			
-								if(!userAccessRights.hasAgreedToLicense){
+							
+								if(!agreed){
 								showModalAcceptTermsOfUse();							
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
 								showModalContactManager();		

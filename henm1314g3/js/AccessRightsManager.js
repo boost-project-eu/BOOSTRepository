@@ -35,8 +35,9 @@ function retrieveAccessRights(callback){
 		if(accessRights.length == 0)
 			callback(new AccessRights({}));
 		else{
-			if(accessRights.length > 1)
+			if(accessRights.length > 1){
 				console.log("Warning: More than one boost access rights resource is stored in the space. This leads to unwanted behaviour.");
+			}
 			callback(accessRights[0]);
 		}
 	});
