@@ -556,7 +556,7 @@
 												{{/}}
 											</div>
 												<span>
-													<textarea value='{{description}}' class="form-control" placeholder="Enter description"></textarea>												</div>
+													<textarea value='{{description}}' class="form-control" placeholder="Enter description"></textarea>
 												</span>
 											
 										</div>
