@@ -547,7 +547,7 @@
 							<div class="form-group">
 								<label for="inputNewBcnLi">Learning indicators</label>
 									{{#bcn.learningIndicators : num}}	
-										<div id = "inputNewBcnLi">
+										<div id = "inputNewBcnLi"  style="margin-bottom: 20px;">
 											<div class="input-group" style="margin-bottom:5px;" proxy-click="li-input">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-flag"></span></span>
 												<input value='{{name}}' type="text" class="form-control" placeholder="Enter learning indicator name">
@@ -555,6 +555,10 @@
 												<span class='input-group-btn'><button on-click="removeLI" class='btn btn-default' type='button'>&times;</button></span>
 												{{/}}
 											</div>
+												<span>
+													<textarea value='{{description}}' class="form-control" placeholder="Enter description"></textarea>
+												</span>
+											
 										</div>
 									{{/bcn.learningIndicators}}	
 			 				</div>
