@@ -43,6 +43,7 @@
 			    "search_youtube",
 			    "search_slideshare",
 			    "search_scribd",
+			    "search_wikipedia",
 			    "linkify",
 			    "AccessRightsManager",
 			    "ConfigManager",
@@ -100,7 +101,8 @@
 						addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
 						addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
 						addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
-						
+						addRepository(new WikiSearch(1));
+
 						for(var i = 0; i < repositories.length; i++){
 							if(repositories[i].isEnabled){
 								repositories[i].activate();
@@ -231,7 +233,6 @@
 							ractiveSearchHeader.set({model: model});
 							this.visibleResults = [];
 							newRepository.searchFunctions.search(query, function(results){
-								
 								newRepository.searching = false;
 								ractiveSearchHeader.set({model: model});
 								newRepository.pageOffset = 1;
@@ -351,12 +352,6 @@
 			        		keyboard: true
 			          	});
 			        	}); 
-
-
-						$("#search_button").click(function(){
-							model.selectedRepository.search($("#search_field").val(), function(){
-							});
-						});
 
 						$("#search_field").keypress(function(event){
 							if(event.which == 13){
