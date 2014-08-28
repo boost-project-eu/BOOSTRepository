@@ -9,7 +9,7 @@ WikiSearch.prototype.search = function(query, callback){
     this.query = query;
     $.ajax({
         type: "GET",
-        url: "http://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="+query+"&callback=?",
+        url: "http://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="+query+"&callback=?",                        
         contentType: "application/json; charset=utf-8",
         async: false,
         dataType: "json",
@@ -17,6 +17,7 @@ WikiSearch.prototype.search = function(query, callback){
             callback(wikiDocumentProcessor(data));
         },
         error: function (errorMessage) {
+            console.log("Wrong  Wikipedia query");
         }
     });
 
@@ -26,12 +27,11 @@ function wikiDocumentProcessor(response){
     var resultDocumentsList = [];
 
     data = response;
-    console.log(data);
+    console.log (response);
 
     var markup = data.parse.text["*"];
-    console.log(markup);
-    console.log("resultItem:");
     var resultItem = $('<div></div>').html(markup);
+    var images = ($(resultItem).find('img'));
 
     // remove links as they do not work
     resultItem.find('a').each(function(){
@@ -42,13 +42,26 @@ function wikiDocumentProcessor(response){
     // remove cite error
     resultItem.find('.mw-ext-cite-error').remove();
 
+    var description = $(resultItem).find('p').text();
+    var imageUrl = images[0].src || "";
+    if (images[0].src == "http://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Padlock-silver.svg/20px-Padlock-silver.svg.png")
+        var imageUrl = images[1].src;
+    console.log (imageUrl);
+
+    if(description == "")
+    {
+        description = "Sorry, nothing was found by your request";
+        imageUrl = "http://www.clipartbest.com/cliparts/aTq/erd/aTqerd4rc.jpeg";
+    }
+
     var documentItem = {
-        name : data.parse.title,
-        description : $(resultItem).find('p').text(),
-        type : "wikipedia",
-        url : "wikipedia.com",
+        name: data.parse.title,
+        description: description,
+        type: "wikipedia",
+        url: "http://en.wikipedia.org/wiki/" + data.parse.title,
         contentSpecificData: {
-            imageUrl : "http://cs421729.vk.me/v421729446/a167/stklWKko7E0.jpg"
+            imageUrl : imageUrl,
+            wiki: true 
         }
     };
     resultDocumentsList.push(documentItem);

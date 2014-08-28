@@ -335,7 +335,12 @@
 									model.selectedRepository.prevResultsPage();
 								},
 								resultClick: function(event){
-									event.context.click();
+									if(event.context.type == "wikipedia"){
+		                				var win = window.open('http://www.google.com', '_blank');
+										win.focus();
+									}else{
+										event.context.click();
+									}	
 								},
 								questionModal: function(event){
 									$('#descriptionModal').modal({
@@ -431,11 +436,24 @@
 				</div>
 				<div class="list-group" id="resultsList">
 					{{#model.selectedRepository.visibleResults}}
-						<a on-click="resultClick" href='#' class='list-group-item' style='min-height:150px;'>
-							<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
-							<h5>{{name}}</h5>
-							<p><small>{{description}}</small></p>
-						</a>
+
+						{{#contentSpecificData.wiki}}
+							<a href={{url}} target="_blank" class='list-group-item' style='min-height:150px;'>
+								<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+									<h5>{{name}}</h5>
+									<p><small>{{description}}</small></p>
+							</a>
+						{{/contentSpecificData.wiki}}
+
+						{{^contentSpecificData.wiki}}
+							<a on-click="resultClick" href='#' class='list-group-item' style='min-height:150px;'>
+								<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+									<h5>{{name}}</h5>
+									<p><small>{{description}}</small></p>
+							</a>
+						{{/contentSpecificData.wiki}}
+
+							
 					{{/model.selectedRepository.visibleResults}}
 				</div>
 				<div class="panel-footer" id="resultsFooter"></div>
