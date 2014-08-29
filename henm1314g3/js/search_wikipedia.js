@@ -26,37 +26,52 @@ WikiSearch.prototype.search = function(query, callback){
 function wikiDocumentProcessor(response){
     var resultDocumentsList = [];
 
-    data = response;
+    var data = response;
+    var url = "";
+    var description = "";
+    var title = ""
+    var imageUrl = "";
 
-    var markup = data.parse.text["*"];
-    var resultItem = $('<div></div>').html(markup);
-    var images = ($(resultItem).find('img'));
-
-    // remove links as they do not work
-    resultItem.find('a').each(function(){
-      $(this).replaceWith($(this).html());
-    });
-    resultItem.find('sup').remove();
-
-    // remove cite error
-    resultItem.find('.mw-ext-cite-error').remove();
-
-    var description = $(resultItem).find('p').text();
-    var imageUrl = images[0].src || "";
-    if (images[0].src == "http://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Padlock-silver.svg/20px-Padlock-silver.svg.png")
-        var imageUrl = images[1].src;
-
-    if(description == "")
-    {
-        description = "Sorry, nothing was found by your request";
+    console.log(data);
+    if (data.error){
+        url = "http://en.wikipedia.org/wiki/";
         imageUrl = "http://www.clipartbest.com/cliparts/aTq/erd/aTqerd4rc.jpeg";
+        title = "Incorrect search query";
+        description = "You have some incprrect symbols in your search qery, please check"
+    }
+    else{
+        var markup = data.parse.text["*"];
+        var resultItem = $('<div></div>').html(markup);
+        var images = ($(resultItem).find('img'));
+
+        // remove links as they do not work
+        resultItem.find('a').each(function(){
+          $(this).replaceWith($(this).html());
+        });
+        resultItem.find('sup').remove();
+
+        // remove cite error
+        resultItem.find('.mw-ext-cite-error').remove();
+
+        description = $(resultItem).find('p').text();
+        imageUrl = images[0].src || "";
+        if (images[0].src == "http://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Padlock-silver.svg/20px-Padlock-silver.svg.png")
+            var imageUrl = images[1].src;
+
+        if(description == "")
+        {
+            description = "Sorry, nothing was found by your request";
+            imageUrl = "http://www.clipartbest.com/cliparts/aTq/erd/aTqerd4rc.jpeg";
+        }
+
+        title =  data.parse.title;
     }
 
     var documentItem = {
-        name: data.parse.title,
+        name: title,
         description: description,
         type: "wikipedia",
-        url: "http://en.wikipedia.org/wiki/" + data.parse.title,
+        url: url,
         contentSpecificData: {
             imageUrl : imageUrl,
             wiki: true 
