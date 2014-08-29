@@ -208,7 +208,7 @@
 							newRepository.currentPageIndex = 0;
 							newRepository.hasPrevPage = newRepository.searchFunctions.hasPrevPage();
 							newRepository.hasNextPage = newRepository.searchFunctions.hasNextPage();
-							newRepository.hasResults = (results.length > 0);
+							newRepository.hasResults = (results.length > 1);
 							updatePagination();
 							updateVisibleResults();
 						}
@@ -335,12 +335,7 @@
 									model.selectedRepository.prevResultsPage();
 								},
 								resultClick: function(event){
-									if(event.context.type == "wikipedia"){
-		                				var win = window.open('http://www.google.com', '_blank');
-										win.focus();
-									}else{
-										event.context.click();
-									}	
+									event.context.click();
 								},
 								questionModal: function(event){
 									$('#descriptionModal').modal({

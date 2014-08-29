@@ -27,7 +27,6 @@ function wikiDocumentProcessor(response){
     var resultDocumentsList = [];
 
     data = response;
-    console.log (response);
 
     var markup = data.parse.text["*"];
     var resultItem = $('<div></div>').html(markup);
@@ -46,7 +45,6 @@ function wikiDocumentProcessor(response){
     var imageUrl = images[0].src || "";
     if (images[0].src == "http://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Padlock-silver.svg/20px-Padlock-silver.svg.png")
         var imageUrl = images[1].src;
-    console.log (imageUrl);
 
     if(description == "")
     {
