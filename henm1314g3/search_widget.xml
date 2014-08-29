@@ -43,6 +43,7 @@
 			    "search_youtube",
 			    "search_slideshare",
 			    "search_scribd",
+			    "search_wikipedia",
 			    "linkify",
 			    "AccessRightsManager",
 			    "ConfigManager",
@@ -100,7 +101,8 @@
 						addRepository(new YoutubeSearch(ITEMS_PER_SEARCH));
 						addRepository(new SlideshareSearch(ITEMS_PER_SEARCH));
 						addRepository(new ScribdSearch(ITEMS_PER_SEARCH));
-						
+						addRepository(new WikiSearch(1));
+
 						for(var i = 0; i < repositories.length; i++){
 							if(repositories[i].isEnabled){
 								repositories[i].activate();
@@ -206,7 +208,7 @@
 							newRepository.currentPageIndex = 0;
 							newRepository.hasPrevPage = newRepository.searchFunctions.hasPrevPage();
 							newRepository.hasNextPage = newRepository.searchFunctions.hasNextPage();
-							newRepository.hasResults = (results.length > 0);
+							newRepository.hasResults = (results.length > 1);
 							updatePagination();
 							updateVisibleResults();
 						}
@@ -231,7 +233,6 @@
 							ractiveSearchHeader.set({model: model});
 							this.visibleResults = [];
 							newRepository.searchFunctions.search(query, function(results){
-								
 								newRepository.searching = false;
 								ractiveSearchHeader.set({model: model});
 								newRepository.pageOffset = 1;
@@ -352,12 +353,6 @@
 			          	});
 			        	}); 
 
-
-						$("#search_button").click(function(){
-							model.selectedRepository.search($("#search_field").val(), function(){
-							});
-						});
-
 						$("#search_field").keypress(function(event){
 							if(event.which == 13){
 								model.selectedRepository.search($("#search_field").val(), function(){
@@ -436,11 +431,24 @@
 				</div>
 				<div class="list-group" id="resultsList">
 					{{#model.selectedRepository.visibleResults}}
-						<a on-click="resultClick" href='#' class='list-group-item' style='min-height:150px;'>
-							<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
-							<h5>{{name}}</h5>
-							<p><small>{{description}}</small></p>
-						</a>
+
+						{{#contentSpecificData.wiki}}
+							<a href={{url}} target="_blank" class='list-group-item' style='min-height:150px;'>
+								<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+									<h5>{{name}}</h5>
+									<p><small>{{description}}</small></p>
+							</a>
+						{{/contentSpecificData.wiki}}
+
+						{{^contentSpecificData.wiki}}
+							<a on-click="resultClick" href='#' class='list-group-item' style='min-height:150px;'>
+								<img src={{contentSpecificData.imageUrl}} style='margin-right:10px; height:50px;' class='pull-left' alt=''>
+									<h5>{{name}}</h5>
+									<p><small>{{description}}</small></p>
+							</a>
+						{{/contentSpecificData.wiki}}
+
+							
 					{{/model.selectedRepository.visibleResults}}
 				</div>
 				<div class="panel-footer" id="resultsFooter"></div>

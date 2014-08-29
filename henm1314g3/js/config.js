@@ -18,6 +18,7 @@ require.config({
         search_youtube: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_youtube",
         search_slideshare: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_slideshare",
         search_scribd: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_scribd",
+        search_wikipedia: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/search_wikipedia",
         linkify: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/linkify",
         scribd_api: "http://www.scribd.com/javascripts/scribd_api",
         highcharts: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/highcharts",
@@ -69,11 +70,11 @@ require.config({
             deps: ['async']
         },
         highcharts: {
-               exports: "Highcharts",
-                deps: ['jquery'] 
+            exports: "Highcharts",
+            deps: ['jquery'] 
         },
         highcharts_exporting: {
-               deps: ['highcharts']
+            deps: ['highcharts']
         },
         bootstrap: {
             deps: ['jquery']
