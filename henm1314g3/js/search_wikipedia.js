@@ -63,6 +63,7 @@ function wikiDocumentProcessor(response){
             description = "Sorry, nothing was found by your request";
             imageUrl = "http://www.clipartbest.com/cliparts/aTq/erd/aTqerd4rc.jpeg";
         }
+        url = "http://en.wikipedia.org/wiki/" + data.parse.title;
 
         title =  data.parse.title;
     }
