@@ -440,7 +440,7 @@
 
 								ractiveSetLIEmployee.on("saveSetLI", function(event){
 									console.log("In Update")
-									console.log(event)
+									// console.log(event)
 
 
 									var employee = this.get("employee");
@@ -453,6 +453,7 @@
 										publishEmployeeUpdated(employee.uri);
 
 										//Replace the old employee in the array with the modified one
+										console.log(employee);
 										employeeList[employeeList.indexOf(originalEmployee)] = employee;
 
 										//Tell the overview ractive that the employee was updated
@@ -465,6 +466,9 @@
 								});
 
 								ractiveSetLIEmployee.on("myFunction",  function(event){
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false
+									});
 								});
 
 								$("#loadingEmployeeText").addClass("hidden");
