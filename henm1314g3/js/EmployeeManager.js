@@ -70,17 +70,19 @@ function retrieveAllEmployees(space, callback){
 
 function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
 	//Add learning levels for new/updated BCNs
+
 	for(var i = 0; i < bcnsToUpdate.length; i++){
 		var bcn = bcnsToUpdate[i];
 		if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
 			employee.learningLevels[bcn.uri] = {};
 			employee.learningLevels[bcn.uri].isRelevant = false;
-			employee.learningLevels[bcn.uri].startDate = Date.now();;
+			employee.learningLevels[bcn.uri].startDate = Date.now();
 		}
 		if(!employee.learningLevels[bcn.uri].hasOwnProperty("isRelevant"))
 			employee.learningLevels[bcn.uri].isRelevant = false;
 		if(!employee.learningLevels[bcn.uri].hasOwnProperty("startDate"))
-			employee.learningLevels[bcn.uri].startDate = Date.now();;
+			employee.learningLevels[bcn.uri].startDate = Date.now();
+		console.log(employee.learningLevels[bcn.uri]);
 		var learningLevel = employee.learningLevels[bcn.uri];
 		for(var j = 0; j < bcn.learningIndicators.length; j++){
 			var li = bcn.learningIndicators[j];

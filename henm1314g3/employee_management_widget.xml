@@ -84,7 +84,9 @@
 		//			}
 
 					function iwcCallback(intent){
+						console.log(intent.action);
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
+							console.log("in iwc Callbackk2");
 							$('#setLIModal').modal("hide");
 
 							var message = "<div>Please wait while the employees are updated to reflect these changes.</div>"
@@ -316,8 +318,7 @@
 									//We are editing a cloned employee object
 									//If the user discards the changes we do not have to do anything.
 									//If the user saves the changes we just replace the original employee with the clone
-									console.log(" In Set LIiiiiiiiiiiii")
-									console.log(event);
+									
 									var clone = event.context.clone();
 									bindEmployeeToBCNs(clone);
 									ractiveSetLIEmployee.set("bcnList", bcnList);
@@ -325,7 +326,13 @@
 									ractiveSetLIEmployee.set("originalEmployee", event.context);
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false
-									});									;
+									}).off().on("changeDate", function(e){
+										// ractiveAddBcn.set("bcn.deadline", e.date);
+
+									});
+									// $('.input-group.date').datepicker({
+									//     keyboardNavigation: false
+									// })
 									$('#setLIModal').modal();
 								},	
 									showHelpEmployeeGraph: function ( event ) {
@@ -457,6 +464,9 @@
 									});
 								});
 
+								ractiveSetLIEmployee.on("myFunction",  function(event){
+								});
+
 								$("#loadingEmployeeText").addClass("hidden");
 							});
 						});
@@ -465,6 +475,9 @@
 					});
 
 					function bindEmployeeToBCNs(employee){
+						console.log("bind Employee");
+						console.log(employee);
+
 						for(var i=0; i < bcnList.length; i++){
 							var bcn = bcnList[i];
 							bcn.employeeBcnData = employee.learningLevels[bcn.uri];
@@ -684,7 +697,7 @@
 			      				<div class="form-group">
 									<label>Deadline</label>
 									<div class="input-group date">
-									  <input type="text" value='{{employeeLiData.startDate}}' class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									  <input data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-change="myFunction" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
 								</div>
 								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
