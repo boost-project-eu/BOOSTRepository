@@ -51,6 +51,7 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager",
+			    "bootstrapDatepicker",
 			    "utils"
 			    ], function(a, Ractive, Ladda, b) {
 					async = a;			
@@ -264,15 +265,7 @@
 								showOverallProgress: function ( event ) {
 									publishShowOverallEmployeeProgress();
 								},
-								addNewEmployee: function ( event ) {
-							
-									var employee = new Employee({});
-									ractiveAddEmployee.set("employee", employee);
-									ractiveAddEmployee.set("nameError", false);
-									ractiveAddEmployee.set("emailError", false);
-									$("#addEmployeeModal").modal();
-								},
-
+								
 								showHelpAddEmployee: function( event ){
 									$('.tooltip-addEmployee').tooltip();
 									
@@ -323,11 +316,16 @@
 									//We are editing a cloned employee object
 									//If the user discards the changes we do not have to do anything.
 									//If the user saves the changes we just replace the original employee with the clone
+									console.log(" In Set LIiiiiiiiiiiii")
+									console.log(event);
 									var clone = event.context.clone();
 									bindEmployeeToBCNs(clone);
 									ractiveSetLIEmployee.set("bcnList", bcnList);
 									ractiveSetLIEmployee.set("employee", clone);
 									ractiveSetLIEmployee.set("originalEmployee", event.context);
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false
+									});									;
 									$('#setLIModal').modal();
 								},	
 									showHelpEmployeeGraph: function ( event ) {
@@ -363,6 +361,9 @@
 								});
 
 								ractiveEditEmployee.on("saveEmployee", function (event) {
+									console.log("inUpdateEmployee");
+									console.log(event);
+
 									var employee = this.get("employee");
 									if(!checkInputEmployee(employee, this))
 										return;
@@ -388,38 +389,6 @@
 
 								});
 					
-
-								//Add employee ractive which is responsible to render the modal to add a new employee
-								ractiveAddEmployee = new Ractive({
-									el: 'containerEmployeeAdd',
-								    template: '#employeeTemplate',
-								    data: { "employee" : null,
-								    		"nameError" : false,
-								    		"emailError" : false
-								    	  },
-								    append: true
-								});
-
-								ractiveAddEmployee.on("saveEmployee", function (event) {
-									var employee = this.get("employee");
-									if(!checkInputEmployee(employee, this))
-										return;
-
-									var buttonElement = event.node;
-									//Show the loading indicator of the save button
-									var l = Ladda.create(buttonElement);
-									l.start();
-									ensureEmplyoeeBCNConsistency(employee, bcnList, []);
-									employee.create(function(){
-										employeeList.push(employee);
-										sortEmployees();
-
-										publishEmployeeCreated(employee.uri);
-										//Hide the loading indicator of the save button
-										l.stop();
-										$("#addEmployeeModal").modal("hide");
-									});
-								});
 
 								//Delete employee ractive which is responsible to render the modal used to delete an employee
 								ractiveDeleteEmployee = new Ractive({
@@ -463,6 +432,10 @@
 								});
 
 								ractiveSetLIEmployee.on("saveSetLI", function(event){
+									console.log("In Update")
+									console.log(event)
+
+
 									var employee = this.get("employee");
 									var originalEmployee = this.get("originalEmployee");
 									var buttonElement = event.node;
@@ -708,6 +681,12 @@
 	      			<ul style="margin-bottom:0px;" class="list-group">
 		      			{{#learningIndicators}}
 							<li class="list-group-item">
+			      				<div class="form-group">
+									<label>Deadline</label>
+									<div class="input-group date">
+									  <input type="text" value='{{employeeLiData.startDate}}' class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</div>
 								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
 								<div class="checkbox">
 		  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">

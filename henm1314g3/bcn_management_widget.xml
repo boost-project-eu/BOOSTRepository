@@ -236,7 +236,8 @@
 								    data: { "bcn" : new BCN({}),
 								    		"originalBcn" : new BCN({}),
 								    		"priorityArray" : priorityArray,
-								    		"bcnsList" : bcnsList},
+								    		"bcnsList" : bcnsList
+								    },
 								    append: true
 								});
 

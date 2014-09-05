@@ -14,7 +14,6 @@ BoostObject.prototype.create = function(callback, parentResource){
 		type: "my:ns:" + thisObject.getTypeName(),
 		representation: thisObject, //The representation refers to the actual object
 		callback: function(resource){
-			console.log("In create");
 			//Now we have an URI for our BCN and we need to update the resource
 			thisObject.uri = resource.getURI();
 			resource.setRepresentation(thisObject, "application/json", function(){
