@@ -370,6 +370,7 @@
 			                  	publishConfigChanged(model.config.uri);
 								ractiveSearchHeader.set({model: model});
 			                 	$("#manageRepoModal").modal("hide");
+			                	location.reload();
 			                });
 			             });
 
