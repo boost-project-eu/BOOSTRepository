@@ -52,6 +52,7 @@
 			    "iwc",
 			    "UserManager",
 			    "bootstrapDatepicker",
+			    "moment",
 			    "utils"
 			    ], function(a, Ractive, Ladda, b) {
 					async = a;			
@@ -175,6 +176,8 @@
 					}
 
 					function publishEmployeeUpdated(employeeUri){
+						console.log("In publish Employeeee");
+						console.log(employeeUri);
 						var intent = {
 							component: "",
 							data: employeeUri,
@@ -326,13 +329,8 @@
 									ractiveSetLIEmployee.set("originalEmployee", event.context);
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false
-									}).off().on("changeDate", function(e){
-										// ractiveAddBcn.set("bcn.deadline", e.date);
-
 									});
-									// $('.input-group.date').datepicker({
-									//     keyboardNavigation: false
-									// })
+									
 									$('#setLIModal').modal();
 								},	
 									showHelpEmployeeGraph: function ( event ) {
@@ -368,8 +366,8 @@
 								});
 
 								ractiveEditEmployee.on("saveEmployee", function (event) {
-									console.log("inUpdateEmployee");
-									console.log(event);
+									// console.log("inUpdateEmployee");
+									// console.log(event);
 
 									var employee = this.get("employee");
 									if(!checkInputEmployee(employee, this))
@@ -439,7 +437,7 @@
 								});
 
 								ractiveSetLIEmployee.on("saveSetLI", function(event){
-									console.log("In Update")
+									// console.log("In Update")
 									// console.log(event)
 
 
@@ -452,8 +450,10 @@
 									employee.update(function(){
 										publishEmployeeUpdated(employee.uri);
 
-										//Replace the old employee in the array with the modified one
+										console.log("in Ractive setEmployee");
 										console.log(employee);
+										//Replace the old employee in the array with the modified one
+										// console.log(employee);
 										employeeList[employeeList.indexOf(originalEmployee)] = employee;
 
 										//Tell the overview ractive that the employee was updated
@@ -465,9 +465,13 @@
 									});
 								});
 
-								ractiveSetLIEmployee.on("myFunction",  function(event){
+								ractiveSetLIEmployee.on("changeDatePicker",  function(event){
+									console.log("In my Function");
 									$('.input-group.date').datepicker({
-									    keyboardNavigation: false
+									    keyboardNavigation: false,
+									}).off().on("changeDate", function(e){
+										var formatDate = moment(e.date);
+										event.context.employeeBcnData.startDate = formatDate.format("YYYY/MM/DD");
 									});
 								});
 
@@ -479,9 +483,6 @@
 					});
 
 					function bindEmployeeToBCNs(employee){
-						console.log("bind Employee");
-						console.log(employee);
-
 						for(var i=0; i < bcnList.length; i++){
 							var bcn = bcnList[i];
 							bcn.employeeBcnData = employee.learningLevels[bcn.uri];
@@ -693,17 +694,18 @@
 					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
 						</label> 
 					</div>
+					<div class="form-group">
+						<label>Start Date</label>
+						<div class="input-group date">
+						  <input id="myDiv" data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-blur="changeDatePicker" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+						</div>
+					</div>
 	    		</div>			
 	    		<div  id="bcn{{num}}" class="panel-collapse collapse"> 
 	      			<ul style="margin-bottom:0px;" class="list-group">
 		      			{{#learningIndicators}}
 							<li class="list-group-item">
-			      				<div class="form-group">
-									<label>Deadline</label>
-									<div class="input-group date">
-									  <input data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-change="myFunction" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-									</div>
-								</div>
+			      				
 								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
 								<div class="checkbox">
 		  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">
