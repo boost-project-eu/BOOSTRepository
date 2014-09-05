@@ -85,9 +85,7 @@
 		//			}
 
 					function iwcCallback(intent){
-						console.log(intent.action);
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
-							console.log("in iwc Callbackk2");
 							$('#setLIModal').modal("hide");
 
 							var message = "<div>Please wait while the employees are updated to reflect these changes.</div>"
@@ -176,8 +174,6 @@
 					}
 
 					function publishEmployeeUpdated(employeeUri){
-						console.log("In publish Employeeee");
-						console.log(employeeUri);
 						var intent = {
 							component: "",
 							data: employeeUri,
@@ -366,8 +362,6 @@
 								});
 
 								ractiveEditEmployee.on("saveEmployee", function (event) {
-									// console.log("inUpdateEmployee");
-									// console.log(event);
 
 									var employee = this.get("employee");
 									if(!checkInputEmployee(employee, this))
@@ -437,9 +431,6 @@
 								});
 
 								ractiveSetLIEmployee.on("saveSetLI", function(event){
-									// console.log("In Update")
-									// console.log(event)
-
 
 									var employee = this.get("employee");
 									var originalEmployee = this.get("originalEmployee");
@@ -450,10 +441,7 @@
 									employee.update(function(){
 										publishEmployeeUpdated(employee.uri);
 
-										console.log("in Ractive setEmployee");
-										console.log(employee);
 										//Replace the old employee in the array with the modified one
-										// console.log(employee);
 										employeeList[employeeList.indexOf(originalEmployee)] = employee;
 
 										//Tell the overview ractive that the employee was updated
@@ -466,7 +454,6 @@
 								});
 
 								ractiveSetLIEmployee.on("changeDatePicker",  function(event){
-									console.log("In my Function");
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false,
 									}).off().on("changeDate", function(e){
