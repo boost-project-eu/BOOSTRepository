@@ -458,7 +458,7 @@
 									    keyboardNavigation: false,
 									}).off().on("changeDate", function(e){
 										var formatDate = moment(e.date);
-										event.context.employeeBcnData.startDate = formatDate.format("YYYY/MM/DD");
+										event.context.employeeBcnData.startDate = formatDate.format("MM/DD/YYYY");
 									});
 								});
 
