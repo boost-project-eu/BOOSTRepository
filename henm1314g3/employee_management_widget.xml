@@ -410,7 +410,7 @@
 									employee.delete(function(){
 										employeeList.splice(employeeList.indexOf(employee), 1);
 										//TODO: Sort the array by employee name
-										
+
 										publishEmployeeDeleted(employee.uri);
 										//Hide the loading indicator of the delete button
 										l.stop();
@@ -689,7 +689,7 @@
 					<div class="form-group">
 						<label>Start Date</label>
 						<div class="input-group date">
-						  <input id="myDiv" data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-blur="changeDatePicker" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+						  <input id="myDiv" data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-blur="changeDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
 						</div>
 					</div>
 	    		</div>			
