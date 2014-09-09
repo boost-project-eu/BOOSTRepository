@@ -89,10 +89,10 @@
 						userAccessRights = accessRights.getUserAccessRights();
 							
 							//Check if user has agreed to license
-							//console.log(userAccessRights.hasAgreedToLicense);
 			
-							// if(!userAccessRights.hasAgreedToLicense){
-							// 	showModalAcceptTermsOfUse();}							
+							if(!userAccessRights.hasAgreedToLicense){
+								showModalAcceptTermsOfUse();
+							}							
 							// } else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
 							// 	showModalContactManager();		
 							// }
@@ -135,14 +135,10 @@
 										var datePercentage = (100/deadline.diff(startDate, 'days'))*now.diff(startDate, 'days');
 										bcnsList[i].datePercentage = datePercentage;
 										bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
-										console.log("Percentage:");
-										console.log(datePercentage);
 									}
 
 								};
 								
-								// console.log("All Bcns:");
-								// console.log(bcnsList);
 								//	Get the list of Employee's
 
 								var ractiveOverview = new Ractive({
@@ -228,7 +224,6 @@
 									}
 									var bcnToAdd = this.get('bcn');
 									var saveButton = event.node;
-									console.log(bcnToAdd.deadline);
 
 									var l = Ladda.create(saveButton);
 									l.start();

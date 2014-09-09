@@ -693,7 +693,6 @@
 											if (isEmployeeGraph.bool) {
 												var $formater = $("formater");
 												for (var i=0; i<bcns.length; i++){
-												//	console.log("bcns.list " + bcns.length);
 														
 															if (bcns[i].name==this.value){
 																

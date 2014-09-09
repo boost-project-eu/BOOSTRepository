@@ -376,8 +376,6 @@
 										//Replace the old employee in the array with the modified one
 										employeeList[employeeList.indexOf(originalEmployee)] = employee;
 
-										console.log("Updated Employees");
-										console.log(employeeList[employeeList.indexOf(originalEmployee)]);
 										//Tell the overview ractive that the employee was updated
 										ractiveOverview.update();
 
@@ -445,9 +443,6 @@
 
 										//Replace the old employee in the array with the modified one
 										employeeList[employeeList.indexOf(originalEmployee)] = employee;
-
-										console.log("Updated Employees");
-										console.log(employee);
 
 										//Tell the overview ractive that the employee was updated
 										ractiveOverview.update();
