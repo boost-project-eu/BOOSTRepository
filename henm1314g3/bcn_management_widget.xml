@@ -132,7 +132,9 @@
 										var startDate = moment(bcnsList[i].startDate);
 										var deadline = moment(bcnsList[i].deadline);
 										var now = moment();
-										var datePercentage = (100/deadline.diff(startDate, 'days'))*now.diff(startDate, 'days');
+										var goalDuration = deadline.diff(startDate, 'days');
+										var dayPast = now.diff(startDate, 'days');
+										var datePercentage = (100/goalDuration) * dayPast;
 										bcnsList[i].datePercentage = datePercentage;
 										bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
 									}

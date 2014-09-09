@@ -77,12 +77,12 @@ function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
 		if(!employee.learningLevels.hasOwnProperty(bcn.uri)){
 			employee.learningLevels[bcn.uri] = {};
 			employee.learningLevels[bcn.uri].isRelevant = false;
-			employee.learningLevels[bcn.uri].startDate = d.toLocaleDateString("en-US");
+			employee.learningLevels[bcn.uri].startDate = moment().format("MM/DD/YYYY");
 		}
 		if(!employee.learningLevels[bcn.uri].hasOwnProperty("isRelevant"))
 			employee.learningLevels[bcn.uri].isRelevant = false;
 		if(!employee.learningLevels[bcn.uri].hasOwnProperty("startDate"))
-			employee.learningLevels[bcn.uri].startDate = d.toLocaleDateString("en-US");
+			employee.learningLevels[bcn.uri].startDate = moment().format("MM/DD/YYYY");
 		var learningLevel = employee.learningLevels[bcn.uri];
 		for(var j = 0; j < bcn.learningIndicators.length; j++){
 			var li = bcn.learningIndicators[j];

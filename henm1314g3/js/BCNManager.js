@@ -98,7 +98,7 @@ function retrieveAllBcns(space, callback){
 function sortBcns(bcns){
 	bcns.sort(function(a, b){
 		if (a.priority==b.priority){
-			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+			return a.name.toString().toLowerCase().localeCompare(b.name.toString().toLowerCase());
 		}
 		if(a.priority > b.priority){
 			return -1;
