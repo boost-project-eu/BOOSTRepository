@@ -40,6 +40,11 @@ function BCN(object){
 		this.deadline = object.deadline;
 	else
 		this.deadline = "";
+
+	if(object.hasOwnProperty("deadline"))
+		this.deadline = object.deadline;
+	else
+		this.deadline = "";
 }
 
 BCN.prototype.getPriorityColor = function(){
@@ -93,7 +98,7 @@ function retrieveAllBcns(space, callback){
 function sortBcns(bcns){
 	bcns.sort(function(a, b){
 		if (a.priority==b.priority){
-			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+			return a.name.toString().toLowerCase().localeCompare(b.name.toString().toLowerCase());
 		}
 		if(a.priority > b.priority){
 			return -1;

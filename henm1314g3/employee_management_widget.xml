@@ -51,6 +51,8 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "UserManager",
+			    "bootstrapDatepicker",
+			    "moment",
 			    "utils"
 			    ], function(a, Ractive, Ladda, b) {
 					async = a;			
@@ -264,15 +266,7 @@
 								showOverallProgress: function ( event ) {
 									publishShowOverallEmployeeProgress();
 								},
-								addNewEmployee: function ( event ) {
-							
-									var employee = new Employee({});
-									ractiveAddEmployee.set("employee", employee);
-									ractiveAddEmployee.set("nameError", false);
-									ractiveAddEmployee.set("emailError", false);
-									$("#addEmployeeModal").modal();
-								},
-
+								
 								showHelpAddEmployee: function( event ){
 									$('.tooltip-addEmployee').tooltip();
 									
@@ -323,11 +317,16 @@
 									//We are editing a cloned employee object
 									//If the user discards the changes we do not have to do anything.
 									//If the user saves the changes we just replace the original employee with the clone
+									
 									var clone = event.context.clone();
 									bindEmployeeToBCNs(clone);
 									ractiveSetLIEmployee.set("bcnList", bcnList);
 									ractiveSetLIEmployee.set("employee", clone);
 									ractiveSetLIEmployee.set("originalEmployee", event.context);
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false
+									});
+									
 									$('#setLIModal').modal();
 								},	
 									showHelpEmployeeGraph: function ( event ) {
@@ -363,6 +362,7 @@
 								});
 
 								ractiveEditEmployee.on("saveEmployee", function (event) {
+
 									var employee = this.get("employee");
 									if(!checkInputEmployee(employee, this))
 										return;
@@ -388,38 +388,6 @@
 
 								});
 					
-
-								//Add employee ractive which is responsible to render the modal to add a new employee
-								ractiveAddEmployee = new Ractive({
-									el: 'containerEmployeeAdd',
-								    template: '#employeeTemplate',
-								    data: { "employee" : null,
-								    		"nameError" : false,
-								    		"emailError" : false
-								    	  },
-								    append: true
-								});
-
-								ractiveAddEmployee.on("saveEmployee", function (event) {
-									var employee = this.get("employee");
-									if(!checkInputEmployee(employee, this))
-										return;
-
-									var buttonElement = event.node;
-									//Show the loading indicator of the save button
-									var l = Ladda.create(buttonElement);
-									l.start();
-									ensureEmplyoeeBCNConsistency(employee, bcnList, []);
-									employee.create(function(){
-										employeeList.push(employee);
-										sortEmployees();
-
-										publishEmployeeCreated(employee.uri);
-										//Hide the loading indicator of the save button
-										l.stop();
-										$("#addEmployeeModal").modal("hide");
-									});
-								});
 
 								//Delete employee ractive which is responsible to render the modal used to delete an employee
 								ractiveDeleteEmployee = new Ractive({
@@ -463,6 +431,7 @@
 								});
 
 								ractiveSetLIEmployee.on("saveSetLI", function(event){
+
 									var employee = this.get("employee");
 									var originalEmployee = this.get("originalEmployee");
 									var buttonElement = event.node;
@@ -481,6 +450,15 @@
 										//Hide the loading indicator of the save button
 										l.stop();
 										$('#setLIModal').modal("hide");
+									});
+								});
+
+								ractiveSetLIEmployee.on("changeDatePicker",  function(event){
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false,
+									}).off().on("changeDate", function(e){
+										var formatDate = moment(e.date);
+										event.context.employeeBcnData.startDate = formatDate.format("MM/DD/YYYY");
 									});
 								});
 
@@ -703,11 +681,18 @@
 					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
 						</label> 
 					</div>
+					<div class="form-group">
+						<label>Start Date</label>
+						<div class="input-group date">
+						  <input id="myDiv" data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-blur="changeDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
+						</div>
+					</div>
 	    		</div>			
 	    		<div  id="bcn{{num}}" class="panel-collapse collapse"> 
 	      			<ul style="margin-bottom:0px;" class="list-group">
 		      			{{#learningIndicators}}
 							<li class="list-group-item">
+			      				
 								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
 								<div class="checkbox">
 		  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">

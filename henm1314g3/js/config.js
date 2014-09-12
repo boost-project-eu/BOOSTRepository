@@ -55,7 +55,7 @@ require.config({
             deps: ['boostShared']
         },
         EmployeeManager: {
-            deps: ['boostShared']
+            deps: ['boostShared', 'moment']
         },
         WidgetsManager: {
             deps: ['boostShared']
