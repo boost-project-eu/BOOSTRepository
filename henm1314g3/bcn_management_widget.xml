@@ -63,6 +63,7 @@
 					var iwcClient;
 					var userAccessRights; 
 					var userList;
+					var currentEmployee;
 
 					if (openapp.param.user()) {    
 						closeAutorisationWindow();
@@ -88,30 +89,59 @@
 						userAccessRights = accessRights.getUserAccessRights();
 							
 							//Check if user has agreed to license
-							//console.log(userAccessRights.hasAgreedToLicense);
 			
 							if(!userAccessRights.hasAgreedToLicense){
-								showModalAcceptTermsOfUse();							
-							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();		
-							}
+								showModalAcceptTermsOfUse();
+							}							
+							// } else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
+							// 	showModalContactManager();		
+							// }
 
-							//	addBCN and showProgress activities	
-							var ractiveBcnHeader = new Ractive({
-							  el: 'containerBcnOverview',
-							  template: '#templateBcnHeader',
-							  data: {
-							  	accessRights: userAccessRights
-							  },
-							  append: true
-							});
+						
+
+						//	addBCN and showProgress activities	
+						var ractiveBcnHeader = new Ractive({
+						  el: 'containerBcnOverview',
+						  template: '#templateBcnHeader',
+						  data: {
+						  	accessRights: userAccessRights
+						  },
+						  append: true
+						});
 
 
 						//	Get the list of BCN's
 						retrieveAllBcns(space, function(bcns){
 							bcnsList = bcns;
 							sortBcns(bcnsList);
-							//	Get the list of Employee's
+
+							//get current
+							retrieveAllEmployees(space, function(employees){
+								for(var i = 0; i < employees.length; i++){
+									var employee = employees[i];
+									if (employee.userUri == openapp.param.user()){
+										currentEmployee = employee;
+									};
+								};
+
+								if (!userAccessRights.isManager){
+									for(var i = 0; i < bcnsList.length; i++){
+										bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
+										bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
+										bcnsList[i].deadline = moment(bcnsList[i].deadline).format("MM/DD/YYYY");
+										var startDate = moment(bcnsList[i].startDate);
+										var deadline = moment(bcnsList[i].deadline);
+										var now = moment();
+										var goalDuration = deadline.diff(startDate, 'days');
+										var dayPast = now.diff(startDate, 'days');
+										var datePercentage = (100/goalDuration) * dayPast;
+										bcnsList[i].datePercentage = datePercentage;
+										bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
+									}
+
+								};
+								
+								//	Get the list of Employee's
 
 								var ractiveOverview = new Ractive({
 									el: 'containerBcnOverview',
@@ -122,7 +152,7 @@
 									append: true
 								});		
 
-						//	Add new BCN ractive	
+								//	Add new BCN ractive	
 
 								var ractiveAddBcn = new Ractive({
 								  	el: 'containerBcnAdd',
@@ -139,109 +169,109 @@
 								  'bcn.learningIndicators.*.name': {required: true}
 								});
 
-							ractiveBcnHeader.on({
-								showOverallProgress: function ( event ) {
-									publishShowOverallBcnProgress();
-								},
-								addNewBcn: function ( event ) {
-									// Show addBcnModal on click on addNewBcnButton 
-									var newBcn = new BCN({});
-									ractiveAddBcn.set("bcn", newBcn);
+								ractiveBcnHeader.on({
+									showOverallProgress: function ( event ) {
+										publishShowOverallBcnProgress();
+									},
+									addNewBcn: function ( event ) {
+										// Show addBcnModal on click on addNewBcnButton 
+										var newBcn = new BCN({});
+										ractiveAddBcn.set("bcn", newBcn);
 
-									ractiveAddBcn.set("nameError", false);
-									$('.input-group.date').datepicker({
-									    keyboardNavigation: false
-									}).off().on("changeDate", function(e){
-										ractiveAddBcn.set("bcn.deadline", e.date);
+										ractiveAddBcn.set("nameError", false);
+										$('.input-group.date').datepicker({
+										    keyboardNavigation: false
+										}).off().on("changeDate", function(e){
+											ractiveAddBcn.set("bcn.deadline", e.date);
 
-									});
+										});
 
-									$("#addBcnModal").modal();		
-								},
-								showHelpAddBcn: function( event ){
-									$('.tooltip-addBCN').tooltip();
-									
-								},
-								showHelpShowOverallProgress: function (event){
-									$('.tooltip-showOverallProgress').tooltip();
-								},
-								showHelpForHelp: function (event){
-									$('.tooltip-showHelp').tooltip();
-								},
-								showHelp: function(event){
-									$('#descriptionModal').modal({
-										keyboard: true
-									});
+										$("#addBcnModal").modal();		
+									},
+									showHelpAddBcn: function( event ){
+										$('.tooltip-addBCN').tooltip();
+										
+									},
+									showHelpShowOverallProgress: function (event){
+										$('.tooltip-showOverallProgress').tooltip();
+									},
+									showHelpForHelp: function (event){
+										$('.tooltip-showHelp').tooltip();
+									},
+									showHelp: function(event){
+										$('#descriptionModal').modal({
+											keyboard: true
+										});
 
-								}
-							});
+									}
+								});
 
-							//Inside the addBcnModal		
-							
-								// Add LI to BCN on click on addLI button	
-							ractiveAddBcn.on("removeLI", function(event){
-								var li = event.context;
-								var bcn = this.get("bcn");
-								bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
-							});
+								//Inside the addBcnModal		
+								
+									// Add LI to BCN on click on addLI button	
+								ractiveAddBcn.on("removeLI", function(event){
+									var li = event.context;
+									var bcn = this.get("bcn");
+									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+								});
 
-							ractiveAddBcn.on("addLI", function(event){
-								this.get('bcn').addLI("");
-							});
+								ractiveAddBcn.on("addLI", function(event){
+									this.get('bcn').addLI("");
+								});
 
-							ractiveAddBcn.on("saveBCN", function(event){
-								if(!bcnValidator.valid()){
-									event.original.preventDefault();
-									return;
-								}
-								var bcnToAdd = this.get('bcn');
-								var saveButton = event.node;
-								console.log(bcnToAdd.deadline);
+								ractiveAddBcn.on("saveBCN", function(event){
+									if(!bcnValidator.valid()){
+										event.original.preventDefault();
+										return;
+									}
+									var bcnToAdd = this.get('bcn');
+									var saveButton = event.node;
 
-								var l = Ladda.create(saveButton);
-								l.start();
+									var l = Ladda.create(saveButton);
+									l.start();
 
-								bcnToAdd.create(function(){
-									retrieveAllEmployees(space, function(employees){
-										//We need to update all employees
-										for(var i = 0; i < employees.length; i++){
-											var employee = employees[i];
-											ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
-										}
+									bcnToAdd.create(function(){
+										retrieveAllEmployees(space, function(employees){
+											//We need to update all employees
+											for(var i = 0; i < employees.length; i++){
+												var employee = employees[i];
+												ensureEmplyoeeBCNConsistency(employee, [bcnToAdd], []);
+											}
 
-										var updateEmployee = function(employee, done){
-											employee.update(function(){
-												done();
+											var updateEmployee = function(employee, done){
+												employee.update(function(){
+													done();
+												});
+											}
+											async.forEach(employees, updateEmployee, function(){
+												publishBcnCreated(bcnToAdd.uri);
+												bcnsList.push(bcnToAdd);
+												sortBcns(bcnsList);
+												l.stop();
+												$('#addBcnModal').modal("hide");
 											});
-										}
-										async.forEach(employees, updateEmployee, function(){
-											publishBcnCreated(bcnToAdd.uri);
-											bcnsList.push(bcnToAdd);
-											sortBcns(bcnsList);
-											l.stop();
-											$('#addBcnModal').modal("hide");
 										});
 									});
+									//Why do we need this? If we do not call it we get an error for some reason:
+									//It's like onClick (off)
+									event.original.preventDefault();
 								});
-								//Why do we need this? If we do not call it we get an error for some reason:
-								//It's like onClick (off)
-								event.original.preventDefault();
-							});
 
 					
-						//	BCN Edit
+								//	BCN Edit
 								var ractiveEditBcn = new Ractive({
 									el: 'containerBcnEdit',
 								    template: '#bcnAddEditTemplate',
 								    data: { "bcn" : new BCN({}),
 								    		"originalBcn" : new BCN({}),
 								    		"priorityArray" : priorityArray,
-								    		"bcnsList" : bcnsList},
+								    		"bcnsList" : bcnsList
+								    },
 								    append: true
 								});
 
-							//Inside the editBcnModal
-							// Show editBcnModal on click editBcnModal button 
+								//Inside the editBcnModal
+								// Show editBcnModal on click editBcnModal button 
 								ractiveOverview.on('edit', function ( event ) {
 									ractiveEditBcn.set("originalBcn", event.context);
 									ractiveEditBcn.set("bcn", event.context.clone());
@@ -302,7 +332,7 @@
 								});
 
 					
-						//	Delete BCN	
+								//	Delete BCN	
 								var ractiveDeleteBcn = new Ractive({
 									el: 'containerBcnDelete',
 									template: '#deleteBcnTemplate',
@@ -328,40 +358,42 @@
 										$("#deleteBcnModal").modal("hide");
 
 									});
-							});
+								});
 
 
-							//	Show BCN graph on click on "graph" button
+								//	Show BCN graph on click on "graph" button
 
 								ractiveOverview.on({
-									graphShow: function ( event ) {
-									var bcnIndex = bcnsList.indexOf(event.context);
-									publishShowBcnProgress(bcnsList[bcnIndex].uri);
-								},
-									delete: function ( event ) {
-									ractiveDeleteBcn.set("bcn", event.context);
-									$('#deleteBcnModal').modal();
-								},
-									showHelpGoalGraph: function ( event ) {
-									$('.tooltip-showGoalProgress').tooltip();
+										graphShow: function ( event ) {
+										var bcnIndex = bcnsList.indexOf(event.context);
+										publishShowBcnProgress(bcnsList[bcnIndex].uri);
+									},
+										delete: function ( event ) {
+										ractiveDeleteBcn.set("bcn", event.context);
+										$('#deleteBcnModal').modal();
+									},
+										showHelpGoalGraph: function ( event ) {
+										$('.tooltip-showGoalProgress').tooltip();
 
-								}, 
-									showHelpDeleteGoal: function ( event ) {
-									$('.tooltip-deleteGoal').tooltip();
-								},
-									showHelpEditGoal: function ( event ) {
-									$('.tooltip-editGoal').tooltip();
-								},
-									showHelpOptions: function ( event ) {
-									$('.tooltip-showOptions').tooltip();	
-								}
+									}, 
+										showHelpDeleteGoal: function ( event ) {
+										$('.tooltip-deleteGoal').tooltip();
+									},
+										showHelpEditGoal: function ( event ) {
+										$('.tooltip-editGoal').tooltip();
+									},
+										showHelpOptions: function ( event ) {
+										$('.tooltip-showOptions').tooltip();	
+									}
 
-							});
+								});
 								$("#loadingBcnText").addClass("hidden");
 
 								//Setup validation
 
+								});
 							});
+
 						});  // end of the retrieveAccessRights
 
 					});
@@ -477,43 +509,86 @@
 	<!-- Template for the BCN Overview -->
 
 		<script id="templateBcnOverview" type='text/ractive'>
-			<table class="table table-striped table-bordered table-condensed" >
-				<tbody>
 					{{#bcnsList}}
-						<tr> 
-							<td>
-								<div>
-									<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
-								</div>
-								<div class="small text-muted">
-								</div>
-							</td>
-							<td style="width:70px;" align="center">
-								 {{^accessRights.isManager}} 
-									<button class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
-								 {{/accessRights.isManager}}
-							{{#accessRights.isManager}} 
-								<div class='btn-group'>
-									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
-										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
+						{{#accessRights.isManager}} 
+						<table class="table table-striped table-bordered table-condensed" >
+						<tbody>
+							<tr> 
+								<td>
+									<div>
+										<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+									</div>
+									<div class="small text-muted">
+									</div>
+								</td>
+								<td style="width:70px;" align="center">
+									<div class='btn-group'>
+										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
+											<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
 
-									</button>
-									<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
-											<li align="center" style="width:120px;">
-											<div class='btn-group'>
-												<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
-												<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
-												<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
-											</div>
-											</li>
-										</ul>
+										</button>
+										<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
+												<li align="center" style="width:120px;">
+												<div class='btn-group'>
+													<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
+													<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
+													<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+												</div>
+												</li>
+											</ul>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+						</table>
+						{{/accessRights.isManager}}
+
+						{{^accessRights.isManager}}
+							{{#isRelevant}}
+							<table class="table table-striped table-bordered table-condensed" >
+							<tbody>
+								<tr> 
+									<td>
+										<div>
+											<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+										</div>
+										<div class="small text-muted">
+											
+										</div>
+									</td>
+									<td style="width:70px;" align="center">
+										<button style="padding: 7px 12px;" class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+									</td>
+								</tr>
+							</tbody>
+							</table>
+
+							<div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
+								Days before the deadline: <b>{{daysLeft}}</b>
+							
+
+								<div class="progress" style="margin-bottom: 5px;">
+								  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{datePercentage}}%">
+								    <span class="sr-only">20% Complete</span>
+								  </div>
 								</div>
-							 {{/accessRights.isManager}}
-							</td>
-						</tr>
+
+								<div class="row" >
+									<div class="col-xs-6 ">
+										{{startDate}}
+									</div>
+									<div class="col-xs-6">
+										<div class="pull-right">
+											{{deadline}}
+										</div>
+									</div>
+								</div>
+
+							</div>
+							{{/isRelevant}}
+						{{/accessRights.isManager}}
+
 					{{/bcnsList}}
-				</tbody>
-			</table>
 		</script>		
 
 	<!-- Template for the modal-body BCN Add/Edit View -->

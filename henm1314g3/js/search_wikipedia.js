@@ -37,12 +37,13 @@ function wikiDocumentProcessor(response){
         url = "http://en.wikipedia.org/wiki/";
         imageUrl = "http://www.clipartbest.com/cliparts/aTq/erd/aTqerd4rc.jpeg";
         title = "Incorrect search query";
-        description = "You have some incprrect symbols in your search qery, please check"
+        description = "You have some incorrect symbols in your search qery, please check"
     }
     else{
         var markup = data.parse.text["*"];
         var resultItem = $('<div></div>').html(markup);
         var images = ($(resultItem).find('img'));
+        if (!images[0]) images[0] = "";
 
         // remove links as they do not work
         resultItem.find('a').each(function(){
@@ -56,11 +57,11 @@ function wikiDocumentProcessor(response){
         description = $(resultItem).find('p').text();
         imageUrl = images[0].src || "";
         if (images[0].src == "http://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Padlock-silver.svg/20px-Padlock-silver.svg.png")
-            var imageUrl = images[1].src;
+            imageUrl = images[1].src;
 
-        if(description == "")
+        if(description == "Redirect to:")
         {
-            description = "Sorry, nothing was found by your request";
+            description = "Sorry, nothing was found by your request, try to click on this message to find this information on Wikipedia directly.";
             imageUrl = "http://www.clipartbest.com/cliparts/aTq/erd/aTqerd4rc.jpeg";
         }
         url = "http://en.wikipedia.org/wiki/" + data.parse.title;
