@@ -16,22 +16,22 @@ Employee.prototype.getTypeName = function(){
 function Employee(object){
 	BoostObject.call(this, object);
 
-	if(object.hasOwnProperty("name"))
+	if(object && object.hasOwnProperty("name"))
 		this.name = object.name;
 	else
 		this.name = "";
 
-	if(object.hasOwnProperty("email"))
+	if(object && object.hasOwnProperty("email"))
 		this.email = object.email;
 	else
 		this.email = "";
 
-	if(object.hasOwnProperty("learningLevels"))
+	if(object && object.hasOwnProperty("learningLevels"))
 		this.learningLevels = object.learningLevels;
 	else
 		this.learningLevels = {};
 
-	if(object.hasOwnProperty("userUri"))
+	if(object && object.hasOwnProperty("userUri"))
 		this.userUri = object.userUri;
 	else
 		this.userUri = "";

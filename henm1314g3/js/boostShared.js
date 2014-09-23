@@ -1,5 +1,5 @@
 function BoostObject(object){
-	if(object.hasOwnProperty("uri"))
+	if(object && object.hasOwnProperty("uri"))
 		this.uri = object.uri;
 	else
 		this.uri = "";
