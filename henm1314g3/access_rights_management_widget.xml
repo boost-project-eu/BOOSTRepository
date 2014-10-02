@@ -64,6 +64,7 @@
 					var accessRights;
 					var employeesList;
 					var bcnsList;
+					var currentUser;
 
 					//Define the ractives as globals
 					var ractiveOverview;
@@ -144,6 +145,27 @@
 
 										sortUsers(userList);
 
+										//retrieve current employee
+
+										for(var i = 0; i < userList.length; i++){
+											var user = userList[i];
+											if (user.uri == openapp.param.user()){
+												currentUser = user;
+												if (currentUser) {
+													currentUser.AccessRights = accessRights.getUserAccessRights(currentUser.uri);
+												} else {
+													currentUser = {};
+													currentUser.AccessRights.isManager = false;
+													currentUser.AccessRights.isEmployee = false;
+													currentUser.AccessRights.hasAgreedToLicense = false;
+
+												}
+
+											};
+										};
+										console.log(currentUser);
+
+
 										//Match all users with their access rights which are stored in the config
 										//resource
 
@@ -168,14 +190,16 @@
 											showModalAcceptTermsOfUse();							
 
 										} else if(!accessRights.getUserAccessRights().isManager){
-
-											showModalContactManager();
+											// showModalContactManager();
 										}
 
 										ractiveOverview = new Ractive({
 											el: 'containerUserOverview',
 										    template: '#templateUserOverview',
-										    data: { "userList" : userList },
+										    data: { 
+										    	"userList" : userList,
+										    	"currentUser": currentUser
+										    },
 										    append: true
 										});
 
@@ -242,36 +266,56 @@
 		</div>
 
 		<script id="templateUserOverview" type='text/ractive'>
-			<table class="table table-striped table-bordered" >
-			    <tbody>
-			    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Employee</th></tr>
-					{{#userList}}
-						<tr> 
-							<td>
-								<p class="{{accessRights.hasAgreedToLicense ? "" : "text-muted"}}">{{name}}
-								{{^accessRights.hasAgreedToLicense}}
-								<span title="This user needs to agree to the terms of use first." class="glyphicon glyphicon-exclamation-sign"></span>
-								{{/accessRights.hasAgreedToLicense}}
-								{{#isOwner}}
-								<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
-								{{/isOwner}}
-								</p>
+			{{^currentUser.AccessRights.isManager}}
+				{{#currentUser.AccessRights.isEmployee}}
+					<div class="alert alert-info" role="alert">You have the role <strong>Employee</strong>. You can not change anything in this widget</div>
+				{{/currentUser.AccessRights.isEmployee}}
 
-							</td>
-							<td align="center">
-								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled={{!accessRights.hasAgreedToLicense}}>
-								</label>
-							</td>
-							<td align="center">
-								<label class="checkbox-inline">
-								  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled={{!accessRights.hasAgreedToLicense}}>
-								</label>
-							</td>
-						</tr>
-					{{/userList}}
-			    </tbody>
-			</table>
+				{{^currentUser.AccessRights.isEmployee}}
+					<div class="alert alert-danger" role="alert">You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you</div>
+				{{/currentUser.AccessRights.isEmployee}}
+			{{/currentUser.AccessRights.isManager}}
+
+			{{#currentUser.AccessRights.isManager}}
+				{{#currentUser.AccessRights.isEmployee}}
+					<div class="alert alert-info" role="alert">You have both <strong>Manager</strong> and <strong>Employee</strong> roles.</div>
+				{{/currentUser.AccessRights.isEmployee}}
+
+				{{^currentUser.AccessRights.isEmployee}}
+					<div class="alert alert-info" role="alert">You have the role <strong>Manager</strong>.</div>
+				{{/currentUser.AccessRights.isEmployee}}
+					<table class="table table-striped table-bordered" >
+					    <tbody>
+					    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Employee</th></tr>
+								
+							{{#userList}}
+								<tr> 
+									<td>
+										<p class="{{accessRights.hasAgreedToLicense ? "" : "text-muted"}}">{{name}}
+										{{^accessRights.hasAgreedToLicense}}
+										<span title="This user needs to agree to the terms of use first." class="glyphicon glyphicon-exclamation-sign"></span>
+										{{/accessRights.hasAgreedToLicense}}
+										{{#isOwner}}
+										<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
+										{{/isOwner}}
+										</p>
+
+									</td>
+									<td align="center">
+										<label class="checkbox-inline">
+										  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled={{!accessRights.hasAgreedToLicense}}>
+										</label>
+									</td>
+									<td align="center">
+										<label class="checkbox-inline">
+										  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isEmployee}}' disabled={{!accessRights.hasAgreedToLicense}}>
+										</label>
+									</td>
+								</tr>
+							{{/userList}}
+					    </tbody>
+					</table>
+				{{/currentUser.AccessRights.isManager}}
 		</script>
 
 	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
