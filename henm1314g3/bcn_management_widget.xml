@@ -128,7 +128,7 @@
 									for(var i = 0; i < bcnsList.length; i++){
 										bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
 										bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
-										bcnsList[i].deadline = moment(bcnsList[i].deadline).format("MM/DD/YYYY");
+										bcnsList[i].deadline = moment(currentEmployee.learningLevels[bcnsList[i].uri].endDate).format("MM/DD/YYYY");
 										var startDate = moment(bcnsList[i].startDate);
 										var deadline = moment(bcnsList[i].deadline);
 										var now = moment();
@@ -177,14 +177,6 @@
 										// Show addBcnModal on click on addNewBcnButton 
 										var newBcn = new BCN({});
 										ractiveAddBcn.set("bcn", newBcn);
-
-										ractiveAddBcn.set("nameError", false);
-										$('.input-group.date').datepicker({
-										    keyboardNavigation: false
-										}).off().on("changeDate", function(e){
-											ractiveAddBcn.set("bcn.deadline", e.date);
-
-										});
 
 										$("#addBcnModal").modal();		
 									},
@@ -275,13 +267,6 @@
 								ractiveOverview.on('edit', function ( event ) {
 									ractiveEditBcn.set("originalBcn", event.context);
 									ractiveEditBcn.set("bcn", event.context.clone());
-									$('.input-group.date').datepicker({
-									    keyboardNavigation: false
-									}).off().on("changeDate", function(e){
-										ractiveEditBcn.set("bcn.deadline", e.date);
-
-									});
-									$('.input-group.date').datepicker('update', event.context.deadline);
 									$('#editBcnModal').modal();
 								});
 
@@ -613,12 +598,6 @@
 											{{/priorityArray}}
 											</select>									
 							</div>
-							<div class="form-group">
-								<label>Deadline</label>
-								<div class="input-group date">
-								  <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-								</div>
-							</div>										
 							<div class="form-group">
 								<label for="inputNewBcnLi">Learning indicators</label>
 									{{#bcn.learningIndicators : num}}	
