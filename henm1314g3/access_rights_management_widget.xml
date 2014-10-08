@@ -163,8 +163,6 @@
 
 											};
 										};
-										console.log(currentUser);
-
 
 										//Match all users with their access rights which are stored in the config
 										//resource
@@ -181,8 +179,7 @@
 
 										//Debug
 										//owner.accessRights.hasAgreedToLicense = true;
-
-										if(!managerExists)
+										if (owner)
 											owner.accessRights.isManager = true;
 
 										//Check if user has agreed to license
