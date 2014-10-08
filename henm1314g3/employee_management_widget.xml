@@ -62,7 +62,7 @@
 					var bcnList;
 					var iwcClient;
 					var userAccessRights;
-					var userList;
+					var currentUser;
 
 					//Define the ractives as globals
 					var ractiveOverview;
@@ -157,6 +157,7 @@
 
 									ractiveOverview.set("employeeList", employeeList);
 								});
+
 							});
 						}
 					}
@@ -234,7 +235,7 @@
 							}
 
 							});  // end of the retrieveAccessRights
-						
+				
 					
 						var message = "<div>Please wait.</div>"
 						message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
@@ -520,15 +521,17 @@
 					function filterEmployees(employees, accessRights){
 						var employeeList = [];
 						var userAccessRights = accessRights.getUserAccessRights();
-						if(userAccessRights.isManager){
-							employeeList = filterEmployeesBasedOnAccessRights(employees, accessRights);
-						}
-						else if(userAccessRights.isEmployee){
+
+						if(userAccessRights.isEmployee){
 							for(var i = 0; i < employees.length; i++){
 								var employee = employees[i];
+								// retrieving current user
 								if(openapp.param.user() == employee.userUri)
 									employeeList.push(employee)
 							}
+						}
+						else if(userAccessRights.isManager){
+							employeeList = filterEmployeesBasedOnAccessRights(employees, accessRights);
 						}
 						return employeeList;
 					}

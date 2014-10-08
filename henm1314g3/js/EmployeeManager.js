@@ -117,8 +117,9 @@ function filterEmployeesBasedOnAccessRights(employees, accessRights){
 		var employee = employees[i];
 		access = accessRights.getUserAccessRights(employee.userUri)
 
-		if(access.isEmployee)
-			filteredEmployeeList.push(employee);
+		//in new logik, we do not need it
+		// if(access.isEmployee)
+		filteredEmployeeList.push(employee);
 	}
 	return filteredEmployeeList;
 }
