@@ -404,11 +404,13 @@
 			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
-			  	{{#accessRights.isManager}}
-			  		<div class="btn-group">
-				 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
-					</div>
-				{{/accessRights.isManager}}
+			  	{{^accessRights.isEmployee}}
+				  	{{#accessRights.isManager}}
+				  		<div class="btn-group">
+					 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
+						</div>
+					{{/accessRights.isManager}}
+				{{/accessRights.isEmployee}}
 			  		<div class="input-group" style="padding-top:5px;">
 				      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
 				      <span class="input-group-btn">
