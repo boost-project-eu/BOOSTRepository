@@ -62,7 +62,7 @@
 					var bcnList;
 					var iwcClient;
 					var userAccessRights;
-					var userList;
+					var currentUser;
 
 					//Define the ractives as globals
 					var ractiveOverview;
@@ -157,6 +157,7 @@
 
 									ractiveOverview.set("employeeList", employeeList);
 								});
+
 							});
 						}
 					}
@@ -230,11 +231,11 @@
 							if(!userAccessRights.hasAgreedToLicense){
 								showModalAcceptTermsOfUse();							
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();		
+								// showModalContactManager();		
 							}
 
 							});  // end of the retrieveAccessRights
-						
+				
 					
 						var message = "<div>Please wait.</div>"
 						message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
@@ -520,15 +521,17 @@
 					function filterEmployees(employees, accessRights){
 						var employeeList = [];
 						var userAccessRights = accessRights.getUserAccessRights();
-						if(userAccessRights.isManager){
-							employeeList = filterEmployeesBasedOnAccessRights(employees, accessRights);
-						}
-						else if(userAccessRights.isEmployee){
+
+						if(userAccessRights.isEmployee){
 							for(var i = 0; i < employees.length; i++){
 								var employee = employees[i];
+								// retrieving current user
 								if(openapp.param.user() == employee.userUri)
 									employeeList.push(employee)
 							}
+						}
+						else if(userAccessRights.isManager){
+							employeeList = filterEmployeesBasedOnAccessRights(employees, accessRights);
 						}
 						return employeeList;
 					}
@@ -553,11 +556,16 @@
 		  	
 			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 			<!-- add new bcn and view overall progress -->
+	  		 	{{^accessRights.isEmployee}}
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
 			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>		
 						</div>
 					{{/accessRights.isManager}}
+					{{^accessRights.isManager}}
+						<div class="alert alert-danger" role="alert">You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you</div>
+					{{/accessRights.isManager}}
+	  		 	{{/accessRights.isEmployee}}
 
 				<div id="loadingEmployeeText" class="text-muted small" style="margin-top:5px;">
 					Loading employee data ...
@@ -583,7 +591,8 @@
 							</td>
 							<td style="width:70px;" align="center">
 						
-						{{#accessRights.isManager}} 
+	  		 			{{^accessRights.isEmployee}}
+							{{#accessRights.isManager}} 
 								<div class='btn-group'>
 									<button type="button" class="btn btn-default dropdown-toggle"  on-mouseover="showHelpOptions"  data-toggle="dropdown">
 										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
@@ -598,12 +607,11 @@
 										</li>
 									</ul>
 								</div>						
-						{{/accessRights.isManager}}
+							{{/accessRights.isManager}}
+	  		 			{{/accessRights.isEmployee}}
 
 						{{#accessRights.isEmployee}}
-							{{^accessRights.isManager}}
-												<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
-							{{/accessRights.isManager}}
+							<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
 						{{/accessRights.isEmployee}}
 	 
 							</td>

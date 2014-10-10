@@ -124,7 +124,7 @@
 									};
 								};
 
-								if (!userAccessRights.isManager){
+								// if (!userAccessRights.isManager){
 									for(var i = 0; i < bcnsList.length; i++){
 										bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
 										bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
@@ -137,9 +137,9 @@
 										var datePercentage = (100/goalDuration) * dayPast;
 										bcnsList[i].datePercentage = datePercentage;
 										bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
-									}
+									};
 
-								};
+								// };
 								
 								//	Get the list of Employee's
 
@@ -473,15 +473,20 @@
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 		  		 	<!-- add new bcn and view overall progress -->
-		  		 	{{^accessRights.isManager}}
+		  		 	{{#accessRights.isEmployee}}
 		  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>
-		  		 	{{/accessRights.isManager}}
-		  		 	{{#accessRights.isManager}}
-		  				<div class="btn-group">
-							<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
-			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>		
-						</div>
-					{{/accessRights.isManager}}
+		  		 	{{/accessRights.isEmployee}}
+		  		 	{{^accessRights.isEmployee}}
+			  		 	{{#accessRights.isManager}}
+			  				<div class="btn-group">
+								<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
+				 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>		
+							</div>
+						{{/accessRights.isManager}}
+						{{^accessRights.isManager}}
+			  				<div class="alert alert-danger" role="alert">You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you</div>
+						{{/accessRights.isManager}}
+		  		 	{{/accessRights.isEmployee}}
 							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
 							Loading goals ...
 						<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
@@ -495,40 +500,42 @@
 
 		<script id="templateBcnOverview" type='text/ractive'>
 					{{#bcnsList}}
-						{{#accessRights.isManager}} 
-						<table class="table table-striped table-bordered table-condensed" >
-						<tbody>
-							<tr> 
-								<td>
-									<div>
-										<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
-									</div>
-									<div class="small text-muted">
-									</div>
-								</td>
-								<td style="width:70px;" align="center">
-									<div class='btn-group'>
-										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
-											<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
+						{{^accessRights.isEmployee}}
+							{{#accessRights.isManager}} 
+								<table class="table table-striped table-bordered table-condensed" >
+								<tbody>
+									<tr> 
+										<td>
+											<div>
+												<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+											</div>
+											<div class="small text-muted">
+											</div>
+										</td>
+										<td style="width:70px;" align="center">
+											<div class='btn-group'>
+												<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
+													<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
 
-										</button>
-										<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
-												<li align="center" style="width:120px;">
-												<div class='btn-group'>
-													<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
-													<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
-													<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
-												</div>
-												</li>
-											</ul>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-						</table>
-						{{/accessRights.isManager}}
+												</button>
+												<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
+														<li align="center" style="width:120px;">
+														<div class='btn-group'>
+															<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
+															<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
+															<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+														</div>
+														</li>
+													</ul>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+								</table>
+							{{/accessRights.isManager}}
+						{{/accessRights.isEmployee}}
 
-						{{^accessRights.isManager}}
+						{{#accessRights.isEmployee}}
 							{{#isRelevant}}
 							<table class="table table-striped table-bordered table-condensed" >
 							<tbody>
@@ -571,7 +578,7 @@
 
 							</div>
 							{{/isRelevant}}
-						{{/accessRights.isManager}}
+						{{/accessRights.isEmployee}}
 
 					{{/bcnsList}}
 		</script>		

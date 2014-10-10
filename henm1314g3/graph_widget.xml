@@ -115,9 +115,9 @@
 										};
 									};
 
-									if (!userAccessRights.isManager && currentEmployee){
+									if (userAccessRights.isEmployee && currentEmployee){
 										employees = [currentEmployee];
-									} else {
+									} else if (userAccessRights.isManager){
 										employees = filterEmployeesBasedOnAccessRights(employeesList, accessRights);
 									}
 
@@ -316,9 +316,9 @@
 										};
 									};
 
-									if (!userAccessRights.isManager && currentEmployee){
+									if (userAccessRights.isEmployee && currentEmployee){
 										employees = [currentEmployee];
-									} else {
+									} else if (userAccessRights.isManager){
 										employees = filterEmployeesBasedOnAccessRights(employeesList, accessRights);
 									}
 
@@ -916,8 +916,6 @@
 					}
 					
 					function showEmployeeOverviewGraph(){
-						console.log("mazafakaaaaaaaaaa");
-						console.log(userAccessRights);
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=true;
 						isBcnGraph.bool=false;
