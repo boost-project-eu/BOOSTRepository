@@ -124,32 +124,41 @@
 									};
 								};
 
-								// if (!userAccessRights.isManager){
-									for(var i = 0; i < bcnsList.length; i++){
-										console.log(currentEmployee);
-										// learning indicators information copying into bcnList
-										// for(var j = 0; j < bcn.learningIndicators.length; j++){
-										// 	var li = bcn.learningIndicators[j];
-										// 	li.employeeLiData = employee.learningLevels[bcn.uri][li.id];
-										// }
+								var now = moment();
+								var employeeLiData
+								var liStartDate;
+								var liEndDate;
+								var liDayPast;
+								var liDuration;
+
+								for(var i = 0; i < bcnsList.length; i++){
+
+									// learning indicators information copying into bcnList
+									for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
+										var li = bcnsList[i].learningIndicators[j];
+										employeeLiData = currentEmployee.learningLevels[bcnsList[i].uri][li.id];
+										liStartDate = moment(employeeLiData.startDate);
+										liEndDate = moment(employeeLiData.endDate);
+										liDayPast = now.diff(liStartDate, 'days');
+										liDuration = liEndDate.diff(liStartDate, 'days');
+										employeeLiData.datePercentage = (100/liDuration) * liDayPast;
+										employeeLiData.daysLeft = liDuration - liDayPast;
+										li.employeeLiData = employeeLiData;
+									}
 
 
-										bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
-										bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
-										bcnsList[i].deadline = moment(currentEmployee.learningLevels[bcnsList[i].uri].endDate).format("MM/DD/YYYY");
-										var startDate = moment(bcnsList[i].startDate);
-										var deadline = moment(bcnsList[i].deadline);
-										var now = moment();
-										var goalDuration = deadline.diff(startDate, 'days');
-										var dayPast = now.diff(startDate, 'days');
-										var datePercentage = (100/goalDuration) * dayPast;
-										bcnsList[i].datePercentage = datePercentage;
-										bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
-									};
-									// console.log(bcnsList);
+									bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
+									bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
+									bcnsList[i].deadline = moment(currentEmployee.learningLevels[bcnsList[i].uri].endDate).format("MM/DD/YYYY");
+									var startDate = moment(bcnsList[i].startDate);
+									var deadline = moment(bcnsList[i].deadline);
+									var goalDuration = deadline.diff(startDate, 'days');
+									var dayPast = now.diff(startDate, 'days');
+									var datePercentage = (100/goalDuration) * dayPast;
+									bcnsList[i].datePercentage = datePercentage;
+									bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
+								};
 
-								// };
-								
 								//	Get the list of Employee's
 
 								var ractiveOverview = new Ractive({
@@ -546,46 +555,82 @@
 
 						{{#accessRights.isEmployee}}
 							{{#isRelevant}}
-							<table class="table table-striped table-bordered table-condensed" >
-							<tbody>
-								<tr> 
-									<td>
-										<div>
-											<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
-										</div>
-										<div class="small text-muted">
-											
-										</div>
-									</td>
-									<td style="width:70px;" align="center">
-										<button style="padding: 7px 12px;" class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
-									</td>
-								</tr>
-							</tbody>
-							</table>
-
-							<div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
-								Days before the deadline: <b>{{daysLeft}}</b>
-							
-
-								<div class="progress" style="margin-bottom: 5px;">
-								  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{datePercentage}}%">
-								    <span class="sr-only">20% Complete</span>
-								  </div>
+							<div class="panel panel-default">
+							    <div class="panel-heading" style="padding:0px; border-bottom: 0px;">
+							      	<h4 class="panel-title">
+								        <a data-toggle="collapse" href="#{{name}}">
+											<table class="table table-striped table-bordered table-condensed" >
+												<tbody>
+													<tr> 
+														<td>
+															<div>
+																<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+															</div>
+															<div class="small text-muted">
+																
+															</div>
+														</td>
+														<td style="width:70px;" align="center">
+															<button style="padding: 7px 12px;" class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</a>
+								    </h4>
 								</div>
 
-								<div class="row" >
-									<div class="col-xs-6 ">
-										{{startDate}}
+								<div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
+									Days before the deadline: <b>{{daysLeft}}</b>
+									<div class="progress" style="margin-bottom: 5px;">
+									  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{datePercentage}}%">
+									    <span class="sr-only">20% Complete</span>
+									  </div>
 									</div>
-									<div class="col-xs-6">
-										<div class="pull-right">
-											{{deadline}}
+
+									<div class="row" >
+										<div class="col-xs-6 ">
+											{{startDate}}
+										</div>
+										<div class="col-xs-6">
+											<div class="pull-right">
+												{{deadline}}
+											</div>
 										</div>
 									</div>
 								</div>
+									
+							   	<div id="{{name}}" class="panel-collapse collapse">
+								    <div class="panel-body" style="padding: 0px 15px;">
 
-							</div>
+
+								    {{#learningIndicators}}
+								    	<h5 class="text-center">{{name}}</h5>
+									    <div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
+											Days before the deadline: <b>{{employeeLiData.daysLeft}}</b>
+											<div class="progress" style="margin-bottom: 5px;">
+											  <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{employeeLiData.datePercentage}}%">
+											    <span class="sr-only">20% Complete</span>
+											  </div>
+											</div>
+
+											<div class="row" >
+												<div class="col-xs-6 ">
+													{{employeeLiData.startDate}}
+												</div>
+												<div class="col-xs-6">
+													<div class="pull-right">
+														{{employeeLiData.endDate}}
+													</div>
+												</div>
+											</div>
+										</div>
+								    {{/learningIndicators}}
+
+								    </div>
+								</div>
+
+
 							{{/isRelevant}}
 						{{/accessRights.isEmployee}}
 
