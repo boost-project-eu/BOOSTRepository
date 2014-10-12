@@ -126,6 +126,14 @@
 
 								// if (!userAccessRights.isManager){
 									for(var i = 0; i < bcnsList.length; i++){
+										console.log(currentEmployee);
+										// learning indicators information copying into bcnList
+										// for(var j = 0; j < bcn.learningIndicators.length; j++){
+										// 	var li = bcn.learningIndicators[j];
+										// 	li.employeeLiData = employee.learningLevels[bcn.uri][li.id];
+										// }
+
+
 										bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
 										bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
 										bcnsList[i].deadline = moment(currentEmployee.learningLevels[bcnsList[i].uri].endDate).format("MM/DD/YYYY");
@@ -138,6 +146,7 @@
 										bcnsList[i].datePercentage = datePercentage;
 										bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
 									};
+									// console.log(bcnsList);
 
 								// };
 								
