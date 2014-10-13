@@ -34,6 +34,23 @@
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
 
+		<style>
+	        .panel-heading .accordion-toggle.collapsed .arrow:after{
+	            /* symbol for "collapsed" panels */
+	            font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+	            content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+	            float: right;        /* adjust as needed */
+	            color: grey; 
+	        }
+	        .panel-heading .accordion-toggle .arrow:after{
+	            /* symbol for "opening" panels */
+	            font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+	            content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+	            float: right;        /* adjust as needed */
+	            color: grey;         /* adjust as needed */
+	        }
+    	</style>
+
 		<!-- JavaScript Block -->
 		<script>
 
@@ -158,6 +175,7 @@
 									bcnsList[i].datePercentage = datePercentage;
 									bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
 								};
+								console.log(bcnsList);
 
 								//	Get the list of Employee's
 
@@ -472,6 +490,14 @@
 						return !nameError;
 					}
 
+					$('.panel-collapse').on('shown.bs.collapse', function () {
+					   $(".glyphicon").removeClass("glyphicon-folder-close").addClass("glyphicon-folder-open");
+					});
+
+					$('#collapseDiv').on('hidden.bs.collapse', function () {
+					   $(".glyphicon").removeClass("glyphicon-folder-open").addClass("glyphicon-folder-close");
+					});
+
 				});
 			});
 
@@ -555,19 +581,23 @@
 
 						{{#accessRights.isEmployee}}
 							{{#isRelevant}}
-							<div class="panel panel-default">
+							<div class="panel-group" id="accordion">
+							  <div class="panel panel-default">
 							    <div class="panel-heading" style="padding:0px; border-bottom: 0px;">
-							      	<h4 class="panel-title">
-								        <a data-toggle="collapse" href="#{{name}}">
+							      <h4 class="panel-title">
+							        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{name}}">
+							
 											<table class="table table-striped table-bordered table-condensed" >
 												<tbody>
 													<tr> 
 														<td>
 															<div>
+																<div class='arrow'></div>
 																<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
 															</div>
+
 															<div class="small text-muted">
-																
+																{{description}}
 															</div>
 														</td>
 														<td style="width:70px;" align="center">
@@ -605,30 +635,36 @@
 
 
 								    {{#learningIndicators}}
-								    	<h5 class="text-center">{{name}}</h5>
-									    <div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
-											Days before the deadline: <b>{{employeeLiData.daysLeft}}</b>
-											<div class="progress" style="margin-bottom: 5px;">
-											  <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{employeeLiData.datePercentage}}%">
-											    <span class="sr-only">20% Complete</span>
-											  </div>
-											</div>
-
-											<div class="row" >
-												<div class="col-xs-6 ">
-													{{employeeLiData.startDate}}
+								    	{{#employeeLiData.isRelevant}}
+									    	<h4 class="text-center">{{name}}</h4>
+										    <div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
+												Days before the deadline: <b>{{employeeLiData.daysLeft}}</b>
+												<div class="progress" style="margin-bottom: 5px;">
+												  <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{employeeLiData.datePercentage}}%">
+												    <span class="sr-only">20% Complete</span>
+												  </div>
 												</div>
-												<div class="col-xs-6">
-													<div class="pull-right">
-														{{employeeLiData.endDate}}
+
+												<div class="row" >
+													<div class="col-xs-6 ">
+														{{employeeLiData.startDate}}
+													</div>
+													<div class="col-xs-6">
+														<div class="pull-right">
+															{{employeeLiData.endDate}}
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
+								    	{{/employeeLiData.isRelevant}}
+								    	{{^employeeLiData.isRelevant}}
+								    	 	<h5>No Relevant Learning Indicators</h5>
+								    	{{/employeeLiData.isRelevant}}
 								    {{/learningIndicators}}
 
 								    </div>
 								</div>
+							</div>
 
 
 							{{/isRelevant}}
