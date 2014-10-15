@@ -36,14 +36,12 @@
 
 		<style>
 	        .panel-heading .accordion-toggle.collapsed .arrow:after{
-	            /* symbol for "collapsed" panels */
 	            font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
 	            content: "\e080";    /* adjust as needed, taken from bootstrap.css */
 	            float: right;        /* adjust as needed */
 	            color: grey; 
 	        }
 	        .panel-heading .accordion-toggle .arrow:after{
-	            /* symbol for "opening" panels */
 	            font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
 	            content: "\e114";    /* adjust as needed, taken from bootstrap.css */
 	            float: right;        /* adjust as needed */
@@ -147,6 +145,8 @@
 								var liEndDate;
 								var liDayPast;
 								var liDuration;
+								var bcnStartDates = [];
+								var bcnEndDates = [];
 
 								for(var i = 0; i < bcnsList.length; i++){
 
@@ -156,6 +156,12 @@
 										employeeLiData = currentEmployee.learningLevels[bcnsList[i].uri][li.id];
 										liStartDate = moment(employeeLiData.startDate);
 										liEndDate = moment(employeeLiData.endDate);
+
+										if (employeeLiData.isRelevant){
+											bcnStartDates.push(liStartDate);
+											bcnEndDates.push(liEndDate);
+										}
+
 										liDayPast = now.diff(liStartDate, 'days');
 										liDuration = liEndDate.diff(liStartDate, 'days');
 										employeeLiData.datePercentage = (100/liDuration) * liDayPast;
@@ -165,17 +171,16 @@
 
 
 									bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
-									bcnsList[i].startDate = moment(currentEmployee.learningLevels[bcnsList[i].uri].startDate).format("MM/DD/YYYY");
-									bcnsList[i].deadline = moment(currentEmployee.learningLevels[bcnsList[i].uri].endDate).format("MM/DD/YYYY");
-									var startDate = moment(bcnsList[i].startDate);
-									var deadline = moment(bcnsList[i].deadline);
-									var goalDuration = deadline.diff(startDate, 'days');
-									var dayPast = now.diff(startDate, 'days');
+									var bcnStartDate = GetSmallestDate(bcnStartDates) || moment();
+									var bcnEndDate = GetBiggestDate(bcnEndDates) || moment();
+									var goalDuration = bcnEndDate.diff(bcnStartDate, 'days');
+									var dayPast = now.diff(bcnStartDate, 'days');
 									var datePercentage = (100/goalDuration) * dayPast;
+									bcnsList[i].deadline = bcnEndDate.format("MM/DD/YYYY");
+									bcnsList[i].startDate = bcnStartDate.format("MM/DD/YYYY");
 									bcnsList[i].datePercentage = datePercentage;
-									bcnsList[i].daysLeft = deadline.diff(startDate, 'days') - now.diff(startDate, 'days'); 
+									bcnsList[i].daysLeft = bcnEndDate.diff(bcnStartDate, 'days') - now.diff(bcnStartDate, 'days'); 
 								};
-								console.log(bcnsList);
 
 								//	Get the list of Employee's
 
@@ -490,6 +495,30 @@
 						return !nameError;
 					}
 
+					function GetSmallestDate(DateArray){
+
+					    var SmallestDate = moment(DateArray[0]);
+					    for(var i = 1; i < DateArray.length; i++)
+					    {
+					        var TempDate = moment(DateArray[i]);
+					        if(TempDate < SmallestDate)
+					            SmallestDate  = TempDate ;
+					    }
+					    return SmallestDate ;
+					}
+
+					function GetBiggestDate(DateArray){
+
+					    var BiggestDate = moment(DateArray[0]);
+					    for(var i = 1; i < DateArray.length; i++)
+					    {
+					        var TempDate = moment(DateArray[i]);
+					        if(TempDate > BiggestDate)
+					            BiggestDate  = TempDate ;
+					    }
+					    return BiggestDate ;
+					}
+
 					$('.panel-collapse').on('shown.bs.collapse', function () {
 					   $(".glyphicon").removeClass("glyphicon-folder-close").addClass("glyphicon-folder-open");
 					});
@@ -595,10 +624,6 @@
 																<div class='arrow'></div>
 																<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
 															</div>
-
-															<div class="small text-muted">
-																{{description}}
-															</div>
 														</td>
 														<td style="width:70px;" align="center">
 															<button style="padding: 7px 12px;" class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
@@ -656,9 +681,6 @@
 													</div>
 												</div>
 											</div>
-								    	{{/employeeLiData.isRelevant}}
-								    	{{^employeeLiData.isRelevant}}
-								    	 	<h5>No Relevant Learning Indicators</h5>
 								    	{{/employeeLiData.isRelevant}}
 								    {{/learningIndicators}}
 
