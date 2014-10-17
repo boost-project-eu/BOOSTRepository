@@ -95,6 +95,9 @@ function ensureEmplyoeeBCNConsistency(employee, bcnsToUpdate, bcnsToRemove){
 				learningLevel[li.id].current = 0;
 				learningLevel[li.id].end = llevel.length -1
 				learningLevel[li.id].isRelevant = false;
+				learningLevel[li.id].startDate = moment().format("MM/DD/YYYY");
+				learningLevel[li.id].endDate = moment().format("MM/DD/YYYY");
+
 			}
 			else{ //Quick fix to update old employee data. To be removed later on
 				if(!learningLevel[li.id].hasOwnProperty("isRelevant"))

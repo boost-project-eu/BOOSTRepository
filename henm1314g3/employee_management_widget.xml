@@ -454,6 +454,9 @@
 									});
 								});
 
+								//dates events
+
+								//obsolete, need to be deleted after confirmation
 								ractiveSetLIEmployee.on("changeStartDatePicker",  function(event){
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false,
@@ -463,12 +466,31 @@
 									});
 								});
 
+								//obsolete
 								ractiveSetLIEmployee.on("changeEndDatePicker",  function(event){
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false,
 									}).off().on("changeDate", function(e){
 										var formatDate = moment(e.date);
 										event.context.employeeBcnData.endDate = formatDate.format("MM/DD/YYYY");
+									});
+								});
+
+								ractiveSetLIEmployee.on("changeLiStartDatePicker",  function(event){
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false,
+									}).off().on("changeDate", function(e){
+										var formatDate = moment(e.date);
+										event.context.employeeLiData.startDate = formatDate.format("MM/DD/YYYY");
+									});
+								});
+
+								ractiveSetLIEmployee.on("changeLiEndDatePicker",  function(event){
+									$('.input-group.date').datepicker({
+									    keyboardNavigation: false,
+									}).off().on("changeDate", function(e){
+										var formatDate = moment(e.date);
+										event.context.employeeLiData.endDate = formatDate.format("MM/DD/YYYY");
 									});
 								});
 
@@ -698,18 +720,7 @@
 					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
 						</label> 
 					</div>
-					<div class="form-group">
-						<label>Start Date</label>
-						<div class="input-group date">
-						  <input data-date-format="mm/dd/yyyy" value='{{employeeBcnData.startDate}}' type="text" on-click="changeStartDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
-						</div>
-					</div>
-					<div class="form-group">
-						<label>End Date</label>
-						<div class="input-group date">
-						  <input data-date-format="mm/dd/yyyy" value='{{employeeBcnData.endDate}}' type="text" on-click="changeEndDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
-						</div>
-					</div>
+					
 	    		</div>			
 	    		<div  id="bcn{{num}}" class="panel-collapse collapse"> 
 	      			<ul style="margin-bottom:0px;" class="list-group">
@@ -722,7 +733,19 @@
 		  								Relevant
 		    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}" disabled={{!employeeBcnData.isRelevant}}>
 		  					        </label>
-						        </div> 
+						        </div>
+						        <div class="form-group">
+						        	<label>Start Date</label>
+						        	<div class="input-group date">
+						        	  <input data-date-format="mm/dd/yyyy" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value='{{employeeLiData.startDate}}' type="text" on-click="changeLiStartDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
+						        	</div>
+						        </div>
+						        <div class="form-group">
+						        	<label>End Date</label>
+						        	<div class="input-group date">
+						        	  <input data-date-format="mm/dd/yyyy" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value='{{employeeLiData.endDate}}' type="text" on-click="changeLiEndDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
+						        	</div>
+						        </div>
 								Start level:
 								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.start}}">
 								{{#learningLevels}}
