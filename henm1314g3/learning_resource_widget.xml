@@ -256,7 +256,6 @@
 							            template: '#documentsTreeTemplate',
 							            data: { bcns: bcnsList }
 							        });
-							        console.log(bcnsList);
 							        treeRactive.on("documentAdd", function(event){
 							        	var newDocument = new LearningDocument({});
 							        	newDocument.type = "weblink";
