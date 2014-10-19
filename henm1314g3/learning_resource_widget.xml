@@ -767,21 +767,28 @@
 												{{#learningDocuments}}
 												<li>
 													<span>
-														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-														<div class='btn-group pull-right'>
-
-															{{#url}}
-																<button on-click="documentShow" class='btn btn-default btn-sm'>
-																	<span class='glyphicon glyphicon-play-circle'></span>
-																</button>
-															{{/url}}
-
-															<button on-click="documentEdit" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-edit'></span>
-															</button>
-															<button on-click="documentDelete" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-trash'></span>
-															</button>
+														<div class="row">
+															<div class="col-xs-8">
+																<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																<p style="margin-bottom:0px; overflow:hidden">
+																	<small>{{description}}</small>
+																</p>
+															</div>
+															<div class="col-xs-4">
+																<div class='btn-group pull-right'>
+																	{{#url}}
+																		<button on-click="documentShow" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-play-circle'></span>
+																		</button>
+																	{{/url}}
+																	<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-edit'></span>
+																	</button>
+																	<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-trash'></span>
+																	</button>
+																</div>
+															</div>
 														</div>
 													</span>
 												</li>
