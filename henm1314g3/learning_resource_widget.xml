@@ -797,7 +797,7 @@
 										</li>
 										<li>
 											<span style="cursor:pointer;">
-												<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
+												<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Contact Experts
 											</span>
 											<ul>
 												<li>
@@ -937,6 +937,11 @@
 									{{/emailError}}
 								</div>
 								<div class="form-group">
+									<label for="inputExpertProf">Profile</label>
+									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
 									<label for="inputExpertTel">Phone number</label>
 									<input value="{{newExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
 									<span class="help-block"></span>
@@ -1057,6 +1062,11 @@
 									{{#emailError}}
 									<span class="help-block"><h6>Please enter a valid email address.</h6></span>
 									{{/emailError}}
+								</div>
+								<div class="form-group">
+									<label for="inputExpertProf">Profile</label>
+									<textarea value="{{editExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
 									<label for="inputExpertTel">Phone number</label>
