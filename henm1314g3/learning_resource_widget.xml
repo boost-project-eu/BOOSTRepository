@@ -47,6 +47,7 @@
 			    "LearningDocumentsManager",
 			    "bootbox",
 			    "UserManager",
+			    "EmployeeManager",
 			    "BCNManager",
 			    "AccessRightsManager",
 			    "ConfigManager",
@@ -72,6 +73,7 @@
 					var ExpertsList = {};
 					var Widgets = [];
 					var WidgetsList = {};
+					var currentEmployee = {};
 					
 					
 					if (openapp.param.user()) {    
@@ -156,7 +158,7 @@
 							
 							//Check if user has agreed to license
 			
-								if(!userAccessRights.hasAgreedToLicense){
+							if(!userAccessRights.hasAgreedToLicense){
 								showModalAcceptTermsOfUse();							
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
 								showModalContactManager();		
@@ -183,28 +185,48 @@
 						});
 						retrieveAllBcns(space, function(bcns){
 								retrieveAllLearningDocuments(function(lds){
-									bcnsList = bcns;
-									learningDocuments = lds;
-									
+									retrieveAllEmployees(space, function(employees){
+										
+										for(var i = 0; i < employees.length; i++){
+											var employee = employees[i];
+											if (employee.userUri == openapp.param.user()){
+												currentEmployee = employee;
+											};
+										};
 
-									//We add the learning documents to their respective learning indicators
-									//to get a nice tree-like structure of BCN->LI->Document
-									for(var i = 0; i < bcns.length; i++){
-										var currentBcn = bcns[i];
-										ldsList[currentBcn.uri] = {};
-										for(var j = 0; j < currentBcn.learningIndicators.length; j++){
-											var currentLi = currentBcn.learningIndicators[j];
-											currentLi.learningDocuments = [];
-											for(var k = learningDocuments.length -1; k >= 0 ; k--){
-											    if(learningDocuments[k].bcnUri == currentBcn.uri &&
-											    	learningDocuments[k].liId == currentLi.id){
-											        currentLi.learningDocuments.push(learningDocuments[k]);
-											    	learningDocuments.splice(k, 1);
-											    }
+										bcnsList = bcns;
+										learningDocuments = lds;
+
+										if (currentEmployee){
+											for(var i = 0; i < bcnsList.length; i++){
+												bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant; 
+												for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
+													var li = bcnsList[i].learningIndicators[j];
+													li.isRelevant = currentEmployee.learningLevels[bcnsList[i].uri][li.id].isRelevant;
+												}
 											}
 										}
-									}
+										
 
+										//We add the learning documents to their respective learning indicators
+										//to get a nice tree-like structure of BCN->LI->Document
+										for(var i = 0; i < bcns.length; i++){
+											var currentBcn = bcns[i];
+											ldsList[currentBcn.uri] = {};
+											for(var j = 0; j < currentBcn.learningIndicators.length; j++){
+												var currentLi = currentBcn.learningIndicators[j];
+												currentLi.learningDocuments = [];
+												for(var k = learningDocuments.length -1; k >= 0 ; k--){
+												    if(learningDocuments[k].bcnUri == currentBcn.uri &&
+												    	learningDocuments[k].liId == currentLi.id){
+												        currentLi.learningDocuments.push(learningDocuments[k]);
+												    	learningDocuments.splice(k, 1);
+												    }
+												}
+											}
+										}
+
+									});
 
 								
 								retrieveAllExperts(function(Exp){
@@ -250,191 +272,199 @@
 									}
 
 									
+									retrieveAccessRights(function(accessRights){
+										var treeRactive = new Ractive({
+								            el: 'bcns',
+								            template: '#documentsTreeTemplate',
+								            data: { 
+								            	bcns: bcnsList,
+								            	"accessRights" : accessRights.getUserAccessRights()
+								            }
+								        });
+									
+								        // console.log(bcnsList);
+								        treeRactive.on("documentAdd", function(event){
+								        	var newDocument = new LearningDocument({});
+								        	newDocument.type = "weblink";
+								        	var learningIndicatorId = event.context.id;
 
-									var treeRactive = new Ractive({
-							            el: 'bcns',
-							            template: '#documentsTreeTemplate',
-							            data: { bcns: bcnsList }
-							        });
-							        treeRactive.on("documentAdd", function(event){
-							        	var newDocument = new LearningDocument({});
-							        	newDocument.type = "weblink";
-							        	var learningIndicatorId = event.context.id;
+								        	var kp = event.keypath;
+								        	//Keypath has the following form "bcns.0.learningIndicators.0"
+								        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
+								        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
+								        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
 
-							        	var kp = event.keypath;
-							        	//Keypath has the following form "bcns.0.learningIndicators.0"
-							        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
-							        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
-							        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
+								        	//Now we can get the BCN by providing its keypath to the Ractive .get function
+								        	var bcnUri = this.get(bcnKp).uri;
 
-							        	//Now we can get the BCN by providing its keypath to the Ractive .get function
-							        	var bcnUri = this.get(bcnKp).uri;
+								        	newDocument.bcnUri = bcnUri;
+								        	newDocument.liId = learningIndicatorId;
 
-							        	newDocument.bcnUri = bcnUri;
-							        	newDocument.liId = learningIndicatorId;
-
-							        	addDocumentRactive.set({
-							        		"newDocument": newDocument,
-							        		"learningDocumentsArray" : event.context.learningDocuments
-							        	});
-										$("#addLdModal").modal();
-									});
-
-
-
-									treeRactive.on("expertAdd", function(event){
-							        	var newExpert = new Expert({});
-							        	var learningIndicatorId = event.context.id;
-
-							        	var kp = event.keypath;
-							        	//Keypath has the following form "bcns.0.learningIndicators.0"
-							        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
-							        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
-							        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
-
-							        	//Now we can get the BCN by providing its keypath to the Ractive .get function
-							        	var bcnUri = this.get(bcnKp).uri;
-
-							        	newExpert.bcnUri = bcnUri;
-							        	newExpert.liId = learningIndicatorId;
-
-							        	addExpertRactive.set({
-							        		"newExpert": newExpert,
-							        		"ExpertsArray" : event.context.Experts
-							        	});
-										addExpertRactive.set("nameError", false);
-									    addExpertRactive.set("emailError", false);
-										$("#addExpertModal").modal();
-							        });
-			
-									treeRactive.on("widgetAdd", function(event){
-							        	var newWidget = new Widget({});
-							        	var learningIndicatorId = event.context.id;
-
-							        	var kp = event.keypath;
-							        	//Keypath has the following form "bcns.0.learningIndicators.0"
-							        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
-							        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
-							        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
-
-							        	//Now we can get the BCN by providing its keypath to the Ractive .get function
-							        	var bcnUri = this.get(bcnKp).uri;
-
-							        	newWidget.bcnUri = bcnUri;
-							        	newWidget.liId = learningIndicatorId;
-
-							        	addWidgetRactive.set({
-							        		"newWidget": newWidget,
-							        		"WidgetsArray" : event.context.Widgets
-							        	});
-										$("#addWidgetModal").modal();
-							        });
+								        	addDocumentRactive.set({
+								        		"newDocument": newDocument,
+								        		"learningDocumentsArray" : event.context.learningDocuments
+								        	});
+											$("#addLdModal").modal();
+										});
 
 
-							        treeRactive.on("documentDelete", function(event){
-							        	var kp = event.keypath;
-							        	learningDocumentsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
-							        	deleteDocumentRactive.set({
-							        		"documentArray": this.get(learningDocumentsKeypath),
-							        		"document": event.context
-							        	});
-							        	$("#deleteDocumentModal").modal();
-							        });
-							        treeRactive.on("WidgetDelete", function(event){
-							        	var kp = event.keypath;
-							        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+										treeRactive.on("expertAdd", function(event){
+								        	var newExpert = new Expert({});
+								        	var learningIndicatorId = event.context.id;
 
-							        	deleteWidgetRactive.set({
-							        		"WidgetArray": this.get(WidgetsKeypath),
-							        		"Widget": event.context
-							        	});
-							        	$("#deleteWidgetModal").modal();
-							        });
-							        treeRactive.on("ExpertDelete", function(event){
-							        	var kp = event.keypath;
-							        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
+								        	var kp = event.keypath;
+								        	//Keypath has the following form "bcns.0.learningIndicators.0"
+								        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
+								        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
+								        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
 
-							        	deleteExpertRactive.set({
-							        		"ExpertArray": this.get(ExpertsKeypath),
-							        		"Expert": event.context
-							        	});
-							        	$("#deleteExpertModal").modal();
-							        });
+								        	//Now we can get the BCN by providing its keypath to the Ractive .get function
+								        	var bcnUri = this.get(bcnKp).uri;
+
+								        	newExpert.bcnUri = bcnUri;
+								        	newExpert.liId = learningIndicatorId;
+
+								        	addExpertRactive.set({
+								        		"newExpert": newExpert,
+								        		"ExpertsArray" : event.context.Experts
+								        	});
+											addExpertRactive.set("nameError", false);
+										    addExpertRactive.set("emailError", false);
+											$("#addExpertModal").modal();
+								        });
+				
+										treeRactive.on("widgetAdd", function(event){
+								        	var newWidget = new Widget({});
+								        	var learningIndicatorId = event.context.id;
+
+								        	var kp = event.keypath;
+								        	//Keypath has the following form "bcns.0.learningIndicators.0"
+								        	//We need the BCN Uri so we have to trim down the keypath to "bcns.0"
+								        	var learningIndicatorsKp = kp.slice(0, kp.lastIndexOf("."));
+								        	var bcnKp = learningIndicatorsKp.slice(0, learningIndicatorsKp.lastIndexOf("."));
+
+								        	//Now we can get the BCN by providing its keypath to the Ractive .get function
+								        	var bcnUri = this.get(bcnKp).uri;
+
+								        	newWidget.bcnUri = bcnUri;
+								        	newWidget.liId = learningIndicatorId;
+
+								        	addWidgetRactive.set({
+								        		"newWidget": newWidget,
+								        		"WidgetsArray" : event.context.Widgets
+								        	});
+											$("#addWidgetModal").modal();
+								        });
 
 
-							        treeRactive.on("ExpertView", function(event){
-							        	var kp = event.keypath;
-							        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
-										viewExpertRactive.set({
-							        		"ExpertArray": this.get(ExpertsKeypath),
-							        		"Expert": event.context,
+								        treeRactive.on("documentDelete", function(event){
+								        	var kp = event.keypath;
+								        	learningDocumentsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
-							        	});
-							        	$("#viewExpertModal").modal();
-							        });
+								        	deleteDocumentRactive.set({
+								        		"documentArray": this.get(learningDocumentsKeypath),
+								        		"document": event.context
+								        	});
+								        	$("#deleteDocumentModal").modal();
+								        });
+								        treeRactive.on("WidgetDelete", function(event){
+								        	var kp = event.keypath;
+								        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
-							        treeRactive.on("WidgetView", function(event){
-							        	var kp = event.keypath;
-							        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
-										viewWidgetRactive.set({
-							        		"WidgetArray": this.get(WidgetsKeypath),
-							        		"Widget": event.context,
+								        	deleteWidgetRactive.set({
+								        		"WidgetArray": this.get(WidgetsKeypath),
+								        		"Widget": event.context
+								        	});
+								        	$("#deleteWidgetModal").modal();
+								        });
+								        treeRactive.on("ExpertDelete", function(event){
+								        	var kp = event.keypath;
+								        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
-							        	});
-							        	$("#viewWidgetModal").modal();
-							        });
+								        	deleteExpertRactive.set({
+								        		"ExpertArray": this.get(ExpertsKeypath),
+								        		"Expert": event.context
+								        	});
+								        	$("#deleteExpertModal").modal();
+								        });
 
-							        treeRactive.on("ViewPersonalWidget", function(event){
-							        	
-							        	var kp = event.keypath;
-							        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
-							        	var widgetUrl = event.context.url;
-							        	var spaceURI = openapp.param.user();
-							        	addWidgetToSpace(spaceURI,widgetUrl);
-										viewWidgetRactive.set({
-							        		"WidgetArray": this.get(WidgetsKeypath),
-							        		"Widget": event.context,
 
-							        	});
+								        treeRactive.on("ExpertView", function(event){
+								        	var kp = event.keypath;
+								        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
+											viewExpertRactive.set({
+								        		"ExpertArray": this.get(ExpertsKeypath),
+								        		"Expert": event.context,
 
-							   
-							        });
+								        	});
+								        	$("#viewExpertModal").modal();
+								        });
 
-							        treeRactive.on("documentShow", function(event){
-							        	if(event.context.type == "weblink"){
-							        		var url = event.context.url;
-							        		var http = "http://"
-							        		if(!(url.substring(0, http.length) == http))
-							        			url = http + url;
-							        		window.open(url,'_blank');
-							        	}
-							        	else
-							        		publishShowLearningDocument(event.context);
-							        	console.log(event.context.url);
-							        });
+								        treeRactive.on("WidgetView", function(event){
+								        	var kp = event.keypath;
+								        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+											viewWidgetRactive.set({
+								        		"WidgetArray": this.get(WidgetsKeypath),
+								        		"Widget": event.context,
 
-							        treeRactive.on("documentEdit", function(event){
-							        	editDocumentRactive.set("editDocument", event.context);
-							        	editDocumentRactive.set("keypath", event.keypath);
-							        	$("#editDocumentModal").modal();
-							        });
-							        
-							        $("#documentsTree").tree();
-							        treeRactive.on("ExpertEdit", function(event){
-							        	editExpertRactive.set("editExpert", event.context);
-							        	editExpertRactive.set("keypath", event.keypath);
-							        	editExpertRactive.set("nameError", false);
-									    editExpertRactive.set("emailError", false);
-										$("#editExpertModal").modal();
-							        });
+								        	});
+								        	$("#viewWidgetModal").modal();
+								        });
 
-							        $("#ExpertsTree").tree();
-							        treeRactive.on("WidgetEdit", function(event){
-							        	editWidgetRactive.set("editWidget", event.context);
-							        	editWidgetRactive.set("keypath", event.keypath);
-										$("#editWidgetModal").modal();
-							        });
+								        treeRactive.on("ViewPersonalWidget", function(event){
+								        	
+								        	var kp = event.keypath;
+								        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
+								        	var widgetUrl = event.context.url;
+								        	var spaceURI = openapp.param.user();
+								        	addWidgetToSpace(spaceURI,widgetUrl);
+											viewWidgetRactive.set({
+								        		"WidgetArray": this.get(WidgetsKeypath),
+								        		"Widget": event.context,
+
+								        	});
+
+								   
+								        });
+
+								        treeRactive.on("documentShow", function(event){
+								        	if(event.context.type == "weblink"){
+								        		var url = event.context.url;
+								        		var http = "http://"
+								        		if(!(url.substring(0, http.length) == http))
+								        			url = http + url;
+								        		window.open(url,'_blank');
+								        	}
+								        	else
+								        		publishShowLearningDocument(event.context);
+								        	console.log(event.context.url);
+								        });
+
+								        treeRactive.on("documentEdit", function(event){
+								        	editDocumentRactive.set("editDocument", event.context);
+								        	editDocumentRactive.set("keypath", event.keypath);
+								        	$("#editDocumentModal").modal();
+								        });
+								        
+								        $("#documentsTree").tree();
+								        treeRactive.on("ExpertEdit", function(event){
+								        	editExpertRactive.set("editExpert", event.context);
+								        	editExpertRactive.set("keypath", event.keypath);
+								        	editExpertRactive.set("nameError", false);
+										    editExpertRactive.set("emailError", false);
+											$("#editExpertModal").modal();
+								        });
+
+								        $("#ExpertsTree").tree();
+								        treeRactive.on("WidgetEdit", function(event){
+								        	editWidgetRactive.set("editWidget", event.context);
+								        	editWidgetRactive.set("keypath", event.keypath);
+											$("#editWidgetModal").modal();
+								        });
+
+								    //retrieve access rights function end
+							    	});
 
 							        $("#WidgetsTree").tree();
 
@@ -735,122 +765,251 @@
 				<div id="documentsTree" class='tree'>
 					<ul>
 						{{#bcns}}
-				        <li>
-							<span>
-								<p style="margin-bottom:0px">
-									<span style='margin-right:5px; color:{{this.getPriorityColor()}};' class='glyphicon glyphicon-star'></span>{{name}}
-								</p>
-							</span>
-							<ul>
-								{{#learningIndicators}}
-								 <li>
+							{{^accessRights.isEmployee}}
+						        <li>
 									<span>
 										<p style="margin-bottom:0px">
-											<span style='margin-right:5px;' class='glyphicon glyphicon-flag'></span>{{name}}
-										</p>
-										<p style="margin-bottom:0px; overflow:hidden">
-											<small>{{description}}</small>
+											<span style='margin-right:5px; color:{{this.getPriorityColor()}};' class='glyphicon glyphicon-star'></span>{{name}}
 										</p>
 									</span>
 									<ul>
-										<li>
-											<span style="cursor:pointer;">
-												<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+										{{#learningIndicators}}
+										 <li>
+											<span>
+												<p style="margin-bottom:0px">
+													<span style='margin-right:5px;' class='glyphicon glyphicon-flag'></span>{{name}}
+												</p>
+												<p style="margin-bottom:0px; overflow:hidden">
+													<small>{{description}}</small>
+												</p>
 											</span>
 											<ul>
 												<li>
-												<span style="cursor:pointer;" on-click="documentAdd">
-													<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new document
-												</span>
-												</li>
-												{{#learningDocuments}}
-												<li>
-													<span>
-														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-														<div class='btn-group pull-right'>
-															<button on-click="documentShow" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-play-circle'></span>
-															</button>
-															<button on-click="documentEdit" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-edit'></span>
-															</button>
-															<button on-click="documentDelete" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-trash'></span>
-															</button>
-														</div>
+													<span style="cursor:pointer;">
+														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
 													</span>
+													<ul>
+														<li>
+														<span style="cursor:pointer;" on-click="documentAdd">
+															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new document
+														</span>
+														</li>
+														{{#learningDocuments}}
+														<li>
+															<span>
+																<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																<div class='btn-group pull-right'>
+																	<button on-click="documentShow" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-play-circle'></span>
+																	</button>
+																	<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-edit'></span>
+																	</button>
+																	<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-trash'></span>
+																	</button>
+																</div>
+															</span>
+														</li>
+														{{/learningDocuments}}
+													</ul>
 												</li>
-												{{/learningDocuments}}
+												<li>
+													<span style="cursor:pointer;">
+														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
+													</span>
+													<ul>
+														<li>
+														<span style="cursor:pointer;" on-click="expertAdd">
+															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new expert
+														</span>
+														</li>
+														{{#Experts}}
+														<li>
+															<span>
+																<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
+																<div class='btn-group pull-right'>
+																	<button on-click="ExpertView" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-eye-open'></span>
+																	</button>
+																	<button on-click="ExpertEmail" class='btn btn-default btn-sm'>
+																		<a class='glyphicon glyphicon-envelope' style="color:#000;" href='mailto:{{email}}'></a>
+																	</button>
+																	<button on-click="ExpertEdit" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-edit'></span>
+																	</button>
+																	<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-trash'></span>
+																	</button>
+																</div>
+															</span>
+														</li>
+														{{/Experts}}
+													</ul>
+												</li>
+												<li>
+													<span style="cursor:pointer;">
+														<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>Widgets
+													</span>
+													<ul>
+														<li>
+														<span style="cursor:pointer;" on-click="widgetAdd">
+															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new widget
+														</span>
+														</li>
+														{{#Widgets}}
+														<li>
+															<span>
+																<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
+																<div class='btn-group pull-right'>												
+																	<button on-click="WidgetView" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-eye-open'></span>
+																	</button>
+																	<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-edit'></span>
+																	</button>
+																	<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
+																		<span class='glyphicon glyphicon-trash'></span>
+																	</button>
+																</div>
+															</span>
+														</li>
+														{{/Widgets}}
+													</ul>
+												</li>
 											</ul>
 										</li>
-										<li>
-											<span style="cursor:pointer;">
-												<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
-											</span>
-											<ul>
-												<li>
-												<span style="cursor:pointer;" on-click="expertAdd">
-													<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new expert
-												</span>
-												</li>
-												{{#Experts}}
-												<li>
-													<span>
-														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
-														<div class='btn-group pull-right'>
-															<button on-click="ExpertView" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-eye-open'></span>
-															</button>
-															<button on-click="ExpertEmail" class='btn btn-default btn-sm'>
-																<a class='glyphicon glyphicon-envelope' style="color:#000;" href='mailto:{{email}}'></a>
-															</button>
-															<button on-click="ExpertEdit" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-edit'></span>
-															</button>
-															<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-trash'></span>
-															</button>
-														</div>
-													</span>
-												</li>
-												{{/Experts}}
-											</ul>
-										</li>
-										<li>
-											<span style="cursor:pointer;">
-												<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>Widgets
-											</span>
-											<ul>
-												<li>
-												<span style="cursor:pointer;" on-click="widgetAdd">
-													<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new widget
-												</span>
-												</li>
-												{{#Widgets}}
-												<li>
-													<span>
-														<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
-														<div class='btn-group pull-right'>												
-															<button on-click="WidgetView" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-eye-open'></span>
-															</button>
-															<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-edit'></span>
-															</button>
-															<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-trash'></span>
-															</button>
-														</div>
-													</span>
-												</li>
-												{{/Widgets}}
-											</ul>
-										</li>
+										{{/learningIndicators}}
 									</ul>
 								</li>
-								{{/learningIndicators}}
-							</ul>
-						</li>
+							{{/accessRights.isEmployee}}
+
+							{{#accessRights.isEmployee}}
+								{{#isRelevant}}
+						        <li>
+									<span>
+										<p style="margin-bottom:0px">
+											<span style='margin-right:5px; color:{{this.getPriorityColor()}};' class='glyphicon glyphicon-star'></span>{{name}}
+										</p>
+									</span>
+									<ul>
+										{{#learningIndicators}}
+											{{#isRelevant}}
+											<li>
+												<span>
+													<p style="margin-bottom:0px">
+														<span style='margin-right:5px;' class='glyphicon glyphicon-flag'></span>{{name}}
+													</p>
+													<p style="margin-bottom:0px; overflow:hidden">
+														<small>{{description}}</small>
+													</p>
+												</span>
+												<ul>
+													<li>
+														<span style="cursor:pointer;">
+															<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+														</span>
+														<ul>
+															<li>
+															<span style="cursor:pointer;" on-click="documentAdd">
+																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new document
+															</span>
+															</li>
+															{{#learningDocuments}}
+															<li>
+																<span>
+																	<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																	<div class='btn-group pull-right'>
+																		<button on-click="documentShow" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-play-circle'></span>
+																		</button>
+																		<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-edit'></span>
+																		</button>
+																		<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-trash'></span>
+																		</button>
+																	</div>
+																</span>
+															</li>
+															{{/learningDocuments}}
+														</ul>
+													</li>
+													<li>
+														<span style="cursor:pointer;">
+															<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
+														</span>
+														<ul>
+															<li>
+															<span style="cursor:pointer;" on-click="expertAdd">
+																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new expert
+															</span>
+															</li>
+															{{#Experts}}
+															<li>
+																<span>
+																	<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
+																	<div class='btn-group pull-right'>
+																		<button on-click="ExpertView" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-eye-open'></span>
+																		</button>
+																		<button on-click="ExpertEmail" class='btn btn-default btn-sm'>
+																			<a class='glyphicon glyphicon-envelope' style="color:#000;" href='mailto:{{email}}'></a>
+																		</button>
+																		<button on-click="ExpertEdit" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-edit'></span>
+																		</button>
+																		<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-trash'></span>
+																		</button>
+																	</div>
+																</span>
+															</li>
+															{{/Experts}}
+														</ul>
+													</li>
+													<li>
+														<span style="cursor:pointer;">
+															<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>Widgets
+														</span>
+														<ul>
+															<li>
+															<span style="cursor:pointer;" on-click="widgetAdd">
+																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new widget
+															</span>
+															</li>
+															{{#Widgets}}
+															<li>
+																<span>
+																	<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
+																	<div class='btn-group pull-right'>												
+																		<button on-click="WidgetView" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-eye-open'></span>
+																		</button>
+																		<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-edit'></span>
+																		</button>
+																		<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
+																			<span class='glyphicon glyphicon-trash'></span>
+																		</button>
+																	</div>
+																</span>
+															</li>
+															{{/Widgets}}
+														</ul>
+													</li>
+												</ul>
+											</li>
+											{{/isRelevant}}
+										{{/learningIndicators}}
+									</ul>
+								</li>
+								{{/isRelevant}}
+							{{/accessRights.isEmployee}}
+
+
+
+
 						{{/bcns}}
 					</ul>
 				</div>
