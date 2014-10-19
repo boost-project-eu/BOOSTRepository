@@ -256,6 +256,7 @@
 							            template: '#documentsTreeTemplate',
 							            data: { bcns: bcnsList }
 							        });
+							        console.log(bcnsList);
 							        treeRactive.on("documentAdd", function(event){
 							        	var newDocument = new LearningDocument({});
 							        	newDocument.type = "weblink";
@@ -768,9 +769,13 @@
 													<span>
 														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
 														<div class='btn-group pull-right'>
-															<button on-click="documentShow" class='btn btn-default btn-sm'>
-																<span class='glyphicon glyphicon-play-circle'></span>
-															</button>
+
+															{{#url}}
+																<button on-click="documentShow" class='btn btn-default btn-sm'>
+																	<span class='glyphicon glyphicon-play-circle'></span>
+																</button>
+															{{/url}}
+
 															<button on-click="documentEdit" class='btn btn-default btn-sm'>
 																<span class='glyphicon glyphicon-edit'></span>
 															</button>
@@ -880,7 +885,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputLdDescription">Description</label>
-									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description" maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="inputLdLink">Link</label>
@@ -931,7 +936,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputExpertAddress">Address</label>
-									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"></textarea>
+									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
@@ -972,7 +977,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputWidgetUrl">Link</label>
-									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"></textarea>
+									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget" maxlength="500"></textarea>
 								</div>
 						</form>
 					</div>
@@ -1003,7 +1008,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputLdDescription">Description</label>
-									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description" maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="inputLdLink">Link</label>
@@ -1053,7 +1058,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputExpertAddress">Address</label>
-									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"></textarea>
+									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
@@ -1094,7 +1099,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputWidgetUrl">Link</label>
-									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"></textarea>
+									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget" maxlength="500"></textarea>
 								</div>
 						</form>
 					</div>
