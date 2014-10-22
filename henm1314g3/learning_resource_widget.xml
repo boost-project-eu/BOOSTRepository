@@ -769,9 +769,7 @@
 														<div class="row">
 															<div class="col-xs-8">
 																<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-																<p style="margin-bottom:0px; overflow:hidden">
-																	<small>{{description}}</small>
-																</p>
+																
 															</div>
 															<div class="col-xs-4">
 																<div class='btn-group pull-right'>
@@ -789,6 +787,9 @@
 																</div>
 															</div>
 														</div>
+														<p style="margin: 5px 0px;">
+															<small>{{description}}</small>
+														</p>
 													</span>
 												</li>
 												{{/learningDocuments}}
@@ -1229,6 +1230,20 @@
 											</div>
 										</td>
 									</tr>
+									{{#profile}}
+									<tr> 
+										<td width="20%">
+											<div>
+												Profile: 
+											</div>
+										</td>
+										<td>
+											<div>
+												{{profile}}
+											</div>
+										</td>
+									</tr>
+									{{/profile}}
 									{{#tel}}
 									<tr> 
 										<td width="20%">
