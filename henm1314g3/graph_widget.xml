@@ -28,8 +28,7 @@
 		
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
-    	
-
+    
 		<!-- Define CSS -->		
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
@@ -53,6 +52,7 @@
 			    	async = a;
 			    	bootbox = b;
 			    	Highcharts =  highCharts;
+			    
 
 					var userAccessRights; 
 					var userList;
@@ -65,6 +65,7 @@
 					var iwcClient;
 					var employees;
 					var bcns;
+
 					var space;
 					var check=false;
 
@@ -142,8 +143,6 @@
 						if (!check){
 							return;
 						}
-						//isnt it better this??
-						//while(!check){}
 						
 						if (intent.action == "SHOW_OVERALL_BCN_PROGRESS"){
 							showDefaultGraph();
@@ -364,6 +363,49 @@
 					        }); 
 					 });
 
+					function LIprogressForBcn(bcn){
+						var liNameList=[];
+
+						for(var j = 0; j<bcn.learningIndicators.length; j++){
+
+							var liStartList=[];
+							var liCurrentList=[];
+							var liEndList=[];
+						
+							var li = bcn.learningIndicators[j];
+						
+							for(i=0; i<employees.length; i++){
+
+								var employee = employees[i];
+								var start = employee.learningLevels[bcn.uri][li.id].start;
+								var current = employee.learningLevels[bcn.uri][li.id].current;
+								var end = employee.learningLevels[bcn.uri][li.id].end;
+
+								if (employee.learningLevels[bcn.uri].isRelevant){
+									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+										liStartList.push(start);
+										liCurrentList.push(current);
+										liEndList.push(end);
+										liNameList.push(employee.name);
+									}
+								}	
+							}
+						}
+
+						var solution=[];
+						solution[0]=[]; //value with liEndList
+						solution[1]=[];	//value with liStartList
+						solution[2]=[]; //value with liCurrentList
+
+						for (var i=0; i<liStartList.length; i++){
+							solution[0][i]= [liNameList[i], liEndList[i]];
+							solution[1][i] = [liNameList[i], liStartList[i]];
+							solution[2][i] = [liNameList[i], liCurrentList[i]];
+							
+						}
+						return solution;
+					}
+
 					function averageLIProgressForBcn(bcn){
 						var liNameList=[];
 						var liStartListAvg=[];
@@ -580,6 +622,7 @@
 										useHTML:true
 									}
 								},
+
 								
 								yAxis: {
 									endOnTick: true,
@@ -610,6 +653,8 @@
 		                     		//	   'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
 		                }
 								},
+
+
 								plotOptions: {
 									series: {
 										shadow:true,
@@ -626,14 +671,18 @@
 										cursor: 'pointer',
 										point: {
 											events: {
-												click: function(event) {
+												click: function(event) {						
 													if (isOverview.isBcn){
+
 														for (var i=0; i<liNameList.length; i++){
 															if (bcns[i].name==liNameList[this.x]){
 
 																showBcnGraph(bcns[i].uri);
+															//	alert("showBcnGraph average LI");
+
 															}
 														}
+
 													}
 													if(isOverview.isEmployee){
 														for (var i=0; i<liNameList.length; i++){
@@ -643,12 +692,17 @@
 															}
 														}
 													}
+													
+												
+													
+													
 												}
 											}
 										}
 									}
 								},
-								series: [{
+							
+									series: [{
 									name: 'End',
 									data: liEndListAvg,
 									uri: uriList,	
@@ -662,7 +716,8 @@
 									name: 'Start',
 									data: liStartListAvg,
 									uri: uriList,
-								}],
+								}]
+							
 							});
 						}
 		//---------------------------------------------------------------------------------------------------------------				
@@ -675,20 +730,17 @@
 										click: function (event) {
 											if (isBcnGraph.bool){
 												showDefaultGraph();
-											//	alert ('showDefaultGraph');
+											//	alert ('showDefaultGraph Overall Goals View');
 											} else if (isEmployeeGraph.bool) {
 												showEmployeeOverviewGraph();
-											//	alert ('showEmployeeOverviewGraph');
+											//	alert ('showEmployeeOverviewGraph back from goal');
 											} else if (isDetailedGraph.bool) {
 												var emplDataUri = $('#container').data('emplDataUri');
 												var bcnDataUri = $('#container').data('bcnDataUri');
 												showEmployeeGraph(emplDataUri);
-											//	alert ("Show Employee Graph");
+											//	alert ("back from LI");
 											}
-											
-								//			function (event) {
-								//			showDefaultGraph();
-								//			alert('showDefaultGraph');
+			
 										}
 									}
 								},
@@ -722,7 +774,6 @@
 																var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
 																
 																return pushpin[0].outerHTML+this.value;
-																
 																
 															}}
 											} return formater+this.value;
@@ -776,6 +827,26 @@
 										point: {
 											events: {
 												click: function(event) {
+													
+													if (isOverview.isLI){
+
+														for (var i=0; i<bcns.length; i++){
+									
+															if (bcns[i].name==title){
+																var bcn = bcns[i];
+
+																for(var j = 0; j<bcn.learningIndicators.length; j++){
+																	var li = bcn.learningIndicators[j];
+
+																if (li.name == liNameList[this.x]) {
+																	var liClicked = liNameList[this.x];					
+																	showLiGraph(bcns[i].uri, liClicked);
+																//	alert("show detailed LI graph");
+																}
+																}
+															}
+														}
+													}		
 
 													if (isOverview.isEmployee){
 														
@@ -811,9 +882,6 @@
 					}
 					
 					function showDefaultGraph(){
-
-
-						// here should be made changes
 
 						isOverviewGraph.bool=true;
 						isEmployeeOverviewGraph.bool=false;
@@ -899,18 +967,11 @@
 						var isOverview={};
 						isOverview.bool=true;
 						isOverview.isBcn=true;
-						//isOverview.isBcn=false;
 						isOverview.isEmployee=false;
+						isOverview.isLI=false;
 
 						
-					//	var template='<span id="pushpin" class="glyphicon glyphicon-pushpin" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
-						
-					//	var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
-
-						var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
-					//	$( document.createElement('div')).append(entry).html();
-
-					
+						var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';				
 
 						printGraph(isOverview, 0, title, subtitle, uriBcn, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 					}
@@ -998,18 +1059,17 @@
 						isOverview.bool=true;
 						isOverview.isBcn=false;
 						isOverview.isEmployee=true;
-						//isOverview.bool=true;
-						//isOverview.isBcn=true;
-						//isOverview.isEmployee=false;
+						isOverview.isLI=false;
+	
 						var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
 						if (!user.isEmployee){
 						printGraph(isOverview, 0, title, subtitle, uriEmployee, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 						}
 					}
 					
+					//it is an average LI's over all employees
+
 					function showBcnGraph(bcnUri){
-
-
 
 						isBcnGraph.bool=true;
 						isOverviewGraph.bool=false;
@@ -1023,9 +1083,10 @@
 								bcn=bcns[t];
 
 						}
-						var data = averageLIProgressForBcn(bcn);
 
-						
+
+						var data = averageLIProgressForBcn(bcn);
+					
 						var liEndListAvg=[];
 						var liCurrentListAvg=[];
 						var liStartListAvg=[];
@@ -1041,20 +1102,78 @@
 		 
 						/* Added priority pushpin to the title of the goals graph */
 
-						var template = '<span class="glyphicon glyphicon-star" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
+						// var template = '<span class="glyphicon glyphicon-star" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
 
-						var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
+						// var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
 						
-						var title = $( document.createElement('div')).append(entry).html()+bcn.name+ '';
+						// var title = $( document.createElement('div')).append(entry).html()+bcn.name+ '';
+
+						var title = bcn.name; 
 
 						var subtitle='Taking the average employees';
 						var isOverview={};
 						isOverview.bool=false;
 						isOverview.isBcn=false;
 						isOverview.isEmployee=false;
+						isOverview.isLI=true;
 						var uriList=[];
 						var formater='<span class="glyphicon glyphicon-flag" style="margin-right: 5px;"></span>';
 						printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
+					}
+
+					// showLiGraph in this function we calculate avarege over all LI per User
+
+					function showLiGraph(bcnUri, liClicked){
+						isBcnGraph.bool=true;
+						isOverviewGraph.bool=false;
+						isEmployeeOverviewGraph.bool=false;
+						isEmployeeGraph.bool=false;
+						isDetailedGraph.bool=false;
+						
+						var bcn;				
+						for(t=0; t<bcns.length; t++){
+							if (bcns[t].uri == bcnUri)
+								bcn=bcns[t];
+
+						}
+
+						var data = LIprogressForBcn(bcn);
+
+						var liEndListAvg=[];
+						var liCurrentListAvg=[];
+						var liStartListAvg=[];
+						var liNameList=[];
+						for (var i=0; i<data[0].length; i++){
+
+							liEndListAvg[i]=data[0][i][1];
+							liStartListAvg[i]=data[1][i][1];
+							liCurrentListAvg[i]=data[2][i][1];
+							
+							liNameList[i]=data[0][i][0];
+						}
+
+						for(var j = 0; j<bcn.learningIndicators.length; j++){
+
+							var li = bcn.learningIndicators[j];
+						}
+
+						var title = "How employees proceed over " + liClicked; 
+
+						var subtitle='Detailled view of each user';
+			
+						var isOverview={};
+						isOverview.bool=false;
+						isOverview.isBcn=false;
+						isOverview.isEmployee=false;
+						isOverview.isLI=false;
+
+						var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
+					
+
+						var uriList=[];
+						printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
+
+			
 					}
 
 					function showEmployeeGraph(employeeUri){
@@ -1091,6 +1210,7 @@
 						isOverview.bool=false;
 						isOverview.isBcn=false;
 						isOverview.isEmployee=true;
+						isOverview.isLI=false;
 						var uriList=[];
 						var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 
@@ -1158,6 +1278,7 @@
 						isOverview.bool=false;
 						isOverview.isBcn=false;
 						isOverview.isEmployee=false;
+						isOverview.isLI=false;
 						var uriList=[];
 						printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartList, liCurrentList, liEndList);
 					}

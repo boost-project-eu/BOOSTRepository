@@ -44,6 +44,11 @@ function Expert(object){
 	else
 		this.skype = "";
 
+	if(object.hasOwnProperty("profile"))
+		this.profile = object.profile;
+	else
+		this.profile = "";
+
 }
 
 Expert.prototype.create = function(callback){
