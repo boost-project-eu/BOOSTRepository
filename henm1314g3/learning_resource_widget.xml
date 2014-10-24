@@ -797,18 +797,29 @@
 														{{#learningDocuments}}
 														<li>
 															<span>
-																<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-																<div class='btn-group pull-right'>
-																	<button on-click="documentShow" class='btn btn-default btn-sm'>
-																		<span class='glyphicon glyphicon-play-circle'></span>
-																	</button>
-																	<button on-click="documentEdit" class='btn btn-default btn-sm'>
-																		<span class='glyphicon glyphicon-edit'></span>
-																	</button>
-																	<button on-click="documentDelete" class='btn btn-default btn-sm'>
-																		<span class='glyphicon glyphicon-trash'></span>
-																	</button>
+																<div class="row">
+																	<div class="col-xs-8">
+																		<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																	</div>
+																	<div class="col-xs-4">
+																		<div class='btn-group pull-right'>
+																			{{#url}}
+																				<button on-click="documentShow" class='btn btn-default btn-sm'>
+																					<span class='glyphicon glyphicon-play-circle'></span>
+																				</button>
+																			{{/url}}
+																			<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																				<span class='glyphicon glyphicon-edit'></span>
+																			</button>
+																			<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																				<span class='glyphicon glyphicon-trash'></span>
+																			</button>
+																		</div>
+																	</div>
 																</div>
+																<p style="margin: 5px 0px;">
+																	<small>{{description}}</small>
+																</p>
 															</span>
 														</li>
 														{{/learningDocuments}}
@@ -816,7 +827,7 @@
 												</li>
 												<li>
 													<span style="cursor:pointer;">
-														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
+														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Contact Experts
 													</span>
 													<ul>
 														<li>
@@ -918,18 +929,30 @@
 															{{#learningDocuments}}
 															<li>
 																<span>
-																	<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-																	<div class='btn-group pull-right'>
-																		<button on-click="documentShow" class='btn btn-default btn-sm'>
-																			<span class='glyphicon glyphicon-play-circle'></span>
-																		</button>
-																		<button on-click="documentEdit" class='btn btn-default btn-sm'>
-																			<span class='glyphicon glyphicon-edit'></span>
-																		</button>
-																		<button on-click="documentDelete" class='btn btn-default btn-sm'>
-																			<span class='glyphicon glyphicon-trash'></span>
-																		</button>
+																	<div class="row">
+																		<div class="col-xs-8">
+																			<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																			
+																		</div>
+																		<div class="col-xs-4">
+																			<div class='btn-group pull-right'>
+																				{{#url}}
+																					<button on-click="documentShow" class='btn btn-default btn-sm'>
+																						<span class='glyphicon glyphicon-play-circle'></span>
+																					</button>
+																				{{/url}}
+																				<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																					<span class='glyphicon glyphicon-edit'></span>
+																				</button>
+																				<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																					<span class='glyphicon glyphicon-trash'></span>
+																				</button>
+																			</div>
+																		</div>
 																	</div>
+																	<p style="margin: 5px 0px;">
+																		<small>{{description}}</small>
+																	</p>
 																</span>
 															</li>
 															{{/learningDocuments}}
@@ -1039,7 +1062,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputLdDescription">Description</label>
-									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"  maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="inputLdLink">Link</label>
@@ -1084,13 +1107,18 @@
 									{{/emailError}}
 								</div>
 								<div class="form-group">
+									<label for="inputExpertProf">Profile</label>
+									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
 									<label for="inputExpertTel">Phone number</label>
 									<input value="{{newExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
 									<label for="inputExpertAddress">Address</label>
-									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"></textarea>
+									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"  maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
@@ -1131,7 +1159,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputWidgetUrl">Link</label>
-									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"></textarea>
+									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"  maxlength="500"></textarea>
 								</div>
 						</form>
 					</div>
@@ -1162,7 +1190,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputLdDescription">Description</label>
-									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"></textarea>
+									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"  maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="inputLdLink">Link</label>
@@ -1206,13 +1234,18 @@
 									{{/emailError}}
 								</div>
 								<div class="form-group">
+									<label for="inputExpertProf">Profile</label>
+									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<span class="help-block"></span>
+								</div>
+								<div class="form-group">
 									<label for="inputExpertTel">Phone number</label>
 									<input value="{{editExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
 									<label for="inputExpertAddress">Address</label>
-									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"></textarea>
+									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
@@ -1253,7 +1286,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputWidgetUrl">Link</label>
-									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"></textarea>
+									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"  maxlength="500"></textarea>
 								</div>
 						</form>
 					</div>
@@ -1367,6 +1400,20 @@
 											</div>
 										</td>
 									</tr>
+									{{#profile}}
+										<tr> 
+											<td width="20%">
+												<div>
+													Profile: 
+												</div>
+											</td>
+											<td>
+												<div>
+													{{profile}}
+												</div>
+											</td>
+										</tr>
+									{{/profile}}
 									{{#tel}}
 									<tr> 
 										<td width="20%">
