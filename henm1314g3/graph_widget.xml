@@ -1328,6 +1328,7 @@
                <ul style="padding: 10px;">
                	<li>Click on the chart to change view to the <i>Overall Employee View</i>.</li>
                	<li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li>
+               	<li>Click on the learning indicators bar to see detailled view over every employee progress.
                	<li>To come back to previous step click on the chart.</li> 
                <ul>              
             </ul>         
