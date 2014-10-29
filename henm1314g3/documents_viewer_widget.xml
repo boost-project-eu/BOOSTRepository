@@ -226,7 +226,7 @@
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
             <ul style="padding: 10px;">
-             <li>Click on learning document in <i>Boost Search</i> or <i>Learning Repository</i> widget to see it in <i>Boost Viewer</i></li>
+             <li>Click on learning document in the <i>Boost Search</i> or in the <i>Learning Repository</i> widget to see it in the <i>Boost Viewer</i></li>
               </li>
             </ul>         
           </div>
