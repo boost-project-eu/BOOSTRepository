@@ -591,7 +591,7 @@
 		     			<h4 class="modal-title">Business Goals Help</h4>
 		            </div>
 				        <div class="modal-body">
-				            <div class="panel-group" align="justify">
+				            <div class="panel-group" id="levelsdef" align="justify">
 					            {{#(accessRights.isManager && !accessRights.isEmployee)}}
 						            <p>Business Goals widget was created to help manager organize business goals. In this widget manager can define goals, edit, delete and add learning indicators, assign priorities to goals.</p>
 						            <ul style="padding: 10px;">
