@@ -605,7 +605,7 @@
 						            </ul>	
 					            {{/(accessRights.isManager && !accessRights.isEmployee)}}
 					            {{#accessRights.isEmployee}}
-					            	 <p>Employee in this widget can see the list of assigned goals. </p>
+					            	 <p>In this widget you can monitor assigned goals and timelines. Click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon to see progress over this goal in the Learning Progress widget. </p>
 					            {{/accessRights.isEmployee}}
 					        </div> 		
 				        </div>	           
