@@ -23,6 +23,7 @@ require.config({
         scribd_api: "http://www.scribd.com/javascripts/scribd_api",
         highcharts: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/highcharts",
         highcharts_exporting: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/modules/exporting",
+        lodash: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/lodash",
 
         UserManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager",       
         BCNManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager",
