@@ -81,6 +81,7 @@
 					var userList;
 					var currentEmployee;
 					var showSpecificEmployee = false;
+					var ractiveOverview;
 
 					if (openapp.param.user()) {    
 						closeAutorisationWindow();
@@ -145,7 +146,7 @@
 
 								//	Get the list of Employee's
 
-								var ractiveOverview = new Ractive({
+								ractiveOverview = new Ractive({
 									el: 'containerBcnOverview',
 									template: '#templateBcnOverview',
 									data: { "bcnsList" : bcnsList,
@@ -435,9 +436,19 @@
 							
 						}
 						if(intent.action == "SHOW_EMPLOYEE_DATES"){
-							// console.log(intent);
+							// console.log(intent.data);
 							// console.log(userAccessRights);
-							console.log(bcnsList);
+							userAccessRights.isEmployee = true;
+							retrieveAllEmployees(space, function(employees){
+								currentEmployee = _.filter(employees, {userUri: intent.data});
+
+							});
+
+							// ractiveOverview.set("bcnsList", bcnsList);
+							ractiveOverview.set("accessRights", userAccessRights);
+							
+							console.log(userAccessRights);
+							// console.log(bcnsList);
 							showSpecificEmployee = true;
 						}
 					}

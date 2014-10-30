@@ -326,7 +326,7 @@
 									publishShowEmployeeProgress(event.context.uri);
 								},
 									employeeDatesShow: function(event){
-									publishShowEmployeeDates(event.context.uri);
+									publishShowEmployeeDates(event.context.userUri);
 								},
 									setLI: function ( event ) {
 									//We are editing a cloned employee object
