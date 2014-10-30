@@ -80,8 +80,8 @@
 					var userAccessRights; 
 					var userList;
 					var currentEmployee;
-					var showSpecificEmployee = false;
 					var ractiveOverview;
+					var ractiveBcnHeader;
 
 					if (openapp.param.user()) {    
 						closeAutorisationWindow();
@@ -118,11 +118,12 @@
 						
 
 						//	addBCN and showProgress activities	
-						var ractiveBcnHeader = new Ractive({
+						ractiveBcnHeader = new Ractive({
 						  el: 'containerBcnOverview',
 						  template: '#templateBcnHeader',
 						  data: {
-						  	accessRights: userAccessRights
+						  	accessRights: userAccessRights,
+						  	showSpecificEmployee: false
 						  },
 						  append: true
 						});
@@ -182,6 +183,11 @@
 										ractiveAddBcn.set("bcn", newBcn);
 
 										$("#addBcnModal").modal();		
+									},
+									returnToOverall: function(event) {
+										userAccessRights.isEmployee = false;
+										ractiveOverview.set("accessRights", userAccessRights);
+										ractiveBcnHeader.set("showSpecificEmployee", false);
 									},
 									showHelpAddBcn: function( event ){
 										$('.tooltip-addBCN').tooltip();
@@ -443,8 +449,7 @@
 								userAccessRights.isEmployee = true;
 								ractiveOverview.set("bcnsList", bcnsList);
 								ractiveOverview.set("accessRights", userAccessRights);
-								showSpecificEmployee = true;
-
+								ractiveBcnHeader.set("showSpecificEmployee", true);
 							});
 						}
 					}
@@ -570,10 +575,17 @@
 		  		 	{{/accessRights.isEmployee}}
 		  		 	{{^accessRights.isEmployee}}
 			  		 	{{#accessRights.isManager}}
-			  				<div class="btn-group">
-								<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
-				 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>		
-							</div>
+			  		 		{{#showSpecificEmployee}}
+			  		 			<div class="btn-group">
+									<button  type="button" class="btn btn-primary" on-click="returnToOverall"><span class="glyphicon glyphicon-home " ></span></button>
+								</div>
+			  		 		{{/showSpecificEmployee}}
+			  		 		{{^showSpecificEmployee}}
+				  				<div class="btn-group">
+									<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
+					 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>		
+								</div>
+			  		 		{{/showSpecificEmployee}}
 						{{/accessRights.isManager}}
 						{{^accessRights.isManager}}
 			  				<div class="alert alert-danger" role="alert">You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you</div>
