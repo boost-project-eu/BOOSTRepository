@@ -220,6 +220,17 @@
 						iwcClient.publish(intent);
 					}
 
+					function publishShowEmployeeDates(employeeUri){
+						var intent = {
+							component: "",
+							data: employeeUri,
+							dataType: "text/json",
+							action: "SHOW_EMPLOYEE_DATES"
+						};
+
+						iwcClient.publish(intent);
+					}
+
 					$(function(){
 
 						// Get the access rights: 
@@ -324,6 +335,9 @@
 									graphShow: function(event){
 									publishShowEmployeeProgress(event.context.uri);
 								},
+									employeeDatesShow: function(event){
+									publishShowEmployeeDates(event.context.userUri);
+								},
 									setLI: function ( event ) {
 									//We are editing a cloned employee object
 									//If the user discards the changes we do not have to do anything.
@@ -348,6 +362,9 @@
 								},
 									showHelpSetLI: function ( event ) {
 									$('.tooltip-setLI').tooltip();
+								},
+									showHelpEmployeeDates: function ( event ) {
+									$('.tooltip-showDeadlines').tooltip();
 								},
 									showHelpDeleteEmployee: function ( event ) {
 									$('.tooltip-deleteEmployee').tooltip();	
@@ -635,6 +652,7 @@
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
 												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="Show Deadlines: {{name}}" style="margin-right:5px;"></span></button>	
 											</div>
 										</li>
 									</ul>
