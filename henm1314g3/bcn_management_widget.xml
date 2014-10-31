@@ -124,6 +124,17 @@
 						  append: true
 						});
 
+						// show help according to user rights
+						var ractiveHelp = new Ractive({
+							el: 'descriptionModal',
+							template: '#templateHelpModal',
+							data: {
+								accessRights: userAccessRights
+							},
+							append: true
+						});
+
+
 
 						//	Get the list of BCN's
 						retrieveAllBcns(space, function(bcns){
@@ -356,7 +367,7 @@
 									});
 									event.original.preventDefault();
 								});
-
+								
 					
 								//	Delete BCN	
 								var ractiveDeleteBcn = new Ractive({
@@ -568,6 +579,44 @@
 			</script>		
 			</div>
 		</div>
+
+	<!-- Help Modal -->	
+
+	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <script id="templateHelpModal" type="text/ractive">
+		        <div class="modal-content">
+		           	<div class="modal-header">
+		          	 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		     			<h4 class="modal-title">Business Goals Help</h4>
+		            </div>
+				        <div class="modal-body">
+				            <div class="panel-group" id="levelsdef" align="justify">
+					            {{#(accessRights.isManager && !accessRights.isEmployee)}}
+						            <p>Business Goals widget was created to help manager organize business goals. In this widget manager can define goals, edit, delete and add learning indicators, assign priorities to goals.</p>
+						            <ul style="padding: 10px;">
+										<li>To add new business goal click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span></button> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning Indicator</i> click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button> icon. </li>
+							            <li>To see overall progress of all employees click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon. The graph will be shown in the Learning Progress widget.</li>
+						            	
+							            <li>To edit goal click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></button> icon.</li>
+							            <li>To delete goal click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span></button> icon.</li>
+							            <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon.</li>
+		
+						            </ul>	
+					            {{/(accessRights.isManager && !accessRights.isEmployee)}}
+					            {{#accessRights.isEmployee}}
+					            	 <p>In this widget you can monitor assigned goals and timelines. Click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon to see progress over this goal in the Learning Progress widget. </p>
+					            {{/accessRights.isEmployee}}
+					        </div> 		
+				        </div>	           
+		            <div class="modal-footer">
+		                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+		           	</div>      
+		        </div>      
+     		</script>
+	    </div>
+	 </div> 
+	
 	
 	<!-- Template for the BCN Overview -->
 
@@ -794,31 +843,6 @@
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
-	<!-- Template for Description Bcn Modal -->
-		
-	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-       <div class="modal-dialog">
-         <div class="modal-content">
-           	<div class="modal-header">
-          	 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-     			<h4 class="modal-title">Business Goals Help</h4>
-             </div>
-	           <div class="modal-body">
-	             <div class="panel-group" id="levelsdef" align="justify">
-	             <ul style="padding: 10px;">
-				 <li>To add new business goal click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning indicator</i> click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button> icon. </li>
-	             <li>To see overall progress of all employees click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button> icon. The graph will be shown in the Learning Progress widget.</p></li>
-	             <li>To edit goal click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit tooltip-editGoal" data-placement="left" data-toggle="tooltip" data-original-title="Edit"></span></button> icon.</li>
-	             <li>To delete goal click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash tooltip-deleteGoal" data-placement="left" data-toggle="tooltip" data-original-title="Delete"></span></button> icon.</li>
-	             <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats tooltip-showGoalProgress" data-placement="left" data-toggle="tooltip" data-original-title="Show Progress"></span></button> icon.</li>
-	             </ul>	 		
-	          </div>
-           <div class="modal-footer">
-                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-           </div>      
-         </div>      
-       </div>
-     </div> 
 
 	 ]]>
   </Content>
