@@ -353,6 +353,9 @@
 									showHelpSetLI: function ( event ) {
 									$('.tooltip-setLI').tooltip();
 								},
+									showHelpEmployeeDates: function ( event ) {
+									$('.tooltip-showDeadlines').tooltip();
+								},
 									showHelpDeleteEmployee: function ( event ) {
 									$('.tooltip-deleteEmployee').tooltip();	
 								},
@@ -639,7 +642,7 @@
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
 												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
-												<button class="btn btn-default btn-sm" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar' data-placement="left" style="margin-right:5px;"></span></button>	
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="Show Deadlines: {{name}}" style="margin-right:5px;"></span></button>	
 											</div>
 										</li>
 									</ul>

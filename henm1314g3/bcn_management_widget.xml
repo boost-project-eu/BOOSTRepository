@@ -189,9 +189,12 @@
 										ractiveOverview.set("accessRights", userAccessRights);
 										ractiveBcnHeader.set("showSpecificEmployee", false);
 									},
+									showHelpHome: function( event ){
+										$('.tooltip-returnHome').tooltip();
+									},
+
 									showHelpAddBcn: function( event ){
 										$('.tooltip-addBCN').tooltip();
-										
 									},
 									showHelpShowOverallProgress: function (event){
 										$('.tooltip-showOverallProgress').tooltip();
@@ -577,7 +580,7 @@
 			  		 	{{#accessRights.isManager}}
 			  		 		{{#showSpecificEmployee}}
 			  		 			<div class="btn-group">
-									<button  type="button" class="btn btn-primary" on-click="returnToOverall"><span class="glyphicon glyphicon-home " ></span></button>
+									<button  type="button" class="btn btn-primary" on-mouseover="showHelpHome" on-click="returnToOverall"><span class="glyphicon glyphicon-home tooltip-returnHome" data-placement="top" data-toggle="tooltip" data-original-title="Return to Manager View"></span></button>
 								</div>
 			  		 		{{/showSpecificEmployee}}
 			  		 		{{^showSpecificEmployee}}
