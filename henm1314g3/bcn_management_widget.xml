@@ -603,42 +603,44 @@
 	<!-- Template for the BCN Overview -->
 
 		<script id="templateBcnOverview" type='text/ractive'>
+			<table class="table table-striped table-bordered table-condensed" >
+			<tbody>
+				{{#bcnsList}}
+					{{^accessRights.isEmployee}}
+						{{#accessRights.isManager}} 
+								<tr> 
+									<td>
+										<div>
+											<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
+										</div>
+										<div class="small text-muted">
+										</div>
+									</td>
+									<td style="width:70px;" align="center">
+										<div class='btn-group'>
+											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
+												<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
+
+											</button>
+											<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
+													<li align="center" style="width:120px;">
+													<div class='btn-group'>
+														<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
+														<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
+														<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+													</div>
+													</li>
+												</ul>
+										</div>
+									</td>
+								</tr>
+						{{/accessRights.isManager}}
+					{{/accessRights.isEmployee}}
+				{{/bcnsList}}
+			</tbody>
+			</table>
+
 					{{#bcnsList}}
-						{{^accessRights.isEmployee}}
-							{{#accessRights.isManager}} 
-								<table class="table table-striped table-bordered table-condensed" >
-								<tbody>
-									<tr> 
-										<td>
-											<div>
-												<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
-											</div>
-											<div class="small text-muted">
-											</div>
-										</td>
-										<td style="width:70px;" align="center">
-											<div class='btn-group'>
-												<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
-													<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
-
-												</button>
-												<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
-														<li align="center" style="width:120px;">
-														<div class='btn-group'>
-															<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
-															<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
-															<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
-														</div>
-														</li>
-													</ul>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-								</table>
-							{{/accessRights.isManager}}
-						{{/accessRights.isEmployee}}
-
 						{{#accessRights.isEmployee}}
 							{{#isRelevant}}
 							<div class="panel-group" id="accordion">
