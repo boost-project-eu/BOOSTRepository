@@ -338,6 +338,10 @@
 									employeeDatesShow: function(event){
 									publishShowEmployeeDates(event.context.userUri);
 								},
+									graphAndDatesShow: function(event){
+									publishShowEmployeeDates(event.context.userUri);
+									publishShowEmployeeProgress(event.context.uri);
+								},
 									setLI: function ( event ) {
 									//We are editing a cloned employee object
 									//If the user discards the changes we do not have to do anything.
@@ -630,7 +634,7 @@
 			    <tbody>
 					{{#employeeList}}
 						<tr> 
-							<td>
+							<td on-click='graphAndDatesShow' style="cursor: pointer;">
 								<div>
 									{{name}}
 								</div>

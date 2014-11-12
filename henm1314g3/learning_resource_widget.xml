@@ -2,7 +2,7 @@
 <Module>
     
     <ModulePrefs title="Learning Resources"
-		description="Widget to manage learning Documents and Experts."
+		description="Widget to manage Documents and Experts."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		height="400"
@@ -67,13 +67,14 @@
 					var bcnsList = new Array();
 					var ldsList = {};
 					var ldToBeSaved;
-					var learningDocumentFromSearchWidget;
+					var learningDocumentFromSearchWidget = {};
 					var learningDocuments = [];
 					var Experts = [];
 					var ExpertsList = {};
 					var Widgets = [];
 					var WidgetsList = {};
 					var currentEmployee = {};
+					var treeRactive = {};
 					
 					
 					if (openapp.param.user()) {    
@@ -273,7 +274,7 @@
 
 									
 									retrieveAccessRights(function(accessRights){
-										var treeRactive = new Ractive({
+										treeRactive = new Ractive({
 								            el: 'bcns',
 								            template: '#documentsTreeTemplate',
 								            data: { 
@@ -432,13 +433,12 @@
 								        	if(event.context.type == "weblink"){
 								        		var url = event.context.url;
 								        		var http = "http://"
-								        		if(!(url.substring(0, http.length) == http))
+								        		if(url.indexOf("http") == -1)
 								        			url = http + url;
 								        		window.open(url,'_blank');
 								        	}
 								        	else
 								        		publishShowLearningDocument(event.context);
-								        	console.log(event.context.url);
 								        });
 
 								        treeRactive.on("documentEdit", function(event){
@@ -697,6 +697,7 @@
 							        	var document = this.get("newDocument");
 							        	learningDocumentFromSearchWidget.bcnUri = document.bcnUri;
 							        	learningDocumentFromSearchWidget.liId = document.liId;
+							        	console.log(learningDocumentFromSearchWidget);
 							        	this.set("newDocument", learningDocumentFromSearchWidget);
 							        });
 								});
@@ -786,7 +787,7 @@
 											<ul>
 												<li>
 													<span style="cursor:pointer;">
-														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Documents
 													</span>
 													<ul>
 														<li>
@@ -827,7 +828,7 @@
 												</li>
 												<li>
 													<span style="cursor:pointer;">
-														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Contact Experts
+														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
 													</span>
 													<ul>
 														<li>
@@ -838,7 +839,9 @@
 														{{#Experts}}
 														<li>
 															<span>
+																<span>
 																<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
+																
 																<div class='btn-group pull-right'>
 																	<button on-click="ExpertView" class='btn btn-default btn-sm'>
 																		<span class='glyphicon glyphicon-eye-open'></span>
@@ -853,6 +856,11 @@
 																		<span class='glyphicon glyphicon-trash'></span>
 																	</button>
 																</div>
+																</span>
+
+															<p style="margin-bottom:0px; ">
+																<small>{{profile}}</small>
+															</p>
 															</span>
 														</li>
 														{{/Experts}}
@@ -918,7 +926,7 @@
 												<ul>
 													<li>
 														<span style="cursor:pointer;">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+															<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Documents
 														</span>
 														<ul>
 															<li>
@@ -1049,7 +1057,7 @@
 					<script id='addDocumentTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">Add a new Learning Document</h4>
+    					<h4 class="modal-title" id="myModalLabel">Add a new Document</h4>
   						<p>
   						<button on-click="importDocument" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>Import from viewer</button>
   						</p>
@@ -1180,7 +1188,7 @@
 					<script id='editDocumentTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="editDocumentModalLabel">Edit learning Document</h4>
+    					<h4 class="modal-title" id="editDocumentModalLabel">Edit Document</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
@@ -1235,7 +1243,7 @@
 								</div>
 								<div class="form-group">
 									<label for="inputExpertProf">Profile</label>
-									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<textarea value="{{editExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
@@ -1308,7 +1316,7 @@
   						<div id="deleteDocumentTemplateContainer">
   						<script id='deleteDocumentTemplate' type='text/ractive'>
 						<div class="alert alert-danger fade in" id="alertInModal">
-							<h4 value="" id="deleteAlertText">Do you really want to delete this Learning Document?</h4>
+							<h4 value="" id="deleteAlertText">Do you really want to delete this Document?</h4>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -1552,12 +1560,12 @@
           <div class="modal-body">
             <div class="panel-group" id="levelsdef" align="justify">
             <ul style="padding: 10px;">
-            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents, experts and widgets assigned to the goal and learning indicators. </li>
+            	<li>In the <i>Learning Resources</i> widget you can review or add new documents, experts and widgets assigned to the goal and learning indicators. </li>
           		<li>To see the list of learning indicators assigned to the goal click on its name.</li>
-          		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
+          		<li>To see the list of documents assigned to particular learning indicator click on its name.</li>
           		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
           		<li>To see the list of widgets assigned to particular learning indicator click on its name.</li>
-				<li>To add new learning document click on <i>Add new document</i> menu item. In the <i>Add a new Learning Document</i> view 
+				<li>To add new document click on <i>Add new document</i> menu item. In the <i>Add a new Document</i> view 
 				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
 				<li>To add new expert click on <i>Add new expert</i> menu item. 
 				<ul style="padding: 10px;">

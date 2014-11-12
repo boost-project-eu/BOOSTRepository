@@ -661,7 +661,7 @@
 					{{^accessRights.isEmployee}}
 						{{#accessRights.isManager}} 
 								<tr> 
-									<td>
+									<td on-click='graphShow' style="cursor: pointer;">
 										<div>
 											<span class='glyphicon glyphicon-star' style='color:{{this.getPriorityColor()}}; margin-right:5px;'></span>{{name}}
 										</div>
