@@ -853,14 +853,14 @@
 					              In the new view check in relevant goals for this employee.</li>
 					         <li>Check in relevant learning indicators and define learning levels for this employee by clicking on the goal name and selecting start, current and end level accordingly.</li> 
 					         <li>Choose start and end dates for the learning indicators.
-					             <br><b>Descriptions of learning levels:</b> 
+					             <br><strong>Descriptions of learning levels:</strong> 
 					              	<ul style="padding: 10px;">
-					                	<li><b>Level 0:</b> I have not started to address the skills / knowledge required for this indicator.</li> 
-					               	  	<li><b>Level 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
-					                	<li><b>Level 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
-					                	<li><b>Level 3:</b> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>
-					                	<li><b>Level 4:</b> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</li>
-					               		<li><b>Level 5:</b> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</li>
+					                	<li><strong>Level 0:</strong> I have not started to address the skills / knowledge required for this indicator.</li> 
+					               	  	<li><strong>Level 1:</strong> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
+					                	<li><strong>Level 2:</strong> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
+					                	<li><strong>Level 3:</strong> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>
+					                	<li><strong>Level 4:</strong> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</li>
+					               		<li><strong>Level 5:</strong> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</li>
 					              	</ul>
 				              </li>
 				             <li>To monitor the learning progress of employee straight forward in <i>Learning Progress</i> widget click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats tooltip-showGoalProgress" data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: Decor and Furnishing"></span></button> icon.</li>

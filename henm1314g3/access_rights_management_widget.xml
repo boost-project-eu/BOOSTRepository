@@ -341,10 +341,10 @@
 			 <li>To assing a manager or an employee user role, check appropriate checkbox <input type="checkbox">. 
 			 If you are a manager and would like to see widgets interface for the employee role, check both checkboxes.</li>
 			 	<ul style="padding: 10px;">
-                	<li><b>Employee: </b>
+                	<li><strong>Employee: </strong>
                 		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system. 
                 		Watch own learning progress and the progress of the goals.</p></li> 
-                	<li><b>Manager: </b>
+                	<li><strong>Manager: </strong>
                 		<p>Has full control over the system. Can assing access rights to the users. 
                 		Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators.
                 		Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</li></p>

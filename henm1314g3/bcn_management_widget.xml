@@ -721,7 +721,7 @@
 								</div>
 
 								<div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
-									Days before the deadline: <b>{{daysLeft}}</b>
+									Days before the deadline: <strong>{{daysLeft}}</strong>
 									<div class="progress" style="margin-bottom: 5px;">
 									  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{datePercentage}}%">
 									    <span class="sr-only">20% Complete</span>
@@ -748,7 +748,7 @@
 								    	{{#employeeLiData.isRelevant}}
 									    	<h4 class="text-center">{{name}}</h4>
 										    <div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
-												Days before the deadline: <b>{{employeeLiData.daysLeft}}</b>
+												Days before the deadline: <strong>{{employeeLiData.daysLeft}}</strong>
 												<div class="progress" style="margin-bottom: 5px;">
 												  <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{employeeLiData.datePercentage}}%">
 												    <span class="sr-only">20% Complete</span>
