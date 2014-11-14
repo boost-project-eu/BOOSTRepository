@@ -144,10 +144,10 @@
 						<tr>
 							<td colspan=2>
 				            		<ul style="padding: 10px;">
-				            			<li><small>Assign user roles to employees using the <b>Access Rights</b> widget.</small></li>
-				            			<li><small>Define business goals and add learning indicators to them using the <b>Business Goals</b> widget. Assign priority to the goals, specifying the most improtant with a high priority.</small></li>
-					               	  	<li><small>Monitor business goals progress and employees competence in the <b>Learning Progress</b> widget. It works together with <b>Business Goals</b> and <b>Business Employees</b> widgets.</small> </li>
-					                	<li><small>Edit information about employees and assign goals to them, adjust their learning levels in the <b>Business Employees</b> widget.</small></li>
+				            			<li><small>Assign user roles to employees using the <strong>Access Rights</strong> widget.</small></li>
+				            			<li><small>Define business goals and add learning indicators to them using the <strong>Business Goals</strong> widget. Assign priority to the goals, specifying the most improtant with a high priority.</small></li>
+					               	  	<li><small>Monitor business goals progress and employees competence in the <strong>Learning Progress</strong> widget. It works together with <strong>Business Goals</strong> and <strong>Business Employees</strong> widgets.</small> </li>
+					                	<li><small>Edit information about employees and assign goals to them, adjust their learning levels in the <strong>Business Employees</strong> widget.</small></li>
 					              	</ul>
 					        </td>
 						</tr>
@@ -157,11 +157,12 @@
 						<tr>
 							<td colspan=2>
 							<ul style="padding: 10px;">
-					                	<li><small>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</small></li>
-					               	  	<li><small>Watch and read interesting resources using <b>Boost Viewer</b> widget.</small></li>
-					                	<li><small>Save and organise your learning resources in the <b>Learning Repository:</b>
+
+					                	<li><small>Use a <strong>Boost Search</strong> widget to ﬁnd learning materials.</small></li> 
+					               	  	<li><small>Watch and read interesting resources using <strong>Boost Viewer</strong> widget.</small></li>
+					                	<li><small>Save and organise your learning resources in the <strong>Learning Repository:</strong>
 					                	 You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li>
-					              		<li><small>Monitor your learning progress with the <b>Learning Progress</b> widget.</small></li>
+					              		<li><small>Monitor your learning progress with the <strong>Learning Progress</strong> widget.</small></li>
 					              	</ul>
 					        </td>
 						</tr>
