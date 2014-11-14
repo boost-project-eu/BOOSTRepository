@@ -265,22 +265,34 @@
 		<script id="templateUserOverview" type='text/ractive'>
 			{{^currentUser.AccessRights.isManager}}
 				{{#currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-info" role="alert">You have the role <strong>Employee</strong>. You can not change anything in this widget</div>
+					<div class="alert alert-info" role="alert">
+						You have the role <strong>Employee</strong>. You can not change anything in this widget
+					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 
 				{{^currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-danger" role="alert">You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you</div>
+					<div class="alert alert-danger" role="alert">
+						You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you
+					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 			{{/currentUser.AccessRights.isManager}}
 
 			{{#currentUser.AccessRights.isManager}}
-				{{#currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-info" role="alert">You have both <strong>Manager</strong> and <strong>Employee</strong> roles.</div>
-				{{/currentUser.AccessRights.isEmployee}}
+				<div class="alert alert-info" role="alert">
+					{{#currentUser.AccessRights.isEmployee}}
+							You have both <strong>Manager</strong> and <strong>Employee</strong> roles.
+							</br>
+					{{/currentUser.AccessRights.isEmployee}}
 
-				{{^currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-info" role="alert">You have the role <strong>Manager</strong>.</div>
-				{{/currentUser.AccessRights.isEmployee}}
+					{{^currentUser.AccessRights.isEmployee}}
+							You have the role <strong>Manager</strong>.
+					{{/currentUser.AccessRights.isEmployee}}
+
+					To see the space as <strong>Employee</strong> or <strong>Manager</strong>, just tick or untick Employee checkbox.
+
+				</div>
+
+
 					<table class="table table-striped table-bordered" >
 					    <tbody>
 					    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Employee</th></tr>

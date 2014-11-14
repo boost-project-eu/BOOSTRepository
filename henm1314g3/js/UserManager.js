@@ -44,10 +44,7 @@ function retrieveAllUsers(space, callback){
 		space.getSubResources({
 			relation : "http://purl.org/openapp/owner",
 			onAll : function(ownerResource){
-				var ownerUri = ownerResource[0].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value;
-			
-
-
+				if (ownerResource[0]) var ownerUri = ownerResource[0].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value;
 		
 				//First get the URIs of all the user which are in the space
 				space.getSubResources({
@@ -71,7 +68,12 @@ function retrieveAllUsers(space, callback){
 									email = "";
 								//Remove 'mailto:' prefix from the email
 								email = email.substring(7);
-								var isOwner = (ownerUri == item);
+								if (ownerUri) {
+									var isOwner = (ownerUri == item);
+								} else {
+									isOwner = false;
+								}
+
 								var user = new User({
 									uri : item,
 									name : info["http://purl.org/dc/terms/title"],
