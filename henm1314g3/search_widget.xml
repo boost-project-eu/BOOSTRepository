@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    
-    <ModulePrefs title="Boost Search"
+
+    <ModulePrefs title="Search"
 		description="Widget to search learning material."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
-		height="400">
+		height="450">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
-		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
-			
+
 		    <Request method="" url=""/>
 			<Authorization url=""/>
 			<Access method="" url=""/>
 		</Service>
     </OAuth>
     </ModulePrefs>
-    
+
     <Content type="html">
     <![CDATA[
-		
+
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
@@ -55,7 +55,7 @@
 			    	async = a;
 			    	bootbox = b;
 
-					var userAccessRights; 
+					var userAccessRights;
 					var userList;
 					//Globals
 					var ITEMS_PER_PAGE = 5;
@@ -83,7 +83,7 @@
 					//gadgets.util.registerOnLoadHandler(init);
 
 
-					if (openapp.param.user()) {    
+					if (openapp.param.user()) {
 						closeAutorisationWindow();
 					}
 
@@ -143,7 +143,7 @@
 							var maxIndex = newRepository.currentPageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE;
 							if (maxIndex > newRepository.searchResults.length)
 								maxIndex = newRepository.searchResults.length;
-							for(var i = newRepository.currentPageIndex * ITEMS_PER_PAGE; 
+							for(var i = newRepository.currentPageIndex * ITEMS_PER_PAGE;
 								i < maxIndex; i++){
 								newRepository.visibleResults.push(newRepository.searchResults[i]);
 							}
@@ -219,7 +219,7 @@
 							result.click = function(){
 								publishLearningDocumentSelected(result);
 							}
-							
+
 							//Shorten the description of the result if it is too long
 							var maxDescriptionLength = 500;
 							if(result.description.length > maxDescriptionLength){
@@ -243,7 +243,7 @@
 						newRepository.initNewResults([]);
 
 						//alert(JSON.stringify(newRepository));
-						
+
 						repositories.push(newRepository);
 					}
 
@@ -251,7 +251,7 @@
 						if (intent.action == "CONFIG_CHANGE"){
 
 						}
-						
+
 					}
 
 					function publishLearningDocumentSelected(learningDocument){
@@ -280,18 +280,18 @@
 
 					$(function(){
 
-						
-						// Get the access rights: 
+
+						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 							userAccessRights = accessRights.getUserAccessRights();
 							agreed = userAccessRights.hasAgreedToLicense;
 							//Check if user has agreed to license
-							
+
 								if(!agreed){
-								showModalAcceptTermsOfUse();							
+								showModalAcceptTermsOfUse();
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();		
-							}	
+								showModalContactManager();
+							}
 
 							ractiveSearchHeader = new Ractive({
 									el: 'containerSearch',
@@ -356,18 +356,18 @@
 							});
 						});  // end of the retrieveAccessRights
 
-						// help button click 
+						// help button click
 
 			    	  $('#question').click(function(){
 			        	$('#descriptionModal').modal({
 			        		keyboard: true
 			          	});
-			        	}); 
+			        	});
 
 						$("#search_field").keypress(function(event){
 							if(event.which == 13){
 								model.selectedRepository.search($("#search_field").val(), function(){
-								
+
 							});
 							}
 						});
@@ -404,11 +404,11 @@
 
 
 		</script>
-		
+
 		<!-- HTML Block -->
 		<div style="overflow-y: scroll; height:400px;" id="content">
 		<div class="panel panel-primary" id="containerSearch">
-			<script id='templateSearch' type='text/ractive'>	
+			<script id='templateSearch' type='text/ractive'>
 			<!-- Template for the header Main widget view -->
 				<div class="panel-heading">
 					<button id="question" on-click="questionModal" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
@@ -418,7 +418,7 @@
 			  	{{^accessRights.isEmployee}}
 				  	{{#accessRights.isManager}}
 				  		<div class="btn-group">
-					 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>		
+					 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>
 						</div>
 					{{/accessRights.isManager}}
 				{{/accessRights.isEmployee}}
@@ -462,7 +462,7 @@
 							</a>
 						{{/contentSpecificData.wiki}}
 
-							
+
 					{{/model.selectedRepository.visibleResults}}
 				</div>
 				<div class="panel-footer" id="resultsFooter"></div>
@@ -489,7 +489,7 @@
 		</div>
 
 
-	<!-- Help Modal -->	
+	<!-- Help Modal -->
 
 	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	    <div class="modal-dialog">
@@ -511,7 +511,7 @@
 							            	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
 							            	<li>In the <i>Wikipedia</i> repository new page opens.</li>
 							            </ul>
-							         </div>   	
+							         </div>
 					            {{/(accessRights.isManager && !accessRights.isEmployee)}}
 					            {{#accessRights.isEmployee}}
 					            	 <div class="panel-group" id="levelsdef" align="justify">
@@ -522,17 +522,17 @@
 							            	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
 							            	<li>In the <i>Wikipedia</i> repository new page opens.</li>
 							            </ul>
-							         </div>   
+							         </div>
 					            {{/accessRights.isEmployee}}
-					        </div> 		
-				        </div>	           
+					        </div>
+				        </div>
 		            <div class="modal-footer">
-		                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-		           	</div>      
-		        </div>      
+		                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		           	</div>
+		        </div>
      		</script>
 	    </div>
-	 </div> 
+	 </div>
 
 
     <!-- Modal to manage repositories -->
@@ -563,12 +563,12 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button id="saveRepoButton" type="button" class="btn btn-primary">Save changes</button>
-              
+
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
-      </div><!-- /.modal    
-	
+      </div><!-- /.modal
+
 	]]>
   </Content>
 </Module>

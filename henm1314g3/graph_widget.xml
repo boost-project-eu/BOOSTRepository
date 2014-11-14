@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    
-    <ModulePrefs title="Learning Progress"
+
+    <ModulePrefs title="Progress"
 		description="This widget gives an overview of the learning process.."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
@@ -11,25 +11,25 @@
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
-		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
-			
+
 		    <Request method="" url=""/>
 			<Authorization url=""/>
 			<Access method="" url=""/>
 		</Service>
     </OAuth>
     </ModulePrefs>
-    
+
     <Content type="html">
     <![CDATA[
-		
+
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
-    
-		<!-- Define CSS -->		
+
+		<!-- Define CSS -->
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
@@ -52,9 +52,9 @@
 			    	async = a;
 			    	bootbox = b;
 			    	Highcharts =  highCharts;
-			    
 
-					var userAccessRights; 
+
+					var userAccessRights;
 					var userList;
 					var currentEmployee;
 
@@ -74,22 +74,22 @@
 						isManager: false
 					};
 
-						
+
 					//Those boolean tell us if we are currently displaying a BCN or Employee graph.
 					var isOverviewGraph={};
 					var isEmployeeOverviewGraph={};
 					var isBcnGraph={};
 					var isEmployeeGraph={};
 					var isDetailedGraph={};
-					
 
-					if (openapp.param.user()) {    
+
+					if (openapp.param.user()) {
 						closeAutorisationWindow();
 					}
-					
+
 		//			gadgets.util.registerOnLoadHandler(init);
 
-					
+
 		//			function init(){
 
 						space = new openapp.oo.Resource(openapp.param.space());
@@ -124,7 +124,7 @@
 
 
 									employees.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
-									
+
 									isBcnGraph.bool=false;
 									isEmployeeGraph.bool=false;
 									isOverviewGraph.bool=false;
@@ -132,10 +132,10 @@
 									isDetailedGraph.bool=false;
 									check=true;
 
-									showEmployeeOverviewGraph();	
+									showEmployeeOverviewGraph();
 
 								});
-							});		
+							});
 						});
 		//			}
 
@@ -143,7 +143,7 @@
 						if (!check){
 							return;
 						}
-						
+
 						if (intent.action == "SHOW_OVERALL_BCN_PROGRESS"){
 							showDefaultGraph();
 						}
@@ -163,7 +163,7 @@
 						if(intent.action == "BCN_CREATE"){
 							createBCNfromUri(intent.data, function(bcn){
 								bcns.push(bcn);
-								bcns.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
+								bcns.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase())
 										return -1; else return 1;});
 
 								//Update employees
@@ -240,7 +240,7 @@
 						if(intent.action == "EMPLOYEE_CREATE"){
 							createEmployeefromUri(intent.data, function(bcn){
 								employees.push(bcn);
-								employees.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase()) 
+								employees.sort(function(a, b){if(a.name.toLowerCase() < b.name.toLowerCase())
 										return -1; else return 1;});
 								if (isBcnGraph.bool){
 									showBcnGraph(isBcnGraph.uri);
@@ -261,10 +261,10 @@
 									if(employee.uri == intent.data)
 										employees[i] = updatedEmployee;
 								}
-								if (isBcnGraph.bool){	
+								if (isBcnGraph.bool){
 									showBcnGraph(isBcnGraph.uri);
 								}
-								if (isEmployeeGraph.bool && isEmployeeGraph.uri==intent.data){	
+								if (isEmployeeGraph.bool && isEmployeeGraph.uri==intent.data){
 									showEmployeeGraph(isEmployeeGraph.uri);
 								}
 								if (isDetailedGraph.bool && isDetailedGraph.employeeUri==intent.data){
@@ -322,7 +322,7 @@
 									}
 
 									employees.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
-									
+
 									isBcnGraph.bool=false;
 									isEmployeeGraph.bool=false;
 									isOverviewGraph.bool=false;
@@ -330,37 +330,37 @@
 									isDetailedGraph.bool=false;
 									check=true;
 
-									showEmployeeOverviewGraph();	
+									showEmployeeOverviewGraph();
 
 								});
-							});	
+							});
 						}
 					}
 
 					$(function(){
 
-						// Get the access rights: 
+						// Get the access rights:
 							retrieveAccessRights(function(accessRights){
 							userAccessRights = accessRights.getUserAccessRights();
-							
+
 							//Check if user has agreed to license
-			
+
 								if(!userAccessRights.hasAgreedToLicense){
-								showModalAcceptTermsOfUse();							
+								showModalAcceptTermsOfUse();
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								//showModalContactManager();		
-							}	
+								//showModalContactManager();
+							}
 
 							});  // end of the retrieveAccessRights
-						
 
-					      // help button click 
+
+					      // help button click
 
 					      $('#question').click(function(){
 					        $('#descriptionModal').modal({
 					        keyboard: true
 					          });
-					        }); 
+					        });
 					 });
 
 					function LIprogressForBcn(bcn){
@@ -371,9 +371,9 @@
 							var liStartList=[];
 							var liCurrentList=[];
 							var liEndList=[];
-						
+
 							var li = bcn.learningIndicators[j];
-						
+
 							for(i=0; i<employees.length; i++){
 
 								var employee = employees[i];
@@ -388,7 +388,7 @@
 										liEndList.push(end);
 										liNameList.push(employee.name);
 									}
-								}	
+								}
 							}
 						}
 
@@ -401,7 +401,7 @@
 							solution[0][i]= [liNameList[i], liEndList[i]];
 							solution[1][i] = [liNameList[i], liStartList[i]];
 							solution[2][i] = [liNameList[i], liCurrentList[i]];
-							
+
 						}
 						return solution;
 					}
@@ -428,7 +428,7 @@
 								var start = employee.learningLevels[bcn.uri][li.id].start;
 								var current = employee.learningLevels[bcn.uri][li.id].current;
 								var end = employee.learningLevels[bcn.uri][li.id].end;
-							
+
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
 									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
@@ -437,7 +437,7 @@
 										liEndList.push(end);
 										cont++;
 									}
-								}	
+								}
 							}
 							if (cont>0){
 								var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
@@ -463,11 +463,11 @@
 							solution[0][i]= [liNameList[i], liEndListAvg[i]];
 							solution[1][i] = [liNameList[i], liStartListAvg[i]];
 							solution[2][i] = [liNameList[i], liCurrentListAvg[i]];
-							
+
 						}
 						return solution;
 					}
-					
+
 					function averageBcnProgressForEmployee(employee){
 						var liNameList=[];
 
@@ -488,7 +488,7 @@
 								var current = employee.learningLevels[bcn.uri][li.id].current;
 								var end = employee.learningLevels[bcn.uri][li.id].end;
 
-								
+
 								if (employee.learningLevels[bcn.uri].isRelevant){
 									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
 
@@ -497,17 +497,17 @@
 										liEndList.push(end);
 										cont++;
 									}
-								}	
+								}
 							}
-							
+
 							if (cont>0){
 								liNameList.push(bcn.name);
 								var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
-								
+
 								var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
-								
+
 								var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
-								
+
 
 								liStartListAvg.push(sumStart / liStartList.length);
 								liCurrentListAvg.push(sumCurrent / liCurrentList.length);
@@ -523,16 +523,16 @@
 							solution[0][i]= [liNameList[i], liEndListAvg[i]];
 							solution[1][i] = [liNameList[i], liStartListAvg[i]];
 							solution[2][i] = [liNameList[i], liCurrentListAvg[i]];
-							
-							
+
+
 						}
 						return solution;
 					}
-					
+
 					// Printing the graphs
-					
+
 					function printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg){
-					
+
 						//llevel is from EmployeeManager.js
 
 						var learningLevelsName = [];
@@ -557,8 +557,8 @@
 						for(var i = 0; i < liEndListAvg.length; i++){
 							liEndListAvg[i] = {y: liEndListAvg[i], color:colorEnd};
 						}
-						
-						
+
+
 						if (isOverview.bool){
 
 							// Initialized chart
@@ -575,7 +575,7 @@
 											else if (isEmployeeOverviewGraph.bool){
 												showDefaultGraph();
 											//	alert ('showDefaultGraph');
-											} 
+											}
 
 										}
 									}
@@ -587,7 +587,7 @@
 								title: {
 									text: title,
 									style: {
-												
+
 									},
 									useHTML: true
 								},
@@ -598,32 +598,32 @@
 								xAxis: {
 									type: 'category',
 									categories: liNameList,
-								
+
 									labels:{
 										rotation: -25,
 										formatter: function() {
 												if (isOverviewGraph.bool) {
 												var $formater = $("formater");
 												for (var i=0; i<bcns.length; i++){
-														
+
 															if (bcns[i].name==this.value){
-																
+
 																var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
-														
+
 																return pushpin[0].outerHTML+this.value;
-																
-																
+
+
 															}}
-													 
+
 												} else return formater+this.value;
 
-												
+
 										},
 										useHTML:true
 									}
 								},
 
-								
+
 								yAxis: {
 									endOnTick: true,
 									tickmarkPlacement:'on',
@@ -671,7 +671,7 @@
 										cursor: 'pointer',
 										point: {
 											events: {
-												click: function(event) {						
+												click: function(event) {
 													if (isOverview.isBcn){
 
 														for (var i=0; i<liNameList.length; i++){
@@ -692,35 +692,35 @@
 															}
 														}
 													}
-													
-												
-													
-													
+
+
+
+
 												}
 											}
 										}
 									}
 								},
-							
+
 									series: [{
 									name: 'End',
 									data: liEndListAvg,
-									uri: uriList,	
+									uri: uriList,
 
 								}, {
 									name: 'Current',
 									data: liCurrentListAvg,
 									uri: uriList,
 								}, {
-									
+
 									name: 'Start',
 									data: liStartListAvg,
 									uri: uriList,
 								}]
-							
+
 							});
 						}
-		//---------------------------------------------------------------------------------------------------------------				
+		//---------------------------------------------------------------------------------------------------------------
 						else{
 								$('#container').highcharts({
 								chart: {
@@ -740,7 +740,7 @@
 												showEmployeeGraph(emplDataUri);
 											//	alert ("back from LI");
 											}
-			
+
 										}
 									}
 								},
@@ -751,7 +751,7 @@
 								title: {
 									text: title,
 									style: {
-												
+
 									},
 									useHTML: true
 								},
@@ -768,20 +768,20 @@
 											if (isEmployeeGraph.bool) {
 												var $formater = $("formater");
 												for (var i=0; i<bcns.length; i++){
-														
+
 															if (bcns[i].name==this.value){
-																
+
 																var pushpin = $(formater.replace(/#{priorityPushpin}/g, priorityColors[bcns[i].priority]));
-																
+
 																return pushpin[0].outerHTML+this.value;
-																
+
 															}}
 											} return formater+this.value;
 										},
 										useHTML:true
 									}
 								},
-								
+
 								yAxis: {
 									endOnTick: true,
 									tickmarkPlacement:'on',
@@ -818,7 +818,7 @@
 									column: {
 										states:{
 											hover:{enabled:false}
-											
+
 										},
 										stacking: 'normal',
 										pointPadding: 0.2,
@@ -827,11 +827,11 @@
 										point: {
 											events: {
 												click: function(event) {
-													
+
 													if (isOverview.isLI){
 
 														for (var i=0; i<bcns.length; i++){
-									
+
 															if (bcns[i].name==title){
 																var bcn = bcns[i];
 
@@ -839,19 +839,19 @@
 																	var li = bcn.learningIndicators[j];
 
 																if (li.name == liNameList[this.x]) {
-																	var liClicked = liNameList[this.x];					
+																	var liClicked = liNameList[this.x];
 																	showLiGraph(bcns[i].uri, liClicked);
 																//	alert("show detailed LI graph");
 																}
 																}
 															}
 														}
-													}		
+													}
 
 													if (isOverview.isEmployee){
-														
+
 														for (var i=0; i<bcns.length; i++){
-															
+
 															if (bcns[i].name==liNameList[this.x]){
 																$('#container').data('emplDataUri', employeeUri);
 																$('#container').data('bcnDataUri', bcns[i].uri);
@@ -871,16 +871,16 @@
 								}, {
 									name: 'Current',
 									data: liCurrentListAvg,
-									
+
 								}, {
 									name: 'Start',
 									data: liStartListAvg,
-									
+
 								}],
 							});
 						}
 					}
-					
+
 					function showDefaultGraph(){
 
 						isOverviewGraph.bool=true;
@@ -888,12 +888,12 @@
 						isBcnGraph.bool=false;
 						isEmployeeGraph.bool=false;
 						isDetailedGraph.bool=false;
-						
+
 						var liStartListAvgTotal=[];
 						var liCurrentListAvgTotal=[];
 						var liEndListAvgTotal=[];
-						
-						var liNameList=[];	
+
+						var liNameList=[];
 						for(var i=0; i<bcns.length; i++){
 							var liStartListAvg=[];
 							var liCurrentListAvg=[];
@@ -917,7 +917,7 @@
 									var current = employee.learningLevels[bcn.uri][li.id].current;
 									var end = employee.learningLevels[bcn.uri][li.id].end;
 
-									
+
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
 										if(employee.learningLevels[bcn.uri][li.id].isRelevant){
@@ -927,7 +927,7 @@
 										liEndList.push(end);
 										cont++;
 									}
-									
+
 									}
 								}
 								if (cont>0){
@@ -951,11 +951,11 @@
 							if(liEndListAvg.length > 0)
 								sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 
-							
+
 
 							liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 							liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
-							liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
+							liEndListAvgTotal.push(sumEnd / liEndListAvg.length);
 						}
 						var uriBcn=[];
 						for (var i=0; i<bcns.length; i++){
@@ -970,23 +970,23 @@
 						isOverview.isEmployee=false;
 						isOverview.isLI=false;
 
-						
-						var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';				
+
+						var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 
 						printGraph(isOverview, 0, title, subtitle, uriBcn, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 					}
-					
+
 					function showEmployeeOverviewGraph(){
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=true;
 						isBcnGraph.bool=false;
 						isEmployeeGraph.bool=false;
 						isDetailedGraph.bool=false;
-						
+
 						var liStartListAvgTotal=[];
 						var liCurrentListAvgTotal=[];
 						var liEndListAvgTotal=[];
-						
+
 						var liNameList=[];
 
 						for (var k = 0; k<employees.length; k++){
@@ -995,9 +995,9 @@
 							var liEndListAvg=[];
 							var employee = employees[k];
 							liNameList.push(employee.name);
-							
+
 							for(var i=0; i<bcns.length; i++){
-								
+
 								var liStartList=[];
 								var liCurrentList=[];
 								var liEndList=[];
@@ -1005,14 +1005,14 @@
 								var cont=0;
 
 								for(var j = 0; j<bcn.learningIndicators.length; j++){
-									
+
 
 									var li = bcn.learningIndicators[j];
 									var start = employee.learningLevels[bcn.uri][li.id].start;
 									var current = employee.learningLevels[bcn.uri][li.id].current;
 									var end = employee.learningLevels[bcn.uri][li.id].end;
 
-									
+
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
 										if(employee.learningLevels[bcn.uri][li.id].isRelevant){
@@ -1023,14 +1023,14 @@
 										liEndList.push(end);
 										cont++;
 										}
-									}	
+									}
 								}
 								if (cont>0){
-								
+
 									var sumStart = liStartList.reduce(function(a, b) { return +a + +b });
 									var sumCurrent = liCurrentList.reduce(function(a, b) { return +a + +b });
 									var sumEnd = liEndList.reduce(function(a, b) { return +a + +b });
-									
+
 									liStartListAvg.push(sumStart / liStartList.length);
 									liCurrentListAvg.push(sumCurrent / liCurrentList.length);
 									liEndListAvg.push(sumEnd / liEndList.length);
@@ -1048,7 +1048,7 @@
 								sumEnd = liEndListAvg.reduce(function(a, b) { return +a + +b });
 							liStartListAvgTotal.push(sumStart / liStartListAvg.length);
 							liCurrentListAvgTotal.push(sumCurrent / liCurrentListAvg.length);
-							liEndListAvgTotal.push(sumEnd / liEndListAvg.length);	
+							liEndListAvgTotal.push(sumEnd / liEndListAvg.length);
 						}
 						var uriEmployee=[];
 						for (var i=0; i<employees.length; i++)
@@ -1060,13 +1060,13 @@
 						isOverview.isBcn=false;
 						isOverview.isEmployee=true;
 						isOverview.isLI=false;
-	
+
 						var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
 						if (!user.isEmployee){
 						printGraph(isOverview, 0, title, subtitle, uriEmployee, liNameList, formater, liStartListAvgTotal, liCurrentListAvgTotal, liEndListAvgTotal);
 						}
 					}
-					
+
 					//it is an average LI's over all employees
 
 					function showBcnGraph(bcnUri){
@@ -1076,8 +1076,8 @@
 						isEmployeeOverviewGraph.bool=false;
 						isEmployeeGraph.bool=false;
 						isDetailedGraph.bool=false;
-							
-						var bcn;				
+
+						var bcn;
 						for(t=0; t<bcns.length; t++){
 							if (bcns[t].uri == bcnUri)
 								bcn=bcns[t];
@@ -1086,7 +1086,7 @@
 
 
 						var data = averageLIProgressForBcn(bcn);
-					
+
 						var liEndListAvg=[];
 						var liCurrentListAvg=[];
 						var liStartListAvg=[];
@@ -1096,19 +1096,19 @@
 							liEndListAvg[i]=data[0][i][1];
 							liStartListAvg[i]=data[1][i][1];
 							liCurrentListAvg[i]=data[2][i][1];
-							
+
 							liNameList[i]=data[0][i][0];
 						}
-		 
+
 						/* Added priority pushpin to the title of the goals graph */
 
 						// var template = '<span class="glyphicon glyphicon-star" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
 
 						// var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
-						
+
 						// var title = $( document.createElement('div')).append(entry).html()+bcn.name+ '';
 
-						var title = bcn.name; 
+						var title = bcn.name;
 
 						var subtitle='Taking the average employees';
 						var isOverview={};
@@ -1129,8 +1129,8 @@
 						isEmployeeOverviewGraph.bool=false;
 						isEmployeeGraph.bool=false;
 						isDetailedGraph.bool=false;
-						
-						var bcn;				
+
+						var bcn;
 						for(t=0; t<bcns.length; t++){
 							if (bcns[t].uri == bcnUri)
 								bcn=bcns[t];
@@ -1148,7 +1148,7 @@
 							liEndListAvg[i]=data[0][i][1];
 							liStartListAvg[i]=data[1][i][1];
 							liCurrentListAvg[i]=data[2][i][1];
-							
+
 							liNameList[i]=data[0][i][0];
 						}
 
@@ -1157,10 +1157,10 @@
 							var li = bcn.learningIndicators[j];
 						}
 
-						var title = "How employees proceed over " + liClicked; 
+						var title = "How employees proceed over " + liClicked;
 
 						var subtitle='Detailled view of each user';
-			
+
 						var isOverview={};
 						isOverview.bool=false;
 						isOverview.isBcn=false;
@@ -1168,12 +1168,12 @@
 						isOverview.isLI=false;
 
 						var formater='<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>';
-					
+
 
 						var uriList=[];
 						printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
 
-			
+
 					}
 
 					function showEmployeeGraph(employeeUri){
@@ -1182,31 +1182,31 @@
 						isEmployeeOverviewGraph.bool=false;
 						isEmployeeGraph.bool=true;
 						isDetailedGraph.bool=false;
-						
-						var employee;				
+
+						var employee;
 						for(t=0; t<employees.length; t++){
 							if (employees[t].uri == employeeUri)
 								employee=employees[t];
 						}
 						var data = averageBcnProgressForEmployee(employee);
-						
+
 						var liEndListAvg=[];
 						var liCurrentListAvg=[];
 						var liStartListAvg=[];
 						var liNameList=[];
-						
+
 							for (var i=0; i<data[0].length; i++){
 								liEndListAvg[i]=data[0][i][1];
 								liStartListAvg[i]=data[1][i][1];
 								liCurrentListAvg[i]=data[2][i][1];
-							
+
 								liNameList[i]=data[0][i][0];
 							}
-						
+
 						var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
 						var subtitle='Average for goals';
 						var isOverview={};
-						
+
 						isOverview.bool=false;
 						isOverview.isBcn=false;
 						isOverview.isEmployee=true;
@@ -1215,9 +1215,9 @@
 						var formater = '<span id="pushpin" class="glyphicon glyphicon-star" style="color:#{priorityPushpin}; margin-right: 5px"></span>';
 
 						printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg);
-						
+
 					}
-					
+
 					function showDetailedEmployeeGraph(employeeUri, bcnUri){
 						isBcnGraph.bool=false;
 						isOverviewGraph.bool=false;
@@ -1226,13 +1226,13 @@
 						isDetailedGraph.bool=true;
 							isDetailedGraph.employeeUri=employeeUri;
 							isDetailedGraph.bcnUri=bcnUri;
-						
-						var employee;				
+
+						var employee;
 						for(t=0; t<employees.length; t++){
 							if (employees[t].uri == employeeUri)
 								employee=employees[t];
 						}
-						var bcn;				
+						var bcn;
 						for(t=0; t<bcns.length; t++){
 							if (bcns[t].uri == bcnUri)
 								bcn=bcns[t];
@@ -1245,7 +1245,7 @@
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
 							var li = bcn.learningIndicators[j];
 							var start = parseFloat(employee.learningLevels[bcn.uri][li.id].start);
-							
+
 							var current = employee.learningLevels[bcn.uri][li.id].current;
 							var end = employee.learningLevels[bcn.uri][li.id].end;
 
@@ -1254,20 +1254,20 @@
 								liNameList.push(li.name);
 
 								liStartList.push(start);
-							
+
 								liCurrentList.push(current);
 								liEndList.push(end);
-							} 
-						
-						}	
-						
-						
+							}
+
+						}
+
+
 						/*Added priority pushpin to the title of the employee detailled graph*/
 
 						var template = '<span class="glyphicon glyphicon-star" style="margin-right: 5px; color:#{priorityPushpin}"></span>';
 
 						var entry = $(template.replace(/#{priorityPushpin}/g, priorityColors[bcn.priority]));
-						
+
 						var title = $( document.createElement('div')).append(entry).html()+bcn.name+ '';
 
 
@@ -1283,7 +1283,7 @@
 						printGraph(isOverview, 0, title, subtitle, uriList, liNameList, formater, liStartList, liCurrentList, liEndList);
 					}
 				});
-			});			
+			});
 
 		</script>
 
@@ -1313,30 +1313,30 @@
             <div class="panel-group" id="levelsdef" align="justify">
             <ul style="padding: 10px;">
               <li><i>Learning progress</i> widget works together with <i>Business Goals</i> and <i>Business Employees</i> widgets. By default <i>Overall Employee</i> view is shown.</li>
-              <li>To export graph view in PNG, PDF or JPEG formats click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/export.PNG" alt="filter" width="21" height="19"> icon. </li>             
+              <li>To export graph view in PNG, PDF or JPEG formats click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/export.PNG" alt="filter" width="21" height="19"> icon. </li>
 
-              <li>If current view is <i>Overall Employee View</i>: average learning progress of all employees will be shown. In this view you can: 
-              	<ul style="padding: 10px;"> 
+              <li>If current view is <i>Overall Employee View</i>: average learning progress of all employees will be shown. In this view you can:
+              	<ul style="padding: 10px;">
               		<li>Change current view to the <i>Overall Business Goals</i> by clicking on the chart.</li>
                		<li>To see the average learning progress on goals of particular employee click on the <i>employee</i> bar accordingly.</li>
               		<li>To see the learning progress on learning indicators of particular employee click on the <i>goal</i> bar. </li>
-              		<li>To come back to previous step click on the chart.</li> 
+              		<li>To come back to previous step click on the chart.</li>
               	</ul>
               </li>
 
-              <li>If current view is <i>Overall Business Goals</i>: average learning progress on all goals will be shown. In this view you can: 
+              <li>If current view is <i>Overall Business Goals</i>: average learning progress on all goals will be shown. In this view you can:
                <ul style="padding: 10px;">
                	<li>Click on the chart to change view to the <i>Overall Employee View</i>.</li>
                	<li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li>
                	<li>Click on the learning indicators bar to see detailled view over every employee progress.
-               	<li>To come back to previous step click on the chart.</li> 
-               <ul>              
-            </ul>         
+               	<li>To come back to previous step click on the chart.</li>
+               <ul>
+            </ul>
           </div>
           <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-          </div>      
-        </div>      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
 

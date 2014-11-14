@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    
+
     <ModulePrefs title="Welcome"
 		description="Wlcome Widget."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
-		height="400"
+		height="450"
 		width="500">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
-		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
-			
+
 		    <Request method="" url=""/>
 			<Authorization url=""/>
 			<Access method="" url=""/>
 		</Service>
     </OAuth>
     </ModulePrefs>
-    
+
     <Content type="html">
     <![CDATA[
-		
+
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
-		
+
 		<!-- Define CSS -->
-		
+
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
-		
+
 		<!-- CSS Block -->
 
 		<style>
 			@-moz-document url-prefix() {
 	 			 fieldset { display: table-cell; }
 			}
-	
+
 		</style>
 
 		<!-- JavaScript Block -->
@@ -64,18 +64,18 @@
 			    "ExpertsManager",
 			    "AccessRightsManager",
 			    "iwc",
-			    "utils"			    
+			    "utils"
 			    ], function(a, b) {
 			    	async = a;
 			    	bootbox = b;
-			
+
 					var space;
 					var iwcClient;
 					var userAccessRights;
 					var agreed;
 					var accessRights;
 
-					if (openapp.param.user()) {    
+					if (openapp.param.user()) {
 						closeAutorisationWindow();
 					}
 					//gadgets.util.registerOnLoadHandler(init);
@@ -86,18 +86,18 @@
 					//}
 
 					$(function(){
-							
-						// Get the access rights: 
+
+						// Get the access rights:
 						retrieveAccessRights(function(access){
 						accessRights = access;
 						userAccessRights = access.getUserAccessRights();
 						agreed = userAccessRights.hasAgreedToLicense;
 						//debug
-						//agreed = false; 
+						//agreed = false;
 
 							if (!agreed)
 								$("#agreeLisenceModal").modal();
-							
+
 						});  // end of the retrieveAccessRights
 					});
 
@@ -114,17 +114,17 @@
 
 				});
 			});
-			
+
 
 		</script>
-			
+
 		<!-- HTML Block -->
 	<div style="overflow-y: scroll; height:400px;">
 		<div class ="panel panel-primary">
 			<div class="panel-heading">
 				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
 				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
-			</div>	
+			</div>
 
 				<table class="table table-responsive" >
 			    	<tbody>
@@ -157,7 +157,7 @@
 						<tr>
 							<td colspan=2>
 							<ul style="padding: 10px;">
-					                	<li><small>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</small></li> 
+					                	<li><small>Use a <b>Boost Search</b> widget to ﬁnd learning materials.</small></li>
 					               	  	<li><small>Watch and read interesting resources using <b>Boost Viewer</b> widget.</small></li>
 					                	<li><small>Save and organise your learning resources in the <b>Learning Repository:</b>
 					                	 You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li>
@@ -166,13 +166,13 @@
 					        </td>
 						</tr>
 						<tr >
-							<td colspan=2><small>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily. 
+							<td colspan=2><small>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily.
 				            For more detailed information please see help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</small></td>
 						</tr>
 
 			   		 </tbody>
 				</table>
-	
+
 	</div>
 
     <div class="modal fade" id="agreeLisenceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
@@ -190,48 +190,48 @@
 
 									<p>Kateryna Neulinger, Advanced Community Information Systems (ACIS) Group, Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany</p>
 									<p>Andre Tebart, Master of Software Systems, RWTH Aachen University, Germany</p>
-									<p>Seyed Ehsan Badakhshan, Master of Media Informatics, RWTH Aachen University, Germany 
+									<p>Seyed Ehsan Badakhshan, Master of Media Informatics, RWTH Aachen University, Germany
 									All rights reserved.</p>
-									
 
-									<p>Redistribution and use in source and binary forms, with or without modification, are permitted 
+
+									<p>Redistribution and use in source and binary forms, with or without modification, are permitted
 
 									provided that the following conditions are met:</p>
 
-									<p>1. Redistributions of source code must retain the above copyright notice, this list of conditions and 
+									<p>1. Redistributions of source code must retain the above copyright notice, this list of conditions and
 
 									the following disclaimer.</p>
 
-									<p>2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions 
+									<p>2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
 
-									and the following disclaimer in the documentation and/or other materials provided with the 
+									and the following disclaimer in the documentation and/or other materials provided with the
 
 									distribution.</span>
 
-									<p>3. Neither the name of the copyright holder nor the names of its contributors may be used to 
+									<p>3. Neither the name of the copyright holder nor the names of its contributors may be used to
 
 									endorse or promote products derived from this software without specific prior written permission.</p>
 
-									<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+									<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 
-									IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+									IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 
-									IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+									IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 
-									DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
+									DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
 
-									ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+									ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 
-									(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+									(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 
-									LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+									LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 
-									ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+									ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 
-									NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN 
+									NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 
 									IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
-									
+
 								</div>
 						</form>
 					</div>
@@ -241,8 +241,8 @@
 				</div>
 			</div>
 	</div>
-		
-		
+
+
 	]]>
   </Content>
 </Module>

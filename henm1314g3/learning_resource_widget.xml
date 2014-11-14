@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    
-    <ModulePrefs title="Learning Resources"
-		description="Widget to manage learning Documents and Experts."
+
+    <ModulePrefs title="Resources"
+		description="Widget to manage Documents and Experts."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
-		height="400"
+		height="450"
 		width="600">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
-		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
 
@@ -21,17 +21,17 @@
 		</Service>
     </OAuth>
     </ModulePrefs>
-    
+
     <Content type="html">
     <![CDATA[
-		
+
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
    		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/tree.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
-    	
+
 		<!-- JavaScript Block -->
 		<script>
 
@@ -61,7 +61,7 @@
 			    ], function(a, Ractive, Ladda, b) {
 			    	async = a;
 			    	bootbox = b;
-			
+
 					var space;
 					var iwcClient;
 					var bcnsList = new Array();
@@ -74,15 +74,16 @@
 					var Widgets = [];
 					var WidgetsList = {};
 					var currentEmployee = {};
-					
-					
-					if (openapp.param.user()) {    
+					var treeRactive = {};
+
+
+					if (openapp.param.user()) {
 						closeAutorisationWindow();
 					}
-					
+
 					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){
-					    
+
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
@@ -111,7 +112,7 @@
 
 						iwcClient.publish(intent);
 					}
-					
+
 					function iwcCallback(intent){
 						if(intent.action == "LEARNING_DOCUMENT_SELECTED"){
 							learningDocumentFromSearchWidget = new LearningDocument(intent.extras);
@@ -149,30 +150,30 @@
 								$("#bcns").append("<td>No goals defined.</td>");
 						}
 					}
-					
+
 					$(function(){
 
-						// Get the access rights: 
+						// Get the access rights:
 							retrieveAccessRights(function(accessRights){
 							userAccessRights = accessRights.getUserAccessRights();
-							
+
 							//Check if user has agreed to license
-			
+
 							if(!userAccessRights.hasAgreedToLicense){
-								showModalAcceptTermsOfUse();							
+								showModalAcceptTermsOfUse();
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();		
-							}	
+								showModalContactManager();
+							}
 
 							});  // end of the retrieveAccessRights
 
-					      // help button click 
+					      // help button click
 
 					      $('#question').click(function(){
 					        $('#descriptionModal').modal({
 					        keyboard: true
 					          });
-					        }); 
+					        });
 
 						$("#importLearningDocumentButton").click(function(){
 							if(learningDocumentFromSearchWidget != null){
@@ -186,7 +187,7 @@
 						retrieveAllBcns(space, function(bcns){
 								retrieveAllLearningDocuments(function(lds){
 									retrieveAllEmployees(space, function(employees){
-										
+
 										for(var i = 0; i < employees.length; i++){
 											var employee = employees[i];
 											if (employee.userUri == openapp.param.user()){
@@ -199,14 +200,14 @@
 
 										if (currentEmployee){
 											for(var i = 0; i < bcnsList.length; i++){
-												bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant; 
+												bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
 												for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
 													var li = bcnsList[i].learningIndicators[j];
 													li.isRelevant = currentEmployee.learningLevels[bcnsList[i].uri][li.id].isRelevant;
 												}
 											}
 										}
-										
+
 
 										//We add the learning documents to their respective learning indicators
 										//to get a nice tree-like structure of BCN->LI->Document
@@ -228,9 +229,9 @@
 
 									});
 
-								
+
 								retrieveAllExperts(function(Exp){
-								
+
 									Experts = Exp;
 									//We add the Experts to their respective learning indicators
 									//to get a nice tree-like structure of BCN->LI->Expert
@@ -251,7 +252,7 @@
 									}
 
 								retrieveAllWidgets(function(Wdg){
-							
+
 									Widgets = Wdg;
 									//We add the Widgets to their respective learning indicators
 									//to get a nice tree-like structure of BCN->LI->Widget
@@ -271,17 +272,17 @@
 										}
 									}
 
-									
+
 									retrieveAccessRights(function(accessRights){
 										var treeRactive = new Ractive({
 								            el: 'bcns',
 								            template: '#documentsTreeTemplate',
-								            data: { 
+								            data: {
 								            	bcns: bcnsList,
 								            	"accessRights" : accessRights.getUserAccessRights()
 								            }
 								        });
-									
+
 								        // console.log(bcnsList);
 								        treeRactive.on("documentAdd", function(event){
 								        	var newDocument = new LearningDocument({});
@@ -333,7 +334,7 @@
 										    addExpertRactive.set("emailError", false);
 											$("#addExpertModal").modal();
 								        });
-				
+
 										treeRactive.on("widgetAdd", function(event){
 								        	var newWidget = new Widget({});
 								        	var learningIndicatorId = event.context.id;
@@ -413,7 +414,7 @@
 								        });
 
 								        treeRactive.on("ViewPersonalWidget", function(event){
-								        	
+
 								        	var kp = event.keypath;
 								        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
 								        	var widgetUrl = event.context.url;
@@ -425,7 +426,7 @@
 
 								        	});
 
-								   
+
 								        });
 
 								        treeRactive.on("documentShow", function(event){
@@ -446,7 +447,7 @@
 								        	editDocumentRactive.set("keypath", event.keypath);
 								        	$("#editDocumentModal").modal();
 								        });
-								        
+
 								        $("#documentsTree").tree();
 								        treeRactive.on("ExpertEdit", function(event){
 								        	editExpertRactive.set("editExpert", event.context);
@@ -677,7 +678,7 @@
 							        	});
 							        });
 							        addWidgetRactive.on("saveWidget", function(event){
-							        	
+
 							        	// var widgetUrl = this.get("newWidget").url;
 							        	// var spaceURI = openapp.param.user();
 							        	// addWidgetToSpace(spaceURI,widgetUrl);
@@ -704,7 +705,7 @@
 								});
 							}
 						);
-						
+
 					});
 
 					function checkInputExpert(exp, ractive)
@@ -713,7 +714,7 @@
 						ractive.set("nameError", nameError);
 
 						var emailError = false;
-						var email = exp.email;	
+						var email = exp.email;
 
 						var atpos = email.indexOf("@");
 						var dotpos = email.lastIndexOf(".");
@@ -747,9 +748,9 @@
 		        });
 			});
 
-			
+
 		</script>
-			
+
 		<!-- HTML Block -->
 		<div style="overflow-y: scroll; height:400px;">
 		<div class ="panel panel-primary">
@@ -758,7 +759,7 @@
 
 				<h3 class="panel-title"><span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span> Learning Resources</h3>
 			</div>
-		
+
 			<div id ="panel" class="panel-body">
 			<div id="bcns">
 				<script id='documentsTreeTemplate' type='text/ractive'>
@@ -839,6 +840,7 @@
 														<li>
 															<span>
 																<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
+
 																<div class='btn-group pull-right'>
 																	<button on-click="ExpertView" class='btn btn-default btn-sm'>
 																		<span class='glyphicon glyphicon-eye-open'></span>
@@ -872,7 +874,7 @@
 														<li>
 															<span>
 																<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
-																<div class='btn-group pull-right'>												
+																<div class='btn-group pull-right'>
 																	<button on-click="WidgetView" class='btn btn-default btn-sm'>
 																		<span class='glyphicon glyphicon-eye-open'></span>
 																	</button>
@@ -932,7 +934,7 @@
 																	<div class="row">
 																		<div class="col-xs-8">
 																			<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-																			
+
 																		</div>
 																		<div class="col-xs-4">
 																			<div class='btn-group pull-right'>
@@ -1005,7 +1007,7 @@
 															<li>
 																<span>
 																	<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
-																	<div class='btn-group pull-right'>												
+																	<div class='btn-group pull-right'>
 																		<button on-click="WidgetView" class='btn btn-default btn-sm'>
 																			<span class='glyphicon glyphicon-eye-open'></span>
 																		</button>
@@ -1037,11 +1039,11 @@
 					</ul>
 				</div>
 				</script>
-			</div> 
+			</div>
 		</div>
 		</div>
 		</div>
-		
+
 		<div class="modal fade" id="addLdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -1300,7 +1302,7 @@
 			</div>
 		</div>
 
-		
+
 		<div class="modal fade" id="deleteDocumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -1341,7 +1343,7 @@
 			</div>
 		</div>
 
-		
+
 		<div class="modal fade" id="deleteWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -1365,7 +1367,7 @@
 		<div class="modal fade" id="viewExpertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-  					
+
   						<div id="viewExpertTemplateContainer">
   						<script id='viewExpertTemplate' type='text/ractive'>
 						<div class="modal-header">
@@ -1376,10 +1378,10 @@
 							<table class="table table-striped table-bordered table-condensed">
 								<tbody>
 								{{#Expert}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Name: 
+												Name:
 											</div>
 										</td>
 										<td>
@@ -1388,10 +1390,10 @@
 											</div>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Email: 
+												Email:
 											</div>
 										</td>
 										<td>
@@ -1401,10 +1403,10 @@
 										</td>
 									</tr>
 									{{#profile}}
-										<tr> 
+										<tr>
 											<td width="20%">
 												<div>
-													Profile: 
+													Profile:
 												</div>
 											</td>
 											<td>
@@ -1415,10 +1417,10 @@
 										</tr>
 									{{/profile}}
 									{{#tel}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Phone: 
+												Phone:
 											</div>
 										</td>
 										<td>
@@ -1429,10 +1431,10 @@
 									</tr>
 									{{/tel}}
 									{{#address}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Address: 
+												Address:
 											</div>
 										</td>
 										<td>
@@ -1443,10 +1445,10 @@
 									</tr>
 									{{/address}}
 									{{#website}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Website: 
+												Website:
 											</div>
 										</td>
 										<td>
@@ -1457,10 +1459,10 @@
 									</tr>
 									{{/website}}
 									{{#skype}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Skype: 
+												Skype:
 											</div>
 										</td>
 										<td>
@@ -1477,9 +1479,9 @@
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						</div>
-								
+
 						</script>
-						
+
 					</div>
 				</div>
 			</div>
@@ -1488,7 +1490,7 @@
 		<div class="modal fade" id="viewWidgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-  					
+
   						<div id="viewWidgetTemplateContainer">
   						<script id='viewWidgetTemplate' type='text/ractive'>
 						<div class="modal-header">
@@ -1500,10 +1502,10 @@
 								<tbody>
 								{{#Widget}}
 									{{#name}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Name: 
+												Name:
 											</div>
 										</td>
 										<td>
@@ -1514,15 +1516,15 @@
 									</tr>
 									{{/name}}
 									{{#url}}
-									<tr> 
+									<tr>
 										<td width="20%">
 											<div>
-												Url Address: 
+												Url Address:
 											</div>
 										</td>
 										<td>
 											<div>
-												{{url}} 
+												{{url}}
 											</div>
 										</td>
 									</tr>
@@ -1539,7 +1541,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 
 
 		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -1557,30 +1559,30 @@
           		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
           		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
           		<li>To see the list of widgets assigned to particular learning indicator click on its name.</li>
-				<li>To add new learning document click on <i>Add new document</i> menu item. In the <i>Add a new Learning Document</i> view 
+				<li>To add new document click on <i>Add new document</i> menu item. In the <i>Add a new Document</i> view
 				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
-				<li>To add new expert click on <i>Add new expert</i> menu item. 
+				<li>To add new expert click on <i>Add new expert</i> menu item.
 				<ul style="padding: 10px;">
-				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li> 
+				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li>
 				<li>Click on <i>Save</i> button to save changes.</li>
 				</ul>
-				<li>To add new widget click on <i>Add new widget</i> menu item. 
+				<li>To add new widget click on <i>Add new widget</i> menu item.
 				<ul style="padding: 10px;">
-				<li>In the <i>Add a new Widget</i> enter the widget name and its Url address in appropriate text fields.</li> 
+				<li>In the <i>Add a new Widget</i> enter the widget name and its Url address in appropriate text fields.</li>
 				<li>Click on <i>Save</i> button to save changes.</li>
 				</ul>
 				<li>To see expert or widget informations, click on <button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></button> icon.
 				</li>
-            </ul>         
+            </ul>
           </div>
           <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-          </div>      
-        </div>      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
-		
-		
+
+
 	]]>
   </Content>
 </Module>

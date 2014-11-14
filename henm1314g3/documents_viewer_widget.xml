@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    
-    <ModulePrefs title="Boost Viewer"
+
+    <ModulePrefs title="Viewer"
 		description="View documents like videos or slides."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
 		width="600"
-		height="400">
+		height="450">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
-		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
-			
+
 		    <Request method="" url=""/>
 			<Authorization url=""/>
 			<Access method="" url=""/>
 		</Service>
     </OAuth>
     </ModulePrefs>
-    
+
     <Content type="html">
     <![CDATA[
-		
+
 		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
     	<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
-    	
-    	
-		<!-- Define CSS -->		
+
+
+		<!-- Define CSS -->
 		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
 
 		<!-- JavaScript Block -->
@@ -58,9 +58,9 @@
 					var userAccessRights;
 					var userList;
 					var space;
-					
-					
-					if (openapp.param.user()) {    
+
+
+					if (openapp.param.user()) {
 						closeAutorisationWindow();
 					}
 
@@ -156,12 +156,12 @@
 					                        		description.replace(/\n/g, "<br>").linkify() +
 					                        	"</p>" +
 					                        	"</div>";
-					    
+
 					    var $scribdElement = $(scribdTemplate);
 					    //If the user clicks on a link, open a new tab in the browser
 					    assignLinkClickEvents($scribdElement);
 					    $("#content").append($scribdElement);
-					    
+
 					    var scribd_doc = scribd.Document.getDoc(id, accessKey);
 						scribd_doc.addParam('jsapi_version', 2);
 						scribd_doc.write('scribdContainer');
@@ -178,25 +178,25 @@
 
 					$(function(){
 
-					// Get the access rights: 
+					// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 						 userAccessRights = accessRights.getUserAccessRights();
-							
+
 							//Check if user has agreed to license
-			
+
 							if(!userAccessRights.hasAgreedToLicense){
-								showModalAcceptTermsOfUse();							
+								showModalAcceptTermsOfUse();
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();		
+								showModalContactManager();
 							}
-					
-					      // help button click 
+
+					      // help button click
 
 					      $('#question').click(function(){
 					        $('#descriptionModal').modal({
 					        keyboard: true
 					          });
-					        }); 
+					        });
 					});
 				});
 			});
@@ -228,12 +228,12 @@
             <ul style="padding: 10px;">
              <li>Click on learning document in the <i>Boost Search</i> or in the <i>Learning Repository</i> widget to see it in the <i>Boost Viewer</i></li>
               </li>
-            </ul>         
+            </ul>
           </div>
           <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-          </div>      
-        </div>      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
 	]]>

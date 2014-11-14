@@ -20,6 +20,7 @@ ScribdSearch.prototype.search = function(query, callback){
 
 function scribdDocumentProcessor(response){
 	var resultDocumentsList = [];
+
     for(var i = 0; i < response.rsp.result_set[0].result.length; i++){
         var scribdData = response.rsp.result_set[0].result[i];
         var description;
@@ -31,7 +32,7 @@ function scribdDocumentProcessor(response){
         	name : scribdData.title,
         	description : description,
         	type : "scribd",
-        	url : "",
+        	url : "https://www.scribd.com/",
         	contentSpecificData: {
         		id : scribdData.doc_id,
         		imageUrl : scribdData.thumbnail_url,

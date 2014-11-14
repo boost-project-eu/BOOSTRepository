@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    
-    <ModulePrefs title="Business Employees"
+
+    <ModulePrefs title="Personnel"
 		description="Manage your employees and assign learning goals to them."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
-		height="400">
+		height="450">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-		<Service name="openapp"                     
-		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
 		    openapp:service="http://purl.org/role/terms/spaceService"
 		    openapp:permitReadAppend="http://purl.org/role/terms/data">
-			
+
 		    <Request method="" url=""/>
 			<Authorization url=""/>
 			<Access method="" url=""/>
 		</Service>
     </OAuth>
     </ModulePrefs>
-    
+
     <Content type="html">
     <![CDATA[
-		
+
 		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
 
 		<!-- Define CSS -->
@@ -55,7 +55,7 @@
 			    "moment",
 			    "utils"
 			    ], function(a, Ractive, Ladda, b) {
-					async = a;			
+					async = a;
 					bootbox = b;
 					var space;
 					var employeeList;
@@ -70,14 +70,14 @@
 					var ractiveAddEmployee;
 					var ractiveDeleteEmployee;
 					var ractiveSetLIEmployee;
-					
-					
-					if (openapp.param.user()) {    
+
+
+					if (openapp.param.user()) {
 						closeAutorisationWindow();
 					}
-					
+
 		//			gadgets.util.registerOnLoadHandler(init);
-					
+
 		//			function init(){
 						space = new openapp.oo.Resource(openapp.param.space());
 						iwcClient = new iwc.Client();
@@ -233,25 +233,25 @@
 
 					$(function(){
 
-						// Get the access rights: 
+						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 						userAccessRights = accessRights.getUserAccessRights();
-							
+
 							//Check if user has agreed to license
-			
+
 							if(!userAccessRights.hasAgreedToLicense){
-								showModalAcceptTermsOfUse();							
+								showModalAcceptTermsOfUse();
 							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								// showModalContactManager();		
+								// showModalContactManager();
 							}
 
 							});  // end of the retrieveAccessRights
-						
-					
+
+
 						var message = "<div>Please wait.</div>"
 						message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
 
-						// Get the access rights: 
+						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 
 							userAccessRights = accessRights.getUserAccessRights();
@@ -266,7 +266,7 @@
 								append: true
 							});
 
-							//	addEmployee and showProgress activities	
+							//	addEmployee and showProgress activities
 							var ractiveEmployeeHeader = new Ractive({
 							  el: 'containerEmployeeOverview',
 							  template: '#templateEmployeeHeader',
@@ -288,10 +288,10 @@
 								showOverallProgress: function ( event ) {
 									publishShowOverallEmployeeProgress();
 								},
-								
+
 								showHelpAddEmployee: function( event ){
 									$('.tooltip-addEmployee').tooltip();
-									
+
 								},
 								showHelpShowOverallProgress: function (event){
 									$('.tooltip-showOverallProgress').tooltip();
@@ -306,7 +306,7 @@
 
 								}
 								});
-								
+
 								// Overview ractive which is responsible to render the overview list of all employees
 								ractiveOverview = new Ractive({
 								    el: 'containerEmployeeOverview',
@@ -342,7 +342,7 @@
 									//We are editing a cloned employee object
 									//If the user discards the changes we do not have to do anything.
 									//If the user saves the changes we just replace the original employee with the clone
-									
+
 									var clone = event.context.clone();
 									bindEmployeeToBCNs(clone);
 									ractiveSetLIEmployee.set("bcnList", bcnList);
@@ -351,9 +351,9 @@
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false
 									});
-									
+
 									$('#setLIModal').modal();
-								},	
+								},
 									showHelpEmployeeGraph: function ( event ) {
 									$('.tooltip-showEmployeeProgress').tooltip();
 								},
@@ -367,13 +367,13 @@
 									$('.tooltip-showDeadlines').tooltip();
 								},
 									showHelpDeleteEmployee: function ( event ) {
-									$('.tooltip-deleteEmployee').tooltip();	
+									$('.tooltip-deleteEmployee').tooltip();
 								},
 									showHelpEmailEmployee: function ( event ) {
 									$('.tooltip-emailEmployee').tooltip();
 								},
 									showHelpOptions: function ( event ) {
-									$('.tooltip-showOptions').tooltip();	
+									$('.tooltip-showOptions').tooltip();
 								}
 								});
 
@@ -415,7 +415,7 @@
 									});
 
 								});
-					
+
 
 								//Delete employee ractive which is responsible to render the modal used to delete an employee
 								ractiveDeleteEmployee = new Ractive({
@@ -449,12 +449,12 @@
 								ractiveSetLIEmployee = new Ractive({
 									el: 'containerEmployeeSetLI',
 								    template: '#setLITemplate',
-								    data: 	{ 	"bcnList" : null, 
+								    data: 	{ 	"bcnList" : null,
 												"learningLevels" : llevel,
 												"employee" : null,
 												"originalEmployee" : null
 										 	},
-					
+
 								    append: true
 								});
 
@@ -541,7 +541,7 @@
 
 					function sortEmployees(){
 						employeeList.sort(function (a, b){
-							if(a.name.toLowerCase() < b.name.toLowerCase()) 
+							if(a.name.toLowerCase() < b.name.toLowerCase())
 								return -1; else return 1;
 						});
 					}
@@ -552,7 +552,7 @@
 						ractive.set("nameError", nameError);
 
 						var emailError = false;
-						var email = employee.email;	
+						var email = employee.email;
 
 						var atpos = email.indexOf("@");
 						var dotpos = email.lastIndexOf(".");
@@ -590,25 +590,25 @@
 		</script>
 
 		<!-- HTML Block -->
-		
+
 		<div style="overflow-y: scroll; height:400px;">
 		<div class="panel panel-primary" id="containerEmployeeOverview">
 		<!-- Template for the header Main widget view -->
-			<script id='templateEmployeeHeader' type='text/ractive'>	
-			
+			<script id='templateEmployeeHeader' type='text/ractive'>
+
 			<div class="panel-heading">
 				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
 					<h3 class="panel-title">
 					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business employees
 				</h3>
 		  	</div>
-		  	
+
 			<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 			<!-- add new bcn and view overall progress -->
 	  		 	{{^accessRights.isEmployee}}
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
-			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>		
+			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>
 						</div>
 					{{/accessRights.isManager}}
 					{{^accessRights.isManager}}
@@ -621,7 +621,7 @@
 					<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
 				</div>
 			</div>
-			</script>	
+			</script>
 		</div>
 		</div>
 
@@ -629,8 +629,8 @@
 			<table class="table table-striped table-bordered table-condensed" >
 			    <tbody>
 					{{#employeeList}}
-						<tr> 
-							<td>
+						<tr>
+							<td on-click='graphAndDatesShow' style="cursor: pointer;">
 								<div>
 									{{name}}
 								</div>
@@ -639,31 +639,31 @@
 								</div>
 							</td>
 							<td style="width:70px;" align="center">
-						
+
 	  		 			{{^accessRights.isEmployee}}
-							{{#accessRights.isManager}} 
+							{{#accessRights.isManager}}
 								<div class='btn-group'>
 									<button type="button" class="btn btn-default dropdown-toggle"  on-mouseover="showHelpOptions"  data-toggle="dropdown">
 										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu pull-right" role="menu" align="left">
 										<li style="width:200px;" align="center">
-											<div class="btn-group">	
+											<div class="btn-group">
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
 												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
-												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
-												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="Show Deadlines: {{name}}" style="margin-right:5px;"></span></button>	
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="Show Deadlines: {{name}}" style="margin-right:5px;"></span></button>
 											</div>
 										</li>
 									</ul>
-								</div>						
+								</div>
 							{{/accessRights.isManager}}
 	  		 			{{/accessRights.isEmployee}}
 
 						{{#accessRights.isEmployee}}
-							<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>	
+							<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>
 						{{/accessRights.isEmployee}}
-	 
+
 							</td>
 						</tr>
 					{{/employeeList}}
@@ -696,7 +696,7 @@
 	        	<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveEmployee"><span class="ladda-label">Save</span></button>
 			</div>
   		</script>
-				
+
 		<div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content" id="containerEmployeeEdit">
@@ -737,24 +737,24 @@
 			<div class="panel panel-default">
 				<div class="panel-heading" style="padding-bottom:1px;">
 	      			<h6 class="panel-title">
-	        			<span class="glyphicon {{employeeBcnData.isRelevant ? "glyphicon-star" : "glyphicon-star-empty"}}" style="margin-right:5px;"></span> 
+	        			<span class="glyphicon {{employeeBcnData.isRelevant ? "glyphicon-star" : "glyphicon-star-empty"}}" style="margin-right:5px;"></span>
 	        			<a data-toggle="collapse" data-parent="#bcnPanel" href="#bcn{{num}}"> {{name}}
 	        				<span class="caret"></span>
-	        			</a> 
+	        			</a>
 	      			</h6>
-	      			<div class="checkbox" style="margin-bottom:1px; margin-top:1px;"> 
-						<label> 
-						 	Relevant 
-					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'> 
-						</label> 
+	      			<div class="checkbox" style="margin-bottom:1px; margin-top:1px;">
+						<label>
+						 	Relevant
+					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'>
+						</label>
 					</div>
-					
-	    		</div>			
-	    		<div  id="bcn{{num}}" class="panel-collapse collapse"> 
+
+	    		</div>
+	    		<div  id="bcn{{num}}" class="panel-collapse collapse">
 	      			<ul style="margin-bottom:0px;" class="list-group">
 		      			{{#learningIndicators}}
 							<li class="list-group-item">
-			      				
+
 								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
 								<div class="checkbox">
 		  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">
@@ -778,35 +778,35 @@
 								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.start}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
-								{{/learningLevels}}		
+								{{/learningLevels}}
 								</select>
 								Current level:
 								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.current}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
-								{{/learningLevels}}		
+								{{/learningLevels}}
 								</select>
 								End level:
 								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.end}}">
 								{{#learningLevels}}
 									<option value='{{.}}'>{{.}}</option>
-								{{/learningLevels}}		
+								{{/learningLevels}}
 								</select>
 						   	</li>
 						{{/learningIndicators}}
 					</ul>
 	    		</div>
 	  		</div>
-					
-	{{/bcnList}}		
+
+	{{/bcnList}}
 
 		</div>
 	</div>
 	<div class="modal-footer">
 	    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		<button class="btn btn-primary ladda-button" data-style="zoom-out"  on-click="saveSetLI"><span class="ladda-label">Save</span></button>  					
+		<button class="btn btn-primary ladda-button" data-style="zoom-out"  on-click="saveSetLI"><span class="ladda-label">Save</span></button>
 	</div>
- 
+
 </script>
 
 <script id="deleteEmployeeTemplate" type="text/ractive">
@@ -816,7 +816,7 @@
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			<button class="btn btn-danger ladda-button" data-style="zoom-out" on-click="deleteEmployee"><span class="ladda-label">Delete</span></button>				       
+			<button class="btn btn-danger ladda-button" data-style="zoom-out" on-click="deleteEmployee"><span class="ladda-label">Delete</span></button>
 		</div>
 	</div>
 </script>
@@ -828,7 +828,7 @@
 	</div>
 </div>
 
-<!-- Help Modal -->	
+<!-- Help Modal -->
 
 	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -845,13 +845,13 @@
 		             	<p>In the Business Employees widget you can assign goals to the employees, adjust their learning levels and specify deadlines for them.</p>
 			             <li>To see more options click on <button type="button" class="btn btn-default btn-sm dropdown-toggle"><i class="fa fa-cogs"></i><span class="caret"></span></button> icon.</li>
 			           <ul style="padding: 10px;">
-				             <li>To assign goals to employee and define learning levels click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span></button> icon. 
+				             <li>To assign goals to employee and define learning levels click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span></button> icon.
 					              In the new view check in relevant goals for this employee.</li>
-					         <li>Check in relevant learning indicators and define learning levels for this employee by clicking on the goal name and selecting start, current and end level accordingly.</li> 
+					         <li>Check in relevant learning indicators and define learning levels for this employee by clicking on the goal name and selecting start, current and end level accordingly.</li>
 					         <li>Choose start and end dates for the learning indicators.
-					             <br><b>Descriptions of learning levels:</b> 
+					             <br><b>Descriptions of learning levels:</b>
 					              	<ul style="padding: 10px;">
-					                	<li><b>Level 0:</b> I have not started to address the skills / knowledge required for this indicator.</li> 
+					                	<li><b>Level 0:</b> I have not started to address the skills / knowledge required for this indicator.</li>
 					               	  	<li><b>Level 1:</b> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
 					                	<li><b>Level 2:</b> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
 					                	<li><b>Level 3:</b> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>
@@ -860,20 +860,20 @@
 					              	</ul>
 				              </li>
 				             <li>To monitor the learning progress of employee straight forward in <i>Learning Progress</i> widget click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats tooltip-showGoalProgress" data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: Decor and Furnishing"></span></button> icon.</li>
-				       		 <li>To send email to the employees click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope" style="margin-right:5px;"></span></button> icon. Pop-up mail window will appear.  
+				       		 <li>To send email to the employees click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope" style="margin-right:5px;"></span></button> icon. Pop-up mail window will appear.
 
 				       </ul>
-		             </ul>	
+		             </ul>
 	              {{/(accessRights.isManager && !accessRights.isEmployee)}}
 	               {{#accessRights.isEmployee}}
 					    <p>In this widget you can see your profile details. Click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon to see  your overall progress in the Learning Progress widget. </p>
 					{{/accessRights.isEmployee}}
 	          </div>
 	          <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-	          </div>      
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	          </div>
 	        </div>
-        </script>      
+        </script>
       </div>
     </div>
 	]]>

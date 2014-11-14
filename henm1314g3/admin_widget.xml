@@ -5,15 +5,15 @@
     description="Config widget."
     author="Team Boost"
     author_email="neulinger@dbis.rwth-aachen.de"
-    height="400">
+    height="450">
     <Require feature="opensocial-0.8" />
     <Require feature="openapp" />
     <OAuth>
-    <Service name="openapp"                     
-        xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/" 
+    <Service name="openapp"
+        xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
         openapp:service="http://purl.org/role/terms/spaceService"
         openapp:permitReadAppend="http://purl.org/role/terms/data">
-      
+
         <Request method="" url=""/>
       <Authorization url=""/>
       <Access method="" url=""/>
@@ -28,7 +28,7 @@
 
     <!-- Define CSS -->
    <link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
- 
+
     <style>
 
         #addKeywordsModal {
@@ -78,13 +78,13 @@
             var model = {};
             model.config = [];
 
-            if (openapp.param.user()) {    
+            if (openapp.param.user()) {
               closeAutorisationWindow();
             }
 
-            //gadgets.util.registerOnLoadHandler(init);         
+            //gadgets.util.registerOnLoadHandler(init);
             //function init(){
-                  
+
             space = new openapp.oo.Resource(openapp.param.space());
             iwcClient = new iwc.Client();
             retrieveConfig(space, function(configObject){
@@ -104,19 +104,19 @@
 
                 iwcClient.publish(intent);
               }
-              
+
 
             $(document).ready(function(){
 
               rivets.bind($("#manageRepoModal").get(), {model:model});
 
-              // help button click 
+              // help button click
 
               $('#question').click(function(){
                 $('#descriptionModal').modal({
                 keyboard: true
                   });
-                }); 
+                });
 
               /* manage search repositories */
 
@@ -143,16 +143,16 @@
                 $('#someGoal').text("");              // remove previous goal label
                 $('#liDropClass').addClass('hide');    // remove previous li-dropdown list
 
-             }); 
+             });
 
 
               retrieveAllBcns(space, function(bcns){
                     bcnsList = bcns;
-                    
-                    
+
+
                     for(var i = 0; i < bcnsList.length; i++){
                      var bcn = bcnsList[i];
-          
+
                      };
                      keywordsModal();
                   });
@@ -165,7 +165,7 @@
                 } else if ($("#textInput").val()) {
                   selectedLI.description = $("#textInput").val();
 
-                  selectedBCN.update(function(){ 
+                  selectedBCN.update(function(){
                     $("#addKeywordsModal").modal('hide');
                 });
                  } else alert("Please enter description!");
@@ -181,7 +181,7 @@
                 bcnsList.sort(function(a, b){
                   if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
                   if(a.priority > b.priority)  return -1; else return 1;
-                  
+
                 });
 
                 var template =    "<table id='keywordsTable' width='100%'>" +
@@ -214,18 +214,18 @@
                 /* add dropdown list with BCNs */
 
                 var entry = $(template);
-                var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>'); 
+                var goalDropClass = $('<div id="goalDropClass" class="btn-group"></div>');
                 var goalButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="goalDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
-          
-                
+
+
                 goalDropClass.append(goalButton);
-            
-               
+
+
                 var goalDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="goalDropDown"></ul>');
                 var goal;
-           
+
                 for (key in bcnsList) {
-            
+
                   var bcn = bcnsList[key];
 
                   goal = $('<li role="presentation"> <a style="word-wrap: break-word; white-space: normal;" role ="menuitem" " href="#" tabindex="-1">'+bcn.name+'</a></li>');
@@ -234,21 +234,21 @@
                }
 
              goalDropClass.append(goalDropDownMenu);
-             
+
              entry.find("#goal-btn-group").append(goalDropClass);
-             
+
             $("#bodyKeywordsModal").append(entry);
 
               /* add dropdown list with LIs */
 
               var liDropClass = $('<div id="liDropClass" class="btn-group"></div>');
-              var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>'); 
+              var liButton = $('<button type="button" class="btn btn-default dropdown-toggle li-btn" id="liDropDown" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>');
               liDropClass.append(liButton);
               var liDropDownMenu = $('<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="liDropDown"></ul>');
               var learningIndicator;
 
             $('#goalDropClass li a').click(function()
-             { 
+             {
               $('#someLI').text("");              // remove previous li label
               $('#liDropClass li a').remove();    // remove previous li from li-dropdown list
               $('#liDropClass').removeClass('hide');
@@ -256,12 +256,12 @@
               selectedBCN =  $(this).data("dataBCNselected");
 
               $('#someGoal').text(selectedBCN.name);
-             
+
               for(var key in bcnsList) {
                 if (bcnsList[key].name === selectedBCN.name) {
-               
+
                     var temp = bcnsList[key].learningIndicators;
-              
+
                      for (var j=0; j<temp.length; j++) {
                       var selectedLearningIndicator = temp[j];
 
@@ -274,10 +274,10 @@
                }
 
               liDropClass.append(liDropDownMenu);
-              entry.find("#li-btn-group").append(liDropClass); 
+              entry.find("#li-btn-group").append(liDropClass);
 
                $('#liDropClass li a').click(function()
-                  { 
+                  {
                     selectedLI = $(this).data("dataLearningIndicator");
                     $('#someLI').text(selectedLI.name);
                     $('#textInput').removeClass('hide');
@@ -287,7 +287,7 @@
 
             }
           });
-        });               
+        });
 
   </script>
 
@@ -295,7 +295,7 @@
 
     <div style="overflow-y: scroll; height:400px;">
       <div class="panel panel-primary">
-   
+
         <div class="panel-heading">
             <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
             <h3 class="panel-title">Control Boost Resources</h3>
@@ -310,15 +310,15 @@
           </a>
           <a href="#" id="keywordsIDmenu" class="list-group-item">
             <div><span class="glyphicon glyphicon-list-alt pull-right" style="margin-right:5px;"></span>
-               <h5 class="list-group-item-heading"> Assign description to the LI´s </h5>      
-              <h6 class="list-group-item-text">Provide description to the learning indicators to help your employees search for the relevant content </h6>       
+               <h5 class="list-group-item-heading"> Assign description to the LI´s </h5>
+              <h6 class="list-group-item-text">Provide description to the learning indicators to help your employees search for the relevant content </h6>
             </div>
-            
+
           </a>
-         
-         
+
+
         </div>
- 
+
       </div>
     </div>
 
@@ -343,7 +343,7 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button id="saveRepoButton" type="button" class="btn btn-primary">Save changes</button>
-              
+
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -352,7 +352,7 @@
 
       <!-- Modal to assign LI description -->
 
-      <div class="modal fade" id="addKeywordsModal"> 
+      <div class="modal fade" id="addKeywordsModal">
           <div class="modal-dialog">
               <div class="modal-content">
                   <div class="modal-header">
@@ -360,7 +360,7 @@
                       <h4 class="modal-title">Assign description to learning indicators:</h4>
                   </div>
                   <div class="modal-body" id="bodyKeywordsModal">
-                  
+
                   </div>
                   <div class="modal-footer">
                     <div class="form-actions">
@@ -384,14 +384,14 @@
             <ul style="padding: 10px;">
               <li>To manage learning repositories click on the  <span class="glyphicon glyphicon-check pull-center"></span> icon. In the new view check in learning repositories that will be available in the <i>Boost Search</i> widget.</li>
               <li>To add description (keywords) to learning indicators click on the <span class="glyphicon glyphicon-list-alt pull-center" ></span> icon. In the new view choose goal, then learning indicator and enter description in the text field. Save changes, by clicking on the <i>Assign description</i>button.
-              <br>Employee can read this description in the <i>Learning Repository</i> widget. 
+              <br>Employee can read this description in the <i>Learning Repository</i> widget.
               </li>
-            </ul>         
+            </ul>
           </div>
           <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
-          </div>      
-        </div>      
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
 

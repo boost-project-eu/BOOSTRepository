@@ -25,7 +25,7 @@ require.config({
         highcharts_exporting: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/modules/exporting",
         lodash: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/lodash",
 
-        UserManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager",       
+        UserManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager",
         BCNManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager",
         LearningDocumentsManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/LearningDocumentsManager",
         ExpertsManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/ExpertsManager",
@@ -72,7 +72,7 @@ require.config({
         },
         highcharts: {
             exports: "Highcharts",
-            deps: ['jquery'] 
+            deps: ['jquery']
         },
         highcharts_exporting: {
             deps: ['highcharts']
@@ -97,6 +97,9 @@ require.config({
         },
         bootstrapSlider: {
             deps: ['jquery']
+        },
+        search_scribd: {
+            deps: ['scribd_api']
         }
     }
 
