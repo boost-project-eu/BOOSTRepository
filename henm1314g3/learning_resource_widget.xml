@@ -159,11 +159,11 @@
 
 							//Check if user has agreed to license
 
-							if(!userAccessRights.hasAgreedToLicense){
-								showModalAcceptTermsOfUse();
-							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();
-							}
+							// if(!userAccessRights.hasAgreedToLicense){
+								// showModalAcceptTermsOfUse();
+							// } else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
+								// showModalContactManager();
+							// }
 
 							});  // end of the retrieveAccessRights
 
@@ -656,12 +656,16 @@
 							        	l.start();
 							        	var documentArray = this.get("learningDocumentsArray");
 							        	var document = this.get("newDocument");
+							        	console.log(document);
+							        	console.log(currentEmployee.userUri);
+
 							        	document.create(function(){
 							        		l.stop();
 							        		documentArray.push(document);
 							        		$("#addLdModal").modal("hide");
 							        	});
 							        });
+
 							        addExpertRactive.on("saveExpert", function(event){
 							        	var exp = this.get("newExpert");
 							        	if(!checkInputExpert(exp, this))
@@ -1070,6 +1074,11 @@
 									<label for="inputLdLink">Link</label>
 									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
+			 					<div class="checkbox">
+								    <label for="inputLdPrivate">
+								      <input type="checkbox" checked="{{newDocument.isPrivate}}" value="{{newDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+								    </label>
+								 </div>
 						</form>
 					</div>
   					<div class="modal-footer">
@@ -1187,7 +1196,7 @@
   					<div class="modal-body">
     					<form role="form">
 								<div class="form-group">
-									<label for="inputLdName">Name</label>
+									<label for="inputLdName">Nameddd</label>
 									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
 								</div>
 								<div class="form-group">
@@ -1198,6 +1207,11 @@
 									<label for="inputLdLink">Link</label>
 									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
+			 					<div class="checkbox">
+								    <label for="inputLdPrivate">
+								      <input type="checkbox" checked="{{editDocument.isPrivate}}" value="{{editDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+								    </label>
+								 </div>
 						</form>
 					</div>
   					<div class="modal-footer">

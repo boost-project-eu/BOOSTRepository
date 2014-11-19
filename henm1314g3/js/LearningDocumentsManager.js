@@ -12,6 +12,16 @@ function LearningDocument(object){
 	else
 		this.bcnUri = "";
 
+	if(object.hasOwnProperty("userUri"))
+		this.userUri = object.userUri
+	else
+		this.userUri = "";
+
+	if(object.hasOwnProperty("isPrivate"))
+		this.isPrivate = object.isPrivate
+	else
+		this.isPrivate = false;
+
 	if(object.hasOwnProperty("liId"))
 		this.liId = object.liId;
 	else
