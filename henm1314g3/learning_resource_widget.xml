@@ -274,6 +274,8 @@
 
 
 									retrieveAccessRights(function(accessRights){
+										retrieveAllEmployees(space, function(employees){
+
 										var treeRactive = new Ractive({
 								            el: 'bcns',
 								            template: '#documentsTreeTemplate',
@@ -630,11 +632,14 @@
 								        		$("#editWidgetModal").modal("hide");
 								        	});
 								        });
-
 								        var addDocumentRactive = new Ractive({
 								        	el: 'addDocumentTemplateContainer',
 								        	template: '#addDocumentTemplate',
-								        	data: {newDocument: null}
+								        	data: {
+								        		newDocument: null,
+									        	employees: employees,
+									        	accessRights : accessRights.getUserAccessRights(),
+								        	}
 								        });
 								        var addExpertRactive = new Ractive({
 								        	el: 'addExpertTemplateContainer',
@@ -655,13 +660,22 @@
 								        	var l = Ladda.create(node);
 								        	l.start();
 								        	var documentArray = this.get("learningDocumentsArray");
-								        	var document = this.get("newDocument");
-								        	if (document.isPrivate)
-								        		document.userUri = currentEmployee.userUri
+								        	var newDocument = this.get("newDocument");
 
-								        	document.create(function(){
+								        	var selectedEmployee = document.getElementById("selectedEmployee");
+											var EmployeeUri = selectedEmployee.options[selectedEmployee.selectedIndex].value;
+
+								        	if (newDocument.isPrivate)
+								        		newDocument.userUri = currentEmployee.userUri;
+
+											if(EmployeeUri){
+								        		newDocument.userUri = EmployeeUri;
+								        		newDocument.isPrivate = true;
+											}
+
+								        	newDocument.create(function(){
 								        		l.stop();
-								        		documentArray.push(document);
+								        		documentArray.push(newDocument);
 								        		$("#addLdModal").modal("hide");
 								        	});
 								        });
@@ -708,6 +722,8 @@
 								});
 								});
 								});
+								});
+
 							}
 						);
 
@@ -789,6 +805,7 @@
 													<small>{{description}}</small>
 												</p>
 											</span>
+
 											<ul>
 												<li>
 													<span style="cursor:pointer;">
@@ -934,7 +951,7 @@
 															</span>
 															</li>
 															{{#learningDocuments}}
-																{{#((isPrivate && currentEmployee.userUri == userUri)||(!isPrivate))}}
+																{{#((currentEmployee.userUri == userUri)||(!isPrivate))}}
 																	<li>
 																		<span>
 																			<div class="row">
@@ -963,7 +980,7 @@
 																			</p>
 																		</span>
 																	</li>
-																{{/((isPrivate && currentEmployee.userUri == userUri)||(!isPrivate))}}
+																{{/((currentEmployee.userUri == userUri)||(!isPrivate))}}
 															{{/learningDocuments}}
 														</ul>
 													</li>
@@ -1065,6 +1082,15 @@
   					</div>
   					<div class="modal-body">
     					<form role="form">
+    							{{^accessRights.isEmployee}}
+    								<label>Employee to Assign Document</label>
+    								<select class="form-control" id="selectedEmployee" style="margin-bottom:10px;">
+    								  {{#employees}}
+    								  		<option value="{{userUri}}">{{name}}</option>
+    								  {{/employees}}
+    								  <option value="false" selected="selected">All Employees</option>
+    								</select>
+    							{{/accessRights.isEmployee}}
 								<div class="form-group">
 									<label for="inputLdName">Name</label>
 									<input value="{{newDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
@@ -1077,11 +1103,13 @@
 									<label for="inputLdLink">Link</label>
 									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
-			 					<div class="checkbox">
-								    <label for="inputLdPrivate">
-								      <input type="checkbox" checked="{{newDocument.isPrivate}}" value="{{newDocument.isPrivate}}" id="inputLdPrivate"> Is Private
-								    </label>
-								 </div>
+			 					{{#accessRights.isEmployee}}
+				 					<div class="checkbox">
+									    <label for="inputLdPrivate">
+									      <input type="checkbox" checked="{{newDocument.isPrivate}}" value="{{newDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+									    </label>
+									 </div>
+								{{/accessRights.isEmployee}}
 						</form>
 					</div>
   					<div class="modal-footer">
