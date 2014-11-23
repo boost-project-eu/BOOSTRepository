@@ -176,6 +176,9 @@
 												currentUser = user;
 												if (currentUser) {
 													currentUser.AccessRights = accessRights.getUserAccessRights(currentUser.uri);
+													if(currentUser.uri){
+														createEmployeeIfNotExist(currentUser, accessRights, employeesList);
+													}
 												} else {
 													currentUser = {};
 													currentUser.AccessRights.isManager = false;
@@ -187,9 +190,7 @@
 											};
 										};
 
-										if(currentUser.uri){
-											createEmployeeIfNotExist(currentUser, accessRights, employeesList);
-										}
+
 
 										//Match all users with their access rights which are stored in the config
 										//resource
@@ -363,6 +364,7 @@
         </div>
       </div>
     </div>
+
 	]]>
   </Content>
 </Module>
