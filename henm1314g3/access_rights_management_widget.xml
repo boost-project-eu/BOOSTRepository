@@ -131,7 +131,6 @@
 								});
 
 								if(!foundEmployeeData){
-									console.log("herereeee");
 									createEmployeeFromUser(user, bcnsList, function(employee){
 										employeesList.push(employee);
 										publishAccessRightsChanged();
@@ -251,7 +250,7 @@
 
 		<!-- HTML Block -->
 
-		<div style="overflow-y: scroll; height:400px;">
+		<div style="overflow-y: scroll; height:450px;">
 		<div class="panel panel-primary" id="containerUserOverview">
 
 			<div class="panel-heading">
@@ -364,7 +363,6 @@
         </div>
       </div>
     </div>
-
 	]]>
   </Content>
 </Module>

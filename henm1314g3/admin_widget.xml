@@ -293,7 +293,7 @@
 
     <!-- HTML Block -->
 
-    <div style="overflow-y: scroll; height:400px;">
+    <div style="overflow-y: scroll; height:450px;">
       <div class="panel panel-primary">
 
         <div class="panel-heading">

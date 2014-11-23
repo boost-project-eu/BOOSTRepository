@@ -574,7 +574,7 @@
 	<!-- Main widget view -->
 
 
-		<div style="overflow-y: scroll; height:400px;">
+		<div style="overflow-y: scroll; height:450px;">
 			<div class="panel panel-primary" id="containerBcnOverview">
 			<!-- Template for the header Main widget view -->
 			<script id='templateBcnHeader' type='text/ractive'>

@@ -119,7 +119,7 @@
 		</script>
 
 		<!-- HTML Block -->
-	<div style="overflow-y: scroll; height:400px;">
+	<div style="overflow-y: scroll; height:450px;">
 		<div class ="panel panel-primary">
 			<div class="panel-heading">
 				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
@@ -158,7 +158,7 @@
 							<td colspan=2>
 							<ul style="padding: 10px;">
 
-					                	<li><small>Use a <strong>Boost Search</strong> widget to ﬁnd learning materials.</small></li> 
+					                	<li><small>Use a <strong>Boost Search</strong> widget to ﬁnd learning materials.</small></li>
 					               	  	<li><small>Watch and read interesting resources using <strong>Boost Viewer</strong> widget.</small></li>
 					                	<li><small>Save and organise your learning resources in the <strong>Learning Repository:</strong>
 					                	 You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li>
