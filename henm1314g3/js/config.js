@@ -1,4 +1,6 @@
+var locale = localStorage.getItem("locale") || getUserLocalization();
 require.config({
+    locale: locale,
     paths: {
         jquery: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min",
         jqueryUi: "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
@@ -24,6 +26,7 @@ require.config({
         highcharts: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/highcharts",
         highcharts_exporting: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/highcharts/js/modules/exporting",
         lodash: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/lodash",
+        i18n: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/i18n",
 
         UserManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/UserManager",
         BCNManager: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/BCNManager",
@@ -102,5 +105,4 @@ require.config({
             deps: ['scribd_api']
         }
     }
-
 });

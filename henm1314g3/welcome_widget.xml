@@ -66,6 +66,12 @@
 			    "iwc",
 			    "utils"
 			    ], function(a, b) {
+
+			    	localStorage.setItem("locale", "de-de");
+			    	require(['i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/str.js'], function(str) {
+		    	    	console.log(str);
+			    	});
+			    	// alert(str.header);
 			    	async = a;
 			    	bootbox = b;
 
