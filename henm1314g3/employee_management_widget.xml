@@ -591,7 +591,7 @@
 
 		<!-- HTML Block -->
 
-		<div style="overflow-y: scroll; height:400px;">
+		<div style="overflow-y: scroll; height:450px;">
 		<div class="panel panel-primary" id="containerEmployeeOverview">
 		<!-- Template for the header Main widget view -->
 			<script id='templateEmployeeHeader' type='text/ractive'>
@@ -851,7 +851,7 @@
 					         <li>Choose start and end dates for the learning indicators.
 					             <br><strong>Descriptions of learning levels:</strong>
 					              	<ul style="padding: 10px;">
-					                	<li><strong>Level 0:</strong> I have not started to address the skills / knowledge required for this indicator.</li> 
+					                	<li><strong>Level 0:</strong> I have not started to address the skills / knowledge required for this indicator.</li>
 					               	  	<li><strong>Level 1:</strong> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
 					                	<li><strong>Level 2:</strong> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
 					                	<li><strong>Level 3:</strong> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>

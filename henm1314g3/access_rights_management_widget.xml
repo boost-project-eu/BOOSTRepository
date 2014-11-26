@@ -41,11 +41,11 @@
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
 				"async",
-				 "bootbox",
-				 "ractive",
+				"bootbox",
+				"ractive",
+				"lodash",
 			    "jquery",
 			    "bootstrap",
-	//		    "bootstrapSlider",
 			    "EmployeeManager",
 			    "spin",
 			    "ladda",
@@ -54,7 +54,7 @@
 			    "iwc",
 			    "UserManager",
 			    "utils"
-			    ], function(a, b, r) {
+			    ], function(a, b, r, _) {
 			    	async = a;
 			    	bootbox = b;
 			    	Ractive = r;
@@ -73,13 +73,9 @@
 						closeAutorisationWindow();
 					}
 
-					//function init(){
-
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
-
-					//}
 
 					//gadgets.util.registerOnLoadHandler(init);
 
@@ -124,6 +120,32 @@
 						iwcClient.publish(intent);
 					}
 
+					function createEmployeeIfNotExist(user, accessRights, employeesList){
+						accessRights.update(function(){
+							if(accessRights.getUserAccessRights(user.uri).isEmployee){
+								var foundEmployeeData = false;
+								_.each(employeesList, function(employee){
+									if(employee.userUri == user.uri){
+										foundEmployeeData = true;
+									}
+								});
+
+								if(!foundEmployeeData){
+									createEmployeeFromUser(user, bcnsList, function(employee){
+										employeesList.push(employee);
+										publishAccessRightsChanged();
+									});
+								}
+								else{
+									publishAccessRightsChanged();
+								}
+							}
+							else{
+								publishAccessRightsChanged();
+							}
+						});
+					}
+
 					function sortUsers(users){
 						users.sort(function (a, b){
 							if(a.name.toLowerCase() < b.name.toLowerCase())
@@ -153,6 +175,9 @@
 												currentUser = user;
 												if (currentUser) {
 													currentUser.AccessRights = accessRights.getUserAccessRights(currentUser.uri);
+													if(currentUser.uri){
+														createEmployeeIfNotExist(currentUser, accessRights, employeesList);
+													}
 												} else {
 													currentUser = {};
 													currentUser.AccessRights.isManager = false;
@@ -163,6 +188,8 @@
 
 											};
 										};
+
+
 
 										//Match all users with their access rights which are stored in the config
 										//resource
@@ -201,33 +228,8 @@
 										});
 
 										ractiveOverview.on("accessRightsChanged", function(event){
-											accessRights.update(function(){
-
-												user = event.context;
-
-												if(accessRights.getUserAccessRights(user.uri).isEmployee){
-													var foundEmployeeData = false;
-													for(var i = 0; i < employeesList.length; i++){
-														var employee = employeesList[i];
-														if(employee.userUri == user.uri){
-															foundEmployeeData = true;
-														}
-													}
-
-													if(!foundEmployeeData){
-														createEmployeeFromUser(user, bcnsList, function(employee){
-															employeesList.push(employee);
-															publishAccessRightsChanged();
-														});
-													}
-													else{
-														publishAccessRightsChanged();
-													}
-												}
-												else{
-													publishAccessRightsChanged();
-												}
-											});
+											user = event.context;
+											createEmployeeIfNotExist(user, accessRights, employeesList);
 										});
 									});
 								});
@@ -248,7 +250,7 @@
 
 		<!-- HTML Block -->
 
-		<div style="overflow-y: scroll; height:400px;">
+		<div style="overflow-y: scroll; height:450px;">
 		<div class="panel panel-primary" id="containerUserOverview">
 
 			<div class="panel-heading">
@@ -343,10 +345,10 @@
 			 	<ul style="padding: 10px;">
 
                 	<li><strong>Employee: </strong>
-                		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system. 
-                		Watch own learning progress and the progress of the goals.</p></li> 
+                		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system.
+                		Watch own learning progress and the progress of the goals.</p></li>
                 	<li><strong>Manager: </strong>
-                		<p>Has full control over the system. Can assing access rights to the users. 
+                		<p>Has full control over the system. Can assing access rights to the users.
 
                 		Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators.
                 		Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</li></p>

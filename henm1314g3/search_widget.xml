@@ -406,7 +406,7 @@
 		</script>
 
 		<!-- HTML Block -->
-		<div style="overflow-y: scroll; height:400px;" id="content">
+		<div style="overflow-y: scroll; height:450px;" id="content">
 		<div class="panel panel-primary" id="containerSearch">
 			<script id='templateSearch' type='text/ractive'>
 			<!-- Template for the header Main widget view -->

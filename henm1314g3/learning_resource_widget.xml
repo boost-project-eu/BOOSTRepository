@@ -274,16 +274,18 @@
 
 
 									retrieveAccessRights(function(accessRights){
+										retrieveAllEmployees(space, function(employees){
+
 										var treeRactive = new Ractive({
 								            el: 'bcns',
 								            template: '#documentsTreeTemplate',
 								            data: {
 								            	bcns: bcnsList,
-								            	"accessRights" : accessRights.getUserAccessRights()
+								            	"accessRights" : accessRights.getUserAccessRights(),
+								            	"currentEmployee": currentEmployee
 								            }
 								        });
 
-								        // console.log(bcnsList);
 								        treeRactive.on("documentAdd", function(event){
 								        	var newDocument = new LearningDocument({});
 								        	newDocument.type = "weblink";
@@ -300,7 +302,7 @@
 
 								        	newDocument.bcnUri = bcnUri;
 								        	newDocument.liId = learningIndicatorId;
-
+								        	newDocument.isPrivate = false;
 								        	addDocumentRactive.set({
 								        		"newDocument": newDocument,
 								        		"learningDocumentsArray" : event.context.learningDocuments
@@ -465,244 +467,273 @@
 								        });
 
 								    //retrieve access rights function end
-							    	});
 
-							        $("#WidgetsTree").tree();
 
-							        var deleteDocumentRactive = new Ractive({
-							        	el: 'deleteDocumentTemplateContainer',
-							        	template: '#deleteDocumentTemplate',
-							        	data: {
-							        		documentArray: null,
-							        		document: null
-							        	}
-							        });
-							        var deleteExpertRactive = new Ractive({
-							        	el: 'deleteExpertTemplateContainer',
-							        	template: '#deleteExpertTemplate',
-							        	data: {
-							        		ExpertArray: null,
-							        		Expert: null
-							        	}
-							        });
+								        $("#WidgetsTree").tree();
 
-							        var deleteWidgetRactive = new Ractive({
-							        	el: 'deleteWidgetTemplateContainer',
-							        	template: '#deleteWidgetTemplate',
-							        	data: {
-							        		WidgetArray: null,
-							        		Widget: null
-							        	}
-							        });
+								        var deleteDocumentRactive = new Ractive({
+								        	el: 'deleteDocumentTemplateContainer',
+								        	template: '#deleteDocumentTemplate',
+								        	data: {
+								        		documentArray: null,
+								        		document: null
+								        	}
+								        });
+								        var deleteExpertRactive = new Ractive({
+								        	el: 'deleteExpertTemplateContainer',
+								        	template: '#deleteExpertTemplate',
+								        	data: {
+								        		ExpertArray: null,
+								        		Expert: null
+								        	}
+								        });
 
-							        var viewExpertRactive = new Ractive({
-							        	el: 'viewExpertTemplateContainer',
-							        	template: '#viewExpertTemplate',
-							        	data: {
-							        		ExpertArray: null,
-							        		Expert: null
-							        	},
-							        	append: true
-							        });
+								        var deleteWidgetRactive = new Ractive({
+								        	el: 'deleteWidgetTemplateContainer',
+								        	template: '#deleteWidgetTemplate',
+								        	data: {
+								        		WidgetArray: null,
+								        		Widget: null
+								        	}
+								        });
 
-							        viewExpertRactive.on()
+								        var viewExpertRactive = new Ractive({
+								        	el: 'viewExpertTemplateContainer',
+								        	template: '#viewExpertTemplate',
+								        	data: {
+								        		ExpertArray: null,
+								        		Expert: null
+								        	},
+								        	append: true
+								        });
 
-							        var viewWidgetRactive = new Ractive({
-							        	el: 'viewWidgetTemplateContainer',
-							        	template: '#viewWidgetTemplate',
-							        	data: {
-							        		WidgetArray: null,
-							        		Widget: null
-							        	},
-							        	append: true
-							        });
+								        viewExpertRactive.on()
 
-							        viewWidgetRactive.on()
+								        var viewWidgetRactive = new Ractive({
+								        	el: 'viewWidgetTemplateContainer',
+								        	template: '#viewWidgetTemplate',
+								        	data: {
+								        		WidgetArray: null,
+								        		Widget: null
+								        	},
+								        	append: true
+								        });
 
-							        deleteDocumentRactive.on("deleteDocument", function(event){
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
+								        viewWidgetRactive.on()
 
-							        	var document = this.get("document");
-							        	var documentArray = this.get("documentArray");
-							        	document.delete(function(){
-							        		documentArray.splice(documentArray.indexOf(document), 1);
-							        		l.stop();
-							        		$("#deleteDocumentModal").modal("hide");
-							        	});
+								        deleteDocumentRactive.on("deleteDocument", function(event){
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
 
-							        });
-							        deleteExpertRactive.on("deleteExpert", function(event){
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
+								        	var document = this.get("document");
+								        	var documentArray = this.get("documentArray");
+								        	document.delete(function(){
+								        		documentArray.splice(documentArray.indexOf(document), 1);
+								        		l.stop();
+								        		$("#deleteDocumentModal").modal("hide");
+								        	});
 
-							        	var Expert = this.get("Expert");
-							        	var ExpertArray = this.get("ExpertArray");
-							        	Expert.delete(function(){
-							        		ExpertArray.splice(ExpertArray.indexOf(Expert), 1);
-							        		l.stop();
-							        		$("#deleteExpertModal").modal("hide");
-							        	});
+								        });
+								        deleteExpertRactive.on("deleteExpert", function(event){
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
 
-							        });
-							        deleteWidgetRactive.on("deleteWidget", function(event){
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
+								        	var Expert = this.get("Expert");
+								        	var ExpertArray = this.get("ExpertArray");
+								        	Expert.delete(function(){
+								        		ExpertArray.splice(ExpertArray.indexOf(Expert), 1);
+								        		l.stop();
+								        		$("#deleteExpertModal").modal("hide");
+								        	});
 
-							        	var Widget = this.get("Widget");
-							        	var WidgetArray = this.get("WidgetArray");
-							        	Widget.delete(function(){
-							        		WidgetArray.splice(WidgetArray.indexOf(Widget), 1);
-							        		l.stop();
-							        		$("#deleteWidgetModal").modal("hide");
-							        	});
+								        });
+								        deleteWidgetRactive.on("deleteWidget", function(event){
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
 
-							        });
+								        	var Widget = this.get("Widget");
+								        	var WidgetArray = this.get("WidgetArray");
+								        	Widget.delete(function(){
+								        		WidgetArray.splice(WidgetArray.indexOf(Widget), 1);
+								        		l.stop();
+								        		$("#deleteWidgetModal").modal("hide");
+								        	});
 
-							        var editDocumentRactive = new Ractive({
-							        	el: 'editDocumentTemplateContainer',
-							        	template: '#editDocumentTemplate',
-							        	data: {
-							        		editDocument: null,
-							        		keypath: null
-							        	}
-							        });
+								        });
 
-							        var editExpertRactive = new Ractive({
-							        	el: 'editExpertTemplateContainer',
-							        	template: '#editExpertTemplate',
-							        	data: {
-							        		editExpert: new Expert({}),
-							        		keypath: null,
-							        		"nameError" : false,
-								    		"emailError" : false
-							        	}
-							        });
+								        var editDocumentRactive = new Ractive({
+								        	el: 'editDocumentTemplateContainer',
+								        	template: '#editDocumentTemplate',
+								        	data: {
+								        		editDocument: null,
+								        		employees: employees,
+								        		keypath: null
+								        	}
+								        });
 
-							        var editWidgetRactive = new Ractive({
-							        	el: 'editWidgetTemplateContainer',
-							        	template: '#editWidgetTemplate',
-							        	data: {
-							        		editWidget: new Widget({}),
-							        		keypath: null
-							        	}
-							        });
+								        var editExpertRactive = new Ractive({
+								        	el: 'editExpertTemplateContainer',
+								        	template: '#editExpertTemplate',
+								        	data: {
+								        		editExpert: new Expert({}),
+								        		keypath: null,
+								        		"nameError" : false,
+									    		"emailError" : false
+								        	}
+								        });
 
-							        editDocumentRactive.on("updateDocument", function(event){
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
-							        	var document = this.get("editDocument");
-							        	var kp = this.get("keypath");
-							        	document.update(function(){
-							        		l.stop();
-							        		treeRactive.update(kp);
-							        		$("#editDocumentModal").modal("hide");
-							        	});
-							        });
-							        editExpertRactive.on("updateExpert", function(event){
-							        	var exp = this.get("editExpert");
-							        	if(!checkInputExpert(exp, this))
-										return;
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
-							        	var Expert = this.get("editExpert");
-							        	var kp = this.get("keypath");
-							        	Expert.update(function(){
-							        		l.stop();
-							        		treeRactive.update(kp);
-							        		$("#editExpertModal").modal("hide");
-							        	});
-							        });
-							        editWidgetRactive.on("updateWidget", function(event){
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
-							        	var Widget = this.get("editWidget");
-							        	var kp = this.get("keypath");
-							        	Widget.update(function(){
-							        		l.stop();
-							        		treeRactive.update(kp);
-							        		$("#editWidgetModal").modal("hide");
-							        	});
-							        });
+								        var editWidgetRactive = new Ractive({
+								        	el: 'editWidgetTemplateContainer',
+								        	template: '#editWidgetTemplate',
+								        	data: {
+								        		editWidget: new Widget({}),
+								        		keypath: null
+								        	}
+								        });
 
-							        var addDocumentRactive = new Ractive({
-							        	el: 'addDocumentTemplateContainer',
-							        	template: '#addDocumentTemplate',
-							        	data: {newDocument: null}
-							        });
-							        var addExpertRactive = new Ractive({
-							        	el: 'addExpertTemplateContainer',
-							        	template: '#addExpertTemplate',
-							        	data: {newExpert: new Expert({}),
-							        		"nameError" : false,
-								    		"emailError" : false
-							        	}
-							        });
-							        var addWidgetRactive = new Ractive({
-							        	el: 'addWidgetTemplateContainer',
-							        	template: '#addWidgetTemplate',
-							        	data: {newWidget: new Widget({})}
-							        });
+								        editDocumentRactive.on("updateDocument", function(event){
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
+								        	var editDocument = this.get("editDocument");
+								        	var kp = this.get("keypath");
+								        	var selectedEmployee = document.getElementById("selectedEditEmployee");
+								        	if (selectedEmployee)
+												var EmployeeUri = selectedEmployee.options[selectedEmployee.selectedIndex].value;
 
-							        addDocumentRactive.on("saveDocument", function(event){
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
-							        	var documentArray = this.get("learningDocumentsArray");
-							        	var document = this.get("newDocument");
-							        	document.create(function(){
-							        		l.stop();
-							        		documentArray.push(document);
-							        		$("#addLdModal").modal("hide");
-							        	});
-							        });
-							        addExpertRactive.on("saveExpert", function(event){
-							        	var exp = this.get("newExpert");
-							        	if(!checkInputExpert(exp, this))
-										return;
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
-							        	var ExpertArray = this.get("ExpertsArray");
-							        	var Expert = this.get("newExpert");
-							        	Expert.create(function(){
-							        		l.stop();
-							        		ExpertArray.push(Expert);
-							        		$("#addExpertModal").modal("hide");
-							        	});
-							        });
-							        addWidgetRactive.on("saveWidget", function(event){
+											if(EmployeeUri != "false"){
+								        		editDocument.userUri = EmployeeUri;
+								        		editDocument.isPrivate = true;
+											}
 
-							        	// var widgetUrl = this.get("newWidget").url;
-							        	// var spaceURI = openapp.param.user();
-							        	// addWidgetToSpace(spaceURI,widgetUrl);
-							        	var node = event.node;
-							        	var l = Ladda.create(node);
-							        	l.start();
-							        	var WidgetArray = this.get("WidgetsArray");
-							        	var Widget = this.get("newWidget");
-							        	Widget.create(function(){
-							        		l.stop();
-							        		WidgetArray.push(Widget);
-							        		$("#addWidgetModal").modal("hide");
-							        	});
-							        });
+								        	editDocument.update(function(){
+								        		l.stop();
+								        		treeRactive.update(kp);
+								        		$("#editDocumentModal").modal("hide");
+								        	});
+								        });
+								        editExpertRactive.on("updateExpert", function(event){
+								        	var exp = this.get("editExpert");
+								        	if(!checkInputExpert(exp, this))
+											return;
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
+								        	var Expert = this.get("editExpert");
+								        	var kp = this.get("keypath");
+								        	Expert.update(function(){
+								        		l.stop();
+								        		treeRactive.update(kp);
+								        		$("#editExpertModal").modal("hide");
+								        	});
+								        });
+								        editWidgetRactive.on("updateWidget", function(event){
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
+								        	var Widget = this.get("editWidget");
+								        	var kp = this.get("keypath");
+								        	Widget.update(function(){
+								        		l.stop();
+								        		treeRactive.update(kp);
+								        		$("#editWidgetModal").modal("hide");
+								        	});
+								        });
+								        var addDocumentRactive = new Ractive({
+								        	el: 'addDocumentTemplateContainer',
+								        	template: '#addDocumentTemplate',
+								        	data: {
+								        		newDocument: null,
+									        	employees: employees,
+									        	accessRights : accessRights.getUserAccessRights(),
+								        	}
+								        });
+								        var addExpertRactive = new Ractive({
+								        	el: 'addExpertTemplateContainer',
+								        	template: '#addExpertTemplate',
+								        	data: {newExpert: new Expert({}),
+								        		"nameError" : false,
+									    		"emailError" : false
+								        	}
+								        });
+								        var addWidgetRactive = new Ractive({
+								        	el: 'addWidgetTemplateContainer',
+								        	template: '#addWidgetTemplate',
+								        	data: {newWidget: new Widget({})}
+								        });
 
-							        addDocumentRactive.on("importDocument", function(event){
-							        	var document = this.get("newDocument");
-							        	learningDocumentFromSearchWidget.bcnUri = document.bcnUri;
-							        	learningDocumentFromSearchWidget.liId = document.liId;
-							        	this.set("newDocument", learningDocumentFromSearchWidget);
-							        });
+								        addDocumentRactive.on("saveDocument", function(event){
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
+								        	var documentArray = this.get("learningDocumentsArray");
+								        	var newDocument = this.get("newDocument");
+								        	var selectedEmployee = document.getElementById("selectedEmployee");
+								        	if (selectedEmployee)
+												var EmployeeUri = selectedEmployee.options[selectedEmployee.selectedIndex].value;
+
+								        	if (newDocument.isPrivate)
+								        		newDocument.userUri = currentEmployee.userUri;
+
+											if (EmployeeUri != "false") {
+								        		newDocument.userUri = EmployeeUri;
+								        		newDocument.isPrivate = true;
+											}
+
+								        	newDocument.create(function(){
+								        		l.stop();
+								        		documentArray.push(newDocument);
+								        		$("#addLdModal").modal("hide");
+								        	});
+								        });
+
+								        addExpertRactive.on("saveExpert", function(event){
+								        	var exp = this.get("newExpert");
+								        	if(!checkInputExpert(exp, this))
+											return;
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
+								        	var ExpertArray = this.get("ExpertsArray");
+								        	var Expert = this.get("newExpert");
+								        	Expert.create(function(){
+								        		l.stop();
+								        		ExpertArray.push(Expert);
+								        		$("#addExpertModal").modal("hide");
+								        	});
+								        });
+								        addWidgetRactive.on("saveWidget", function(event){
+
+								        	// var widgetUrl = this.get("newWidget").url;
+								        	// var spaceURI = openapp.param.user();
+								        	// addWidgetToSpace(spaceURI,widgetUrl);
+								        	var node = event.node;
+								        	var l = Ladda.create(node);
+								        	l.start();
+								        	var WidgetArray = this.get("WidgetsArray");
+								        	var Widget = this.get("newWidget");
+								        	Widget.create(function(){
+								        		l.stop();
+								        		WidgetArray.push(Widget);
+								        		$("#addWidgetModal").modal("hide");
+								        	});
+								        });
+
+								        addDocumentRactive.on("importDocument", function(event){
+								        	var document = this.get("newDocument");
+								        	learningDocumentFromSearchWidget.bcnUri = document.bcnUri;
+								        	learningDocumentFromSearchWidget.liId = document.liId;
+								        	this.set("newDocument", learningDocumentFromSearchWidget);
+								        });
+								    });
 								});
 								});
 								});
+								});
+
 							}
 						);
 
@@ -752,7 +783,7 @@
 		</script>
 
 		<!-- HTML Block -->
-		<div style="overflow-y: scroll; height:400px;">
+		<div style="overflow-y: scroll; height:450px;">
 		<div class ="panel panel-primary">
 			<div class="panel-heading">
 				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
@@ -784,6 +815,7 @@
 													<small>{{description}}</small>
 												</p>
 											</span>
+
 											<ul>
 												<li>
 													<span style="cursor:pointer;">
@@ -796,33 +828,33 @@
 														</span>
 														</li>
 														{{#learningDocuments}}
-														<li>
-															<span>
-																<div class="row">
-																	<div class="col-xs-8">
-																		<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
-																	</div>
-																	<div class="col-xs-4">
-																		<div class='btn-group pull-right'>
-																			{{#url}}
-																				<button on-click="documentShow" class='btn btn-default btn-sm'>
-																					<span class='glyphicon glyphicon-play-circle'></span>
+															<li>
+																<span>
+																	<div class="row">
+																		<div class="col-xs-8">
+																			<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																		</div>
+																		<div class="col-xs-4">
+																			<div class='btn-group pull-right'>
+																				{{#url}}
+																					<button on-click="documentShow" class='btn btn-default btn-sm'>
+																						<span class='glyphicon glyphicon-play-circle'></span>
+																					</button>
+																				{{/url}}
+																				<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																					<span class='glyphicon glyphicon-edit'></span>
 																				</button>
-																			{{/url}}
-																			<button on-click="documentEdit" class='btn btn-default btn-sm'>
-																				<span class='glyphicon glyphicon-edit'></span>
-																			</button>
-																			<button on-click="documentDelete" class='btn btn-default btn-sm'>
-																				<span class='glyphicon glyphicon-trash'></span>
-																			</button>
+																				<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																					<span class='glyphicon glyphicon-trash'></span>
+																				</button>
+																			</div>
 																		</div>
 																	</div>
-																</div>
-																<p style="margin: 5px 0px;">
-																	<small>{{description}}</small>
-																</p>
-															</span>
-														</li>
+																	<p style="margin: 5px 0px;">
+																		<small>{{description}}</small>
+																	</p>
+																</span>
+															</li>
 														{{/learningDocuments}}
 													</ul>
 												</li>
@@ -929,34 +961,36 @@
 															</span>
 															</li>
 															{{#learningDocuments}}
-															<li>
-																<span>
-																	<div class="row">
-																		<div class="col-xs-8">
-																			<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
+																{{#((currentEmployee.userUri == userUri)||(!isPrivate))}}
+																	<li>
+																		<span>
+																			<div class="row">
+																				<div class="col-xs-8">
+																					<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{name}}
 
-																		</div>
-																		<div class="col-xs-4">
-																			<div class='btn-group pull-right'>
-																				{{#url}}
-																					<button on-click="documentShow" class='btn btn-default btn-sm'>
-																						<span class='glyphicon glyphicon-play-circle'></span>
-																					</button>
-																				{{/url}}
-																				<button on-click="documentEdit" class='btn btn-default btn-sm'>
-																					<span class='glyphicon glyphicon-edit'></span>
-																				</button>
-																				<button on-click="documentDelete" class='btn btn-default btn-sm'>
-																					<span class='glyphicon glyphicon-trash'></span>
-																				</button>
+																				</div>
+																				<div class="col-xs-4">
+																					<div class='btn-group pull-right'>
+																						{{#url}}
+																							<button on-click="documentShow" class='btn btn-default btn-sm'>
+																								<span class='glyphicon glyphicon-play-circle'></span>
+																							</button>
+																						{{/url}}
+																						<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																							<span class='glyphicon glyphicon-edit'></span>
+																						</button>
+																						<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																							<span class='glyphicon glyphicon-trash'></span>
+																						</button>
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</div>
-																	<p style="margin: 5px 0px;">
-																		<small>{{description}}</small>
-																	</p>
-																</span>
-															</li>
+																			<p style="margin: 5px 0px;">
+																				<small>{{description}}</small>
+																			</p>
+																		</span>
+																	</li>
+																{{/((currentEmployee.userUri == userUri)||(!isPrivate))}}
 															{{/learningDocuments}}
 														</ul>
 													</li>
@@ -1058,6 +1092,15 @@
   					</div>
   					<div class="modal-body">
     					<form role="form">
+    							{{^accessRights.isEmployee}}
+    								<label>Employee to Assign Document</label>
+    								<select class="form-control" id="selectedEmployee" style="margin-bottom:10px;">
+    								  {{#employees}}
+    								  		<option value="{{userUri}}">{{name}}</option>
+    								  {{/employees}}
+    								  <option value="false" selected="selected">All Employees</option>
+    								</select>
+    							{{/accessRights.isEmployee}}
 								<div class="form-group">
 									<label for="inputLdName">Name</label>
 									<input value="{{newDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
@@ -1070,6 +1113,13 @@
 									<label for="inputLdLink">Link</label>
 									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
+			 					{{#accessRights.isEmployee}}
+				 					<div class="checkbox">
+									    <label for="inputLdPrivate">
+									      <input type="checkbox" checked="{{newDocument.isPrivate}}" value="{{newDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+									    </label>
+									 </div>
+								{{/accessRights.isEmployee}}
 						</form>
 					</div>
   					<div class="modal-footer">
@@ -1186,8 +1236,22 @@
   					</div>
   					<div class="modal-body">
     					<form role="form">
+    							{{^accessRights.isEmployee}}
+    								<label>Employee to Assign Document</label>
+    								<select class="form-control" id="selectedEditEmployee" style="margin-bottom:10px;">
+    								  <option value="false" selected="selected">All Employees</option>
+    								  {{#employees}}
+    								  		{{#(editDocument.userUri == userUri)}}
+    								  			<option value="{{editDocument.userUri}}" selected="selected">{{name}}</option>
+    								  		{{/(editDocument.userUri == userUri)}}
+    								  		{{^(editDocument.userUri == userUri)}}
+    								  			<option value="{{editDocument.userUri}}">{{name}}</option>
+    								  		{{/(editDocument.userUri == userUri)}}
+    								  {{/employees}}
+    								</select>
+    							{{/accessRights.isEmployee}}
 								<div class="form-group">
-									<label for="inputLdName">Name</label>
+									<label for="inputLdName">Nameddd</label>
 									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
 								</div>
 								<div class="form-group">
@@ -1198,6 +1262,13 @@
 									<label for="inputLdLink">Link</label>
 									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
+			 					{{#accessRights.isEmployee}}
+				 					<div class="checkbox">
+									    <label for="inputLdPrivate">
+									      <input type="checkbox" checked="{{editDocument.isPrivate}}" value="{{editDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+									    </label>
+									 </div>
+								 {{/accessRights.isEmployee}}
 						</form>
 					</div>
   					<div class="modal-footer">
