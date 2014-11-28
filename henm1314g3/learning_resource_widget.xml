@@ -678,11 +678,10 @@
 								        	if (newDocument.isPrivate)
 								        		newDocument.userUri = currentEmployee.userUri;
 
-											if (EmployeeUri != "false") {
+											if (EmployeeUri && (EmployeeUri != "false")) {
 								        		newDocument.userUri = EmployeeUri;
 								        		newDocument.isPrivate = true;
 											}
-
 								        	newDocument.create(function(){
 								        		l.stop();
 								        		documentArray.push(newDocument);
