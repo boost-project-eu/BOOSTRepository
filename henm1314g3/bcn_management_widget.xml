@@ -5,6 +5,7 @@
 		description="Define business critical needs and learning indicators for your business."
 		author="Team Boost"
 		author_email="henm1314g3@dbis.rwth-aachen.de"
+		width="300"
 		height="450">
   	<Require feature="opensocial-0.8" />
     <Require feature="openapp" />
