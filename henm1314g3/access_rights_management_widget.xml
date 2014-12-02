@@ -55,7 +55,8 @@
 			    "UserManager",
 			    "utils"
 			    ], function(tr, a, b, r, _) {
-
+			    	localStorage.setItem("locale", "");
+			    	translations= tr;
 			    	async = a;
 			    	bootbox = b;
 			    	Ractive = r;
@@ -213,7 +214,7 @@
 
 										//Check if user has agreed to license
 										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
-											showModalAcceptTermsOfUse();
+											// showModalAcceptTermsOfUse();
 
 										} else if(!accessRights.getUserAccessRights().isManager){
 											// showModalContactManager();
@@ -224,25 +225,36 @@
 										    template: '#templateUserOverview',
 										    data: {
 										    	"userList" : userList,
-										    	"currentUser": currentUser
+										    	"currentUser": currentUser,
+										    	"text": translations
 										    },
 										    append: true
 										});
 
-										ractiveOverview.on("accessRightsChanged", function(event){
-											user = event.context;
-											createEmployeeIfNotExist(user, accessRights, employeesList);
+										ractiveOverview.on({
+											accessRightsChanged: function(event){
+												user = event.context;
+												createEmployeeIfNotExist(user, accessRights, employeesList);
+											},
+											showHelp: function(event){
+												$('#descriptionModal').modal({
+													keyboard: true
+												});
+											}
+										});
+
+										ractiveHelp = new Ractive({
+											el: 'descriptionModal',
+										    template: '#templatemModalHelp',
+										    data: {
+										    	"text": translations
+										    },
+										    append: true
 										});
 									});
 								});
 							});
 						});
-
-						$('#question').click(function(){
-					        $('#descriptionModal').modal({
-					        keyboard: true
-					          });
-					    });
 					});
 				});
 			});
@@ -254,19 +266,14 @@
 
 		<div style="overflow-y: scroll; height:450px;">
 		<div class="panel panel-primary" id="containerUserOverview">
-
+		  	<script id="templateUserOverview" type='text/ractive'>
 			<div class="panel-heading">
-					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					<button id="question" on-click="showHelp" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 					<h3 class="panel-title">
-					<i class="fa fa-users" style="margin-right:5px;"></i>Access Rights
+					<i class="fa fa-users" style="margin-right:5px;"></i>{{text.STR_ACCESS_RIGHTS}}
 				</h3>
 		  	</div>
 
-
-		</div>
-		</div>
-
-		<script id="templateUserOverview" type='text/ractive'>
 			{{^currentUser.AccessRights.isManager}}
 				{{#currentUser.AccessRights.isEmployee}}
 					<div class="alert alert-info" role="alert">
@@ -331,40 +338,55 @@
 				{{/currentUser.AccessRights.isManager}}
 		</script>
 
+		</div>
+		</div>
+
+
+
 	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    		<h4 class="modal-title">Access Rights Help</h4>
-            </div>
-          <div class="modal-body">
-            <div class="panel-group" id="levelsdef" align="justify">
-            <p>In this widget manager can differentiate access to the BOOST widgets. Employees do not have access to the Access Rights widget.</p>
-             <ul style="padding: 10px;">
-			 <li>To assing a manager or an employee user role, check appropriate checkbox <input type="checkbox">.
-			 If you are a manager and would like to see widgets interface for the employee role, check both checkboxes.</li>
-			 	<ul style="padding: 10px;">
+      	<script id="templatemModalHelp" type='text/ractive'>
+	      	<div class="modal-dialog">
 
-                	<li><strong>Employee: </strong>
-                		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system.
-                		Watch own learning progress and the progress of the goals.</p></li>
-                	<li><strong>Manager: </strong>
-                		<p>Has full control over the system. Can assing access rights to the users.
+	        	<div class="modal-content">
+	          		<div class="modal-header">
+	          			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    				<h4 class="modal-title">Access Rights Help</h4>
+	            	</div>
+	          		<div class="modal-body">
+	            		<div class="panel-group" id="levelsdef" align="justify">
+	            			<p>In this widget manager can differentiate access to the BOOST widgets. Employees do not have access to the Access Rights widget.</p>
+	             			<ul style="padding: 10px;">
+				 				<li>
+				 					To assing a manager or an employee user role, check appropriate checkbox <input type="checkbox">.
+				 					If you are a manager and would like to see widgets interface for the employee role, check both checkboxes.
+				 				</li>
+				 				<ul style="padding: 10px;">
 
-                		Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators.
-                		Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</li></p>
-              	</ul>
-             <li><span class="glyphicon glyphicon-asterisk"></span> This user is the owner of the space.</li>
-             <li><i class="fa fa-exclamation-circle" style="color: gray;"></i> This user has not agreed to the terms of use yet.</li>
-             </ul>
-          </div>
-          <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
+	                				<li>
+	                					<strong>Employee: </strong>
+	                					<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system.
+	                					Watch own learning progress and the progress of the goals.</p>
+	                				</li>
+		                			<li><strong>Manager: </strong>
+		                				<p>Has full control over the system. Can assing access rights to the users.
+		                				Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators.
+		                				Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</p>
+		                			</li>
+	              				</ul>
+	             				<li><span class="glyphicon glyphicon-asterisk"></span> This user is the owner of the space.</li>
+	             				<li><i class="fa fa-exclamation-circle" style="color: gray;"></i> This user has not agreed to the terms of use yet.</li>
+	             			</ul>
+	          			</div>
+	          		</div>
+	          		<div class="modal-footer">
+	                	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	          		</div>
+	        	</div>
+	      	</div>
+      	</script>
     </div>
+
+
 	]]>
   </Content>
 </Module>
