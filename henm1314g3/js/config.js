@@ -1,4 +1,4 @@
-var locale = localStorage.getItem("locale") || getUserLocalization();
+var locale = localStorage.getItem("locale") || navigator.language;
 require.config({
     locale: locale,
     paths: {

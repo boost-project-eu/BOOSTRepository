@@ -37,9 +37,9 @@
 		<!-- JavaScript Block -->
 		<script>
 
-
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/access.js",
 				"async",
 				"bootbox",
 				"ractive",
@@ -54,7 +54,8 @@
 			    "iwc",
 			    "UserManager",
 			    "utils"
-			    ], function(a, b, r, _) {
+			    ], function(tr, a, b, r, _) {
+
 			    	async = a;
 			    	bootbox = b;
 			    	Ractive = r;
@@ -66,6 +67,7 @@
 					var bcnsList;
 					var currentUser;
 
+					console.log(tr);
 					//Define the ractives as globals
 					var ractiveOverview;
 
