@@ -87,10 +87,10 @@
 					function iwcCallback(intent){
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
 
-							var message = "<div>Goals have changed. Please wait.</div>"
+							var message = "<div>" + str.STR_GOALS_HAVE_CHANGED + str.STR_PLEASE_WAIT + "</div>"
 							message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
 							bootbox.dialog({
-								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
+								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>" + str.STR_GOALS_HAVE_CHANGED,
 								message : message,
 								closeButton : false
 							});
@@ -270,20 +270,20 @@
 			<div class="panel-heading">
 					<button id="question" on-click="showHelp" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 					<h3 class="panel-title">
-					<i class="fa fa-users" style="margin-right:5px;"></i>{{text.STR_ACCESS_RIGHTS}}
+					<i class="fa fa-users" style="margin-right:5px;"></i>{{{text.STR_ACCESS_RIGHTS}}}
 				</h3>
 		  	</div>
 
 			{{^currentUser.AccessRights.isManager}}
 				{{#currentUser.AccessRights.isEmployee}}
 					<div class="alert alert-info" role="alert">
-						You have the role <strong>Employee</strong>. You can not change anything in this widget
+						{{{text.STR_YOU_HAVE_THE_ROLE_EMPLOYEE_YOU}}}
 					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 
 				{{^currentUser.AccessRights.isEmployee}}
 					<div class="alert alert-danger" role="alert">
-						You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you
+						{{{text.STR_YOU_HAVE_NO_ROLE}}}
 					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 			{{/currentUser.AccessRights.isManager}}
@@ -291,15 +291,15 @@
 			{{#currentUser.AccessRights.isManager}}
 				<div class="alert alert-info" role="alert">
 					{{#currentUser.AccessRights.isEmployee}}
-							You have both <strong>Manager</strong> and <strong>Employee</strong> roles.
+							{{{text.STR_YOU_HAVE_ROLES_MANAGER_AND_EMPLOYEE}}}
 							</br>
 					{{/currentUser.AccessRights.isEmployee}}
 
 					{{^currentUser.AccessRights.isEmployee}}
-							You have the role <strong>Manager</strong>.
+							{{{text.STR_YOU_HAVE_THE_ROLE_MANAGER}}}
 					{{/currentUser.AccessRights.isEmployee}}
 
-					To see the space as <strong>Employee</strong> or <strong>Manager</strong>, just tick or untick Employee checkbox.
+					{{{text.STR_TO_SEE_THE_SPACE_AS_EMPLOYEE}}}
 
 				</div>
 
