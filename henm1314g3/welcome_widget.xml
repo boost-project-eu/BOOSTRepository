@@ -49,9 +49,10 @@
 
 		require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
-				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/access.js",
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/welcome.js",
 				"async",
 				"bootbox",
+				"ractive",
 			    "jquery",
 			    "jqueryUi",
 			    "bootstrap",
@@ -66,13 +67,11 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "utils"
-			    ], function(tr, a, b) {
-
-			    	// localStorage.setItem("locale", "de-de");
-		    	    console.log(tr);
-
+			    ], function(tr, a, b, r) {
+			    	Ractive = r;
 			    	async = a;
 			    	bootbox = b;
+			    	translations = tr;
 
 					var space;
 					var iwcClient;
@@ -100,10 +99,40 @@
 						//debug
 						//agreed = false;
 
-							if (!agreed)
-								$("#agreeLisenceModal").modal();
+							// if (!agreed)
+								// $("#agreeLisenceModal").modal();
 
 						});  // end of the retrieveAccessRights
+
+						ractiveWelcome = new Ractive({
+							el: 'containerWelcome',
+						    template: '#templateWelcome',
+						    data: {
+						    	"text": translations
+						    },
+						    append: true
+						});
+
+						ractiveWelcome.on({
+							setGerman: function(event){
+								localStorage.setItem("locale", "de-de");
+								window.location.reload();
+							},
+							setEnglish: function(event){
+								localStorage.setItem("locale", "");
+								window.location.reload();
+							}
+						});
+
+						ractiveLicence = new Ractive({
+							el: 'containerLicence',
+						    template: '#templateLicense',
+						    data: {
+						    	"text": translations
+						    },
+						    append: true
+						});
+
 					});
 
 					function iwcCallback(intent){
@@ -125,11 +154,14 @@
 
 		<!-- HTML Block -->
 	<div style="overflow-y: scroll; height:450px;">
-		<div class ="panel panel-primary">
-			<div class="panel-heading">
-				<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
-				<h3 class="panel-title"><span style="margin-right:5px;"></span> Welcome to the BOOST Project </h3>
-			</div>
+		<div class ="panel panel-primary" id="containerWelcome">
+			<script id="templateWelcome" type='text/ractive'>
+				<div class="panel-heading">
+					<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
+					<button type="button" class="btn btn-warning" on-click="setGerman" style="float:right; margin:-7 0 5 5px;">DE</button>
+					<button type="button" class="btn btn-danger" on-click="setEnglish" style="float:right; margin:-7 0 5 5px;">EN</button>
+					<h3 class="panel-title"><span style="margin-right:5px;"></span> {{{text.STR_WELCOME_TO_THE_BOOST_PROJECT}}}</h3>
+				</div>
 
 				<table class="table table-responsive" >
 			    	<tbody>
@@ -138,114 +170,108 @@
 			    			<td><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boost.png" class="img-responsive img-thumbnail" alt="BOOST Logo"></td>
 						</tr>
 						<tr>
-							<td colspan=2><small><strong>BOOST</strong> stands for  <strong>B</strong>usiness perf<strong>O</strong>rmance impr<strong>O</strong>vement through individual employee <strong>S</strong>kills <strong>T</strong>raining.</small></td>
+							<td colspan=2>{{{text.STR_WELCOME_TO_THE_BOOST_PROJECT}}}</td>
 			   		 	</tr>
 			   		 	<tr>
-			   		 		<td colspan=2><small>With BOOST you can organise, manage and monitor training process in the small and micro enterprises. Below are a few steps to help you get started.</small></td>
+			   		 		<td colspan=2>{{{text.STR_WITH_BOOST_YOU_CAN_ORGANISE_MANAGE}}}</td>
 						</tr>
 						<tr class="active">
-							<td colspan=2><small><strong>If you are a Manager:</strong></small></td>
+							<td colspan=2>{{{text.STR_IF_YOU_ARE_A_MANAGER}}}</td>
 						</tr>
 						<tr>
 							<td colspan=2>
 				            		<ul style="padding: 10px;">
-				            			<li><small>Assign user roles to employees using the <strong>Access Rights</strong> widget.</small></li>
-				            			<li><small>Define business goals and add learning indicators to them using the <strong>Business Goals</strong> widget. Assign priority to the goals, specifying the most improtant with a high priority.</small></li>
-					               	  	<li><small>Monitor business goals progress and employees competence in the <strong>Learning Progress</strong> widget. It works together with <strong>Business Goals</strong> and <strong>Business Employees</strong> widgets.</small> </li>
-					                	<li><small>Edit information about employees and assign goals to them, adjust their learning levels in the <strong>Business Employees</strong> widget.</small></li>
+				            			{{{text.STR_ASSIGN_USER_ROLES_TO_EMPLOYEES}}}
 					              	</ul>
 					        </td>
 						</tr>
 						<tr class="active">
-							<td colspan=2><small><strong>If you are an Employee:</strong></small></td>
+							<td colspan=2>{{{text.STR_IF_YOU_ARE_AN_EMPLOYEE}}}</td>
 						</tr>
 						<tr>
 							<td colspan=2>
-							<ul style="padding: 10px;">
-
-					                	<li><small>Use a <strong>Boost Search</strong> widget to ﬁnd learning materials.</small></li>
-					               	  	<li><small>Watch and read interesting resources using <strong>Boost Viewer</strong> widget.</small></li>
-					                	<li><small>Save and organise your learning resources in the <strong>Learning Repository:</strong>
-					                	 You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li>
-					              		<li><small>Monitor your learning progress with the <strong>Learning Progress</strong> widget.</small></li>
-					              	</ul>
+								<ul style="padding: 10px;">
+									{{{text.STR_USE_A_BOOST_SEARCH_WIDGET_TO}}}
+					           	</ul>
 					        </td>
 						</tr>
 						<tr >
-							<td colspan=2><small>We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily.
-				            For more detailed information please see help information provided in each widget and the BOOST User Guide, which is accessible <a href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf" target="_blank">here</a>.</small></td>
+							<td colspan=2>{{{text.STR_WE_HOPE_THIS_QUICK_START_HAS}}}</td>
 						</tr>
 
 			   		 </tbody>
 				</table>
-
+			</script>
+		</div>
 	</div>
 
     <div class="modal fade" id="agreeLisenceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog">
+		<div class="modal-dialog" id="containerLicence">
+			<script id="templateLicense" type='text/ractive'>
 				<div class="modal-content">
   					<div class="modal-header">
-    					<h4 class="modal-title" id="myModalLabel">License agreement</h4>
+    					<h4 class="modal-title" id="myModalLabel">{{{text.STR_LICENSE_AGREEMENT}}}</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
-								<div class="form-group"  align="justify">
-									<p> Copyright (c) <2013-2014>
-									This project has been funded with support from the European Commission.This web site reflects the views only of the authors, and the Commission cannot be held responsible for any use which may be made of the information contained therein.
-									</p>
+							<div class="form-group"  align="justify">
+								<p> Copyright (c) 2013-2014
+									{{{text.STR_THIS_PROJECT_HAS_BEEN_FUNDED}}}
+								</p>
 
-									<p>Kateryna Neulinger, Advanced Community Information Systems (ACIS) Group, Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany</p>
-									<p>Andre Tebart, Master of Software Systems, RWTH Aachen University, Germany</p>
-									<p>Seyed Ehsan Badakhshan, Master of Media Informatics, RWTH Aachen University, Germany
-									All rights reserved.</p>
+								<p>Kateryna Neulinger, Advanced Community Information Systems (ACIS) Group, Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany</p>
+								<p>Andre Tebart, Master of Software Systems, RWTH Aachen University, Germany</p>
+								<p>Seyed Ehsan Badakhshan, Master of Media Informatics, RWTH Aachen University, Germany
+								All rights reserved.</p>
 
 
-									<p>Redistribution and use in source and binary forms, with or without modification, are permitted
+								<p>Redistribution and use in source and binary forms, with or without modification, are permitted
 
-									provided that the following conditions are met:</p>
+								provided that the following conditions are met:</p>
 
-									<p>1. Redistributions of source code must retain the above copyright notice, this list of conditions and
+								<p>1. Redistributions of source code must retain the above copyright notice, this list of conditions and
 
-									the following disclaimer.</p>
+								the following disclaimer.</p>
 
-									<p>2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+								<p>2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
 
-									and the following disclaimer in the documentation and/or other materials provided with the
+								and the following disclaimer in the documentation and/or other materials provided with the
 
-									distribution.</span>
+								distribution.</p>
 
-									<p>3. Neither the name of the copyright holder nor the names of its contributors may be used to
+								<p>3. Neither the name of the copyright holder nor the names of its contributors may be used to
 
-									endorse or promote products derived from this software without specific prior written permission.</p>
+								endorse or promote products derived from this software without specific prior written permission.</p>
 
-									<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+								<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 
-									IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+								IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 
-									IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+								IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 
-									DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+								DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
 
-									ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+								ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 
-									(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+								(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 
-									LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+								LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 
-									ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+								ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 
-									NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+								NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 
-									IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+								IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 
-								</div>
+							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
 				        <button id="agreeButton" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Agree</span></button>
   					</div>
 				</div>
-			</div>
+			</script>
+		</div>
 	</div>
 
 
