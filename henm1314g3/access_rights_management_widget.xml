@@ -306,7 +306,7 @@
 
 					<table class="table table-striped table-bordered" >
 					    <tbody>
-					    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Employee</th></tr>
+					    	<tr><th>{{{text.STR_NAME}}}</th><th style="text-align:center">{{{text.STR_MANAGER}}}</th><th style="text-align:center">{{{text.STR_EMPLOYEE}}}</th></tr>
 
 							{{#userList}}
 								<tr>
@@ -316,7 +316,7 @@
 										<span title="This user needs to agree to the terms of use first." class="glyphicon glyphicon-exclamation-sign"></span>
 										{{/accessRights.hasAgreedToLicense}}
 										{{#isOwner}}
-										<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
+										<span title="{{{text.STR_USER_NEEDS_TO_AGREE_TERMS}}}" class="glyphicon glyphicon-asterisk"></span>
 										{{/isOwner}}
 										</p>
 
@@ -350,36 +350,32 @@
 	        	<div class="modal-content">
 	          		<div class="modal-header">
 	          			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	    				<h4 class="modal-title">Access Rights Help</h4>
+	    				<h4 class="modal-title">{{{text.STR_ACCESS_RIGHTS_HELP}}}</h4>
 	            	</div>
 	          		<div class="modal-body">
 	            		<div class="panel-group" id="levelsdef" align="justify">
-	            			<p>In this widget manager can differentiate access to the BOOST widgets. Employees do not have access to the Access Rights widget.</p>
+	            			<p>{{{text.STR_IN_THIS_WIDGET_MANAGER_CAN_DIFFERENTIATE}}}</p>
 	             			<ul style="padding: 10px;">
 				 				<li>
-				 					To assing a manager or an employee user role, check appropriate checkbox <input type="checkbox">.
-				 					If you are a manager and would like to see widgets interface for the employee role, check both checkboxes.
+				 					{{{text.STR_TO_ASSING_A_MANAGER_OR_AN_EMPLOYEE}}}
 				 				</li>
 				 				<ul style="padding: 10px;">
 
 	                				<li>
-	                					<strong>Employee: </strong>
-	                					<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system.
-	                					Watch own learning progress and the progress of the goals.</p>
+	                					<strong>{{{text.STR_EMPLOYEE_COLONS}}}</strong>
+	                					<p>{{{text.STR_CAN_SEARCH_THROUGH_THE_LEARNING}}}</p>
 	                				</li>
-		                			<li><strong>Manager: </strong>
-		                				<p>Has full control over the system. Can assing access rights to the users.
-		                				Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators.
-		                				Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</p>
+		                			<li><strong>{{{text.STR_MANAGER_COLONS}}}</strong>
+		                				<p>{{{text.STR_HAS_FULL_CONTROL_OVER_THE_SYSTEM}}}</p>
 		                			</li>
 	              				</ul>
-	             				<li><span class="glyphicon glyphicon-asterisk"></span> This user is the owner of the space.</li>
-	             				<li><i class="fa fa-exclamation-circle" style="color: gray;"></i> This user has not agreed to the terms of use yet.</li>
+	             				<li><span class="glyphicon glyphicon-asterisk"></span>{{{text.STR_USER_OWNER_OF_SPACE}}}</li>
+	             				<li><i class="fa fa-exclamation-circle" style="color: gray;"></i> {{{text.STR_THIS_USER_HAS_NOT_AGREED_TO_THE}}}</li>
 	             			</ul>
 	          			</div>
 	          		</div>
 	          		<div class="modal-footer">
-	                	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	                	<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 	          		</div>
 	        	</div>
 	      	</div>
