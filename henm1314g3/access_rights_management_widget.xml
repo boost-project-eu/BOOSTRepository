@@ -55,7 +55,7 @@
 			    "UserManager",
 			    "utils"
 			    ], function(tr, a, b, r, _) {
-			    	localStorage.setItem("locale", "");
+			    	
 			    	translations= tr;
 			    	async = a;
 			    	bootbox = b;
@@ -68,7 +68,6 @@
 					var bcnsList;
 					var currentUser;
 
-					console.log(tr);
 					//Define the ractives as globals
 					var ractiveOverview;
 
