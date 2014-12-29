@@ -36,9 +36,11 @@
 		<script>
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/progress.js",
 				"async",
 				"highcharts",
 			    "bootbox",
+			    "ractive",
 				"highcharts_exporting",
 			    "jquery",
 			    "bootstrap",
@@ -48,11 +50,12 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, highCharts, b) {
+			    ], function(tr, a, highCharts, b, r) {
+			    	translations = tr;
 			    	async = a;
 			    	bootbox = b;
 			    	Highcharts =  highCharts;
-
+			    	Ractive = r;
 
 					var userAccessRights;
 					var userList;
@@ -87,8 +90,14 @@
 						closeAutorisationWindow();
 					}
 
-		//			gadgets.util.registerOnLoadHandler(init);
-
+					ractiveTranslate = new Ractive({
+						el: 'containerTranslation',
+					    template: '#templateTranslation',
+					    data: {
+					    	"text": translations
+					    },
+					    append: true
+					});
 
 		//			function init(){
 
@@ -630,7 +639,7 @@
 									max: learningLevelsName.length-1,
 									categories: learningLevelsName,
 									title: {
-										text: 'Learning Levels'
+										text: translations.STR_LEARNING_LEVELS
 									}
 								},
 
@@ -788,22 +797,22 @@
 									max: learningLevelsName.length-1,
 									categories: learningLevelsName,
 									title: {
-										text: 'Learning Levels'
+										text: translations.STR_LEARNING_LEVELS
 									}
 								},
 								tooltip: {
 									  formatter: function() {
 									 	if (this.series.name=="Start") {
 		                   				 return '<strong>'+ this.x +'</strong><br/>'+
-		                   				  'Started learning at ' + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+		                   				  translations.STR_STARTED_LEARNING_AT + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
 		                   				}
 		                   				if (this.series.name=="Current") {
 		                   				 return '<strong>'+ this.x +'</strong><br/>'+
-		                   				  'Learned ' + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+		                   				  translations.STR_LEARNED + ': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
 		                   				}
 		                   				if (this.series.name=="End") {
 		                   				 return '<strong>'+ this.x +'</strong><br/>'+
-		                   				  'Still to learn ' +': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
+		                   				  translations.STR_STILL_TO_LEARN +': '+  Highcharts.numberFormat(100 * this.y / this.point.stackTotal,0) +' %';
 		                   				}
 		                      //  this.series.name +': '+ Highcharts.numberFormat(this.y,1,'.') +'<br/>'+
 		                      //  'Total: '+ Highcharts.numberFormat(this.point.stackTotal,1,'.');
@@ -963,7 +972,7 @@
 
 						}
 						var title= 'Overall Goals View';
-						var subtitle = 'How close employee are to accomplish business goals';
+						var subtitle = translations.STR_HOW_CLOSE_EMPLOYEE_ARE_TO_ACCOMPLISH;
 						var isOverview={};
 						isOverview.bool=true;
 						isOverview.isBcn=true;
@@ -1110,7 +1119,7 @@
 
 						var title = bcn.name;
 
-						var subtitle='Taking the average employees';
+						var subtitle=translations.STR_TAKING_THE_AVERAGE_EMPLOYEES;
 						var isOverview={};
 						isOverview.bool=false;
 						isOverview.isBcn=false;
@@ -1157,9 +1166,9 @@
 							var li = bcn.learningIndicators[j];
 						}
 
-						var title = "How employees proceed over " + liClicked;
+						var title = translations.STR_HOW_EMPLOYEES_PROCEED_OVER + liClicked;
 
-						var subtitle='Detailled view of each user';
+						var subtitle=translations.STR_DETAILLED_VIEW_OF_EACH_USER;
 
 						var isOverview={};
 						isOverview.bool=false;
@@ -1204,7 +1213,7 @@
 							}
 
 						var title= '<span class="glyphicon glyphicon-user" style="margin-right: 5px;"></span>'+employee.name+'';
-						var subtitle='Average for goals';
+						var subtitle=translations.STR_AVERAGE_FOR_GOALS;
 						var isOverview={};
 
 						isOverview.bool=false;
@@ -1288,57 +1297,56 @@
 		</script>
 
 		<!-- HTML Block -->
-		<div style="overflow-y: scroll; height: 450px;">
-		<div class="panel panel-primary" style="margin-bottom: 0px">
-			<div class="panel-heading">
-			    <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
-				<h3 class="panel-title"><span class="glyphicon glyphicon-stats" style="margin-right:5px;"></span>Learning progress</h3>
 
-		  	</div>
-		  	<div class="panel-body">
-				<div id="container" style="min-width: 310px; height: 370px; margin: 0 auto">
+		<div id="containerTranslation">
+		<script id="templateTranslation" type='text/ractive'>
+			<div style="overflow-y: scroll; height: 450px;">
+			<div class="panel panel-primary" style="margin-bottom: 0px">
+				<div class="panel-heading">
+				    <button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					<h3 class="panel-title"><span class="glyphicon glyphicon-stats" style="margin-right:5px;"></span>{{{text.STR_LEARNING_PROGRESS}}}</h3>
+
+			  	</div>
+			  	<div class="panel-body">
+					<div id="container" style="min-width: 310px; height: 370px; margin: 0 auto">
+					</div>
 				</div>
 			</div>
-		</div>
-		</div>
+			</div>
 
-		 <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Learning Progress Help</h4>
-            </div>
-          <div class="modal-body">
-            <div class="panel-group" id="levelsdef" align="justify">
-            <ul style="padding: 10px;">
-              <li><i>Learning progress</i> widget works together with <i>Business Goals</i> and <i>Business Employees</i> widgets. By default <i>Overall Employee</i> view is shown.</li>
-              <li>To export graph view in PNG, PDF or JPEG formats click on the <img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/export.PNG" alt="filter" width="21" height="19"> icon. </li>
+			 <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	      <div class="modal-dialog">
+	        <div class="modal-content">
+	          <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">{{{text.STR_LEARNING_PROGRESS_HELP}}}</h4>
+	            </div>
+	          <div class="modal-body">
+	            <div class="panel-group" id="levelsdef" align="justify">
+	            <ul style="padding: 10px;">
+	              <li>{{{text.STR_LEARNING_PROGRESS_WIDGET_WORKS}}}</li>
+	              <li>{{{text.STR_TO_EXPORT_GRAPH_VIEW_IN_PNG_PDF}}}</li>
 
-              <li>If current view is <i>Overall Employee View</i>: average learning progress of all employees will be shown. In this view you can:
-              	<ul style="padding: 10px;">
-              		<li>Change current view to the <i>Overall Business Goals</i> by clicking on the chart.</li>
-               		<li>To see the average learning progress on goals of particular employee click on the <i>employee</i> bar accordingly.</li>
-              		<li>To see the learning progress on learning indicators of particular employee click on the <i>goal</i> bar. </li>
-              		<li>To come back to previous step click on the chart.</li>
-              	</ul>
-              </li>
+	              <li>{{{text.STR_IF_CURRENT_VIEW_IS_OVERALL_EMPLOYEE}}}
+	              	<ul style="padding: 10px;">
+	              		{{{text.STR_CHANGE_CURRENT_VIEW_TO_THE_OVERALL}}}
+	              	</ul>
+	              </li>
 
-              <li>If current view is <i>Overall Business Goals</i>: average learning progress on all goals will be shown. In this view you can:
-               <ul style="padding: 10px;">
-               	<li>Click on the chart to change view to the <i>Overall Employee View</i>.</li>
-               	<li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li>
-               	<li>Click on the learning indicators bar to see detailled view over every employee progress.
-               	<li>To come back to previous step click on the chart.</li>
-               <ul>
-            </ul>
-          </div>
-          <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
+	              <li>{{{text.STR_IF_CURRENT_VIEW_IS_OVERALL_BUSINESS}}}
+	               <ul style="padding: 10px;">
+	               	{{{text.STR_CLICK_ON_THE_CHART_TO_CHANGE}}}
+	               <ul>
+	            </ul>
+	          </div>
+	          <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	</script>
+	</div>
 
 	]]>
   </Content>
