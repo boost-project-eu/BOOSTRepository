@@ -37,6 +37,7 @@
 
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/resources.js",
 				"async",
 				"ractive",
 			    "ladda",
@@ -58,9 +59,10 @@
 			    "repositories",
 			    "iwc",
 			    "utils"
-			    ], function(a, Ractive, Ladda, b) {
+			    ], function(tr, a, Ractive, Ladda, b) {
 			    	async = a;
 			    	bootbox = b;
+			    	translations = tr;
 
 					var space;
 					var iwcClient;
@@ -147,7 +149,7 @@
 							}
 							renderAllBCNs();
 							if(bcnsList.length==0)
-								$("#bcns").append("<td>No goals defined.</td>");
+								$("#bcns").append("<td>" + tr.STR_NO_GOALS_DEFINED + "</td>");
 						}
 					}
 
@@ -276,13 +278,36 @@
 									retrieveAccessRights(function(accessRights){
 										retrieveAllEmployees(space, function(employees){
 
+										var titleRactive = new Ractive({
+								            el: 'mainTitle',
+								            template: '#mainTitleTemplate',
+								            data: {
+								            	text: translations
+								            }
+								        });
+
+								        var helpRactive = new Ractive({
+								            el: 'helpBlock',
+								            template: '#helpTemplate',
+								            data: {
+								            	text: translations
+								            }
+								        });
+
+								        titleRactive.on("showhelp", function(event){
+						        			$('#descriptionModal').modal({
+						        				keyboard: true
+									        });
+								        });
+
 										var treeRactive = new Ractive({
 								            el: 'bcns',
 								            template: '#documentsTreeTemplate',
 								            data: {
 								            	bcns: bcnsList,
 								            	"accessRights" : accessRights.getUserAccessRights(),
-								            	"currentEmployee": currentEmployee
+								            	"currentEmployee": currentEmployee,
+								            	text: translations
 								            }
 								        });
 
@@ -476,7 +501,8 @@
 								        	template: '#deleteDocumentTemplate',
 								        	data: {
 								        		documentArray: null,
-								        		document: null
+								        		document: null,
+								        		text: translations
 								        	}
 								        });
 								        var deleteExpertRactive = new Ractive({
@@ -484,7 +510,8 @@
 								        	template: '#deleteExpertTemplate',
 								        	data: {
 								        		ExpertArray: null,
-								        		Expert: null
+								        		Expert: null,
+								        		text: translations
 								        	}
 								        });
 
@@ -493,7 +520,8 @@
 								        	template: '#deleteWidgetTemplate',
 								        	data: {
 								        		WidgetArray: null,
-								        		Widget: null
+								        		Widget: null,
+								        		text: translations
 								        	}
 								        });
 
@@ -502,7 +530,8 @@
 								        	template: '#viewExpertTemplate',
 								        	data: {
 								        		ExpertArray: null,
-								        		Expert: null
+								        		Expert: null,
+								        		text: translations
 								        	},
 								        	append: true
 								        });
@@ -514,7 +543,8 @@
 								        	template: '#viewWidgetTemplate',
 								        	data: {
 								        		WidgetArray: null,
-								        		Widget: null
+								        		Widget: null,
+								        		text: translations
 								        	},
 								        	append: true
 								        });
@@ -570,7 +600,8 @@
 								        	data: {
 								        		editDocument: null,
 								        		employees: employees,
-								        		keypath: null
+								        		keypath: null,
+								        		text: translations
 								        	}
 								        });
 
@@ -581,7 +612,8 @@
 								        		editExpert: new Expert({}),
 								        		keypath: null,
 								        		"nameError" : false,
-									    		"emailError" : false
+									    		"emailError" : false,
+									    		text: translations
 								        	}
 								        });
 
@@ -590,7 +622,8 @@
 								        	template: '#editWidgetTemplate',
 								        	data: {
 								        		editWidget: new Widget({}),
-								        		keypath: null
+								        		keypath: null,
+								        		text: translations
 								        	}
 								        });
 
@@ -649,6 +682,7 @@
 								        		newDocument: null,
 									        	employees: employees,
 									        	accessRights : accessRights.getUserAccessRights(),
+									        	text: translations
 								        	}
 								        });
 								        var addExpertRactive = new Ractive({
@@ -656,13 +690,15 @@
 								        	template: '#addExpertTemplate',
 								        	data: {newExpert: new Expert({}),
 								        		"nameError" : false,
-									    		"emailError" : false
+									    		"emailError" : false,
+									    		text: translations
 								        	}
 								        });
 								        var addWidgetRactive = new Ractive({
 								        	el: 'addWidgetTemplateContainer',
 								        	template: '#addWidgetTemplate',
-								        	data: {newWidget: new Widget({})}
+								        	data: {newWidget: new Widget({})},
+								        	text: translations
 								        });
 
 								        addDocumentRactive.on("saveDocument", function(event){
@@ -785,10 +821,11 @@
 		<!-- HTML Block -->
 		<div style="overflow-y: scroll; height:450px;">
 		<div class ="panel panel-primary">
-			<div class="panel-heading">
-				<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
-
-				<h3 class="panel-title"><span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span> Learning Resources</h3>
+			<div class="panel-heading" id="mainTitle">
+				<script id='mainTitleTemplate' type='text/ractive'>
+					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;" on-click="showhelp"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					<h3 class="panel-title"><span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span> {{{text.STR_LEARNING_RESOURCES}}}</h3>
+				</script>
 			</div>
 
 			<div id ="panel" class="panel-body">
@@ -819,12 +856,12 @@
 											<ul>
 												<li>
 													<span style="cursor:pointer;">
-														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+														<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{{text.STR_DOCUMENTS}}}
 													</span>
 													<ul>
 														<li>
 														<span style="cursor:pointer;" on-click="documentAdd">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new document
+															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>{{{text.STR_ADD_NEW_DOCUMENT}}}
 														</span>
 														</li>
 														{{#learningDocuments}}
@@ -860,12 +897,12 @@
 												</li>
 												<li>
 													<span style="cursor:pointer;">
-														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Contact Experts
+														<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{{text.STR_EXPERTS}}}
 													</span>
 													<ul>
 														<li>
 														<span style="cursor:pointer;" on-click="expertAdd">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new expert
+															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>{{{text.STR_ADD_NEW_EXPERT}}}
 														</span>
 														</li>
 														{{#Experts}}
@@ -894,12 +931,12 @@
 												</li>
 												<li>
 													<span style="cursor:pointer;">
-														<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>Widgets
+														<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{{text.STR_WIDGETS}}}
 													</span>
 													<ul>
 														<li>
 														<span style="cursor:pointer;" on-click="widgetAdd">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new widget
+															<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>{{{text.STR_ADD_NEW_WIDGET}}}
 														</span>
 														</li>
 														{{#Widgets}}
@@ -952,12 +989,12 @@
 												<ul>
 													<li>
 														<span style="cursor:pointer;">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>Learning documents
+															<span style='margin-right:5px;' class='glyphicon glyphicon-book'></span>{{{text.STR_DOCUMENTS}}}
 														</span>
 														<ul>
 															<li>
 															<span style="cursor:pointer;" on-click="documentAdd">
-																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new document
+																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>{{{text.STR_ADD_NEW_DOCUMENT}}}
 															</span>
 															</li>
 															{{#learningDocuments}}
@@ -996,12 +1033,12 @@
 													</li>
 													<li>
 														<span style="cursor:pointer;">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>Experts
+															<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{{text.STR_EXPERTS}}}
 														</span>
 														<ul>
 															<li>
 															<span style="cursor:pointer;" on-click="expertAdd">
-																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new expert
+																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>{{{text.STR_ADD_NEW_EXPERT}}}
 															</span>
 															</li>
 															{{#Experts}}
@@ -1029,12 +1066,12 @@
 													</li>
 													<li>
 														<span style="cursor:pointer;">
-															<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>Widgets
+															<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{{text.STR_WIDGETS}}}
 														</span>
 														<ul>
 															<li>
 															<span style="cursor:pointer;" on-click="widgetAdd">
-																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>Add new widget
+																<span style='margin-right:5px;' class='glyphicon glyphicon-plus'></span>{{{text.STR_ADD_NEW_WIDGET}}}
 															</span>
 															</li>
 															{{#Widgets}}
@@ -1085,9 +1122,9 @@
 					<script id='addDocumentTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">Add a new Learning Document</h4>
+    					<h4 class="modal-title" id="myModalLabel">{{{text.STR_ADD_NEW_DOCUMENT}}}</h4>
   						<p>
-  						<button on-click="importDocument" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>Import from viewer</button>
+  						<button on-click="importDocument" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-play-circle" style="margin-right:5px;"></span>{{{text.STR_IMPORT_FROM_VIEWER}}}</button>
   						</p>
   					</div>
   					<div class="modal-body">
@@ -1110,7 +1147,7 @@
 									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"  maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
-									<label for="inputLdLink">Link</label>
+									<label for="inputLdLink">{{{text.STR_LINK}}}</label>
 									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
 			 					{{#accessRights.isEmployee}}
@@ -1155,32 +1192,32 @@
 									<label for="inputExpertEmail">Email *</label>
 									<input value="{{newExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="Enter Email Address">
 									{{#emailError}}
-									<span class="help-block"><h6>Please enter a valid email address.</h6></span>
+									<span class="help-block"><h6>{{{text.STR_PLEASE_ENTER_A_VALID_EMAIL_ADDRESS}}}</h6></span>
 									{{/emailError}}
 								</div>
 								<div class="form-group">
-									<label for="inputExpertProf">Profile</label>
-									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<label for="inputExpertProf">{{{text.STR_PROFILE}}}</label>
+									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder={{text.STR_ENTER_EXPERT_PROFILE}} rows="2" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
-									<label for="inputExpertTel">Phone number</label>
-									<input value="{{newExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
+									<label for="inputExpertTel">{{{text.STR_PHONE_NUMBER}}}</label>
+									<input value="{{newExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder={{{text.STR_ENTER_PHONE_NUMBER}}}>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
-									<label for="inputExpertAddress">Address</label>
-									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3"  maxlength="500"></textarea>
+									<label for="inputExpertAddress">{{{text.STR_ADDRESS}}}</label>
+									<textarea value="{{newExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="{{{text.STR_ENTER_ADDRESS}}}" rows="3"  maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
-									<label for="inputExpertWebsite">Website</label>
-									<input value="{{newExpert.website}}" type="text" class="form-control" id="inputExpertWebsite" placeholder="Enter Website url">
+									<label for="inputExpertWebsite">{{{text.STR_WEBSITE}}}</label>
+									<input value="{{newExpert.website}}" type="text" class="form-control" id="inputExpertWebsite" placeholder="{{{text.STR_ENTER_WEBSITE_URL}}}">
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
 									<label for="inputExpertSkype">Skype</label>
-									<input value="{{newExpert.skype}}" type="text" class="form-control" id="inputExpertSkype" placeholder="Enter Skype ID">
+									<input value="{{newExpert.skype}}" type="text" class="form-control" id="inputExpertSkype" placeholder="{{{text.STR_ENTER_SKYPE_ID}}}">
 									<span class="help-block"></span>
 								</div>
 						</form>
@@ -1201,7 +1238,7 @@
 					<script id='addWidgetTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">Add a new Widget</h4>
+    					<h4 class="modal-title" id="myModalLabel">{{{text.STR_ADD_NEW_WIDGET}}}</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
@@ -1210,7 +1247,7 @@
 									<input value="{{newWidget.name}}" type="text" class="form-control" placeholder="Enter name">
 								</div>
 								<div class="form-group">
-									<label for="inputWidgetUrl">Link</label>
+									<label for="inputWidgetUrl">{{{text.STR_LINK}}}</label>
 									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"  maxlength="500"></textarea>
 								</div>
 						</form>
@@ -1232,7 +1269,7 @@
 					<script id='editDocumentTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="editDocumentModalLabel">Edit learning Document</h4>
+    					<h4 class="modal-title" id="editDocumentModalLabel">{{{text.STR_EDIT_DOCUMENT}}}</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
@@ -1251,7 +1288,7 @@
     								</select>
     							{{/accessRights.isEmployee}}
 								<div class="form-group">
-									<label for="inputLdName">Nameddd</label>
+									<label for="inputLdName">Name</label>
 									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
 								</div>
 								<div class="form-group">
@@ -1259,7 +1296,7 @@
 									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"  maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
-									<label for="inputLdLink">Link</label>
+									<label for="inputLdLink">{{{text.STR_LINK}}}</label>
 									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
 			 					</div>
 			 					{{#accessRights.isEmployee}}
@@ -1273,7 +1310,7 @@
 					</div>
   					<div class="modal-footer">
 				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button on-click="updateDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Update</span></button>
+				        <button on-click="updateDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_UPDATE}}}</span></button>
   					</div>
   					</script>
 					</div>
@@ -1287,11 +1324,11 @@
 					<script id='editExpertTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="editExpertModalLabel">Edit expert information</h4>
+    					<h4 class="modal-title" id="editExpertModalLabel">{{{text.STR_EDIT_EXPERT_INFORMATION}}}</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
-    						<h4 class="modal-title">Contact Informations</h4>
+    						<h4 class="modal-title">{{{text.STR_CONTACT_INFORMATIONS}}}</h4>
 								<div class="form-group {{ nameError ? "has-error" : "" }}">
 									<label for="inputExpertName">Name *</label>
 									<input value="{{editExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="Enter Name">
@@ -1303,39 +1340,39 @@
 									<label for="inputExpertEmail">Email *</label>
 									<input value="{{editExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="Enter Email Address">
 									{{#emailError}}
-									<span class="help-block"><h6>Please enter a valid email address.</h6></span>
+									<span class="help-block"><h6>{{{text.STR_PLEASE_ENTER_A_VALID_EMAIL_ADDRESS}}}</h6></span>
 									{{/emailError}}
 								</div>
 								<div class="form-group">
-									<label for="inputExpertProf">Profile</label>
-									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="Enter Expert Profile" rows="2" maxlength="500"></textarea>
+									<label for="inputExpertProf">{{{text.STR_PROFILE}}}</label>
+									<textarea value="{{newExpert.profile}}" style="resize:none;" type="text" class="form-control" id="inputExpertProf" placeholder="{{{text.STR_ENTER_EXPERT_PROFILE}}}" rows="2" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
-									<label for="inputExpertTel">Phone number</label>
-									<input value="{{editExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="Enter Phone number">
+									<label for="inputExpertTel">{{{text.STR_PHONE_NUMBER}}}</label>
+									<input value="{{editExpert.tel}}" type="text" class="form-control" id="inputExpertTel" placeholder="{{{text.STR_ENTER_PHONE_NUMBER}}}">
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
-									<label for="inputExpertAddress">Address</label>
-									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="Enter Address" rows="3" maxlength="500"></textarea>
+									<label for="inputExpertAddress">{{{text.STR_ADDRESS}}}</label>
+									<textarea value="{{editExpert.address}}" style="resize:none;" type="text" class="form-control" id="inputExpertAddress" placeholder="{{{text.STR_ENTER_ADDRESS}}}" rows="3" maxlength="500"></textarea>
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
-									<label for="inputExpertWebsite">Website</label>
-									<input value="{{editExpert.website}}" type="text" class="form-control" id="inputExpertWebsite" placeholder="Enter Website url">
+									<label for="inputExpertWebsite">{{{text.STR_WEBSITE}}}</label>
+									<input value="{{editExpert.website}}" type="text" class="form-control" id="inputExpertWebsite" placeholder="{{{text.STR_ENTER_WEBSITE_URL}}}">
 									<span class="help-block"></span>
 								</div>
 								<div class="form-group">
 									<label for="inputExpertSkype">Skype</label>
-									<input value="{{editExpert.skype}}" type="text" class="form-control" id="inputExpertSkype" placeholder="Enter Skype ID">
+									<input value="{{editExpert.skype}}" type="text" class="form-control" id="inputExpertSkype" placeholder="{{{text.STR_ENTER_SKYPE_ID}}}">
 									<span class="help-block"></span>
 								</div>
 						</form>
 					</div>
   					<div class="modal-footer">
 				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button on-click="updateExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Update</span></button>
+				        <button on-click="updateExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_UPDATE}}}</span></button>
   					</div>
   					</script>
 					</div>
@@ -1349,7 +1386,7 @@
 					<script id='editWidgetTemplate' type='text/ractive'>
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">Edit widget information</h4>
+    					<h4 class="modal-title" id="myModalLabel">{{{text.STR_EDIT_WIDGET_INFORMATION}}}</h4>
   					</div>
   					<div class="modal-body">
     					<form role="form">
@@ -1358,7 +1395,7 @@
 									<input value="{{editWidget.name}}" type="text" class="form-control" placeholder="Enter name">
 								</div>
 								<div class="form-group">
-									<label for="inputWidgetUrl">Link</label>
+									<label for="inputWidgetUrl">{{{text.STR_LINK}}}</label>
 									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"  maxlength="500"></textarea>
 								</div>
 						</form>
@@ -1381,7 +1418,7 @@
   						<div id="deleteDocumentTemplateContainer">
   						<script id='deleteDocumentTemplate' type='text/ractive'>
 						<div class="alert alert-danger fade in" id="alertInModal">
-							<h4 value="" id="deleteAlertText">Do you really want to delete this Learning Document?</h4>
+							<h4 value="" id="deleteAlertText">{{{text.STR_DO_YOU_WANT_TO_DELETE_DOCUMENT}}}</h4>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -1401,7 +1438,7 @@
   						<div id="deleteExpertTemplateContainer">
   						<script id='deleteExpertTemplate' type='text/ractive'>
 						<div class="alert alert-danger fade in" id="alertInModal">
-							<h4 value="" id="deleteAlertText">Do you really want to delete {{Expert.name}}?</h4>
+							<h4 value="" id="deleteAlertText">{{{text.STR_DO_YOU_WANT_TO_DELETE_EXPERT}}} {{Expert.name}}?</h4>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -1422,7 +1459,7 @@
   						<div id="deleteWidgetTemplateContainer">
   						<script id='deleteWidgetTemplate' type='text/ractive'>
 						<div class="alert alert-danger fade in" id="alertInModal">
-							<h4 value="" id="deleteAlertText">Do you really want to delete {{Widget.name}}?</h4>
+							<h4 value="" id="deleteAlertText">{{{text.STR_DO_YOU_WANT_TO_DELETE_WIDGET}}} {{Widget.name}}?</h4>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -1443,7 +1480,7 @@
   						<script id='viewExpertTemplate' type='text/ractive'>
 						<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 value=""> Contact information of {{Expert.name}}</h4>
+						<h4 value=""> {{{text.STR_CONTACT_INFORMATION_OF}}} {{Expert.name}}</h4>
 						</div>
 						<div class="modal-body">
 							<table class="table table-striped table-bordered table-condensed">
@@ -1566,7 +1603,7 @@
   						<script id='viewWidgetTemplate' type='text/ractive'>
 						<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 value=""> Information of {{Widget.name}}</h4>
+						<h4 value="">{{{text.STR_INFORMATION_OF}}} {{Widget.name}}</h4>
 						</div>
 						<div class="modal-body">
 							<table class="table table-striped table-bordered table-condensed">
@@ -1616,42 +1653,29 @@
 
 
 		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Learning Resources Help</h4>
-            </div>
-          <div class="modal-body">
-            <div class="panel-group" id="levelsdef" align="justify">
-            <ul style="padding: 10px;">
-            	<li>In the <i>Learning Resources</i> widget you can review or add new learning documents, experts and widgets assigned to the goal and learning indicators. </li>
-          		<li>To see the list of learning indicators assigned to the goal click on its name.</li>
-          		<li>To see the list of learning documents assigned to particular learning indicator click on its name.</li>
-          		<li>To see the list of experts assigned to particular learning indicator click on its name.</li>
-          		<li>To see the list of widgets assigned to particular learning indicator click on its name.</li>
-				<li>To add new document click on <i>Add new document</i> menu item. In the <i>Add a new Document</i> view
-				you can import name, description and url from the <i>Boost Viewer</i> widget or enter it in appropriate text fields. Click on <i>Save</i> button to save changes.</li>
-				<li>To add new expert click on <i>Add new expert</i> menu item.
-				<ul style="padding: 10px;">
-				<li>In the <i>Add a new Expert</i> enter the expert contact infotmations in appropriate text fields.</li>
-				<li>Click on <i>Save</i> button to save changes.</li>
-				</ul>
-				<li>To add new widget click on <i>Add new widget</i> menu item.
-				<ul style="padding: 10px;">
-				<li>In the <i>Add a new Widget</i> enter the widget name and its Url address in appropriate text fields.</li>
-				<li>Click on <i>Save</i> button to save changes.</li>
-				</ul>
-				<li>To see expert or widget informations, click on <button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></button> icon.
-				</li>
-            </ul>
-          </div>
-          <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
+      		<div class="modal-dialog" id="helpBlock">
+      		<script id='helpTemplate' type='text/ractive'>
+        		<div class="modal-content">
+          			<div class="modal-header">
+          				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        				<h4 class="modal-title">{{{text.STR_LEARNING_RESOURCES_HELP}}}</h4>
+            		</div>
+          			<div class="modal-body">
+            			<div class="panel-group" id="levelsdef" align="justify">
+            				<ul style="padding: 10px;">
+				            	{{{text.STR_IN_THE_LEARNING_RESOURCES_WIDGET}}}
+								<ul style="padding: 10px;">
+								{{{text.STR_IN_THE_ADD_A_NEW_EXPERT_ENTER}}}
+            				</ul>
+          				</div>
+          				<div class="modal-footer">
+                			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          				</div>
+        			</div>
+      			</div>
+      		</script>
+    		</div>
+    	</div>
 
 
 	]]>
