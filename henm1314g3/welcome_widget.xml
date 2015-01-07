@@ -116,10 +116,12 @@
 						ractiveWelcome.on({
 							setGerman: function(event){
 								localStorage.setItem("locale", "de-de");
+								document.cookie="locale=de-de";
 								window.location.reload();
 							},
 							setEnglish: function(event){
 								localStorage.setItem("locale", "");
+								document.cookie="locale= ";
 								window.location.reload();
 							}
 						});
@@ -157,10 +159,29 @@
 		<div class ="panel panel-primary" id="containerWelcome">
 			<script id="templateWelcome" type='text/ractive'>
 				<div class="panel-heading">
-					<a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:-5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a>
-					<button type="button" class="btn btn-warning" on-click="setGerman" style="float:right; margin:-7 0 5 5px;">DE</button>
-					<button type="button" class="btn btn-danger" on-click="setEnglish" style="float:right; margin:-7 0 5 5px;">EN</button>
-					<h3 class="panel-title"><span style="margin-right:5px;"></span> {{{text.STR_WELCOME_TO_THE_BOOST_PROJECT}}}</h3>
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-6"><h3 class="panel-title">{{{text.STR_WELCOME_TO_THE_BOOST_PROJECT}}}</h3></div>
+							<div class="col-xs-4">
+								<div class="dropdown">
+								  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+								    Language
+								    <span class="caret"></span>
+								  </button>
+								  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" style="cursor:pointer">
+								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setEnglish">English</a></li>
+								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setGerman">German</a></li>
+								  </ul>
+								</div>
+							</div>
+							<div class="col-xs-2"><a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a></div>
+							
+							<!--
+							<button type="button" class="btn btn-warning" on-click="setGerman" style="float:right; margin:-7 0 5 5px;">DE</button>
+							<button type="button" class="btn btn-danger" on-click="setEnglish" style="float:right; margin:-7 0 5 5px;">EN</button>
+							-->
+						</div>
+					</div>
 				</div>
 
 				<table class="table table-responsive" >
