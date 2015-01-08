@@ -108,6 +108,9 @@
 								bootbox.hideAll();
 							});
 						}
+						if(intent.action == "LANGUAGE_CHANGED"){
+							window.location.reload();
+						}
 					}
 
 					function publishAccessRightsChanged(){
@@ -275,20 +278,20 @@
 
 			{{^currentUser.AccessRights.isManager}}
 				{{#currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-info" role="alert">
+					<div class="alert alert-info" role="alert" style="margin-bottom:0px;">
 						{{{text.STR_YOU_HAVE_THE_ROLE_EMPLOYEE_YOU}}}
 					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 
 				{{^currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-danger" role="alert">
+					<div class="alert alert-danger" role="alert" style="margin-bottom:0px;">
 						{{{text.STR_YOU_HAVE_NO_ROLE}}}
 					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 			{{/currentUser.AccessRights.isManager}}
 
 			{{#currentUser.AccessRights.isManager}}
-				<div class="alert alert-info" role="alert">
+				<div class="alert alert-info" role="alert" style="margin-bottom:0px;">
 					{{#currentUser.AccessRights.isEmployee}}
 							{{{text.STR_YOU_HAVE_ROLES_MANAGER_AND_EMPLOYEE}}}
 							</br>

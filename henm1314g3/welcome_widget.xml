@@ -117,11 +117,13 @@
 							setGerman: function(event){
 								localStorage.setItem("locale", "de-de");
 								document.cookie="locale=de-de";
+								publishLanguageChanged();
 								window.location.reload();
 							},
 							setEnglish: function(event){
 								localStorage.setItem("locale", "");
 								document.cookie="locale= ";
+								publishLanguageChanged();
 								window.location.reload();
 							}
 						});
@@ -138,8 +140,32 @@
 					});
 
 					function iwcCallback(intent){
-							if(intent.action == "WELCOME_CREATE"){}
-						}
+						if(intent.action == "WELCOME_CREATE"){}
+					}
+
+					function publishLanguageChanged(){
+						var intent = {
+							component: "",
+							data: "",
+							dataType: "text/json",
+							flags :["PUBLISH_GLOBAL"],
+							action: "LANGUAGE_CHANGED"
+						};
+
+						iwcClient.publish(intent);
+					}
+
+
+					function getCookie(cname) {
+					    var name = cname + "=";
+					    var ca = document.cookie.split(';');
+					    for(var i=0; i<ca.length; i++) {
+					        var c = ca[i];
+					        while (c.charAt(0)==' ') c = c.substring(1);
+					        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+					    }
+					    return "";
+					}
 
 					$("#agreeButton").click(function(){
 						userAccessRights.hasAgreedToLicense = true;
