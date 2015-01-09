@@ -121,8 +121,8 @@
 								window.location.reload();
 							},
 							setEnglish: function(event){
-								localStorage.setItem("locale", "");
-								document.cookie="locale= ";
+								localStorage.setItem("locale", "en-en");
+								document.cookie="locale=en-en";
 								publishLanguageChanged();
 								window.location.reload();
 							}
