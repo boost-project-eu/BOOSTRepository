@@ -38,6 +38,7 @@
 
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/employee.js",
 				"async",
 				"ractive",
 				"ladda",
@@ -55,7 +56,8 @@
 			    "bootstrapDatepicker",
 			    "moment",
 			    "utils"
-			    ], function(a, Ractive, Ladda, b) {
+			    ], function(tr, a, Ractive, Ladda, b) {
+			    	translations = tr;
 					async = a;
 					bootbox = b;
 					var space;
@@ -89,7 +91,7 @@
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
 							$('#setLIModal').modal("hide");
 
-							var message = "<div>Please wait while the employees are updated to reflect these changes.</div>"
+							var message = "<div>" + translations.STR_PLEASE_WAIT_WHILE_THE_EMPLOYEES + "</div>"
 							message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
 							bootbox.dialog({
 								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
@@ -262,7 +264,8 @@
 								el: 'descriptionModal',
 								template: '#templateHelpModal',
 								data: {
-									accessRights: userAccessRights
+									accessRights: userAccessRights,
+									text: translations
 								},
 								append: true
 							});
@@ -272,7 +275,8 @@
 							  el: 'containerEmployeeOverview',
 							  template: '#templateEmployeeHeader',
 							  data: {
-							  	accessRights: userAccessRights
+							  	accessRights: userAccessRights,
+							  	text: translations
 							  },
 							  append: true
 							});
@@ -313,7 +317,8 @@
 								    el: 'containerEmployeeOverview',
 								    template: '#templateEmployeeOverview',
 								    data: { "employeeList" : employeeList,
-								    		"accessRights" : userAccessRights
+								    		"accessRights" : userAccessRights,
+								    		text: translations
 								 			},
 								    append: true
 								});
@@ -385,7 +390,8 @@
 								    data: { "employee" : null,
 								    		"originalEmployee" : null,
 								    		"nameError" : false,
-								    		"emailError" : false
+								    		"emailError" : false,
+								    		text: translations
 								    	  },
 								    append: true
 								});
@@ -423,7 +429,8 @@
 									el: 'containerEmployeeDelete',
 								    template: '#deleteEmployeeTemplate',
 								  	data: {
-								  		employee : null
+								  		employee : null,
+								  		text: translations
 								  	},
 								    append: true
 								});
@@ -453,7 +460,8 @@
 								    data: 	{ 	"bcnList" : null,
 												"learningLevels" : llevel,
 												"employee" : null,
-												"originalEmployee" : null
+												"originalEmployee" : null,
+												text: translations
 										 	},
 
 								    append: true
@@ -600,7 +608,7 @@
 			<div class="panel-heading">
 				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
 					<h3 class="panel-title">
-					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>Business employees
+					<span class="glyphicon glyphicon-user" style="margin-right:5px;"></span>{{{text.STR_BUSINESS_EMPLOYEES}}}
 				</h3>
 		  	</div>
 
@@ -609,7 +617,7 @@
 	  		 	{{^accessRights.isEmployee}}
 					{{#accessRights.isManager}}
 		  				<div class="btn-group">
-			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Employee View"></span></button>
+			 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="{{text.STR_OVERALL_EMPLOYEE_VIEW}}"></span></button>
 						</div>
 					{{/accessRights.isManager}}
 					{{^accessRights.isManager}}
@@ -618,7 +626,7 @@
 	  		 	{{/accessRights.isEmployee}}
 
 				<div id="loadingEmployeeText" class="text-muted small" style="margin-top:5px;">
-					Loading employee data ...
+					{{{text.STR_LOADING_EMPLOYEE_DATA}}}
 					<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
 				</div>
 			</div>
@@ -650,10 +658,10 @@
 									<ul class="dropdown-menu pull-right" role="menu" align="left">
 										<li style="width:200px;" align="center">
 											<div class="btn-group">
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="Assign goals: {{name}}" style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="Send email: {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
+												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_ASSIGN_GOALS}} {{name}}" style="margin-right:5px;"></span></button>
+												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SEND_EMAIL}} {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
 												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}" style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="Show Deadlines: {{name}}" style="margin-right:5px;"></span></button>
+												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_DEADLINES}} {{name}}" style="margin-right:5px;"></span></button>
 											</div>
 										</li>
 									</ul>
@@ -679,14 +687,14 @@
 						<label for="inputNewEmployeeName" class="control-label">Name</label>
 						<input value='{{employee.name}}' type="text" class="form-control" id="inputNewEmployeeName" placeholder="Enter name">
 						{{#nameError}}
-						<span class="help-block"><h6>Name must not be empty.</h6></span>
+						<span class="help-block"><h6>{{{text.STR_NAME_MUST_NOT_BE_EMPTY}}}</h6></span>
 						{{/nameError}}
 					</div>
 					<div class="form-group {{ emailError ? "has-error" : "" }}">
-						<label for="inputNewEmployeeEmail" class="control-label">Email</label>
-						<input value='{{employee.email}}' type="text" class="form-control" id="inputNewEmployeeEmail" placeholder="Enter email">
+						<label for="inputNewEmployeeEmail" class="control-label">{{{text.STR_EMAIL}}}</label>
+						<input value='{{employee.email}}' type="text" class="form-control" id="inputNewEmployeeEmail" placeholder="{{text.STR_ENTER_EMAIL}}">
 						{{#emailError}}
-						<span class="help-block"><h6>Please enter a valid email adress.</h6></span>
+						<span class="help-block"><h6>{{{text.STR_PLEASE_ENTER_A_VALID_EMAIL_ADRESS}}}</h6></span>
 						{{/emailError}}
 					</div>
 				</form>
@@ -698,106 +706,79 @@
 			</div>
   		</script>
 
-		<div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content" id="containerEmployeeEdit">
-  					<div class="modal-header">
-    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">View/Update Employee</h4>
-  					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-
-		<div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content" id="containerEmployeeAdd">
-  					<div class="modal-header">
-    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="myModalLabel">Add new Employee</h4>
-  					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-
-		<div class="modal fade" id="setLIModal" tabindex="-1" role="dialog" aria-labelledby="setLIModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content" id="containerEmployeeSetLI">
-				</div>
-			</div>
-		</div>
+		
 
 <script id="setLITemplate" type="text/ractive">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			<h4  class="modal-title" id='massageEmployeeSetLI'>{{employee.name}}</h4>
-		</div>
-		<div class="modal-body">
-		<div class="panel-group" id="bcnPanel">
-		{{#bcnList:num}}
-			<div class="panel panel-default">
-				<div class="panel-heading" style="padding-bottom:1px;">
-	      			<h6 class="panel-title">
-	        			<span class="glyphicon {{employeeBcnData.isRelevant ? "glyphicon-star" : "glyphicon-star-empty"}}" style="margin-right:5px;"></span>
-	        			<a data-toggle="collapse" data-parent="#bcnPanel" href="#bcn{{num}}"> {{name}}
-	        				<span class="caret"></span>
-	        			</a>
-	      			</h6>
-	      			<div class="checkbox" style="margin-bottom:1px; margin-top:1px;">
-						<label>
-						 	Relevant
-					 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'>
-						</label>
-					</div>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4  class="modal-title" id='massageEmployeeSetLI'>{{employee.name}}</h4>
+	</div>
+	<div class="modal-body">
+	<div class="panel-group" id="bcnPanel">
+	{{#bcnList:num}}
+		<div class="panel panel-default">
+			<div class="panel-heading" style="padding-bottom:1px;">
+      			<h6 class="panel-title">
+        			<span class="glyphicon {{employeeBcnData.isRelevant ? "glyphicon-star" : "glyphicon-star-empty"}}" style="margin-right:5px;"></span>
+        			<a data-toggle="collapse" data-parent="#bcnPanel" href="#bcn{{num}}"> {{name}}
+        				<span class="caret"></span>
+        			</a>
+      			</h6>
+      			<div class="checkbox" style="margin-bottom:1px; margin-top:1px;">
+					<label>
+					 	{{{text.STR_RELEVANT}}}
+				 	<input type="checkbox" value="" checked='{{employeeBcnData.isRelevant}}'>
+					</label>
+				</div>
 
-	    		</div>
-	    		<div  id="bcn{{num}}" class="panel-collapse collapse">
-	      			<ul style="margin-bottom:0px;" class="list-group">
-		      			{{#learningIndicators}}
-							<li class="list-group-item">
+    		</div>
+    		<div  id="bcn{{num}}" class="panel-collapse collapse">
+      			<ul style="margin-bottom:0px;" class="list-group">
+	      			{{#learningIndicators}}
+						<li class="list-group-item">
 
-								<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
-								<div class="checkbox">
-		  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">
-		  								Relevant
-		    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}" disabled={{!employeeBcnData.isRelevant}}>
-		  					        </label>
-						        </div>
-						        <div class="form-group">
-						        	<label>Start Date</label>
-						        	<div class="input-group date">
-						        	  <input data-date-format="mm/dd/yyyy" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value='{{employeeLiData.startDate}}' type="text" on-click="changeLiStartDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
-						        	</div>
-						        </div>
-						        <div class="form-group">
-						        	<label>End Date</label>
-						        	<div class="input-group date">
-						        	  <input data-date-format="mm/dd/yyyy" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value='{{employeeLiData.endDate}}' type="text" on-click="changeLiEndDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
-						        	</div>
-						        </div>
-								Start level:
-								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.start}}">
-								{{#learningLevels}}
-									<option value='{{.}}'>{{.}}</option>
-								{{/learningLevels}}
-								</select>
-								Current level:
-								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.current}}">
-								{{#learningLevels}}
-									<option value='{{.}}'>{{.}}</option>
-								{{/learningLevels}}
-								</select>
-								End level:
-								<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.end}}">
-								{{#learningLevels}}
-									<option value='{{.}}'>{{.}}</option>
-								{{/learningLevels}}
-								</select>
-						   	</li>
-						{{/learningIndicators}}
-					</ul>
-	    		</div>
-	  		</div>
+							<h4><i class="fa {{employeeLiData.isRelevant ? "fa-flag" : "fa-flag-o"}}" style="margin-right:5px;"></i> {{name}}</h4>
+							<div class="checkbox">
+	  							<label class="{{employeeBcnData.isRelevant ? "" : "text-muted"}}">
+	  								{{{text.STR_RELEVANT}}}
+	    							<input type="checkbox" value="" checked="{{employeeLiData.isRelevant}}" disabled={{!employeeBcnData.isRelevant}}>
+	  					        </label>
+					        </div>
+					        <div class="form-group">
+					        	<label>{{{text.STR_START_DATE}}}</label>
+					        	<div class="input-group date">
+					        	  <input data-date-format="mm/dd/yyyy" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value='{{employeeLiData.startDate}}' type="text" on-click="changeLiStartDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
+					        	</div>
+					        </div>
+					        <div class="form-group">
+					        	<label>{{{text.STR_END_DATE}}}</label>
+					        	<div class="input-group date">
+					        	  <input data-date-format="mm/dd/yyyy" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value='{{employeeLiData.endDate}}' type="text" on-click="changeLiEndDatePicker" class="form-control" style="border-radius: 4px;"><span style="padding: 0px;" class="input-group-addon">
+					        	</div>
+					        </div>
+							{{{text.STR_START_LEVEL}}}
+							<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.start}}">
+							{{#learningLevels}}
+								<option value='{{.}}'>{{.}}</option>
+							{{/learningLevels}}
+							</select>
+							{{{text.STR_CURRENT_LEVEL}}}
+							<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.current}}">
+							{{#learningLevels}}
+								<option value='{{.}}'>{{.}}</option>
+							{{/learningLevels}}
+							</select>
+							{{{text.STR_END_LEVEL}}}
+							<select class="form-control" disabled={{employeeLiData.isRelevant ? "" : "disabled"}} value="{{employeeLiData.end}}">
+							{{#learningLevels}}
+								<option value='{{.}}'>{{.}}</option>
+							{{/learningLevels}}
+							</select>
+					   	</li>
+					{{/learningIndicators}}
+				</ul>
+    		</div>
+  		</div>
 
 	{{/bcnList}}
 
@@ -813,7 +794,7 @@
 <script id="deleteEmployeeTemplate" type="text/ractive">
 	<div class="modal-body">
 		<div class="alert alert-danger fade in" id="alertInModal">
-			<h4>Do you really want to delete {{employee.name}} as an employee?</h4>
+			<h4>{{{text.STR_DO_YOU_WANT_TO_DELETE_EMPLOYEE}}}</h4>
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -821,6 +802,38 @@
 		</div>
 	</div>
 </script>
+
+
+<!-- Modals -->
+
+<div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" id="containerEmployeeEdit">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">{{{text.STR_VIEW/UPDATE_EMPLOYEE}}}</h4>
+				</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" id="containerEmployeeAdd">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">{{{text.STR_ADD_NEW_EMPLOYEE}}}</h4>
+				</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="setLIModal" tabindex="-1" role="dialog" aria-labelledby="setLIModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" id="containerEmployeeSetLI">
+		</div>
+	</div>
+</div>
 
 <div class="modal fade" id="deleteEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -837,37 +850,31 @@
 	        <div class="modal-content">
 	          <div class="modal-header">
 	          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	    		<h4 class="modal-title">Business Employees Help</h4>
+	    		<h4 class="modal-title">{{{text.STR_BUSINESS_EMPLOYEES_HELP}}}</h4>
 	            </div>
 	          <div class="modal-body">
 	            <div class="panel-group" id="levelsdef" align="justify">
 	             {{#(accessRights.isManager && !accessRights.isEmployee)}}
 		             <ul style="padding: 10px;">
-		             	<p>In the Business Employees widget you can assign goals to the employees, adjust their learning levels and specify deadlines for them.</p>
-			             <li>To see more options click on <button type="button" class="btn btn-default btn-sm dropdown-toggle"><i class="fa fa-cogs"></i><span class="caret"></span></button> icon.</li>
+		             	<p>{{{text.STR_IN_THE_BUSINESS_EMPLOYEES_WIDGET}}}</p>
+			             <li>{{{text.STR_TO_SEE_MORE_OPTIONS_CLICK_ON}}}</li>
 			           <ul style="padding: 10px;">
-				             <li>To assign goals to employee and define learning levels click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span></button> icon.
-					              In the new view check in relevant goals for this employee.</li>
-					         <li>Check in relevant learning indicators and define learning levels for this employee by clicking on the goal name and selecting start, current and end level accordingly.</li>
-					         <li>Choose start and end dates for the learning indicators.
-					             <br><strong>Descriptions of learning levels:</strong>
+				             <li>{{{text.STR_TO_ASSIGN_GOALS_TO_EMPLOYEE_AND}}}</li>
+					         <li>{{{text.STR_CHECK_IN_RELEVANT_LEARNING_INDICATORS}}}</li>
+					         <li>{{{text.STR_CHOOSE_START_AND_END_DATES_FOR}}}
+					             <br><strong>{{{text.STR_DESCRIPTIONS_OF_LEARNING_LEVELS}}}</strong>
 					              	<ul style="padding: 10px;">
-					                	<li><strong>Level 0:</strong> I have not started to address the skills / knowledge required for this indicator.</li>
-					               	  	<li><strong>Level 1:</strong> I have started to try to address the skills / knowledge for this indicator but need more time / support to make progress.</li>
-					                	<li><strong>Level 2:</strong> I feel that I have acquired some skills / knowledge and am aware of the progress I have made with regards to this indicator but feel that I need to learn more before I can put into practice on the job.</li>
-					                	<li><strong>Level 3:</strong> I feel that I have acquired significant skills / knowledge for my current job role and have started   to put into practice on the job.</li>
-					                	<li><strong>Level 4:</strong> I feel that I have acquired significant knowledge of these skills for my current job role but for future development within the company, I recognise that I can develop further.</li>
-					               		<li><strong>Level 5:</strong> I feel confident enough in using these skills and knowledge so that I could support a few colleagues with regard to these?</li>
+					                	{{{text.STR_LEVEL_0_I_HAVE_NOT_STARTED_TO}}}
 					              	</ul>
 				              </li>
-				             <li>To monitor the learning progress of employee straight forward in <i>Learning Progress</i> widget click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats tooltip-showGoalProgress" data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: Decor and Furnishing"></span></button> icon.</li>
-				       		 <li>To send email to the employees click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope" style="margin-right:5px;"></span></button> icon. Pop-up mail window will appear.
+				             <li>{{{text.STR_TO_MONITOR_THE_LEARNING_EMPLOYEE}}}</li>
+				       		 <li>{{{text.STR_TO_SEND_EMAIL_TO_THE_EMPLOYEES}}}</li>
 
 				       </ul>
 		             </ul>
 	              {{/(accessRights.isManager && !accessRights.isEmployee)}}
 	               {{#accessRights.isEmployee}}
-					    <p>In this widget you can see your profile details. Click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon to see  your overall progress in the Learning Progress widget. </p>
+					    <p>{{{text.STR_IN_THIS_WIDGET_YOU_CAN_SEE_YOUR}}}</p>
 					{{/accessRights.isEmployee}}
 	          </div>
 	          <div class="modal-footer">

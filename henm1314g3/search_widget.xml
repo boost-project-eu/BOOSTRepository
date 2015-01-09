@@ -34,6 +34,7 @@
 		<script>
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/search.js",
 				"async",
 				"rivets",
 			    "bootbox",
@@ -51,10 +52,10 @@
 			    "UserManager",
 			    "iwc",
 			    "utils"
-			    ], function(a, rivets, b, Ractive) {
+			    ], function(tr, a, rivets, b, Ractive) {
 			    	async = a;
 			    	bootbox = b;
-
+			    	translations = tr;
 					var userAccessRights;
 					var userList;
 					//Globals
@@ -299,7 +300,8 @@
 									data: {
 										accessRights: userAccessRights,
 										repositories: model.repositories,
-										model: model
+										model: model,
+										text: translations
 									},
 									append: true
 							});
@@ -310,7 +312,8 @@
 								el: 'descriptionModal',
 								template: '#templateHelpModal',
 								data: {
-									accessRights: userAccessRights
+									accessRights: userAccessRights,
+									text: translations
 								},
 								append: true
 							});
@@ -319,7 +322,8 @@
 									el: 'containerRepoManage',
 									template: '#templateManage',
 									data: {
-										model: model
+										model: model,
+										text: translations
 									},
 									append: true
 							});
@@ -393,7 +397,7 @@
 					function renderSearchProgressBar(){
 							var progressBar =       "<div class='progress progress-striped active'>" +
 					                                    "<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>" +
-					                                        "<span>Searching...</span>" +
+					                                        "<span>" + translations.STR_SEARCHING + "</span>" +
 					                                    "</div>" +
 					                                "</div>";
 					        $("#resultsFooter").empty();
@@ -412,7 +416,7 @@
 			<!-- Template for the header Main widget view -->
 				<div class="panel-heading">
 					<button id="question" on-click="questionModal" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
-			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>Search documents</h3>
+			    	<h3 class="panel-title"><span class="glyphicon glyphicon-search" style="margin-right:5px;"></span>{{{text.STR_SEARCH_DOCUMENTS}}}</h3>
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
 			  	{{^accessRights.isEmployee}}
@@ -423,9 +427,9 @@
 					{{/accessRights.isManager}}
 				{{/accessRights.isEmployee}}
 			  		<div class="input-group" style="padding-top:5px;">
-				      <input type="text" id="search_field" class="form-control" placeholder="Enter your search and hit enter or click on 'Go'">
+				      <input type="text" id="search_field" class="form-control" placeholder="{{{text.STR_ENTER_YOUR_SEARCH_AND_HIT_ENTER}}}">
 				      <span class="input-group-btn">
-				        <button class="btn btn-default" type="button" id="search_button" on-click="searchInRepo">Go</button>
+				        <button class="btn btn-default" type="button" id="search_button" on-click="searchInRepo">{{{text.STR_GO}}}</button>
 				      </span>
 				    </div>
 				    <div id="selectRepositoryButtonGroup" class="btn-group" data-toggle="buttons" style="padding-top:5px;">
@@ -438,7 +442,7 @@
 				{{#model.selectedRepository.searching}}
 					<div id="progressbar" style="margin-top:10px;" class='progress progress-striped active'>
 	                	<div class='progress-bar'  role='progressbar' aria-valuenow='1' aria-valuemin='0' aria-valuemax='1' style='width: 100%'>
-			            	<span>Searching...</span>
+			            	<span>{{{text.STR_SEARCHING}}}</span>
 			            </div>
 			        </div>
 			    {{/model.selectedRepository.searching}}
@@ -497,30 +501,24 @@
 		        <div class="modal-content">
 		           	<div class="modal-header">
 		          	 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		     			<h4 class="modal-title">Search Widget Help</h4>
+		     			<h4 class="modal-title">{{{text.STR_SEARCH_WIDGET_HELP}}}</h4>
 		            </div>
 				        <div class="modal-body">
 				            <div class="panel-group" id="levelsdef" align="justify">
 					            {{#(accessRights.isManager && !accessRights.isEmployee)}}
 							       <div class="panel-group" id="levelsdef" align="justify">
-							       		<p>This widget was created as a search engine help you to find learning materials.</p>
-							       		<p>Click on wrench icon <button type="button" style="margin:5px;" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button> to open model where you can restrict access to the repositories.</p>
+							       		<p>{{{text.STR_THIS_WIDGET_WAS_CREATED_AS_A}}}</p>
+							       		<p>{{{text.STR_CLICK_ON_WRENCH_ICON_TO_OPEN}}}</p>
 							            <ul style="padding: 10px;">
-							            	<li>To choose learning repository click on <i>YouTube</i>, <i>SlideShare</i>, <i>Wikipedia</i> or <i>Scribd</i> tabs under the input field.</li>
-							            	<li>To search learning document enter keywords in the input field and click on the <i>Go</i> button.</li>
-							            	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
-							            	<li>In the <i>Wikipedia</i> repository new page opens.</li>
+							            	{{{text.STR_TO_CHOOSE_LEARNING_REPOSITORY}}}
 							            </ul>
 							         </div>
 					            {{/(accessRights.isManager && !accessRights.isEmployee)}}
 					            {{#accessRights.isEmployee}}
 					            	 <div class="panel-group" id="levelsdef" align="justify">
-					            	 <p>This widget was created as a search engine help you to find learning materials.</p>
+					            	 <p>{{{text.STR_THIS_WIDGET_WAS_CREATED_AS_A}}}</p>
 							            <ul style="padding: 10px;">
-							            	<li>To choose learning repository click on <i>YouTube</i>, <i>SlideShare</i>, <i>Wikipedia</i> or <i>Scribd</i> tabs under the input field.</li>
-							            	<li>To search learning document enter keywords in the input field and click on the <i>Go</i> button.</li>
-							            	<li>To view learning document click on it. The view will be shown straight away in the <i>Boost Viewer</i> widget.</li>
-							            	<li>In the <i>Wikipedia</i> repository new page opens.</li>
+							            	{{{text.STR_TO_CHOOSE_LEARNING_REPOSITORY}}}
 							            </ul>
 							         </div>
 					            {{/accessRights.isEmployee}}
@@ -537,27 +535,27 @@
 
     <!-- Modal to manage repositories -->
 
-	<script id='templateManage' type='text/ractive'>
-		<p></p>
-        {{#model.config.repositorySelection}}
-            <li class="list-group-item">
-              <div class="checkbox">
-                <label>
-                  <input class="repositorySelection" name="repository.name" checked={{isSelected}} type="checkbox"> {{name}}
-                </label>
-              </div>
-            </li>
-        {{/model.config.repositorySelection}}
-	</script>
+	
 
       <div class="modal fade" id="manageRepoModal" >
-        <div class="modal-dialog">
+        <div class="modal-dialog" id="containerRepoManage">
+		<script id='templateManage' type='text/ractive'>
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h5 class="modal-title">Choose repositories that you would like to access:</h5>
             </div>
-            <div class="modal-body" id="containerRepoManage">
+            <div class="modal-body">
+
+		        {{#model.config.repositorySelection}}
+		            <li class="list-group-item">
+		              <div class="checkbox">
+		                <label>
+		                  <input class="repositorySelection" name="repository.name" checked={{isSelected}} type="checkbox"> {{name}}
+		                </label>
+		              </div>
+		            </li>
+		        {{/model.config.repositorySelection}}
 
             </div>
             <div class="modal-footer">
@@ -566,6 +564,7 @@
 
             </div>
           </div><!-- /.modal-content -->
+		</script>        
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal
 

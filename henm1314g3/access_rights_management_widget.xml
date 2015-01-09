@@ -37,9 +37,9 @@
 		<!-- JavaScript Block -->
 		<script>
 
-
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/access.js",
 				"async",
 				"bootbox",
 				"ractive",
@@ -54,7 +54,9 @@
 			    "iwc",
 			    "UserManager",
 			    "utils"
-			    ], function(a, b, r, _) {
+			    ], function(tr, a, b, r, _) {
+			    	
+			    	translations= tr;
 			    	async = a;
 			    	bootbox = b;
 			    	Ractive = r;
@@ -84,10 +86,10 @@
 					function iwcCallback(intent){
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
 
-							var message = "<div>Goals have changed. Please wait.</div>"
+							var message = "<div>" + str.STR_GOALS_HAVE_CHANGED + str.STR_PLEASE_WAIT + "</div>"
 							message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
 							bootbox.dialog({
-								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>Goals have changed.",
+								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>" + str.STR_GOALS_HAVE_CHANGED,
 								message : message,
 								closeButton : false
 							});
@@ -105,6 +107,9 @@
 								}
 								bootbox.hideAll();
 							});
+						}
+						if(intent.action == "LANGUAGE_CHANGED"){
+							window.location.reload();
 						}
 					}
 
@@ -211,7 +216,7 @@
 
 										//Check if user has agreed to license
 										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
-											showModalAcceptTermsOfUse();
+											// showModalAcceptTermsOfUse();
 
 										} else if(!accessRights.getUserAccessRights().isManager){
 											// showModalContactManager();
@@ -222,25 +227,36 @@
 										    template: '#templateUserOverview',
 										    data: {
 										    	"userList" : userList,
-										    	"currentUser": currentUser
+										    	"currentUser": currentUser,
+										    	"text": translations
 										    },
 										    append: true
 										});
 
-										ractiveOverview.on("accessRightsChanged", function(event){
-											user = event.context;
-											createEmployeeIfNotExist(user, accessRights, employeesList);
+										ractiveOverview.on({
+											accessRightsChanged: function(event){
+												user = event.context;
+												createEmployeeIfNotExist(user, accessRights, employeesList);
+											},
+											showHelp: function(event){
+												$('#descriptionModal').modal({
+													keyboard: true
+												});
+											}
+										});
+
+										ractiveHelp = new Ractive({
+											el: 'descriptionModal',
+										    template: '#templatemModalHelp',
+										    data: {
+										    	"text": translations
+										    },
+										    append: true
 										});
 									});
 								});
 							});
 						});
-
-						$('#question').click(function(){
-					        $('#descriptionModal').modal({
-					        keyboard: true
-					          });
-					    });
 					});
 				});
 			});
@@ -252,52 +268,47 @@
 
 		<div style="overflow-y: scroll; height:450px;">
 		<div class="panel panel-primary" id="containerUserOverview">
-
+		  	<script id="templateUserOverview" type='text/ractive'>
 			<div class="panel-heading">
-					<button id="question" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
+					<button id="question" on-click="showHelp" type="button" class="btn btn-default launch-modal" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign"></span></button>
 					<h3 class="panel-title">
-					<i class="fa fa-users" style="margin-right:5px;"></i>Access Rights
+					<i class="fa fa-users" style="margin-right:5px;"></i>{{{text.STR_ACCESS_RIGHTS}}}
 				</h3>
 		  	</div>
 
-
-		</div>
-		</div>
-
-		<script id="templateUserOverview" type='text/ractive'>
 			{{^currentUser.AccessRights.isManager}}
 				{{#currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-info" role="alert">
-						You have the role <strong>Employee</strong>. You can not change anything in this widget
+					<div class="alert alert-info" role="alert" style="margin-bottom:0px;">
+						{{{text.STR_YOU_HAVE_THE_ROLE_EMPLOYEE_YOU}}}
 					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 
 				{{^currentUser.AccessRights.isEmployee}}
-					<div class="alert alert-danger" role="alert">
-						You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you
+					<div class="alert alert-danger" role="alert" style="margin-bottom:0px;">
+						{{{text.STR_YOU_HAVE_NO_ROLE}}}
 					</div>
 				{{/currentUser.AccessRights.isEmployee}}
 			{{/currentUser.AccessRights.isManager}}
 
 			{{#currentUser.AccessRights.isManager}}
-				<div class="alert alert-info" role="alert">
+				<div class="alert alert-info" role="alert" style="margin-bottom:0px;">
 					{{#currentUser.AccessRights.isEmployee}}
-							You have both <strong>Manager</strong> and <strong>Employee</strong> roles.
+							{{{text.STR_YOU_HAVE_ROLES_MANAGER_AND_EMPLOYEE}}}
 							</br>
 					{{/currentUser.AccessRights.isEmployee}}
 
 					{{^currentUser.AccessRights.isEmployee}}
-							You have the role <strong>Manager</strong>.
+							{{{text.STR_YOU_HAVE_THE_ROLE_MANAGER}}}
 					{{/currentUser.AccessRights.isEmployee}}
 
-					To see the space as <strong>Employee</strong> or <strong>Manager</strong>, just tick or untick Employee checkbox.
+					{{{text.STR_TO_SEE_THE_SPACE_AS_EMPLOYEE}}}
 
 				</div>
 
 
 					<table class="table table-striped table-bordered" >
 					    <tbody>
-					    	<tr><th>Name</th><th style="text-align:center">Manager</th><th style="text-align:center">Employee</th></tr>
+					    	<tr><th>{{{text.STR_NAME}}}</th><th style="text-align:center">{{{text.STR_MANAGER}}}</th><th style="text-align:center">{{{text.STR_EMPLOYEE}}}</th></tr>
 
 							{{#userList}}
 								<tr>
@@ -307,7 +318,7 @@
 										<span title="This user needs to agree to the terms of use first." class="glyphicon glyphicon-exclamation-sign"></span>
 										{{/accessRights.hasAgreedToLicense}}
 										{{#isOwner}}
-										<span title="This is the owner of the space." class="glyphicon glyphicon-asterisk"></span>
+										<span title="{{{text.STR_USER_NEEDS_TO_AGREE_TERMS}}}" class="glyphicon glyphicon-asterisk"></span>
 										{{/isOwner}}
 										</p>
 
@@ -329,40 +340,51 @@
 				{{/currentUser.AccessRights.isManager}}
 		</script>
 
+		</div>
+		</div>
+
+
+
 	<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    		<h4 class="modal-title">Access Rights Help</h4>
-            </div>
-          <div class="modal-body">
-            <div class="panel-group" id="levelsdef" align="justify">
-            <p>In this widget manager can differentiate access to the BOOST widgets. Employees do not have access to the Access Rights widget.</p>
-             <ul style="padding: 10px;">
-			 <li>To assing a manager or an employee user role, check appropriate checkbox <input type="checkbox">.
-			 If you are a manager and would like to see widgets interface for the employee role, check both checkboxes.</li>
-			 	<ul style="padding: 10px;">
+      	<script id="templatemModalHelp" type='text/ractive'>
+	      	<div class="modal-dialog">
 
-                	<li><strong>Employee: </strong>
-                		<p>Can search through the learning repositories. Add learning resources, experts and widgets to the system.
-                		Watch own learning progress and the progress of the goals.</p></li>
-                	<li><strong>Manager: </strong>
-                		<p>Has full control over the system. Can assing access rights to the users.
+	        	<div class="modal-content">
+	          		<div class="modal-header">
+	          			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    				<h4 class="modal-title">{{{text.STR_ACCESS_RIGHTS_HELP}}}</h4>
+	            	</div>
+	          		<div class="modal-body">
+	            		<div class="panel-group" id="levelsdef" align="justify">
+	            			<p>{{{text.STR_IN_THIS_WIDGET_MANAGER_CAN_DIFFERENTIATE}}}</p>
+	             			<ul style="padding: 10px;">
+				 				<li>
+				 					{{{text.STR_TO_ASSING_A_MANAGER_OR_AN_EMPLOYEE}}}
+				 				</li>
+				 				<ul style="padding: 10px;">
 
-                		Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators.
-                		Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.</li></p>
-              	</ul>
-             <li><span class="glyphicon glyphicon-asterisk"></span> This user is the owner of the space.</li>
-             <li><i class="fa fa-exclamation-circle" style="color: gray;"></i> This user has not agreed to the terms of use yet.</li>
-             </ul>
-          </div>
-          <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
+	                				<li>
+	                					<strong>{{{text.STR_EMPLOYEE_COLONS}}}</strong>
+	                					<p>{{{text.STR_CAN_SEARCH_THROUGH_THE_LEARNING}}}</p>
+	                				</li>
+		                			<li><strong>{{{text.STR_MANAGER_COLONS}}}</strong>
+		                				<p>{{{text.STR_HAS_FULL_CONTROL_OVER_THE_SYSTEM}}}</p>
+		                			</li>
+	              				</ul>
+	             				<li><span class="glyphicon glyphicon-asterisk"></span>{{{text.STR_USER_OWNER_OF_SPACE}}}</li>
+	             				<li><i class="fa fa-exclamation-circle" style="color: gray;"></i> {{{text.STR_THIS_USER_HAS_NOT_AGREED_TO_THE}}}</li>
+	             			</ul>
+	          			</div>
+	          		</div>
+	          		<div class="modal-footer">
+	                	<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
+	          		</div>
+	        	</div>
+	      	</div>
+      	</script>
     </div>
+
+
 	]]>
   </Content>
 </Module>

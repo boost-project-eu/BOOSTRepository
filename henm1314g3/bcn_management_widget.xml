@@ -55,6 +55,7 @@
 
 			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
 			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/bcn_management.js",
 				"async",
 				"ractive",
 				"ractiveValidator",
@@ -71,7 +72,8 @@
 			    "iwc",
 			    "bootstrapDatepicker",
 			    "utils"
-			    ], function(a, Ractive, RactiveValidator, Ladda, b, _) {
+			    ], function(tr, a, Ractive, RactiveValidator, Ladda, b, _) {
+			    	translations = tr;
 			    	async = a;
 			    	bootbox = b;
 					var space;
@@ -124,7 +126,8 @@
 						  template: '#templateBcnHeader',
 						  data: {
 						  	accessRights: userAccessRights,
-						  	showSpecificEmployee: false
+						  	showSpecificEmployee: false,
+						  	text: translations
 						  },
 						  append: true
 						});
@@ -134,7 +137,8 @@
 							el: 'descriptionModal',
 							template: '#templateHelpModal',
 							data: {
-								accessRights: userAccessRights
+								accessRights: userAccessRights,
+								text: translations
 							},
 							append: true
 						});
@@ -163,7 +167,8 @@
 									el: 'containerBcnOverview',
 									template: '#templateBcnOverview',
 									data: { "bcnsList" : bcnsList,
-											"accessRights" : userAccessRights
+											"accessRights" : userAccessRights,
+											text: translations
 											},
 									append: true
 								});
@@ -175,7 +180,8 @@
 								  	template: '#bcnAddEditTemplate',
 								  	data: { "bcn" : new BCN({}),
 								    	"priorityArray" : priorityArray,
-								    	"nameError" : false
+								    	"nameError" : false,
+								    	text: translations
 								    },
 								    append: true
 								});
@@ -281,7 +287,8 @@
 								    data: { "bcn" : new BCN({}),
 								    		"originalBcn" : new BCN({}),
 								    		"priorityArray" : priorityArray,
-								    		"bcnsList" : bcnsList
+								    		"bcnsList" : bcnsList,
+								    		"text": translations
 								    },
 								    append: true
 								});
@@ -346,7 +353,8 @@
 									el: 'containerBcnDelete',
 									template: '#deleteBcnTemplate',
 								    data: {
-								    	"bcn" : null
+								    	"bcn" : null,
+								    	text: translations
 								    },
 								    append: true
 								});
@@ -581,24 +589,24 @@
 			<script id='templateBcnHeader' type='text/ractive'>
 				<div class="panel-heading">
 				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
-					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>Business goals</h3>
+					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>{{{text.STR_BUSINESS_GOALS}}}</h3>
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
 		  		 	<!-- add new bcn and view overall progress -->
 		  		 	{{#accessRights.isEmployee}}
-		  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>
+		  		 		<button  type="button" class="btn btn-primary pull-left" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title={{text.STR_OVERALL_GOALS_VIEW}}></span></button>
 		  		 	{{/accessRights.isEmployee}}
 		  		 	{{^accessRights.isEmployee}}
 			  		 	{{#accessRights.isManager}}
 			  		 		{{#showSpecificEmployee}}
 			  		 			<div class="btn-group">
-									<button  type="button" class="btn btn-primary" on-mouseover="showHelpHome" on-click="returnToOverall"><span class="glyphicon glyphicon-home tooltip-returnHome" data-placement="top" data-toggle="tooltip" data-original-title="Return to Manager View"></span></button>
+									<button  type="button" class="btn btn-primary" on-mouseover="showHelpHome" on-click="returnToOverall"><span class="glyphicon glyphicon-home tooltip-returnHome" data-placement="top" data-toggle="tooltip" data-original-title={{text.STR_RETURN_TO_MANAGER_VIEW}}></span></button>
 								</div>
 			  		 		{{/showSpecificEmployee}}
 			  		 		{{^showSpecificEmployee}}
 				  				<div class="btn-group">
-									<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title="Add a New Goal"></span></button>
-					 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title="Overall Goals View"></span></button>
+									<button  type="button" class="btn btn-primary" on-mouseover="showHelpAddBcn" on-click="addNewBcn"><span class="glyphicon glyphicon-plus tooltip-addBCN" data-placement="top" data-toggle="tooltip" data-original-title={{text.STR_ADD_A_NEW_GOAL}}></span></button>
+					 	 			<button  type="button" class="btn btn-primary pull-right" on-mouseover="showHelpShowOverallProgress" on-click="showOverallProgress"><span class="glyphicon glyphicon-stats tooltip-showOverallProgress" data-placement="top" data-toggle="tooltip" data-original-title={{text.STR_OVERALL_GOALS_VIEW}}></span></button>
 								</div>
 			  		 		{{/showSpecificEmployee}}
 						{{/accessRights.isManager}}
@@ -607,7 +615,7 @@
 						{{/accessRights.isManager}}
 		  		 	{{/accessRights.isEmployee}}
 							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
-							Loading goals ...
+							{{{text.STR_LOADING_GOALS}}}
 						<img style='margin-left:5px; height:15px;' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'>
 					</div>
 				</div>
@@ -623,24 +631,24 @@
 		        <div class="modal-content">
 		           	<div class="modal-header">
 		          	 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		     			<h4 class="modal-title">Business Goals Help</h4>
+		     			<h4 class="modal-title">{{{text.STR_BUSINESS_GOALS_HELP}}}</h4>
 		            </div>
 				        <div class="modal-body">
 				            <div class="panel-group" id="levelsdef" align="justify">
 					            {{#(accessRights.isManager && !accessRights.isEmployee)}}
-						            <p>Business Goals widget was created to help manager organize business goals. In this widget manager can define goals, edit, delete and add learning indicators, assign priorities to goals.</p>
+						            <p>{{{text.STR_BUSINESS_GOALS_WIDGET_WAS_CREATED}}}</p>
 						            <ul style="padding: 10px;">
-										<li>To add new business goal click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span></button> icon. In the new view enter <i>Name</i>, <i>Description</i> and choose <i>Priority</i> for your goal. To add new <i>Learning Indicator</i> click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button> icon. </li>
-							            <li>To see overall progress of all employees click on <button type="button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon. The graph will be shown in the Learning Progress widget.</li>
+										<li>{{{text.STR_TO_ADD_NEW_BUSINESS_GOAL_CLICK}}}</li>
+							            <li>{{{text.STR_TO_SEE_OVERALL_PROGRESS_OF_ALL}}}</li>
 
-							            <li>To edit goal click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></button> icon.</li>
-							            <li>To delete goal click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span></button> icon.</li>
-							            <li>To monitor the learning progress of each employee straight forward in <i>Learning Progress</i> widget click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon.</li>
+										<li>{{{text.STR_TO_EDIT_GOAL_CLICK_ON_ICON}}}</li>
+							            <li>{{{text.STR_TO_DELETE_GOAL_CLICK_ON_ICON}}}</li>
+							            <li>{{{text.STR_TO_MONITOR_THE_LEARNING_PROGRESS}}}</li>
 
 						            </ul>
 					            {{/(accessRights.isManager && !accessRights.isEmployee)}}
 					            {{#accessRights.isEmployee}}
-					            	 <p>In this widget you can monitor assigned goals and timelines. Click on <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span></button> icon to see progress over this goal in the Learning Progress widget. </p>
+					            	 <p>{{{text.STR_IN_THIS_WIDGET_YOU_CAN_MONITOR}}}</p>
 					            {{/accessRights.isEmployee}}
 					        </div>
 				        </div>
@@ -672,15 +680,15 @@
 									<td style="width:70px;" align="center">
 										<div class='btn-group'>
 											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" on-mouseover="showHelpOptions">
-												<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="Show Options"></i><span class="caret"></span>
+												<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title={{text.STR_SHOW_OPTIONS}}></i><span class="caret"></span>
 
 											</button>
 											<ul class="dropdown-menu pull-right" role="menu" align="left" style="min-width:0px;">
 													<li align="center" style="width:120px;">
 													<div class='btn-group'>
-														<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="Edit: {{name}}"></span></button>
-														<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="Delete: {{name}}"></span></button>
-														<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+														<button  class='btn btn-default btn-sm'  on-mouseover="showHelpEditGoal" on-click='edit'><span class='glyphicon glyphicon-edit tooltip-editGoal' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_EDIT}} {{name}}"></span></button>
+														<button  class='btn btn-default btn-sm' on-mouseover="showHelpDeleteGoal" on-click='delete'><span class='glyphicon glyphicon-trash tooltip-deleteGoal' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_DELETE_COLONS}} {{name}}"></span></button>
+														<button class='btn btn-default btn-sm' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_PROGRESS}} {{name}}"></span></button>
 													</div>
 													</li>
 												</ul>
@@ -722,10 +730,10 @@
 								</div>
 
 								<div class="container" style="margin-bottom: 10px; border-bottom: 1px solid #C9C9C9;">
-									Days before the deadline: <strong>{{daysLeft}}</strong>
+									{{text.STR_DAYS_BEFORE_THE_DEADLINE}} <strong>{{daysLeft}}</strong>
 									<div class="progress" style="margin-bottom: 5px;">
 									  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{datePercentage}}%">
-									    <span class="sr-only">20% Complete</span>
+									    <span class="sr-only">{{{text.STR_20_COMPLETE}}}</span>
 									  </div>
 									</div>
 
@@ -791,12 +799,12 @@
 								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="Enter name" data-bv-notempty data-bv-notempty-message="The gender is required">
 						</div>
 							<div class="form-group">
-								<label for="inputNewBcnDescription">Description</label>
+								<label for="inputNewBcnDescription">{{{text.STR_DESCRIPTION}}}</label>
 								<textarea value='{{bcn.description}}' style="resize:none;" class="form-control" placeholder="Enter description" maxlength="500"></textarea>
 							</div>
 
 							<div class="form-group">
-										<label for="inputNewBcnPriority" >Priority</label><span class='glyphicon glyphicon-star' style='color:{{bcn.getPriorityColor()}}; margin:3px' ></span>
+										<label for="inputNewBcnPriority" >{{{text.STR_PRIORITY}}}</label><span class='glyphicon glyphicon-star' style='color:{{bcn.getPriorityColor()}}; margin:3px' ></span>
 										<select class="form-control" on-click="changePriority" value="{{bcn.priority}}">
 											{{#priorityArray : num}}
 													<option value='{{num}}'>{{name}}</option>
@@ -804,7 +812,7 @@
 											</select>
 							</div>
 							<div class="form-group">
-								<label for="inputNewBcnLi">Learning indicators</label>
+								<label for="inputNewBcnLi">{{{text.STR_LEARNING_INDICATORS}}}</label>
 									{{#bcn.learningIndicators : num}}
 										<div id = "inputNewBcnLi"  style="margin-bottom: 20px;">
 											<div class="input-group" style="margin-bottom:5px;" proxy-click="li-input">
@@ -824,7 +832,7 @@
 								<button type="button" id="addLIButton" class="btn btn-primary" on-click="addLI"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button>
 							<div class="modal-footer">
 				        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveBCN" name="submitButton"><span class="ladda-label">Save</span></button>
+								<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveBCN" name="submitButton"><span class="ladda-label">{{{text.STR_SAVE}}}</span></button>
   							</div>
 					</form>
 			</div>
@@ -838,7 +846,7 @@
 				<div class="modal-content" id="containerBcnEdit">
   					<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="newBcnModalLabel">Edit goal</h4>
+    					<h4 class="modal-title" id="newBcnModalLabel">{{{text.STR_EDIT_GOAL}}}</h4>
   					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
@@ -863,11 +871,11 @@
 
 			<div class="modal-body">
 					<div class="alert alert-danger fade in" id="alertInModal">
-							<h4>Do you really want to delete {{bcn.name}}</h4>
+							<h4>{{{text.STR_DO_YOU_REALLY_WANT_TO_DELETE}}} {{bcn.name}}</h4>
 					</div>
 					<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-							<button class="btn btn-danger ladda-button" data-style="zoom-out" id="confirmDeleteButton" on-click="deleteBCN"><span class="ladda-label">Delete</span></button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CANCEL}}}</button>
+							<button class="btn btn-danger ladda-button" data-style="zoom-out" id="confirmDeleteButton" on-click="deleteBCN"><span class="ladda-label">{{{text.STR_DELETE}}}</span></button>
 					</div>
 			</div>
 	</script>
