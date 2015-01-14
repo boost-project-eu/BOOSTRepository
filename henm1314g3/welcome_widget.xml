@@ -115,17 +115,20 @@
 
 						ractiveWelcome.on({
 							setGerman: function(event){
-								localStorage.setItem("locale", "de-de");
-								document.cookie="locale=de-de";
-								publishLanguageChanged();
-								window.location.reload();
+								setLanguage("de-de");
 							},
 							setEnglish: function(event){
-								localStorage.setItem("locale", "en-en");
-								document.cookie="locale=en-en";
-								publishLanguageChanged();
-								window.location.reload();
-							}
+								setLanguage("en-en");
+							},
+							setCzech: function(event){
+								setLanguage("cz-cz");
+							},
+							setGreek: function(event){
+								setLanguage("el-el");
+							},
+							setFrench: function(event){
+								setLanguage("fr-fr");
+							},
 						});
 
 						ractiveLicence = new Ractive({
@@ -141,6 +144,14 @@
 
 					function iwcCallback(intent){
 						if(intent.action == "WELCOME_CREATE"){}
+					}
+
+					function setLanguage(locale){
+						localStorage.setItem("locale", locale);
+						cookieStr = "locale=" + locale
+						document.cookie=cookieStr;
+						publishLanguageChanged();
+						window.location.reload();
 					}
 
 					function publishLanguageChanged(){
@@ -197,6 +208,9 @@
 								  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" style="cursor:pointer">
 								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setEnglish">English</a></li>
 								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setGerman">German</a></li>
+								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setCzech">Czech</a></li>
+								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setGreek">Greek</a></li>
+								    <li role="presentation"><a role="menuitem" tabindex="-1" on-click="setFrench">French</a></li>
 								  </ul>
 								</div>
 							</div>

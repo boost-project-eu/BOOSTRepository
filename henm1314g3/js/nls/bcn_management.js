@@ -28,5 +28,8 @@ define({
         "STR_CANCEL": "Cancel",
         "STR_DELETE": "Delete"
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });

@@ -26,5 +26,8 @@ define({
         "STR_THIS_USER_HAS_NOT_AGREED_TO_THE": "This user has not agreed to the terms of use yet.",
         "STR_CLOSE": "Close"
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });

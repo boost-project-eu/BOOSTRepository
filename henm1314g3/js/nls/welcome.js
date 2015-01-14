@@ -18,5 +18,8 @@ define({
         "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, you do not have rights to access this widget",
         "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator"
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });

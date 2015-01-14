@@ -19,5 +19,8 @@ define({
         "STR_IF_CURRENT_VIEW_IS_OVERALL_BUSINESS": "If current view is <em>Overall Business Goals</em>: average learning progress on all goals will be shown. In this view you can: ",
         "STR_CLICK_ON_THE_CHART_TO_CHANGE": "<li>Click on the chart to change view to the <em>Overall Employee View</em>.</li><li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li><li>Click on the learning indicators bar to see detailled view over every employee progress.</li><li>To come back to previous step click on the chart.</li>"
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });

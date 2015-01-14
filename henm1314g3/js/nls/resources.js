@@ -35,5 +35,8 @@ define({
         "STR_IN_THE_LEARNING_RESOURCES_WIDGET": "<li>In the <em>Learning Resources</em> widget you can review or add new documents, experts and widgets assigned to the goal and learning indicators. </li><li>To see the list of learning indicators assigned to the goal click on its name.</li><li>To see the list of documents assigned to a particular learning indicator click on its name.</li><li>To see the list of experts assigned to a particular learning indicator click on its name.</li><li>To see the list of widgets assigned to a particular learning indicator click on its name.</li><li>To add new document click on <em>Add new document</em> menu item. In the <em>Add a new Document</em> view you can import name, description and url from the <em>Boost Viewer</em> widget or enter it in appropriate text fields. Click on <em>Save</em> button to save changes.</li><li>To add new expert click on <em>Add new expert</em> menu item. ",
         "STR_IN_THE_ADD_A_NEW_EXPERT_ENTER": "<li>In the <em>Add a new Expert</em> enter the expert contact infotmations in appropriate text fields.</li><li>Click on <em>Save</em> button to save changes.</li></ul><li>To add new widget click on <em>Add new widget</em> menu item. <ul style=\"padding: 10px;\"><li>In the <em>Add a new Widget</em> enter the widget name and its Url address in appropriate text fields.</li><li>Click on <em>Save</em> button to save changes.</li></ul><li>To see expert or widget informations, click on <button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></button> icon.</li>"
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });
