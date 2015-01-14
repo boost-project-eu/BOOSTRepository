@@ -1,19 +1,23 @@
+/*
+  welcome.js
+  Language: de-de
+*/
 define({
-    "STR_WELCOME": "Welcome",
-    "STR_WECOME_WIDGET": "Wecome Widget.",
-    "STR_WELCOME_TO_THE_BOOST_PROJECT": "German Translation will be here",
-    "STR_BOOST_STANDS_FOR_BUSINESS_PERFORMANCE": "<small><strong>BOOST</strong> stands for  <strong>B</strong>usiness perf<strong>O</strong>rmance impr<strong>O</strong>vement through individual employee <strong>S</strong>kills <strong>T</strong>raining.</small>",
-    "STR_WITH_BOOST_YOU_CAN_ORGANISE_MANAGE": "<small>With BOOST you can organise, manage and monitor training process in the small and micro enterprises. Below are a few steps to help you get started.</small>",
-    "STR_IF_YOU_ARE_A_MANAGER": "<small><strong>If you are a Manager:</strong></small>",
-    "STR_ASSIGN_USER_ROLES_TO_EMPLOYEES": "<li><small>Assign user roles to employees using the <strong>Access Rights</strong> widget.</small></li><li><small>Define business goals and add learning indicators to them using the <strong>Business Goals</strong> widget. Assign priority to the goals, specifying the most improtant with a high priority.</small></li><li><small>Monitor business goals progress and employees competence in the <strong>Learning Progress</strong> widget. It works together with <strong>Business Goals</strong> and <strong>Business Employees</strong> widgets.</small> </li><li><small>Edit information about employees and assign goals to them, adjust their learning levels in the <strong>Business Employees</strong> widget.</small></li>",
-    "STR_IF_YOU_ARE_AN_EMPLOYEE": "<small><strong>If you are an Employee:</strong></small>",
-    "STR_USE_A_BOOST_SEARCH_WIDGET_TO": "<li><small>Use a <strong>Boost Search</strong> widget to ﬁnd learning materials.</small></li> <li><small>Watch and read interesting resources using <strong>Boost Viewer</strong> widget.</small></li><li><small>Save and organise your learning resources in the <strong>Learning Repository:</strong> You can review and add new learning documents, experts and widgets assigned to the goal and learning indicators.</small></li><li><small>Monitor your learning progress with the <strong>Learning Progress</strong> widget.</small></li>",
-    "STR_WE_HOPE_THIS_QUICK_START_HAS": "We hope this Quick Start has been helpful in showing you how to get started using BOOST quickly and easily. For more detailed information please see help information provided in each widget and the BOOST User Guide, which is accessible <a href=\"http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf\" target=\"_blank\">here</a>.</small>",
-    "STR_LICENSE_AGREEMENT": "License agreement",
-    "STR_THIS_PROJECT_HAS_BEEN_FUNDED": "This project has been funded with support from the European Commission.This web site reflects the views only of the authors, and the Commission cannot be held responsible for any use which may be made of the information contained therein.",
-    "STR_AGREE": "Agree",
-    "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, the license for BOOST was not accepted",
-    "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
-    "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, you do not have rights to access this widget",
-    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator"
+    "STR_WELCOME": "Willkommen",
+    "STR_WECOME_WIDGET": "Willkommen Widget",
+    "STR_WELCOME_TO_THE_BOOST_PROJECT": "Willkommen in der BOOST-Projekt",
+    "STR_BOOST_STANDS_FOR_BUSINESS_PERFORMANCE": "<small><strong>BOOST</strong>bedeutet <strong>B</strong>usiness perf<strong>O</strong>rmance impr<strong>O</strong>vement through individual employee <strong>S</strong>kills <strong>T</strong>raining.</small>",
+    "STR_WITH_BOOST_YOU_CAN_ORGANISE_MANAGE": "<small> Mit BOOST können Sie den Trainingsprozess in Klein- und Kleinstunternehmen organisieren, verwalten und überwachen. Unten sind ein paar Schritte, um Ihnen den Einstieg erleichtern. </ small>",
+    "STR_IF_YOU_ARE_A_MANAGER": "<small> <strong> Wenn Sie ein Manager sind: </ strong> </ small>",
+    "STR_ASSIGN_USER_ROLES_TO_EMPLOYEES": "<li> <small> Zuweisen von Benutzerrollen für Mitarbeiter mit Hilfe des <strong> Zugriffsrechte </ strong> Widgets. </ small> </ li> <li> <small> Definieren Sie Unternehmensziele und fügen ihnen mit dem <strong> Unternehmensziele </ strong> Widgets Lernindikatoren hinzu. Vergeben Sie Prioritäten für die Ziele, unter Angabe einer hohen Priorität für das Wichtigste. </ Small> </ li> <li> <small> Überwachen Sie den  Unternehmensziele Fortschritte und Mitarbeiter Kompetenz im <strong> Lernfortschritt </ strong> Widgets. Es arbeitet mit den <strong> Unternehmensziele </ strong> und <strong> Business Mitarbeiter </ strong> Widgets zusammen. </ Small> </ li> <li> <small> Informationen über Mitarbeiter bearbeiten und ihnen Ziele zuordnen, Lernniveaus anpassen im <strong> Business Mitarbeiter </ strong> Widget. </ small> </ li>",
+    "STR_IF_YOU_ARE_AN_EMPLOYEE": "<small> <strong> Wenn Sie Arbeitnehmer sind: </ strong> </ small>",
+    "STR_USE_A_BOOST_SEARCH_WIDGET_TO": "<li> <small> Verwenden Sie ein <strong> Boost Suche </ strong> Widget um Lernmaterialien zu finden. </ small> </ li> <li> <small> Beobachten und lesen Sie interessante Quellen mit dem <strong> Boost Viewer </ . strong> Widget </ small> </ li> <li> <small> Speichern und organisieren Sie Ihre Lernressourcen im <strong> Learning Repository: </ strong> Sie können neue Lernunterlagen, Experten und Widgets, die den Zielen und Lernindikatoren zugeordnet sind, überprüfen und hinzufügen. </ small> </ li> <li> <small> Überwachen Sie Ihre Lernfortschritte mit dem <strong> Lernfortschritt </ strong> Widget. </ small> </ li>",
+    "STR_WE_HOPE_THIS_QUICK_START_HAS": "Wir hoffen, dieser Quick Start hat Ihnen gezeigt, wie man mit BOOST schnell und einfach loslegt. Für nähere Information benutzen Sie den Hilfe-Button in jedem Widget oder das <a href =\"http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/boostGuide.pdf\" target = \"_blank\">BOOST-Benutzerhandbuch</a>. </ small>",
+    "STR_LICENSE_AGREEMENT": "Lizenzvereinbarung",
+    "STR_THIS_PROJECT_HAS_BEEN_FUNDED": "Dieses Projekt wurde mit Unterstützung der Europäischen Commission finanziert von. Diese Webseite spiegelt ausschließlich die Ansicht des Verfasser wieder; Die Kommission kann nicht für die weitere Verwendung der darin enthaltenen Informationen verantwortlich gemacht werden.",
+    "STR_AGREE": "Zustimmen",
+    "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, die Lizenz für BOOST wurde nicht akzeptiert",
+    "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Bevor Sie fortfahren müssen Sie zuerst das BOOST Willkommen Widget starten und die Endbenutzer-Lizenzvereinbarung akzeptieren.",
+    "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, Sie haben keine Rechte auf dieses Widget zugreifen",
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Bitte kontaktieren Sie Ihre Manager oder Administrator bevor Sie fortfahren"
 });
