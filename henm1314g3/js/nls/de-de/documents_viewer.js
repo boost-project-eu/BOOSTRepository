@@ -1,8 +1,12 @@
+/*
+  documents_viewer.js
+  Language: de-de
+*/
 define({
     "STR_BOOST_VIEWER": "Boost Viewer",
-    "STR_VIEW_DOCUMENTS_LIKE_VIDEOS_OR": "View documents like videos or slides.",
-    "STR_NO_DESCRIPTION_AVAILABLE": "No description available.",
-    "STR_DOCUMENTS_VIEWER": "Documents viewer",
-    "STR_BOOST_VIEWER_HELP": "Boost Viewer Help",
-    "STR_CLICK_ON_LEARNING_DOCUMENT_IN": "Click on learning document in the <em>Boost Search</em> or in the <em>Learning Repository</em> widget to see it in the <em>Boost Viewer</em>"
+    "STR_VIEW_DOCUMENTS_LIKE_VIDEOS_OR": "Betrachten Sie Dokumente wie Videos oder Dias.",
+    "STR_NO_DESCRIPTION_AVAILABLE": "Keine Beschreibung vorhanden.",
+    "STR_DOCUMENTS_VIEWER": "Dokumenten Viewer",
+    "STR_BOOST_VIEWER_HELP": "Boost Viewer Hilfe",
+    "STR_CLICK_ON_LEARNING_DOCUMENT_IN": "Klicken Sie auf das Lerndokument in der <em> Boost Suche </ em> oder in dem <em> Lern Repository </ em> Widget, um es im <em> Boost Viewer </ em> zu sehen."
 });

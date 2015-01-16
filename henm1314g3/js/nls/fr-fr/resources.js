@@ -1,0 +1,40 @@
+/*
+  resources.js
+  Language: fr-fr
+*/
+define({
+    "STR_LEARNING_RESOURCES": "Ressources d'apprentissage",
+    "STR_WIDGET_TO_MANAGE_DOCUMENTS_AND": "Widget de lgestion des documents et experts",
+    "STR_NO_GOALS_DEFINED": "Aucun objectif défini.",
+    "STR_DOCUMENTS": "Documents",
+    "STR_ADD_NEW_DOCUMENT": "Ajouter un nouveau document",
+    "STR_EXPERTS": "Experts",
+    "STR_ADD_NEW_EXPERT": "Ajouter un nouvel expert",
+    "STR_WIDGETS": "Widgets",
+    "STR_ADD_NEW_WIDGET": "Ajouter un nouveau widget",
+    "STR_IMPORT_FROM_VIEWER": "Importer depuis l'afficheur",
+    "STR_LINK": "Lien",
+    "STR_PLEASE_ENTER_A_VALID_EMAIL_ADDRESS": "Merci d'entrer un courriel valide.",
+    "STR_PROFILE": "Profil",
+    "STR_ENTER_EXPERT_PROFILE": "Entrez le profil de l'expert",
+    "STR_PHONE_NUMBER": "Téléphone",
+    "STR_ENTER_PHONE_NUMBER": "Entrez un numéro de téléphone",
+    "STR_ADDRESS": "Adresse",
+    "STR_ENTER_ADDRESS": "Entrez une adresse",
+    "STR_WEBSITE": "Site internet",
+    "STR_ENTER_WEBSITE_URL": "Adresse du site internet",
+    "STR_ENTER_SKYPE_ID": "Entrez un identifiant Skype",
+    "STR_EDIT_DOCUMENT": "Editer le document",
+    "STR_UPDATE": "Mettre à jour",
+    "STR_EDIT_EXPERT_INFORMATION": "Editer les informations de l'expert",
+    "STR_CONTACT_INFORMATIONS": "Informations de contact",
+    "STR_EDIT_WIDGET_INFORMATION": "Editer les informations du widget",
+    "STR_DO_YOU_WANT_TO_DELETE_DOCUMENT": "Voulez-vous vraiment effacer ce document ?",
+    "STR_DO_YOU_WANT_TO_DELETE_EXPERT": "Voulez-vous vraiment effacer {{Expert.name}} ?",
+    "STR_DO_YOU_WANT_TO_DELETE_WIDGET": "Voulez-vous vraiment effacer {{Widget.name}} ?",
+    "STR_CONTACT_INFORMATION_OF": "Informations de contact de {{Expert.name}}",
+    "STR_INFORMATION_OF": "Information sur le widget {{Widget.name}}",
+    "STR_LEARNING_RESOURCES_HELP": "Aide sur les ressources d'apprentissage",
+    "STR_IN_THE_LEARNING_RESOURCES_WIDGET": "<li>Dans le widget des <em>Ressources d'apprentissage</em>, vous pouvez consulter ou ajouter de nouveaux documents, des experts et des widgets attribuées aux objectifs et indicateurs d'apprentissage.</li><li>Pour voir la liste des indicateurs d'apprentissage affectés à l'objectif cliquez dessus.</li><li>Pour voir la liste des documents attribués à un indicateur d'apprentissage particulier, cliquez dessus.</li><li>Pour voir la liste des experts affectés à un indicateur d'apprentissage particulier, cliquez dessus.</li><li>Pour voir la liste des widgets affectés à un indicateur d'apprentissage particulier, cliquez dessus.</li><li>Pour ajouter un nouveau document, cliquez sur <em>Ajouter un nouveau document</em>. Dans la vue <em>ajouter un nouveau document</em>, vous pouvez importer le nom, la description et l'URL à partir du widget <em>Afficheur Boost</em> ou entrer ces informations dans les champs de texte appropriés. Cliquez sur <em>Enregistrer</em> pour enregistrer les modifications.</li><li>Pour ajouter nouvel expert, cliquez sur <em>Ajouter un nouvel expert</em>.",
+    "STR_IN_THE_ADD_A_NEW_EXPERT_ENTER": "<li>Dans <em>Ajouter un nouvel expert</em> entrez les informations de contact dans les champs de texte appropriés.</li><li>Cliquez sur <em>Enregistrer</em> pour terminer.</li><li>Pour ajouter nouveau widget, cliquez sur <em>Ajouter un nouveau widget</em>.<li>Dans <em>Ajouter un nouveau widget</em> entrez le nom du widget et son URL dans les champs de texte appropriés.</li><li>Cliquez sur <em>Enregistrer</em> pour enregistrer les modifications.</li><li>Pour voir les informations concernant les experts ou les widgets, cliquez sur le bouton <button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></button>.</li>"
+});

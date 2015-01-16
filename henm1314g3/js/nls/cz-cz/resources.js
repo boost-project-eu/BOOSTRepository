@@ -1,0 +1,40 @@
+/*
+  resources.js
+  Language: cz-cz
+*/
+define({
+    "STR_LEARNING_RESOURCES": "Vzdělávací materiály",
+    "STR_WIDGET_TO_MANAGE_DOCUMENTS_AND": "Ovládací prvek k organizaci dokumentů a odborníků.",
+    "STR_NO_GOALS_DEFINED": "Žádné cíle nebyly definovány.",
+    "STR_DOCUMENTS": "Dokumenty",
+    "STR_ADD_NEW_DOCUMENT": "Přidat nový dokument",
+    "STR_EXPERTS": "Odborníci",
+    "STR_ADD_NEW_EXPERT": "Přidat nového odborníka",
+    "STR_WIDGETS": "Ovládací prvky",
+    "STR_ADD_NEW_WIDGET": "Přidat nový ovládací prvek",
+    "STR_IMPORT_FROM_VIEWER": "Importovat z prohlížeče",
+    "STR_LINK": "Odkaz",
+    "STR_PLEASE_ENTER_A_VALID_EMAIL_ADDRESS": "Prosím vložte platnou mailovou adresu.",
+    "STR_PROFILE": "Profil",
+    "STR_ENTER_EXPERT_PROFILE": "Vložte profil odborníka",
+    "STR_PHONE_NUMBER": "Telefon",
+    "STR_ENTER_PHONE_NUMBER": "Vložte telefonní číslo",
+    "STR_ADDRESS": "Adresa",
+    "STR_ENTER_ADDRESS": "Vložte adresu",
+    "STR_WEBSITE": "web",
+    "STR_ENTER_WEBSITE_URL": "Vložte url webové stránky",
+    "STR_ENTER_SKYPE_ID": "Vložte Skype ID",
+    "STR_EDIT_DOCUMENT": "Upravit dokument",
+    "STR_UPDATE": "Aktualizovat",
+    "STR_EDIT_EXPERT_INFORMATION": "Upravit informaci o odborníkovi ",
+    "STR_CONTACT_INFORMATIONS": "Kontaktní informace",
+    "STR_EDIT_WIDGET_INFORMATION": "Upravit informaci o ovládacím prvku",
+    "STR_DO_YOU_WANT_TO_DELETE_DOCUMENT": "Opravdu chcete smazat tento dokument?",
+    "STR_DO_YOU_WANT_TO_DELETE_EXPERT": "Opravdu chcete smazat {{Odborník.jméno}}?",
+    "STR_DO_YOU_WANT_TO_DELETE_WIDGET": "Opravdu chcete smazat {{Ovládací prvek.název}}?",
+    "STR_CONTACT_INFORMATION_OF": "Kontaktní informace {{Odborník.jméno}}",
+    "STR_INFORMATION_OF": "Informace k {{Ovládací pvek.název}}",
+    "STR_LEARNING_RESOURCES_HELP": "Vzdělávací materiály nápověda",
+    "STR_IN_THE_LEARNING_RESOURCES_WIDGET": "<li>Ve <em>Vzdělávací materiály</em> ovládacím prvku můžete kontrolovat nebo přidávat nové dokumenty, odborníky a ovládací prvky přiřazené k cíli a vzdělávacím indikátorům. </li><li>K zobrazení seznamu vzdělávacích indikátorů přiřazených k cíli, klikněte na jeho název.</li><li>K zobrazení seznamu dokumentů přiřazených ke konkrétnímu vzdělávacímu indikátoru, klikněte na jeho název.</li><li>K zobrazení seznamu odborníků přiřazených ke konkrétnímu vzdělávacímu indikátoru, klikněte na jeho název.</li><li>K zobrazení seznamu ovládacích prvků přiřazených ke konkrétnímu vzdělávacímu indikátoru, klikněte na jeho název.</li><li>K přidání nového dokumentu, klikněte na <em>Přidat nový dokument</em> položku v hlavní nabídce. V zobrazení <em>Přidat nový dokument</em> můžete importovat název, popis a url z <em>Boost prohlížeče</em> ovládacího prvku nebo vložte do příslušných textových polí. Klikněte na <em>Uložit</em> tlačítko k uložení všech změn.</li><li>K přidání nového odborníka, klikněte na <em>Přidat nového odborníka</em> položku v hlavní nabídce.",
+    "STR_IN_THE_ADD_A_NEW_EXPERT_ENTER": "<li>V <em>Přidat nového odborníka</em> vložte kontaktní informace na odborníka do příslušných textových polí.</li><li>Klikněte na  <em>Uložit</em> tlačítko k uložení všech změn.</li></ul><li>K přidání nového ovládacího prvku, klikněte na <em>Přidat nový ovládací prvek</em> položku v hlavní nabídce. <ul style=\"padding: 10px;\"><li>V<em>Přidat nový ovládací prvek</em> vložte název ovládacího prvku a jeho url adresu do příslušných textových polí.</li><li>Klikněte na <em>Uložit</em> tlačítko k uložení všech změn.</li></ul><li>K zobrazení informací o odbornících nebo ovládacích prvcích, klikněte na <button class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></button> ikonu.</li>"
+});

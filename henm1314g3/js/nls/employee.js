@@ -33,5 +33,8 @@ define({
         "STR_TO_SEND_EMAIL_TO_THE_EMPLOYEES": "To send email to the employees click on <button class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-envelope\" style=\"margin-right:5px;\"></span></button> icon. Pop-up mail window will appear.",
         "STR_IN_THIS_WIDGET_YOU_CAN_SEE_YOUR": "In this widget you can see your profile details. Click on <button class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-stats\"></span></button> icon to see  your overall progress in the Learning Progress widget."
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });

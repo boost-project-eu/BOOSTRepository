@@ -7,5 +7,8 @@ define({
         "STR_BOOST_VIEWER_HELP": "Boost Viewer Help",
         "STR_CLICK_ON_LEARNING_DOCUMENT_IN": "Click on learning document in the <em>Boost Search</em> or in the <em>Learning Repository</em> widget to see it in the <em>Boost Viewer</em>"
     },
-    "de-de" : true
+    "de-de" : true,
+    "cz-cz" : true,
+    "el-el" : true,
+    "fr-fr" : true
 });
