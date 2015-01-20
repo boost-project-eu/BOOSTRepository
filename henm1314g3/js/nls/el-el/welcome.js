@@ -3,6 +3,7 @@
   Language: el-el
 */
 define({
+    "STR_LANGUAGE": "γλώσσα",
     "STR_WELCOME": "Καλωσορίσατε",
     "STR_WECOME_WIDGET": "Widget Καλωσορίσματος.",
     "STR_WELCOME_TO_THE_BOOST_PROJECT": "Καλωσορίσατε στο έργο BOOST ",

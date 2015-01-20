@@ -216,11 +216,12 @@
 
 										//Check if user has agreed to license
 										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
-											// showModalAcceptTermsOfUse();
+											showModalAcceptTermsOfUse();
 
-										} else if(!accessRights.getUserAccessRights().isManager){
+										} 
+										// else if(!accessRights.getUserAccessRights().isManager){
 											// showModalContactManager();
-										}
+										// }
 
 										ractiveOverview = new Ractive({
 											el: 'containerUserOverview',

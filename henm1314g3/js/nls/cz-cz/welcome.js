@@ -3,6 +3,7 @@
   Language: cz-cz
 */
 define({
+    "STR_LANGUAGE": "Jazyk",
     "STR_WELCOME": "Vítejte",
     "STR_WECOME_WIDGET": "Vítací ovládací prvek",
     "STR_WELCOME_TO_THE_BOOST_PROJECT": "Vítejte v projektu BOOST",

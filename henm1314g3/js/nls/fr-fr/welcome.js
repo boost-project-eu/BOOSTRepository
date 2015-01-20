@@ -3,6 +3,7 @@
   Language: fr-fr
 */
 define({
+    "STR_LANGUAGE": "Langue",
     "STR_WELCOME": "Bienvenue",
     "STR_WECOME_WIDGET": "Widget de bienvenue.",
     "STR_WELCOME_TO_THE_BOOST_PROJECT": "Bienvenue dans l'outil BOOST",

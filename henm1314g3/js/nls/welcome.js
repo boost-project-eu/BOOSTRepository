@@ -1,5 +1,6 @@
 define({
     "root" : {
+        "STR_LANGUAGE": "Language",
         "STR_WELCOME": "Welcome",
         "STR_WECOME_WIDGET": "Wecome Widget.",
         "STR_WELCOME_TO_THE_BOOST_PROJECT": "Welcome to the BOOST Project",
