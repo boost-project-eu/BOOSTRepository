@@ -244,11 +244,8 @@
 
 							if(!userAccessRights.hasAgreedToLicense){
 								showModalAcceptTermsOfUse();
-							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								// showModalContactManager();
-							}
-
-							});  // end of the retrieveAccessRights
+							} 
+						});  // end of the retrieveAccessRights
 
 
 						var message = "<div>Please wait.</div>"

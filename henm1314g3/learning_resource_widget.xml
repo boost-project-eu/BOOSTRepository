@@ -163,9 +163,7 @@
 
 							if(!userAccessRights.hasAgreedToLicense){
 								showModalAcceptTermsOfUse();
-							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();
-							}
+							} 
 
 							});  // end of the retrieveAccessRights
 

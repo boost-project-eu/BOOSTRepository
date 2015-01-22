@@ -44,11 +44,9 @@ function retrieveAccessRights(callback){
 }
 
 function showModalAcceptTermsOfUse(){
-	console.log(translations);
-	console.log("transitions");
 	bootbox.dialog({
-			title : "Sorry, the license for BOOST was not accepted",
-			message : "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
+			title : translations.STR_SORRY_THE_LICENSE_FOR_BOOST_WAS,
+			message : translations.STR_BEFORE_PROCEEDING_YOU_MUST_FIRST,
 			closeButton : false
 			});
 	return;
@@ -56,8 +54,8 @@ function showModalAcceptTermsOfUse(){
 
 function showModalContactManager(){
 	bootbox.dialog({
-			title : "Sorry, you do not have rights to access this widget",
-			message : "Before proceeding please contact your manager or administrator",
+			title : translations.STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS,
+			message : translations.STR_BEFORE_PROCEEDING_PLEASE_CONTACT,
 			closeButton : false
 			});
 	return;

@@ -288,11 +288,9 @@
 							agreed = userAccessRights.hasAgreedToLicense;
 							//Check if user has agreed to license
 
-								if(!agreed){
+							if(!agreed){
 								showModalAcceptTermsOfUse();
-							} else if (!userAccessRights.isManager && !userAccessRights.isEmployee) {
-								showModalContactManager();
-							}
+							} 
 
 							ractiveSearchHeader = new Ractive({
 									el: 'containerSearch',
