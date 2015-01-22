@@ -17,7 +17,11 @@ define({
         "STR_IF_CURRENT_VIEW_IS_OVERALL_EMPLOYEE": "If current view is <em>Overall Employee View</em>: average learning progress of all employees will be shown. In this view you can:",
         "STR_CHANGE_CURRENT_VIEW_TO_THE_OVERALL": "<li>Change current view to the <em>Overall Business Goals</em> by clicking on the chart.</li><li>To see the average learning progress on goals of particular employee click on the <em>employee</em> bar accordingly.</li><li>To see the learning progress on learning indicators of particular employee click on the <em>goal</em> bar. </li><li>To come back to previous step click on the chart.</li> ",
         "STR_IF_CURRENT_VIEW_IS_OVERALL_BUSINESS": "If current view is <em>Overall Business Goals</em>: average learning progress on all goals will be shown. In this view you can: ",
-        "STR_CLICK_ON_THE_CHART_TO_CHANGE": "<li>Click on the chart to change view to the <em>Overall Employee View</em>.</li><li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li><li>Click on the learning indicators bar to see detailled view over every employee progress.</li><li>To come back to previous step click on the chart.</li>"
+        "STR_CLICK_ON_THE_CHART_TO_CHANGE": "<li>Click on the chart to change view to the <em>Overall Employee View</em>.</li><li>Click on the goal bars to see the average learning progress of all employees on learning indicators. </li><li>Click on the learning indicators bar to see detailled view over every employee progress.</li><li>To come back to previous step click on the chart.</li>",
+        "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, the license for BOOST was not accepted",
+        "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
+        "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, you do not have rights to access this widget",
+        "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator"
     },
     "de-de" : true,
     "cz-cz" : true,

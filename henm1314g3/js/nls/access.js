@@ -24,7 +24,11 @@ define({
         "STR_HAS_FULL_CONTROL_OVER_THE_SYSTEM": "Has full control over the system. Can assing access rights to the users. Can add/edit/delete employees and assign learning levels to them. Can specify deadlines for the goals and learning indicators. Can add/edit/delete business goals and learning indicators. Watch all employees progress/overall progress/progress over learning goals/progress over learning indicators.",
         "STR_USER_OWNER_OF_SPACE": "This user is the owner of the space.",
         "STR_THIS_USER_HAS_NOT_AGREED_TO_THE": "This user has not agreed to the terms of use yet.",
-        "STR_CLOSE": "Close"
+        "STR_CLOSE": "Close",
+        "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, the license for BOOST was not accepted",
+        "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
+        "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, you do not have rights to access this widget",
+        "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator"
     },
     "de-de" : true,
     "cz-cz" : true,

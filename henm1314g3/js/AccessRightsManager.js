@@ -44,6 +44,8 @@ function retrieveAccessRights(callback){
 }
 
 function showModalAcceptTermsOfUse(){
+	console.log(translations);
+	console.log("transitions");
 	bootbox.dialog({
 			title : "Sorry, the license for BOOST was not accepted",
 			message : "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",

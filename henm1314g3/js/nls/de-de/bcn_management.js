@@ -29,5 +29,9 @@ define({
     "STR_EDIT_GOAL": "Ziel ändern",
     "STR_DO_YOU_REALLY_WANT_TO_DELETE": "Wollen Sie wirklich löschen ?",
     "STR_CANCEL": "Abbrechen",
-    "STR_DELETE": "Löschen"
+    "STR_DELETE": "Löschen",
+    "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, die Lizenz für BOOST wurde nicht akzeptiert",
+    "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Bevor Sie fortfahren müssen Sie zuerst das BOOST Willkommen Widget starten und die Endbenutzer-Lizenzvereinbarung akzeptieren.",
+    "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, Sie haben keine Rechte auf dieses Widget zugreifen",
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Bitte kontaktieren Sie Ihre Manager oder Administrator bevor Sie fortfahren"
 });

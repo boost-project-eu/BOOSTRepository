@@ -29,5 +29,9 @@ define({
     "STR_EDIT_GOAL": "Επεξεργασία Στόχου",
     "STR_DO_YOU_REALLY_WANT_TO_DELETE": "Είστε σίγουροι ότι θέλετε να το διαγράψετε",
     "STR_CANCEL": "Ακύρωση",
-    "STR_DELETE": "Διαγραφή"
+    "STR_DELETE": "Διαγραφή",
+    "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Λυπούμαστε, η άδεια χρήσης για το BOOST δεν έγινε δεκτή",
+    "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Πριν προχωρήσετε θα πρέπει πρώτα να ξεκινήσει το widget καλωσορίσματος του Boost και να αποδεχτείτε την Άδεια Χρήσης Τελικού Χρήστη",
+    "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Λυπούμαστε, δεν έχετε δικαίωμα πρόσβασης σε αυτό το widget",
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Πριν προχωρήσετε, παρακαλούμε επικοινωνήστε με τον μάνατζερ ή το διαχειριστή σας"
 });

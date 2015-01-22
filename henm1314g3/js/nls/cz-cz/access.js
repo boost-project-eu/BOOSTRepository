@@ -27,5 +27,9 @@ define({
     "STR_HAS_FULL_CONTROL_OVER_THE_SYSTEM": "Má plnou kontrolu nad systémem. Může přiřazovat přístupová práva pro uživatele. Může přidávat/editovat/mazat zaměstnance a přiřazovat jim úrovně učení. Může specifikovat termíny k dosažení cílů a vzdělávacích indikátorů. Může přidávat/editovat/ mazat obchodní cíle a vzdělávací indikátory. Sleduje pokrok/celkový pokrok/ pokrok ohledně vzdělávacích cílů/ pokrok ohledně vzdělávacích indikátorů u všech zaměstnanců.",
     "STR_USER_OWNER_OF_SPACE": "Tento uživatel je majitelem tohoto prostoru.",
     "STR_THIS_USER_HAS_NOT_AGREED_TO_THE": "Tento uživatel ještě nesouhlasil s podmínkami používání.",
-    "STR_CLOSE": "Zavřít"
+    "STR_CLOSE": "Zavřít",
+    "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Litujeme, licence pro BOOST nebyla akceptována",
+    "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Předtím, než budete pokračovat, nejprve musíte  spustit BOOST uvítací ovládací prvek (BOOST Welcome Widget) a souhlasit s licenčními podmínkami konečného uživatele",
+    "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Litujeme, nemáte práva přístupu k tomuto ovládacímu prvku ",
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Předtím, než budete pokračovat, prosím kontaktujte svého manažera nebo správce"
 });
