@@ -41,6 +41,7 @@
 				"highcharts",
 			    "bootbox",
 			    "ractive",
+			    "lodash",
 				"highcharts_exporting",
 			    "jquery",
 			    "bootstrap",
@@ -50,7 +51,7 @@
 			    "AccessRightsManager",
 			    "iwc",
 			    "utils"
-			    ], function(tr, a, highCharts, b, r) {
+			    ], function(tr, a, highCharts, b, r, _) {
 			    	translations = tr;
 			    	async = a;
 			    	bootbox = b;
@@ -140,13 +141,18 @@
 									isEmployeeOverviewGraph.bool=false;
 									isDetailedGraph.bool=false;
 									check=true;
-
+									trimEmployeeNames(employees, 25);
 									showEmployeeOverviewGraph();
 
 								});
 							});
 						});
 		//			}
+					function trimEmployeeNames(employees, num){
+						_.each(employees, function(employee){
+							employee.name = employee.name.substr(0, num)
+						});
+					}
 
 					function iwcCallback(intent){
 						if (!check){
@@ -338,9 +344,8 @@
 									isEmployeeOverviewGraph.bool=false;
 									isDetailedGraph.bool=false;
 									check=true;
-
+									trimEmployeeNames(employees, 25);
 									showEmployeeOverviewGraph();
-
 								});
 							});
 						}

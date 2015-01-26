@@ -43,6 +43,7 @@
 				"ractive",
 				"ladda",
 			    "bootbox",
+			    "lodash",
 			    "jquery",
 			    "bootstrap",
 			    "bootstrapSlider",
@@ -56,7 +57,7 @@
 			    "bootstrapDatepicker",
 			    "moment",
 			    "utils"
-			    ], function(tr, a, Ractive, Ladda, b) {
+			    ], function(tr, a, Ractive, Ladda, b, _) {
 			    	translations = tr;
 					async = a;
 					bootbox = b;
@@ -155,7 +156,7 @@
 
 								retrieveAllEmployees(space, function(employees){
 									employeeList = filterEmployees(employees, accessRights);
-
+									trimEmployeeNames(employeeList, 25);
 									sortEmployees();
 
 									ractiveOverview.set("employeeList", employeeList);
@@ -234,6 +235,12 @@
 						iwcClient.publish(intent);
 					}
 
+					function trimEmployeeNames(employees, num){
+						_.each(employees, function(employee){
+							employee.name = employee.name.substr(0, num)
+						});
+					}
+
 					$(function(){
 
 						// Get the access rights:
@@ -280,8 +287,8 @@
 
 						retrieveAllEmployees(space, function(employees){
 							employeeList = filterEmployees(employees, accessRights);
-
 							sortEmployees();
+							trimEmployeeNames(employeeList, 25);
 							retrieveAllBcns(space, function(bcns){
 								bcnList = bcns;
 								sortBcns(bcnList);
@@ -403,6 +410,7 @@
 									//Show the loading indicator of the save button
 									var l = Ladda.create(buttonElement);
 									l.start();
+
 									employee.update(function(){
 										publishEmployeeUpdated(employee.uri);
 										//Replace the old employee in the array with the modified one

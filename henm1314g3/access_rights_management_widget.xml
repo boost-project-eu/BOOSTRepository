@@ -86,10 +86,10 @@
 					function iwcCallback(intent){
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
 
-							var message = "<div>" + str.STR_GOALS_HAVE_CHANGED + str.STR_PLEASE_WAIT + "</div>"
+							var message = "<div>" + translations.STR_GOALS_HAVE_CHANGED + translations.STR_PLEASE_WAIT + "</div>"
 							message = message + "<div><center><img style='margin-left:5px;' id='loader' src='http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/loader.gif'></center></div>";
 							bootbox.dialog({
-								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>" + str.STR_GOALS_HAVE_CHANGED,
+								title : "<span style='margin-right:5px;' class='glyphicon glyphicon-refresh'></span>" + translations.STR_GOALS_HAVE_CHANGED,
 								message : message,
 								closeButton : false
 							});
