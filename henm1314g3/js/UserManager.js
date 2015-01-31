@@ -1,3 +1,5 @@
+User.prototype = new BoostObject({});
+
 function User(object){
 	if(object.hasOwnProperty("uri"))
 		this.uri = object.uri;

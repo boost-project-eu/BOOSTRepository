@@ -35,6 +35,13 @@ function Employee(object){
 		this.userUri = object.userUri;
 	else
 		this.userUri = "";
+
+	if(object.hasOwnProperty("userClicks")){
+		this.userClicks = object.userClicks;
+	}
+	else {
+		this.userClicks = [];
+	}
 }
 
 Employee.prototype.clone = function(){
@@ -125,4 +132,26 @@ function filterEmployeesBasedOnAccessRights(employees, accessRights){
 		filteredEmployeeList.push(employee);
 	}
 	return filteredEmployeeList;
+}
+
+function UserClick(object){
+	if(object.hasOwnProperty("elementName"))
+		this.elementName = object.buttonName;
+	else
+		this.elementName = "";
+
+	if(object.hasOwnProperty("userAction"))
+		this.userAction = object.userAction;
+	else
+		this.userAction = "";
+
+	if(object.hasOwnProperty("date"))
+		this.date = object.date;
+	else
+		this.date = new Date();
+
+	if(object.hasOwnProperty("widget"))
+		this.widget = object.widget;
+	else
+		this.widget = "";
 }

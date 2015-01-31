@@ -67,6 +67,7 @@
 					var employeesList;
 					var bcnsList;
 					var currentUser;
+					var currentEmployee;
 
 					//Define the ractives as globals
 					var ractiveOverview;
@@ -169,7 +170,6 @@
 										accessRights = access;
 										employeesList = employees;
 										bcnsList = bcns;
-
 										sortUsers(userList);
 
 										//retrieve current employee
@@ -194,7 +194,10 @@
 											};
 										};
 
+										//retrieve current Employee from user (cause we need boost recource here)
+										currentEmployee = _.find(employeesList, {userUri: currentUser.uri});
 
+										// currentEmployee.update(function(){});
 
 										//Match all users with their access rights which are stored in the config
 										//resource
@@ -240,6 +243,14 @@
 												createEmployeeIfNotExist(user, accessRights, employeesList);
 											},
 											showHelp: function(event){
+												console.log(currentEmployee);
+												// currentEmployee.userClicks = [];
+												currentEmployee.userClicks.push(new UserClick({
+													elementName: "ShowHelpButton",
+													userAction: "Show Help popup",
+													widget: "access",
+												}));
+												currentEmployee.update(function(){console.log('user updated')});
 												$('#descriptionModal').modal({
 													keyboard: true
 												});
