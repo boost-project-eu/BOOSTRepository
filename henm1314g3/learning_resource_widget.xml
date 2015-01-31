@@ -695,8 +695,10 @@
 								        var addWidgetRactive = new Ractive({
 								        	el: 'addWidgetTemplateContainer',
 								        	template: '#addWidgetTemplate',
-								        	data: {newWidget: new Widget({})},
-								        	text: translations
+								        	data: {
+								        		newWidget: new Widget({}),
+								        		text: translations
+								        	}
 								        });
 
 								        addDocumentRactive.on("saveDocument", function(event){
