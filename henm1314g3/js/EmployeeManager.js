@@ -136,7 +136,7 @@ function filterEmployeesBasedOnAccessRights(employees, accessRights){
 
 function UserClick(object){
 	if(object.hasOwnProperty("elementName"))
-		this.elementName = object.buttonName;
+		this.elementName = object.elementName;
 	else
 		this.elementName = "";
 

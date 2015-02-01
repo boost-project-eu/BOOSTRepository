@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+
+    <ModulePrefs title="Statistic"
+		description="Define business critical needs and learning indicators for your business."
+		author="Team Boost"
+		author_email="henm1314g3@dbis.rwth-aachen.de"
+		width="800"
+		height="450">
+  	<Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+		<Service name="openapp"
+		    xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
+		    openapp:service="http://purl.org/role/terms/spaceService"
+		    openapp:permitReadAppend="http://purl.org/role/terms/data">
+
+		    <Request method="" url=""/>
+			<Authorization url=""/>
+			<Access method="" url=""/>
+		</Service>
+    </OAuth>
+    </ModulePrefs>
+
+    <Content type="html">
+    <![CDATA[
+
+		<!-- We use jQuery to manipulate DOM and jQuery-UI for the interface. -->
+		<script src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/require.js"></script>
+
+		<!-- Define CSS -->
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/datepicker3.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+		<!-- JavaScript Block -->
+		<script>
+
+			require( ['http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/config.js'], function (config){
+			require( [
+				"i18n!http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/nls/bcn_management.js",
+				"async",
+				"ractive",
+				"ractiveValidator",
+			    "ladda",
+			    "bootbox",
+			    "lodash",
+			    "jquery",
+			    "bootstrap",
+			    "EmployeeManager",
+			    "spin",
+			    "BCNManager",
+			    "LearningDocumentsManager",
+			    "AccessRightsManager",
+			    "iwc",
+			    "bootstrapDatepicker",
+			    "utils"
+			    ], function(tr, a, Ractive, RactiveValidator, Ladda, b, _) {
+			    	translations = tr;
+			    	async = a;
+			    	bootbox = b;
+					var space;
+					var employeeList;
+					var bcnsList;
+					var iwcClient;
+					var userAccessRights;
+					var userList;
+					var currentEmployee;
+					var ractiveOverview;
+					var ractiveBcnHeader;
+
+					if (openapp.param.user()) {
+						closeAutorisationWindow();
+					}
+
+					space = new openapp.oo.Resource(openapp.param.space());
+
+					iwcClient = new iwc.Client();
+					iwcClient.connect(iwcCallback);
+
+					$(function(){
+
+						retrieveAccessRights(function(accessRights){
+							userAccessRights = accessRights.getUserAccessRights();
+
+							retrieveAllEmployees(space, function(employees){
+								for(var i = 0; i < employees.length; i++){
+									var employee = employees[i];
+									if (employee.userUri == openapp.param.user()){
+										currentEmployee = employee;
+									};
+								};
+
+								ractiveOverview = new Ractive({
+									el: 'containerBcnOverview',
+									template: '#templateBcnOverview',
+									data: { "bcnsList" : bcnsList,
+											"accessRights" : userAccessRights,
+											text: translations,
+											employees: employees
+											},
+									append: true
+								});
+							});
+
+						}); 
+
+					});
+
+					function iwcCallback(intent){
+						
+					};
+
+					
+					$('.panel-collapse').on('shown.bs.collapse', function () {
+					   $(".glyphicon").removeClass("glyphicon-folder-close").addClass("glyphicon-folder-open");
+					});
+
+					$('#collapseDiv').on('hidden.bs.collapse', function () {
+					   $(".glyphicon").removeClass("glyphicon-folder-open").addClass("glyphicon-folder-close");
+					});
+
+				});
+			});
+
+		</script>
+
+	<!-- HTML Block -->
+	<!-- Main widget view -->
+
+
+		<div style="overflow-y: scroll; height:450px;">
+			<div class="panel panel-primary" id="containerBcnOverview">
+					<div class="panel-heading text-center">
+						<h4>statistics</h4>
+			  		</div>
+			</div>
+		</div>
+		<script id="templateBcnOverview" type='text/ractive'>
+			{{#employees}}
+					<div class="panel-group" id="accordion">
+					  <div class="panel panel-default">
+					    <div class="panel-heading" style="padding:0px; border-bottom: 0px;">
+					      <h4 class="panel-title">
+					        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{name.split(' ')[0]}}">
+
+					        	<div class="panel panel-default">
+								 	<div class="panel-body" style="padding: 0px 15px;">
+										<h5>{{name}}<h5>
+								  	</div>
+								</div>
+							</a>
+						    </h4>	
+						</div>
+
+					   	<div id="{{name.split(' ')[0]}}" class="panel-collapse collapse">
+						    <div class="panel-body" style="padding: 0px 15px;">
+
+						    {{#userClicks}}
+								<div class="row">
+									<div class="col-xs-3">{{elementName}}</div>
+									<div class="col-xs-3">{{userAction}}</div>
+									<div class="col-xs-3">{{date}}</div>
+									<div class="col-xs-3">{{widget}}</div>
+								</div>
+								<hr>
+						    {{/userClicks}}
+
+						    </div>
+						</div>
+					</div>
+			{{/employees}}
+		</script>
+
+
+	 ]]>
+  </Content>
+</Module>
