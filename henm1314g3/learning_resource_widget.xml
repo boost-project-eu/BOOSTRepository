@@ -489,6 +489,42 @@
 											$("#editWidgetModal").modal();
 								        });
 
+								        //documents tooltips
+								        treeRactive.on("showHelpViewDocument", function(event){
+								        	$(event.node).tooltip();
+								        });
+								        treeRactive.on("showHelpEditDocument", function(event){
+								        	$('.tooltip-editDocument').tooltip();
+								        });
+								        treeRactive.on("showHelpDeleteDocument", function(event){
+								        	$('.tooltip-deleteDocument').tooltip();
+								        });
+
+								        //expert tooltips
+								        treeRactive.on("showHelpViewExpert", function(event){
+								        	$(event.node).tooltip();
+								        });
+								        treeRactive.on("showHelpMailExpert", function(event){
+								        	$(event.node).tooltip();
+								        });
+								        treeRactive.on("showHelpEditExpert", function(event){
+								        	$(event.node).tooltip();
+								        });
+								        treeRactive.on("showHelpDeleteExpert", function(event){
+								        	$(event.node).tooltip();
+								        });
+
+								        //widget tooltips
+								        treeRactive.on("showHelpViewWidget", function(event){
+								        	$(event.node).tooltip();
+								        });
+								        treeRactive.on("showHelpEditWidget", function(event){
+								        	$(event.node).tooltip();
+								        });
+								        treeRactive.on("showHelpDeleteWidget", function(event){
+								        	$(event.node).tooltip();
+								        });
+
 								    //retrieve access rights function end
 
 
@@ -873,14 +909,14 @@
 																		<div class="col-xs-4">
 																			<div class='btn-group pull-right'>
 																				{{#url}}
-																					<button on-click="documentShow" class='btn btn-default btn-sm'>
+																					<button on-click="documentShow" class='btn btn-default btn-sm tooltip-viewDocument' on-mouseenter="showHelpViewDocument" data-placement="top" data-toggle="tooltip" data-original-title="Show Current Document">
 																						<span class='glyphicon glyphicon-play-circle'></span>
 																					</button>
 																				{{/url}}
-																				<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																				<button on-click="documentEdit" class='btn btn-default btn-sm tooltip-editDocument' on-mouseenter="showHelpEditDocument" data-placement="top" data-toggle="tooltip" data-original-title="Edit Current Document">
 																					<span class='glyphicon glyphicon-edit'></span>
 																				</button>
-																				<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																				<button on-click="documentDelete" class='btn btn-default btn-sm tooltip-deleteDocument' on-mouseenter="showHelpDeleteDocument" data-placement="top" data-toggle="tooltip" data-original-title="Delete Current Document">
 																					<span class='glyphicon glyphicon-trash'></span>
 																				</button>
 																			</div>
@@ -910,16 +946,16 @@
 																<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
 
 																<div class='btn-group pull-right'>
-																	<button on-click="ExpertView" class='btn btn-default btn-sm'>
+																	<button on-click="ExpertView" class='btn btn-default btn-sm' on-mouseenter="showHelpViewExpert" data-placement="top" data-toggle="tooltip" data-original-title="View Expert Information">
 																		<span class='glyphicon glyphicon-eye-open'></span>
 																	</button>
-																	<button on-click="ExpertEmail" class='btn btn-default btn-sm'>
+																	<button on-click="ExpertEmail" class='btn btn-default btn-sm' on-mouseenter="showHelpMailExpert" data-placement="top" data-toggle="tooltip" data-original-title="Mail Expert">
 																		<a class='glyphicon glyphicon-envelope' style="color:#000;" href='mailto:{{email}}'></a>
 																	</button>
-																	<button on-click="ExpertEdit" class='btn btn-default btn-sm'>
+																	<button on-click="ExpertEdit" class='btn btn-default btn-sm' on-mouseenter="showHelpEditExpert" data-placement="top" data-toggle="tooltip" data-original-title="Edit Expert">
 																		<span class='glyphicon glyphicon-edit'></span>
 																	</button>
-																	<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
+																	<button on-click="ExpertDelete" class='btn btn-default btn-sm' on-mouseenter="showHelpDeleteExpert" data-placement="top" data-toggle="tooltip" data-original-title="Delete Expert">
 																		<span class='glyphicon glyphicon-trash'></span>
 																	</button>
 																</div>
@@ -943,13 +979,13 @@
 															<span>
 																<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
 																<div class='btn-group pull-right'>
-																	<button on-click="WidgetView" class='btn btn-default btn-sm'>
+																	<button on-click="WidgetView" class='btn btn-default btn-sm' on-mouseenter="showHelpViewWidget" data-placement="top" data-toggle="tooltip" data-original-title="View Widget">
 																		<span class='glyphicon glyphicon-eye-open'></span>
 																	</button>
-																	<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
+																	<button on-click="WidgetEdit" class='btn btn-default btn-sm' on-mouseenter="showHelpEditWidget" data-placement="top" data-toggle="tooltip" data-original-title="Edit widget">
 																		<span class='glyphicon glyphicon-edit'></span>
 																	</button>
-																	<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
+																	<button on-click="WidgetDelete" class='btn btn-default btn-sm' on-mouseenter="showHelpDeleteWidget" data-placement="top" data-toggle="tooltip" data-original-title="Delete Widget">
 																		<span class='glyphicon glyphicon-trash'></span>
 																	</button>
 																</div>
@@ -1008,14 +1044,14 @@
 																				<div class="col-xs-4">
 																					<div class='btn-group pull-right'>
 																						{{#url}}
-																							<button on-click="documentShow" class='btn btn-default btn-sm'>
+																							<button on-click="documentShow" class='btn btn-default btn-sm tooltip-viewDocument' on-mouseenter="showHelpViewDocument" data-placement="top" data-toggle="tooltip" data-original-title="Show Current Document">
 																								<span class='glyphicon glyphicon-play-circle'></span>
 																							</button>
 																						{{/url}}
-																						<button on-click="documentEdit" class='btn btn-default btn-sm'>
+																						<button on-click="documentEdit" class='btn btn-default btn-sm tooltip-editDocument' on-mouseenter="showHelpEditDocument" data-placement="top" data-toggle="tooltip" data-original-title="Edit Current Document">
 																							<span class='glyphicon glyphicon-edit'></span>
 																						</button>
-																						<button on-click="documentDelete" class='btn btn-default btn-sm'>
+																						<button on-click="documentDelete" class='btn btn-default btn-sm tooltip-deleteDocument' on-mouseenter="showHelpDeleteDocument" data-placement="top" data-toggle="tooltip" data-original-title="Delete Current Document">
 																							<span class='glyphicon glyphicon-trash'></span>
 																						</button>
 																					</div>
@@ -1045,16 +1081,16 @@
 																<span>
 																	<span style='margin-right:5px;' class='glyphicon glyphicon-user'></span>{{name}}
 																	<div class='btn-group pull-right'>
-																		<button on-click="ExpertView" class='btn btn-default btn-sm'>
+																		<button on-click="ExpertView" class='btn btn-default btn-sm' on-mouseenter="showHelpViewExpert" data-placement="top" data-toggle="tooltip" data-original-title="View Expert Information">
 																			<span class='glyphicon glyphicon-eye-open'></span>
 																		</button>
-																		<button on-click="ExpertEmail" class='btn btn-default btn-sm'>
+																		<button on-click="ExpertEmail" class='btn btn-default btn-sm' on-mouseenter="showHelpMailExpert" data-placement="top" data-toggle="tooltip" data-original-title="Mail Expert">
 																			<a class='glyphicon glyphicon-envelope' style="color:#000;" href='mailto:{{email}}'></a>
 																		</button>
-																		<button on-click="ExpertEdit" class='btn btn-default btn-sm'>
+																		<button on-click="ExpertEdit" class='btn btn-default btn-sm' on-mouseenter="showHelpEditExpert" data-placement="top" data-toggle="tooltip" data-original-title="Edit Expert">
 																			<span class='glyphicon glyphicon-edit'></span>
 																		</button>
-																		<button on-click="ExpertDelete" class='btn btn-default btn-sm'>
+																		<button on-click="ExpertDelete" class='btn btn-default btn-sm' on-mouseenter="showHelpDeleteExpert" data-placement="top" data-toggle="tooltip" data-original-title="Delete Expert">
 																			<span class='glyphicon glyphicon-trash'></span>
 																		</button>
 																	</div>
@@ -1078,13 +1114,13 @@
 																<span>
 																	<span style='margin-right:5px;' class='glyphicon glyphicon-credit-card'></span>{{name}}
 																	<div class='btn-group pull-right'>
-																		<button on-click="WidgetView" class='btn btn-default btn-sm'>
+																		<button on-click="WidgetView" class='btn btn-default btn-sm' on-mouseenter="showHelpViewWidget" data-placement="top" data-toggle="tooltip" data-original-title="View Widget">
 																			<span class='glyphicon glyphicon-eye-open'></span>
 																		</button>
-																		<button on-click="WidgetEdit" class='btn btn-default btn-sm'>
+																		<button on-click="WidgetEdit" class='btn btn-default btn-sm' on-mouseenter="showHelpEditWidget" data-placement="top" data-toggle="tooltip" data-original-title="Edit widget">
 																			<span class='glyphicon glyphicon-edit'></span>
 																		</button>
-																		<button on-click="WidgetDelete" class='btn btn-default btn-sm'>
+																		<button on-click="WidgetDelete" class='btn btn-default btn-sm' on-mouseenter="showHelpDeleteWidget" data-placement="top" data-toggle="tooltip" data-original-title="Delete Widget">
 																			<span class='glyphicon glyphicon-trash'></span>
 																		</button>
 																	</div>
