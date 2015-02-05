@@ -38,5 +38,14 @@ define({
     "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, die Lizenz für BOOST wurde nicht akzeptiert",
     "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Bevor Sie fortfahren müssen Sie zuerst das BOOST Willkommen Widget starten und die Endbenutzer-Lizenzvereinbarung akzeptieren.",
     "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, Sie haben keine Rechte auf dieses Widget zugreifen",
-    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Bitte kontaktieren Sie Ihre Manager oder Administrator bevor Sie fortfahren"
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Bitte kontaktieren Sie Ihre Manager oder Administrator bevor Sie fortfahren",
+    "STR_CLOSE": "Schließen",
+    "STR_SHOW_HELP": "Hilfe anzeigen",
+    "STR_SHOW_PROGRESS": "Fortschritt anzeigen:",
+    "STR_YOU_HAVE_NO_ROLE": "Sie haben <strong> keine </strong> Rolle. Bitte kontaktieren Sie ihre Manager um von ihm eine Rolle zugewisen zu bekommen",
+    "STR_SHOW_OPTIONS": "Optionen anzeigen",
+    "STR_SHOW_PROGRESS": "Fortschritt anzeigen:",
+    "STR_SAVE": "Speichern",
+    "STR_CANCEL": "Abbrechen",
+    "STR_DELETE": "Löschen"
 });

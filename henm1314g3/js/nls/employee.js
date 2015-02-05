@@ -35,7 +35,16 @@ define({
         "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, the license for BOOST was not accepted",
         "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
         "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, you do not have rights to access this widget",
-        "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator"
+        "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator",
+        "STR_CLOSE": "Close",
+        "STR_SHOW_HELP": "Show Help",
+        "STR_SHOW_PROGRESS": "Show Progress: ",
+        "STR_YOU_HAVE_NO_ROLE": "You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you",
+        "STR_SHOW_OPTIONS": "Show Options",
+        "STR_SHOW_PROGRESS": "Show Progress: ",
+        "STR_SAVE": "Save",
+        "STR_CANCEL": "Cancel",
+        "STR_DELETE": "Delete"
     },
     "de-de" : true,
     "cz-cz" : true,
