@@ -181,7 +181,8 @@
 								  	data: { "bcn" : new BCN({}),
 								    	"priorityArray" : priorityArray,
 								    	"nameError" : false,
-								    	text: translations
+								    	text: translations,
+								    	headline: translations.STR_ADD_A_NEW_GOAL
 								    },
 								    append: true
 								});
@@ -288,7 +289,8 @@
 								    		"originalBcn" : new BCN({}),
 								    		"priorityArray" : priorityArray,
 								    		"bcnsList" : bcnsList,
-								    		"text": translations
+								    		"text": translations,
+								    		"headline": translations.STR_EDIT_GOAL
 								    },
 								    append: true
 								});
@@ -588,7 +590,7 @@
 			<!-- Template for the header Main widget view -->
 			<script id='templateBcnHeader' type='text/ractive'>
 				<div class="panel-heading">
-				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title="Show Help"></span></button>
+				     <button type="button" class="btn btn-default launch-modal" on-mouseover="showHelpForHelp" on-click="showHelp" style="float:right; margin:-5 5 10 5px; color:#428BCA;"><span  class="glyphicon glyphicon-question-sign tooltip-showHelp" data-placement="left" data-toggle="tooltip" data-original-title={{{text.STR_SHOW_HELP}}}></span></button>
 					 <h3 class="panel-title"><span class="glyphicon glyphicon-star" style="margin-right:5px;"></span>{{{text.STR_BUSINESS_GOALS}}}</h3>
 		  		</div>
 		  		<div id='panel' class="panel-body" style="padding: 5 5 5 5;">
@@ -611,7 +613,7 @@
 			  		 		{{/showSpecificEmployee}}
 						{{/accessRights.isManager}}
 						{{^accessRights.isManager}}
-			  				<div class="alert alert-danger" role="alert">You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you</div>
+			  				<div class="alert alert-danger" role="alert">{{{text.STR_YOU_HAVE_NO_ROLE}}}</div>
 						{{/accessRights.isManager}}
 		  		 	{{/accessRights.isEmployee}}
 							<div id="loadingBcnText" class="text-muted small" style="margin-top:5px;">
@@ -653,7 +655,7 @@
 					        </div>
 				        </div>
 		            <div class="modal-footer">
-		                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		                 <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 		           	</div>
 		        </div>
      		</script>
@@ -720,7 +722,7 @@
 															</div>
 														</td>
 														<td style="width:70px;" align="center">
-															<button style="padding: 7px 12px;" class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="Show Progress: {{name}}"></span></button>
+															<button style="padding: 7px 12px;" class='btn btn-default btn-lg' on-mouseover="showHelpGoalGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showGoalProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{{text.STR_SHOW_PROGRESS}}} {{name}}"></span></button>
 														</td>
 													</tr>
 												</tbody>
@@ -792,15 +794,19 @@
 	<!-- Template for the modal-body BCN Add/Edit View -->
 
 		<script id="bcnAddEditTemplate" type="text/ractive">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="newBcnModalLabel">{{{headline}}}</h4>
+			</div>
 			<div class="modal-body">
 					<form role="form">
 						<div class="form-group">
-								<label for="inputNewBcnName" class="control-label">Name</label>
-								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="Enter name" data-bv-notempty data-bv-notempty-message="The gender is required">
+								<label for="inputNewBcnName" class="control-label">{{{text.STR_NAME}}}</label>
+								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="{{text.STR_ENTER_NAME}}}" data-bv-notempty data-bv-notempty-message="The gender is required">
 						</div>
 							<div class="form-group">
 								<label for="inputNewBcnDescription">{{{text.STR_DESCRIPTION}}}</label>
-								<textarea value='{{bcn.description}}' style="resize:none;" class="form-control" placeholder="Enter description" maxlength="500"></textarea>
+								<textarea value='{{bcn.description}}' style="resize:none;" class="form-control" placeholder="{{{text.STR_ENTER_DESCRIPTION}}}" maxlength="500"></textarea>
 							</div>
 
 							<div class="form-group">
@@ -817,13 +823,13 @@
 										<div id = "inputNewBcnLi"  style="margin-bottom: 20px;">
 											<div class="input-group" style="margin-bottom:5px;" proxy-click="li-input">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-flag"></span></span>
-												<input value='{{name}}' type="text" class="form-control" placeholder="Enter learning indicator name">
+												<input value='{{name}}' type="text" class="form-control" placeholder="{{{text.STR_ENTER_LI_NAME}}}">
 												{{# num!=0}}
 												<span class='input-group-btn'><button on-click="removeLI" class='btn btn-default' type='button'>&times;</button></span>
 												{{/}}
 											</div>
 												<span>
-													<textarea value='{{description}}' class="form-control" placeholder="Enter description" maxlength="500"></textarea>
+													<textarea value='{{description}}' class="form-control" placeholder="{{{text.STR_ENTER_DESCRIPTION}}}" maxlength="500"></textarea>
 												</span>
 
 										</div>
@@ -831,7 +837,7 @@
 			 				</div>
 								<button type="button" id="addLIButton" class="btn btn-primary" on-click="addLI"><span class="glyphicon glyphicon-flag" style="margin-right:5px;"></span><span class="glyphicon glyphicon-plus"></span></button>
 							<div class="modal-footer">
-				        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        		<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 								<button class="btn btn-primary ladda-button" data-style="zoom-out" on-click="saveBCN" name="submitButton"><span class="ladda-label">{{{text.STR_SAVE}}}</span></button>
   							</div>
 					</form>
@@ -844,10 +850,6 @@
 		<div class="modal fade" id="editBcnModal" tabindex="-1" role="dialog" aria-labelledby="newBcnModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content" id="containerBcnEdit">
-  					<div class="modal-header">
-    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="newBcnModalLabel">{{{text.STR_EDIT_GOAL}}}</h4>
-  					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
@@ -857,10 +859,6 @@
 		<div class="modal fade" id="addBcnModal" tabindex="-1" role="dialog" aria-labelledby="newBcnModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content" id="containerBcnAdd">
-  					<div class="modal-header">
-    					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    					<h4 class="modal-title" id="newBcnModalLabel">Add a new goal</h4>
-  					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
