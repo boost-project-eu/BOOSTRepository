@@ -326,6 +326,17 @@
 									append: true
 							});
 
+							ractiveManageRepos.on({
+								saveRepo: function (event){
+									model.config.update(function(){
+					                  	publishConfigChanged(model.config.uri);
+										ractiveSearchHeader.set({model: model});
+					                 	$("#manageRepoModal").modal("hide");
+					                	location.reload();
+					                });	
+								}
+							});
+
 							ractiveSearchHeader.on({
 								manageRepos: function (event){
 									ractiveManageRepos.set({model: model});
@@ -373,19 +384,6 @@
 							});
 							}
 						});
-
-					//======================================
-					//Manage repositories functions
-					//======================================
-
-						$("#saveRepoButton").click(function(){
-			                model.config.update(function(){
-			                  	publishConfigChanged(model.config.uri);
-								ractiveSearchHeader.set({model: model});
-			                 	$("#manageRepoModal").modal("hide");
-			                	location.reload();
-			                });
-			             });
 
 						$("#repoIDmenu").click(function() {
 			                $("#manageRepoModal").modal();
@@ -523,7 +521,7 @@
 					        </div>
 				        </div>
 		            <div class="modal-footer">
-		                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		                 <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 		           	</div>
 		        </div>
      		</script>
@@ -541,7 +539,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h5 class="modal-title">Choose repositories that you would like to access:</h5>
+              <h5 class="modal-title">{{{text.STR_CHOOSE_REPOSITORIES_THAT_YOU}}}</h5>
             </div>
             <div class="modal-body">
 
@@ -557,8 +555,8 @@
 
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button id="saveRepoButton" type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
+              <button on-click="saveRepo" type="button" class="btn btn-primary">{{{text.STR_SAVE_CHANGES}}}</button>
 
             </div>
           </div><!-- /.modal-content -->
