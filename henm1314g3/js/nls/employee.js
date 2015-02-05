@@ -41,7 +41,6 @@ define({
         "STR_SHOW_PROGRESS": "Show Progress: ",
         "STR_YOU_HAVE_NO_ROLE": "You have <strong>NO</strong> roles now. Please, contact Manager to assign roles for you",
         "STR_SHOW_OPTIONS": "Show Options",
-        "STR_SHOW_PROGRESS": "Show Progress: ",
         "STR_SAVE": "Save",
         "STR_CANCEL": "Cancel",
         "STR_DELETE": "Delete"
