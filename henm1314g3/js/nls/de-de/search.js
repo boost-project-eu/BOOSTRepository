@@ -19,5 +19,5 @@ define({
     "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Bitte kontaktieren Sie Ihre Manager oder Administrator bevor Sie fortfahren",
     "STR_CLOSE": "Schließen",
     "STR_CHOOSE_REPOSITORIES_THAT_YOU": "Wählen Sie das Repository, auf das Sie zugreifen möchten:",
-    "STR_SAVE_CHANGES": "Änderungen speichern"
+    "STR_SAVE_CHANGES": "Speichern"
 });
