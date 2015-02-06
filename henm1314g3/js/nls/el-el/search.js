@@ -16,5 +16,8 @@ define({
     "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Λυπούμαστε, η άδεια χρήσης για το BOOST δεν έγινε δεκτή",
     "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Πριν προχωρήσετε θα πρέπει πρώτα να ξεκινήσει το widget καλωσορίσματος του Boost και να αποδεχτείτε την Άδεια Χρήσης Τελικού Χρήστη",
     "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Λυπούμαστε, δεν έχετε δικαίωμα πρόσβασης σε αυτό το widget",
-    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Πριν προχωρήσετε, παρακαλούμε επικοινωνήστε με τον μάνατζερ ή το διαχειριστή σας"
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Πριν προχωρήσετε, παρακαλούμε επικοινωνήστε με τον μάνατζερ ή το διαχειριστή σας",
+    "STR_CLOSE": "Κλείσιμο",
+    "STR_CHOOSE_REPOSITORIES_THAT_YOU": "Επιλέξτε τις πηγές στις οποίες θα θέλατε να έχετε πρόσβαση:",
+    "STR_SAVE_CHANGES": "Αποθήκευση αλλαγών"
 });

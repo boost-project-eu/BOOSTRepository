@@ -1165,38 +1165,38 @@
   					<div class="modal-body">
     					<form role="form">
     							{{^accessRights.isEmployee}}
-    								<label>Employee to Assign Document</label>
+    								<label>{{{text.STR_EMPLOYEE_ASSIGN_DOCUMENT}}}</label>
     								<select class="form-control" id="selectedEmployee" style="margin-bottom:10px;">
     								  {{#employees}}
     								  		<option value="{{userUri}}">{{name}}</option>
     								  {{/employees}}
-    								  <option value="false" selected="selected">All Employees</option>
+    								  <option value="false" selected="selected">{{{text.STR_ALL_EMPLOYEES}}}</option>
     								</select>
     							{{/accessRights.isEmployee}}
 								<div class="form-group">
 									<label for="inputLdName">Name</label>
-									<input value="{{newDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
+									<input value="{{newDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="{{{text.STR_ENTER_NAME}}}">
 								</div>
 								<div class="form-group">
-									<label for="inputLdDescription">Description</label>
-									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"  maxlength="500"></textarea>
+									<label for="inputLdDescription">{{{text.STR_DESCRIPTION}}}</label>
+									<textarea value="{{newDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="{{{text.STR_ENTER_DESCRIPTION}}}"  maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="inputLdLink">{{{text.STR_LINK}}}</label>
-									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
+									<input value="{{newDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="{{{text.STR_ENTER_URL}}}">
 			 					</div>
 			 					{{#accessRights.isEmployee}}
 				 					<div class="checkbox">
 									    <label for="inputLdPrivate">
-									      <input type="checkbox" checked="{{newDocument.isPrivate}}" value="{{newDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+									      <input type="checkbox" checked="{{newDocument.isPrivate}}" value="{{newDocument.isPrivate}}" id="inputLdPrivate"> {{{text.STR_IS_PRIVATE}}}
 									    </label>
 									 </div>
 								{{/accessRights.isEmployee}}
 						</form>
 					</div>
   					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button on-click="saveDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
+				        <button on-click="saveDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_SAVE}}}</span></button>
   					</div>
   					</script>
 					</div>
@@ -1218,14 +1218,14 @@
     						<h4 class="modal-title"></h4>
     							<div class="form-group {{ nameError ? "has-error" : "" }}">
 									<label for="inputExpertName">Name *</label>
-									<input value="{{newExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="Enter Name">
+									<input value="{{newExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="{{{text.STR_ENTER_NAME}}}">
 									{{#nameError}}
-									<span class="help-block"><h6>Name must not be empty.</h6></span>
+									<span class="help-block"><h6>{{{text.STR_NAME_MUST_NOT_BE_EMPTY}}}</h6></span>
 									{{/nameError}}
 								</div>
 								<div class="form-group {{ emailError ? "has-error" : "" }}">
 									<label for="inputExpertEmail">Email *</label>
-									<input value="{{newExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="Enter Email Address">
+									<input value="{{newExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="{{{text.STR_ENTER_EMAIL_ADDRESS}}}">
 									{{#emailError}}
 									<span class="help-block"><h6>{{{text.STR_PLEASE_ENTER_A_VALID_EMAIL_ADDRESS}}}</h6></span>
 									{{/emailError}}
@@ -1258,8 +1258,8 @@
 						</form>
 					</div>
   					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button on-click="saveExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
+				        <button on-click="saveExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_SAVE}}}</span></button>
   					</div>
   					</script>
 					</div>
@@ -1279,17 +1279,17 @@
     					<form role="form">
 								<div class="form-group">
 									<label for="inputWidgetName">Name</label>
-									<input value="{{newWidget.name}}" type="text" class="form-control" placeholder="Enter name">
+									<input value="{{newWidget.name}}" type="text" class="form-control" placeholder="{{{text.STR_ENTER_NAME}}}">
 								</div>
 								<div class="form-group">
 									<label for="inputWidgetUrl">{{{text.STR_LINK}}}</label>
-									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"  maxlength="500"></textarea>
+									<textarea value="{{newWidget.url}}" style="resize:none;" class="form-control" placeholder="{{{text.STR_ENTER_URL_WIDGET}}}"  maxlength="500"></textarea>
 								</div>
 						</form>
 					</div>
   					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button on-click="saveWidget" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
+				        <button on-click="saveWidget" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_SAVE}}}</span></button>
   					</div>
   					</script>
 					</div>
@@ -1309,9 +1309,9 @@
   					<div class="modal-body">
     					<form role="form">
     							{{^accessRights.isEmployee}}
-    								<label>Employee to Assign Document</label>
+    								<label>{{{text.STR_EMPLOYEE_ASSIGN_DOCUMENT}}}</label>
     								<select class="form-control" id="selectedEditEmployee" style="margin-bottom:10px;">
-    								  <option value="false" selected="selected">All Employees</option>
+    								  <option value="false" selected="selected">{{{text.STR_ALL_EMPLOYEES}}}</option>
     								  {{#employees}}
     								  		{{#(editDocument.userUri == userUri)}}
     								  			<option value="{{editDocument.userUri}}" selected="selected">{{name}}</option>
@@ -1323,28 +1323,28 @@
     								</select>
     							{{/accessRights.isEmployee}}
 								<div class="form-group">
-									<label for="inputLdName">Name</label>
-									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="Enter name">
+									<label for="inputLdName">{{{text.STR_NAME}}}</label>
+									<input value="{{editDocument.name}}" type="text" class="form-control" id="inputLdName" placeholder="{{{text.STR_ENTER_NAME}}}">
 								</div>
 								<div class="form-group">
-									<label for="inputLdDescription">Description</label>
-									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="Enter description"  maxlength="500"></textarea>
+									<label for="inputLdDescription">{{{text.STR_DESCRIPTION}}}</label>
+									<textarea value="{{editDocument.description}}" style="resize:none;" class="form-control" id="inputLdDescription" placeholder="{{{text.STR_ENTER_DESCRIPTION}}}"  maxlength="500"></textarea>
 								</div>
 								<div class="form-group">
 									<label for="inputLdLink">{{{text.STR_LINK}}}</label>
-									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="Enter url">
+									<input value="{{editDocument.url}}" type="text" class="form-control" id="inputLdLink" placeholder="{{{text.STR_ENTER_URL}}}">
 			 					</div>
 			 					{{#accessRights.isEmployee}}
 				 					<div class="checkbox">
 									    <label for="inputLdPrivate">
-									      <input type="checkbox" checked="{{editDocument.isPrivate}}" value="{{editDocument.isPrivate}}" id="inputLdPrivate"> Is Private
+									      <input type="checkbox" checked="{{editDocument.isPrivate}}" value="{{editDocument.isPrivate}}" id="inputLdPrivate"> {{{text.STR_IS_PRIVATE}}}
 									    </label>
 									 </div>
 								 {{/accessRights.isEmployee}}
 						</form>
 					</div>
   					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 				        <button on-click="updateDocument" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_UPDATE}}}</span></button>
   					</div>
   					</script>
@@ -1365,15 +1365,15 @@
     					<form role="form">
     						<h4 class="modal-title">{{{text.STR_CONTACT_INFORMATIONS}}}</h4>
 								<div class="form-group {{ nameError ? "has-error" : "" }}">
-									<label for="inputExpertName">Name *</label>
-									<input value="{{editExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="Enter Name">
+									<label for="inputExpertName">{{{text.STR_NAME}}} *</label>
+									<input value="{{editExpert.name}}" type="text" class="form-control" id="inputExpertName" placeholder="{{{text.STR_ENTER_NAME}}}">
 									{{#nameError}}
-									<span class="help-block"><h6>Name must not be empty.</h6></span>
+									<span class="help-block"><h6>{{{text.STR_NAME_MUST_NOT_BE_EMPTY}}}</h6></span>
 									{{/nameError}}
 								</div>
 								<div class="form-group {{ emailError ? "has-error" : "" }}">
 									<label for="inputExpertEmail">Email *</label>
-									<input value="{{editExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="Enter Email Address">
+									<input value="{{editExpert.email}}" type="text" class="form-control" id="inputExpertEmail" placeholder="{{{text.STR_ENTER_EMAIL_ADDRESS}}}">
 									{{#emailError}}
 									<span class="help-block"><h6>{{{text.STR_PLEASE_ENTER_A_VALID_EMAIL_ADDRESS}}}</h6></span>
 									{{/emailError}}
@@ -1406,7 +1406,7 @@
 						</form>
 					</div>
   					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 				        <button on-click="updateExpert" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_UPDATE}}}</span></button>
   					</div>
   					</script>
@@ -1426,18 +1426,18 @@
   					<div class="modal-body">
     					<form role="form">
 								<div class="form-group">
-									<label for="inputWidgetName">Name</label>
-									<input value="{{editWidget.name}}" type="text" class="form-control" placeholder="Enter name">
+									<label for="inputWidgetName">{{{text.STR_NAME}}}</label>
+									<input value="{{editWidget.name}}" type="text" class="form-control" placeholder="{{{text.STR_ENTER_NAME}}}">
 								</div>
 								<div class="form-group">
 									<label for="inputWidgetUrl">{{{text.STR_LINK}}}</label>
-									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="Enter url of widget"  maxlength="500"></textarea>
+									<textarea value="{{editWidget.url}}" style="resize:none;" class="form-control" placeholder="{{{text.STR_ENTER_URL_WIDGET}}}"  maxlength="500"></textarea>
 								</div>
 						</form>
 					</div>
   					<div class="modal-footer">
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				        <button on-click="updateWidget" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">Save</span></button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
+				        <button on-click="updateWidget" type="button" data-style="zoom-out" class="btn btn-primary ladda-button"><span class="ladda-label">{{{text.STR_SAVE}}}</span></button>
   					</div>
   					</script>
 					</div>
@@ -1524,7 +1524,7 @@
 									<tr>
 										<td width="20%">
 											<div>
-												Name:
+												{{{text.STR_NAME}}}:
 											</div>
 										</td>
 										<td>
@@ -1620,7 +1620,7 @@
 							</table>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 						</div>
 
 						</script>
@@ -1648,7 +1648,7 @@
 									<tr>
 										<td width="20%">
 											<div>
-												Name:
+												{{{text.STR_NAME}}}:
 											</div>
 										</td>
 										<td>
@@ -1677,7 +1677,7 @@
 							</table>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
 						</div>
 						</script>
 					</div>
@@ -1704,7 +1704,7 @@
             				</ul>
           				</div>
           				<div class="modal-footer">
-                			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                			<button type="button" class="btn btn-default" data-dismiss="modal">{{{text.STR_CLOSE}}}</button>
           				</div>
         			</div>
       			</div>

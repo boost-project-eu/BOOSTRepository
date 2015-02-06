@@ -38,5 +38,14 @@ define({
     "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Litujeme, licence pro BOOST nebyla akceptována",
     "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Předtím, než budete pokračovat, nejprve musíte  spustit BOOST uvítací ovládací prvek (BOOST Welcome Widget) a souhlasit s licenčními podmínkami konečného uživatele",
     "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Litujeme, nemáte práva přístupu k tomuto ovládacímu prvku ",
-    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Předtím, než budete pokračovat, prosím kontaktujte svého manažera nebo správce"
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Předtím, než budete pokračovat, prosím kontaktujte svého manažera nebo správce",
+    "STR_CLOSE": "Zavřít",
+    "STR_SHOW_HELP": "Ukaž nápovědu",
+    "STR_SHOW_PROGRESS": "Zobrazit pokrok:",
+    "STR_YOU_HAVE_NO_ROLE": "Nyní máte <strong>ŽÁDNÁ</strong> role. Prosím, kontaktujte manažera k přidělení vašich rolí",
+    "STR_SHOW_OPTIONS": "Zobrazit možnosti",
+    "STR_SHOW_PROGRESS": "Zobrazit pokrok:",
+    "STR_SAVE": "Uložit",
+    "STR_CANCEL": "Zrušit",
+    "STR_DELETE": "Smazat"
 });

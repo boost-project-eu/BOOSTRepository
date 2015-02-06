@@ -38,5 +38,14 @@ define({
     "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Désolé, la licence de BOOST n'a pas été acceptée",
     "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Avant de commencer vous devez lancer le widget de bienvenue et accepter la licence d'utilisation",
     "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Désolé, vous n'avez pas les droits d'accès à ce widget",
-    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Avant de continuer, merci de contacter votre manager ou administrateur"
+    "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Avant de continuer, merci de contacter votre manager ou administrateur",
+    "STR_CLOSE": "Fermer",
+    "STR_SHOW_HELP": "Montrer l'aide",
+    "STR_SHOW_PROGRESS": "Montrer la progression :",
+    "STR_YOU_HAVE_NO_ROLE": "Vous n'avez aucun « role » pour l'instant. Merci de bien vouloir contacter votre manager afin qu'il vous en attribue un.",
+    "STR_SHOW_OPTIONS": "Montrer les options",
+    "STR_SHOW_PROGRESS": "Montrer la progression :",
+    "STR_SAVE": "Enregistrer",
+    "STR_CANCEL": "Annuler",
+    "STR_DELETE": "Effacer"
 });

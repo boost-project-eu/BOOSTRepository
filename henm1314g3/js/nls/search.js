@@ -13,7 +13,10 @@ define({
         "STR_SORRY_THE_LICENSE_FOR_BOOST_WAS": "Sorry, the license for BOOST was not accepted",
         "STR_BEFORE_PROCEEDING_YOU_MUST_FIRST": "Before proceeding you must first launch BOOST Welcome Widget and accept the End User License Agreement",
         "STR_SORRY_YOU_DO_NOT_HAVE_RIGHTS": "Sorry, you do not have rights to access this widget",
-        "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator"
+        "STR_BEFORE_PROCEEDING_PLEASE_CONTACT": "Before proceeding please contact your manager or administrator",
+        "STR_CLOSE": "Close",
+        "STR_CHOOSE_REPOSITORIES_THAT_YOU": "Choose repositories that you would like to access:",
+        "STR_SAVE_CHANGES": "Save changes"
     },
     "de-de" : true,
     "cz-cz" : true,
