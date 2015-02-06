@@ -802,7 +802,7 @@
 					<form role="form">
 						<div class="form-group">
 								<label for="inputNewBcnName" class="control-label">{{{text.STR_NAME}}}</label>
-								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="{{text.STR_ENTER_NAME}}}" data-bv-notempty data-bv-notempty-message="The gender is required">
+								<input value='{{bcn.name}}' type="text" class="form-control" placeholder="{{{text.STR_ENTER_NAME}}}" data-bv-notempty data-bv-notempty-message="The gender is required">
 						</div>
 							<div class="form-group">
 								<label for="inputNewBcnDescription">{{{text.STR_DESCRIPTION}}}</label>
