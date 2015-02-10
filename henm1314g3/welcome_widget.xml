@@ -234,6 +234,9 @@
 							<td colspan=2>{{{text.STR_WELCOME_TO_THE_BOOST_PROJECT}}}</td>
 			   		 	</tr>
 			   		 	<tr>
+			   		 		<td colspan=2><small>{{{text.STR_THIS_PROJECT_HAS_BEEN_FUNDED}}}</small></td>
+			   		 	</tr>
+			   		 	<tr>
 			   		 		<td colspan=2>{{{text.STR_WITH_BOOST_YOU_CAN_ORGANISE_MANAGE}}}</td>
 						</tr>
 						<tr class="active">
