@@ -285,7 +285,16 @@
 							  append: true
 							});
 
-						retrieveAllEmployees(space, function(employees){
+						retrieveAllEmployees(space, function(allEmployees){
+						retrieveAllUsers(space, function(users){
+							var employees = [];
+								_.each(users, function(user){
+									_.each(allEmployees, function(employee){
+										if (user.uri == employee.userUri){
+											employees.push(employee);
+										}
+									});
+								});
 							employeeList = filterEmployees(employees, accessRights);
 							sortEmployees();
 							trimEmployeeNames(employeeList, 25);
@@ -537,6 +546,7 @@
 
 								$("#loadingEmployeeText").addClass("hidden");
 							});
+						});
 						});
 					});  // end of the retrieveAccessRights
 
