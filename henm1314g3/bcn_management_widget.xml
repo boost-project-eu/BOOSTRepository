@@ -428,10 +428,14 @@
 						var bcnEndDates = [];
 
 						for(var i = 0; i < bcnsList.length; i++){
+							bcnStartDates = [];
+							bcnEndDates = [];
 
 							// learning indicators information copying into bcnList
 							for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
 								var li = bcnsList[i].learningIndicators[j];
+								// console.log("Learning indicators");
+								// console.log(li);
 								employeeLiData = currentEmployee.learningLevels[bcnsList[i].uri][li.id];
 								liStartDate = moment(employeeLiData.startDate);
 								liEndDate = moment(employeeLiData.endDate);
@@ -450,7 +454,9 @@
 
 
 							bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
+							console.log(bcnStartDates);
 							var bcnStartDate = GetSmallestDate(bcnStartDates) || moment();
+							// console.log(bcnStartDate);
 							var bcnEndDate = GetBiggestDate(bcnEndDates) || moment();
 							var goalDuration = bcnEndDate.diff(bcnStartDate, 'days');
 							var dayPast = now.diff(bcnStartDate, 'days');
