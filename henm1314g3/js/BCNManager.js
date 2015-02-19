@@ -12,6 +12,11 @@ BCN.prototype.getTypeName = function(){
 function BCN(object){
 	BoostObject.call(this, object);
 
+	if(object.hasOwnProperty("id"))
+		this.id = object.id;
+	else
+		this.id = Math.random().toString(36).substring(3);;
+
 	if(object.hasOwnProperty("name"))
 		this.name = object.name;
 	else
