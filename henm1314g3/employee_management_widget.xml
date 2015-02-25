@@ -147,23 +147,20 @@
 							}
 
 							bootbox.hideAll();
-						}
+						};
 
 						if(intent.action=="ACCESS_RIGHTS_CHANGED"){
-							retrieveAccessRights(function(accessRights){
+							// retrieveAccessRights(function(accessRights){
+							// userAccessRights = accessRights.getUserAccessRights();
+							// retrieveAllEmployees(space, function(employees){
+							// 		employeeList = filterEmployees(employees, accessRights);
+							// 		trimEmployeeNames(employeeList, 25);
+							// 		sortEmployees();
 
-							userAccessRights = accessRights.getUserAccessRights();
-
-								retrieveAllEmployees(space, function(employees){
-									employeeList = filterEmployees(employees, accessRights);
-									trimEmployeeNames(employeeList, 25);
-									sortEmployees();
-
-									ractiveOverview.set("employeeList", employeeList);
-								});
-
-							});
-						}
+							// 		ractiveOverview.set("employeeList", employeeList);
+							// 	});
+							// });
+						};
 					}
 
 					function publishEmployeeCreated(employeeUri){
@@ -285,7 +282,21 @@
 							  append: true
 							});
 
-						retrieveAllEmployees(space, function(employees){
+						retrieveAllUsers(space, function(users){
+						retrieveAllEmployees(space, function(allEmployees){
+							var userUris = [];
+							var employees = [];
+							_.each(users, function(user){
+								_.each(allEmployees, function(employee){
+									if (user.uri == employee.userUri){
+										if (!_.contains(userUris, user.uri))
+										{	
+											employees.push(employee);
+											userUris.push(user.uri);
+										};
+									}
+								});
+							});
 							employeeList = filterEmployees(employees, accessRights);
 							sortEmployees();
 							trimEmployeeNames(employeeList, 25);
@@ -537,6 +548,7 @@
 
 								$("#loadingEmployeeText").addClass("hidden");
 							});
+						});
 						});
 					});  // end of the retrieveAccessRights
 
