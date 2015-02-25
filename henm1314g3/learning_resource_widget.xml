@@ -42,6 +42,7 @@
 				"ractive",
 			    "ladda",
 			    "bootbox",
+			    "lodash",
 			    "jquery",
 			    "jqueryUi",
 			    "bootstrap",
@@ -186,8 +187,9 @@
 						});
 						retrieveAllBcns(space, function(bcns){
 								retrieveAllLearningDocuments(function(lds){
-									retrieveAllEmployees(space, function(employees){
-
+									retrieveAllUsers(space, function(users){
+									retrieveAllEmployees(space, function(allEmployees){
+										employees = compareUserEmployees(allEmployees, users);
 										for(var i = 0; i < employees.length; i++){
 											var employee = employees[i];
 											if (employee.userUri == openapp.param.user()){
@@ -227,6 +229,7 @@
 											}
 										}
 
+									});
 									});
 
 
@@ -274,7 +277,9 @@
 
 
 									retrieveAccessRights(function(accessRights){
-										retrieveAllEmployees(space, function(employees){
+									retrieveAllUsers(space, function(users){
+									retrieveAllEmployees(space, function(allEmployees){
+											employees = compareUserEmployees(allEmployees, users);
 
 										var titleRactive = new Ractive({
 								            el: 'mainTitle',
@@ -464,7 +469,6 @@
 								        	}
 								        	else
 								        		publishShowLearningDocument(event.context);
-								        	console.log(event.context.url);
 								        });
 
 								        treeRactive.on("documentEdit", function(event){
@@ -800,6 +804,7 @@
 								        	this.set("newDocument", learningDocumentFromSearchWidget);
 								        });
 								    });
+								});
 								});
 								});
 								});

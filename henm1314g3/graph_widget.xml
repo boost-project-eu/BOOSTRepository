@@ -117,8 +117,10 @@
 
 							var userAccessRights = accessRights.getUserAccessRights();
 
-								retrieveAllEmployees(space, function(employeesList){
+								retrieveAllUsers(space, function(users){
+								retrieveAllEmployees(space, function(allEmployeesList){
 
+									var employeesList = compareUserEmployees(allEmployeesList, users);
 									for(var i = 0; i < employeesList.length; i++){
 										var employee = employeesList[i];
 										if (employee.userUri == openapp.param.user()){
@@ -145,6 +147,7 @@
 									showEmployeeOverviewGraph();
 
 								});
+							});
 							});
 						});
 		//			}
@@ -318,36 +321,6 @@
 						}
 
 						if(intent.action == "ACCESS_RIGHTS_CHANGED"){
-							retrieveAccessRights(function(accessRights){
-
-							var userAccessRights = accessRights.getUserAccessRights();
-
-								retrieveAllEmployees(space, function(employeesList){
-									for(var i = 0; i < employeesList.length; i++){
-										var employee = employeesList[i];
-										if (employee.userUri == openapp.param.user()){
-											currentEmployee = employee;
-										};
-									};
-
-									if (userAccessRights.isEmployee && currentEmployee){
-										employees = [currentEmployee];
-									} else if (userAccessRights.isManager){
-										employees = filterEmployeesBasedOnAccessRights(employeesList, accessRights);
-									}
-
-									employees.sort(function(a, b){if(a.name < b.name) return -1; else return 1;});
-
-									isBcnGraph.bool=false;
-									isEmployeeGraph.bool=false;
-									isOverviewGraph.bool=false;
-									isEmployeeOverviewGraph.bool=false;
-									isDetailedGraph.bool=false;
-									check=true;
-									trimEmployeeNames(employees, 25);
-									showEmployeeOverviewGraph();
-								});
-							});
 						}
 					}
 
