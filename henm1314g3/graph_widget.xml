@@ -107,7 +107,8 @@
 						iwcClient.connect(iwcCallback);
 
 						retrieveAllBcns(space, function(bcnsList){
-							bcns=bcnsList;
+							trimObjectNames(bcnsList, 30)
+							bcns= bcnsList;
 
 							bcnsList.sort(function(a, b){
 							if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
@@ -143,7 +144,7 @@
 									isEmployeeOverviewGraph.bool=false;
 									isDetailedGraph.bool=false;
 									check=true;
-									trimEmployeeNames(employees, 25);
+									trimObjectNames(employees, 25);
 									showEmployeeOverviewGraph();
 
 								});
@@ -151,9 +152,10 @@
 							});
 						});
 		//			}
-					function trimEmployeeNames(employees, num){
-						_.each(employees, function(employee){
-							employee.name = employee.name.substr(0, num)
+					function trimObjectNames(data, num){
+						_.each(data, function(element){
+							console.log(element);
+							element.name = element.name.substr(0, num)
 						});
 					}
 
