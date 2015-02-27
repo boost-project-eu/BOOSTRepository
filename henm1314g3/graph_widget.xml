@@ -154,7 +154,6 @@
 		//			}
 					function trimObjectNames(data, num){
 						_.each(data, function(element){
-							console.log(element);
 							element.name = element.name.substr(0, num)
 						});
 					}
