@@ -30,3 +30,14 @@ function closeAutorisationWindow (){
   };
   timeout();
 }
+
+onAjaxSuccess = function(data) {console.log(data)};
+
+function logClick(elementName, userAction, widget, role){
+  $.post('http://boostloger.herokuapp.com/save', {
+    elementName: elementName,
+    userAction: userAction,
+    widget: widget,
+    role: role
+  }, onAjaxSuccess);
+}
