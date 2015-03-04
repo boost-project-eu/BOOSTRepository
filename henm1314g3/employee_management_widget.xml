@@ -586,6 +586,11 @@
 						else if(userAccessRights.isManager){
 							employeeList = filterEmployeesBasedOnAccessRights(employees, accessRights);
 						}
+
+						_.each(employeeList, function(employee){
+							employee.accessRights = accessRights.getUserAccessRights(employee.userUri);
+						});
+
 						return employeeList;
 					}
 				});
@@ -633,43 +638,45 @@
 			<table class="table table-striped table-bordered table-condensed" >
 			    <tbody>
 					{{#employeeList}}
-						<tr>
-							<td on-click='graphAndDatesShow' style="cursor: pointer;">
-								<div>
-									{{name}}
-								</div>
-								<div class="small text-muted">
-									{{email}}
-								</div>
-							</td>
-							<td style="width:70px;" align="center">
-
-	  		 			{{^accessRights.isEmployee}}
-							{{#accessRights.isManager}}
-								<div class='btn-group'>
-									<button type="button" class="btn btn-default dropdown-toggle"  on-mouseover="showHelpOptions"  data-toggle="dropdown">
-										<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="{{{text.STR_SHOW_OPTIONS}}}"></i><span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu pull-right" role="menu" align="left">
-										<li style="width:200px;" align="center">
-											<div class="btn-group">
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_ASSIGN_GOALS}} {{name}}" style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SEND_EMAIL}} {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
-												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_PROGRESS}} {{name}}" style="margin-right:5px;"></span></button>
-												<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_DEADLINES}} {{name}}" style="margin-right:5px;"></span></button>
-											</div>
-										</li>
-									</ul>
-								</div>
-							{{/accessRights.isManager}}
-	  		 			{{/accessRights.isEmployee}}
-
 						{{#accessRights.isEmployee}}
-							<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_PROGRESS}} {{name}}" style="margin-right:5px;"></span></button>
-						{{/accessRights.isEmployee}}
+							<tr>
+								<td on-click='graphAndDatesShow' style="cursor: pointer;">
+									<div>
+										{{name}}
+									</div>
+									<div class="small text-muted">
+										{{email}}
+									</div>
+								</td>
+								<td style="width:70px;" align="center">
 
-							</td>
-						</tr>
+		  		 			{{^accessRights.isEmployee}}
+								{{#accessRights.isManager}}
+									<div class='btn-group'>
+										<button type="button" class="btn btn-default dropdown-toggle"  on-mouseover="showHelpOptions"  data-toggle="dropdown">
+											<i class="fa fa-cogs tooltip-showOptions" data-placement="left" data-toggle="tooltip" data-original-title="{{{text.STR_SHOW_OPTIONS}}}"></i><span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu pull-right" role="menu" align="left">
+											<li style="width:200px;" align="center">
+												<div class="btn-group">
+													<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_ASSIGN_GOALS}} {{name}}" style="margin-right:5px;"></span></button>
+													<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SEND_EMAIL}} {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
+													<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_PROGRESS}} {{name}}" style="margin-right:5px;"></span></button>
+													<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_DEADLINES}} {{name}}" style="margin-right:5px;"></span></button>
+												</div>
+											</li>
+										</ul>
+									</div>
+								{{/accessRights.isManager}}
+		  		 			{{/accessRights.isEmployee}}
+
+							{{#accessRights.isEmployee}}
+								<button class="btn btn-default btn-lg" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_PROGRESS}} {{name}}" style="margin-right:5px;"></span></button>
+							{{/accessRights.isEmployee}}
+
+								</td>
+							</tr>
+						{{/accessRights.isEmployee}}
 					{{/employeeList}}
 			    </tbody>
 			</table>
