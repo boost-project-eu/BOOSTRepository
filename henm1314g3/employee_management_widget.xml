@@ -150,16 +150,6 @@
 						};
 
 						if(intent.action=="ACCESS_RIGHTS_CHANGED"){
-							// retrieveAccessRights(function(accessRights){
-							// userAccessRights = accessRights.getUserAccessRights();
-							// retrieveAllEmployees(space, function(employees){
-							// 		employeeList = filterEmployees(employees, accessRights);
-							// 		trimEmployeeNames(employeeList, 25);
-							// 		sortEmployees();
-
-							// 		ractiveOverview.set("employeeList", employeeList);
-							// 	});
-							// });
 						};
 					}
 
@@ -284,19 +274,7 @@
 
 						retrieveAllUsers(space, function(users){
 						retrieveAllEmployees(space, function(allEmployees){
-							var userUris = [];
-							var employees = [];
-							_.each(users, function(user){
-								_.each(allEmployees, function(employee){
-									if (user.uri == employee.userUri){
-										if (!_.contains(userUris, user.uri))
-										{	
-											employees.push(employee);
-											userUris.push(user.uri);
-										};
-									}
-								});
-							});
+							employees = compareUserEmployees(allEmployees, users);
 							employeeList = filterEmployees(employees, accessRights);
 							sortEmployees();
 							trimEmployeeNames(employeeList, 25);
