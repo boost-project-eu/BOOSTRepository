@@ -407,7 +407,6 @@
 
 										//Tell the overview ractive that the employee was updated
 										ractiveOverview.update();
-
 										sortEmployees();
 
 										//Hide the loading indicator of the save button
@@ -471,7 +470,7 @@
 									l.start();
 									employee.update(function(){
 										publishEmployeeUpdated(employee.uri);
-
+										employee.assignedAccessRights = accessRights.getUserAccessRights(employee.userUri);
 										//Replace the old employee in the array with the modified one
 										employeeList[employeeList.indexOf(originalEmployee)] = employee;
 
@@ -588,7 +587,7 @@
 						}
 
 						_.each(employeeList, function(employee){
-							employee.accessRights = accessRights.getUserAccessRights(employee.userUri);
+							employee.assignedAccessRights = accessRights.getUserAccessRights(employee.userUri);
 						});
 
 						return employeeList;
@@ -638,7 +637,7 @@
 			<table class="table table-striped table-bordered table-condensed" >
 			    <tbody>
 					{{#employeeList}}
-						{{#accessRights.isEmployee}}
+						{{#assignedAccessRights.isEmployee}}
 							<tr>
 								<td on-click='graphAndDatesShow' style="cursor: pointer;">
 									<div>
@@ -676,7 +675,7 @@
 
 								</td>
 							</tr>
-						{{/accessRights.isEmployee}}
+						{{/assignedAccessRights.isEmployee}}
 					{{/employeeList}}
 			    </tbody>
 			</table>
