@@ -33,11 +33,12 @@ function closeAutorisationWindow (){
 
 onAjaxSuccess = function(data) {console.log(data)};
 
-function logClick(elementName, userAction, widget, role){
+function logClick(elementName, userAction, widget, role, uri){
   $.post('http://boostloger.herokuapp.com/save', {
     elementName: elementName,
     userAction: userAction,
     widget: widget,
-    role: role
+    role: role,
+    uri: uri
   }, onAjaxSuccess);
 }
