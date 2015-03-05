@@ -133,6 +133,10 @@
 										employees = [currentEmployee];
 									} else if (userAccessRights.isManager){
 										employees = filterEmployeesBasedOnAccessRights(employeesList, accessRights);
+										_.each(employees, function(employee){
+											employee.accessRights = accessRights.getUserAccessRights(employee.userUri);
+										});
+										employees = _.filter(employees, function(employee) { return employee.accessRights.isEmployee; });
 									}
 
 
