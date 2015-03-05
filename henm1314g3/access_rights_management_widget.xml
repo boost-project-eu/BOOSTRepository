@@ -237,15 +237,11 @@
 										ractiveOverview.on({
 											accessRightsChanged: function(event){
 												user = event.context;
-												console.log(event.context);
-												var isManager = event.context.accessRights.isManager && !event.context.accessRights.isEmployee;
-												var isManagerUser = event.context.AccessRights.isManager && !event.context.AccessRights.isEmployee;
-												var role = isManager ? "Manager" : "Employee";
-												var roleUser = isManagerUser ? "Manager" : "Employee";
-												// console.log(role);
-												console.log(event.context.AccessRights.isManager);
-												console.log(!event.context.AccessRights.isEmployee);
-												// logClick("Access rights checkbox", "Change Access rights to " + role, "Access Rights", roleUser);
+												console.log(user);
+												userAccessRights = event.context.accessRights;
+												// var isManager = event.context.accessRights.isManager && event.context.accessRights.isEmployee;
+												// var role = isManager ? "Manager" : "Employee";
+												logClick("Access rights checkbox", "Changed Access rights for " + user.name, "Access Rights", "Manager");
 												createEmployeeIfNotExist(user, accessRights, employeesList);
 											},
 											showHelp: function(event){
