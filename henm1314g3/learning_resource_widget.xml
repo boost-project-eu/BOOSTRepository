@@ -279,8 +279,11 @@
 									retrieveAccessRights(function(accessRights){
 									retrieveAllUsers(space, function(users){
 									retrieveAllEmployees(space, function(allEmployees){
-											employees = compareUserEmployees(allEmployees, users);
-
+										employees = compareUserEmployees(allEmployees, users);
+										_.each(employees, function(employee){
+											employee.accessRights = accessRights.getUserAccessRights(employee.userUri);
+										});
+										employees = _.filter(employees, function(employee) { return employee.accessRights.isEmployee; });
 										var titleRactive = new Ractive({
 								            el: 'mainTitle',
 								            template: '#mainTitleTemplate',
