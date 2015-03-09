@@ -243,7 +243,6 @@
 												createEmployeeIfNotExist(user, accessRights, employeesList);
 											},
 											showHelp: function(event){
-												console.log(currentUser);
 												var userUri = currentUser.uri.substring(currentUser.uri.lastIndexOf("/") + 1);
 												var isManager = event.context.currentUser.AccessRights.isManager && !event.context.currentUser.AccessRights.isEmployee; 
 												var role = isManager ? "Manager" : "Employee";
