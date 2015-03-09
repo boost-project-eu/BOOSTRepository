@@ -96,8 +96,9 @@
 						accessRights = access;
 						userAccessRights = access.getUserAccessRights();
 						agreed = userAccessRights.hasAgreedToLicense;
-						//debug
-						//agreed = false;
+						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+						userRole = isManager ? "Manager" : "Employee";
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
 
 						if (!agreed)
 							$("#agreeLisenceModal").modal();
@@ -116,18 +117,23 @@
 						ractiveWelcome.on({
 							setGerman: function(event){
 								setLanguage("de-de");
+								logClick("Language SelectBox", "Changed language to DE", "Welcome", userRole, userUri);
 							},
 							setEnglish: function(event){
 								setLanguage("en-en");
+								logClick("Language SelectBox", "Changed language to EN", "Welcome", userRole, userUri);
 							},
 							setCzech: function(event){
 								setLanguage("cz-cz");
+								logClick("Language SelectBox", "Changed language to CZ", "Welcome", userRole, userUri);
 							},
 							setGreek: function(event){
 								setLanguage("el-el");
+								logClick("Language SelectBox", "Changed language to EL", "Welcome", userRole, userUri);
 							},
 							setFrench: function(event){
 								setLanguage("fr-fr");
+								logClick("Language SelectBox", "Changed language to FR", "Welcome", userRole, userUri);
 							},
 						});
 
@@ -179,6 +185,7 @@
 					}
 
 					$("#agreeButton").click(function(){
+						logClick("AgreeLicence button", "User Agreed to Licence", "Welcome", userRole, userUri);
 						userAccessRights.hasAgreedToLicense = true;
 						accessRights.update(function (){
 							$("#agreeLisenceModal").modal("hide");

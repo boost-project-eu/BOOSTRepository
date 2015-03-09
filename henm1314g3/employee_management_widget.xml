@@ -246,6 +246,11 @@
 						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 						userAccessRights = accessRights.getUserAccessRights();
+						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+						userRole = isManager ? "Manager" : "Employee";
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+						console.log(userRole);
+						console.log(userUri);
 
 							//Check if user has agreed to license
 
@@ -295,6 +300,7 @@
 
 								ractiveEmployeeHeader.on({
 								showOverallProgress: function ( event ) {
+									logClick("showOverallProgress button", "Show progress for all employees", "Employee", userRole, userUri);
 									publishShowOverallEmployeeProgress();
 								},
 
