@@ -249,8 +249,6 @@
 						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
 						userRole = isManager ? "Manager" : "Employee";
 						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
-						console.log(userRole);
-						console.log(userUri);
 
 							//Check if user has agreed to license
 
@@ -318,7 +316,7 @@
 									$('#descriptionModal').modal({
 										keyboard: true
 									});
-
+									logClick("showHelp button", "Show help modal", "Employee", userRole, userUri);
 								}
 								});
 
@@ -349,9 +347,11 @@
 									$('#deleteEmployeeModal').modal();
 								},
 									graphShow: function(event){
+									logClick("graphShow button", "Show progress for " + event.context.name, "Employee", userRole, userUri);
 									publishShowEmployeeProgress(event.context.uri);
 								},
 									employeeDatesShow: function(event){
+									logClick("employeeDatesShow button", "Show Assigned Deadlines for " + event.context.name, "Employee", userRole, userUri);
 									publishShowEmployeeDates(event.context.userUri);
 								},
 									setLI: function ( event ) {
@@ -367,7 +367,7 @@
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false
 									});
-
+									logClick("EditEmployee button", "Open Edit Employee Modal for " + event.context.name, "Employee", userRole, userUri);
 									$('#setLIModal').modal();
 								},
 									showHelpEmployeeGraph: function ( event ) {
@@ -499,6 +499,7 @@
 										l.stop();
 										$('#setLIModal').modal("hide");
 									});
+									logClick("saveSetLI button", "Set LIs and Save changes for " + employee.name, "Employee", userRole, userUri);
 								});
 
 								//dates events
@@ -530,6 +531,7 @@
 										var formatDate = moment(e.date);
 										event.context.employeeLiData.startDate = formatDate.format("MM/DD/YYYY");
 									});
+									logClick("changeLiStartDatePicker input", "Change Start Date of assigned LI", "Employee", userRole, userUri);
 								});
 
 								ractiveSetLIEmployee.on("changeLiEndDatePicker",  function(event){
@@ -539,6 +541,7 @@
 										var formatDate = moment(e.date);
 										event.context.employeeLiData.endDate = formatDate.format("MM/DD/YYYY");
 									});
+									logClick("changeLiEndDatePicker input", "Change End Date of assigned LI", "Employee", userRole, userUri);
 								});
 
 								$("#loadingEmployeeText").addClass("hidden");
