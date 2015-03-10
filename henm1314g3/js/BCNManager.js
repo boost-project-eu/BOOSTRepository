@@ -11,35 +11,41 @@ BCN.prototype.getTypeName = function(){
 
 function BCN(object){
 	BoostObject.call(this, object);
+	if(object){
+		if(object.hasOwnProperty("id"))
+			this.id = object.id;
+		else
+			this.id = Math.random().toString(36).substring(3);;
 
-	if(object.hasOwnProperty("name"))
-		this.name = object.name;
-	else
-		this.name = "";
+		if(object.hasOwnProperty("name"))
+			this.name = object.name;
+		else
+			this.name = "";
 
-	if(object.hasOwnProperty("description"))
-		this.description = object.description;
-	else
-		this.description = "";
+		if(object.hasOwnProperty("description"))
+			this.description = object.description;
+		else
+			this.description = "";
 
-	if(object.hasOwnProperty("learningIndicators"))
-		this.learningIndicators = object.learningIndicators;
-	else{
-		this.learningIndicators = [];
-		this.addLI("");
+		if(object.hasOwnProperty("learningIndicators"))
+			this.learningIndicators = object.learningIndicators;
+		else{
+			this.learningIndicators = [];
+			this.addLI("");
+		}
+
+		//added attr priority to the object BCN
+
+		if(object.hasOwnProperty("priority"))
+			this.priority = object.priority;
+		else
+			this.priority = 0;
+
+		if(object.hasOwnProperty("deadline"))
+			this.deadline = object.deadline;
+		else
+			this.deadline = "";
 	}
-
-	//added attr priority to the object BCN
-
-	if(object.hasOwnProperty("priority"))
-		this.priority = object.priority;
-	else
-		this.priority = 0;
-
-	if(object.hasOwnProperty("deadline"))
-		this.deadline = object.deadline;
-	else
-		this.deadline = "";
 }
 
 BCN.prototype.getPriorityColor = function(){

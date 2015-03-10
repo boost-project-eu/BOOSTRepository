@@ -38,7 +38,7 @@ define({
     "STR_YOU_HAVE_NO_ROLE": "Nyní máte <strong>ŽÁDNÁ</strong> role. Prosím, kontaktujte manažera k přidělení vašich rolí",
     "STR_CLOSE": "Zavřít",
     "STR_SHOW_PROGRESS": "Zobrazit pokrok:",
-    "STR_NAME": "Jméno",
+    "STR_NAME": "Název",
     "STR_WIDTH": "šíře",
     "STR_ENTER_NAME": "Vložte jméno",
     "STR_ENTER_DESCRIPTION": "Vložte popis",

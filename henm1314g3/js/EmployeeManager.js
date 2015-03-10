@@ -126,3 +126,25 @@ function filterEmployeesBasedOnAccessRights(employees, accessRights){
 	}
 	return filteredEmployeeList;
 }
+
+function compareUserEmployees(employees, users){
+	var userUris = [];
+	var newEmployees = [];
+	_.each(users, function(user){
+		_.each(employees, function(employee){
+			if (user.uri == employee.userUri){
+				if (!_.contains(userUris, user.uri))
+				{	
+					newEmployees.push(employee);
+					userUris.push(user.uri);
+				};
+			}
+		});
+	});
+	return newEmployees;
+}
+
+
+
+
+
