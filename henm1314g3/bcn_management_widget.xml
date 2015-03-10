@@ -108,6 +108,9 @@
 						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 						userAccessRights = accessRights.getUserAccessRights();
+						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+						userRole = isManager ? "Manager" : "Employee";
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
 
 							//Check if user has agreed to license
 
@@ -195,18 +198,20 @@
 								ractiveBcnHeader.on({
 									showOverallProgress: function ( event ) {
 										publishShowOverallBcnProgress();
+										logClick("showOverallProgress button", "Show progress for all Bcns", "BCN", userRole, userUri);
 									},
 									addNewBcn: function ( event ) {
 										// Show addBcnModal on click on addNewBcnButton
 										var newBcn = new BCN({});
 										ractiveAddBcn.set("bcn", newBcn);
-
 										$("#addBcnModal").modal();
+										logClick("addNewBcn button", "Open new CBN Modal", "BCN", userRole, userUri);
 									},
 									returnToOverall: function(event) {
 										userAccessRights.isEmployee = false;
 										ractiveOverview.set("accessRights", userAccessRights);
 										ractiveBcnHeader.set("showSpecificEmployee", false);
+										logClick("returnToOverall button", "Return to overall view", "BCN", userRole, userUri);
 									},
 									showHelpHome: function( event ){
 										$('.tooltip-returnHome').tooltip();
@@ -225,6 +230,7 @@
 										$('#descriptionModal').modal({
 											keyboard: true
 										});
+										logClick("showHelp button", "Show help modal", "BCN", userRole, userUri);
 
 									}
 								});
@@ -236,6 +242,7 @@
 									var li = event.context;
 									var bcn = this.get("bcn");
 									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+									console.log("removedBCN");
 								});
 
 								ractiveAddBcn.on("addLI", function(event){
