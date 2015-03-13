@@ -97,6 +97,7 @@
 							It is the top level resource which is shared by all users.
 						*/
 					space = new openapp.oo.Resource(openapp.param.space());
+					console.log(openapp.param.space());
 
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
@@ -242,10 +243,12 @@
 									var li = event.context;
 									var bcn = this.get("bcn");
 									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+									logClick("RemoveLiNewBcn button", "Delete Li from new BCN", "BCN", userRole, userUri);
 								});
 
 								ractiveAddBcn.on("addLI", function(event){
 									this.get('bcn').addLI("");
+									logClick("AddLiNewBcn button", "Add Li to new BCN", "BCN", userRole, userUri);
 								});
 
 								ractiveAddBcn.on("saveBCN", function(event){
@@ -284,6 +287,7 @@
 									//Why do we need this? If we do not call it we get an error for some reason:
 									//It's like onClick (off)
 									event.original.preventDefault();
+									logClick("SaveNewBcn button", "Save created BCN", "BCN", userRole, userUri);
 								});
 
 
