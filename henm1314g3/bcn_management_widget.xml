@@ -242,7 +242,6 @@
 									var li = event.context;
 									var bcn = this.get("bcn");
 									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
-									console.log("removedBCN");
 								});
 
 								ractiveAddBcn.on("addLI", function(event){
@@ -313,12 +312,14 @@
 
 								ractiveEditBcn.on("addLI", function(event){
 									this.get('bcn').addLI("");
+									logClick("addLI button", "Add new LI to goal", "BCN", userRole, userUri);
 								});
 
 								ractiveEditBcn.on("removeLI", function(event){
 									var li = event.context;
 									var bcn = this.get("bcn");
 									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+									logClick("RemoveLi button", "Remove Learning indicator from goal", "BCN", userRole, userUri);
 								});
 
 								ractiveEditBcn.on("saveBCN", function(event){
@@ -354,6 +355,7 @@
 										});
 									});
 									event.original.preventDefault();
+									logClick("SaveLi button", "Save edited goal", "BCN", userRole, userUri);
 								});
 
 
@@ -382,7 +384,7 @@
 										//Hide the loading indicator of the delete button
 										l.stop();
 										$("#deleteBcnModal").modal("hide");
-
+										logClick("deleteBCN button", "Delete BCN", "BCN", userRole, userUri);
 									});
 								});
 
@@ -393,10 +395,12 @@
 										graphShow: function ( event ) {
 										var bcnIndex = bcnsList.indexOf(event.context);
 										publishShowBcnProgress(bcnsList[bcnIndex].uri);
+										logClick("graphShow button", "Show Progress for bcn in Graph widget", "BCN", userRole, userUri);
 									},
 										delete: function ( event ) {
 										ractiveDeleteBcn.set("bcn", event.context);
 										$('#deleteBcnModal').modal();
+										logClick("dleteBcnModal button", "Show delete bcn modal", "BCN", userRole, userUri);
 									},
 										showHelpGoalGraph: function ( event ) {
 										$('.tooltip-showGoalProgress').tooltip();
