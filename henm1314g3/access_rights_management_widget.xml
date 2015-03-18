@@ -194,8 +194,6 @@
 											};
 										};
 
-
-
 										//Match all users with their access rights which are stored in the config
 										//resource
 
@@ -213,7 +211,11 @@
 										//owner.accessRights.hasAgreedToLicense = true;
 										if (owner)
 											owner.accessRights.isManager = true;
-
+										
+										//hide owner of the space
+										if (!currentUser.isOwner)
+											userList = _.rest(userList, 'isOwner');
+										
 										//Check if user has agreed to license
 										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
 											showModalAcceptTermsOfUse();
