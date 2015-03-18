@@ -76,6 +76,7 @@
 					}
 
 					space = new openapp.oo.Resource(openapp.param.space());
+					roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
 
@@ -239,14 +240,14 @@
 												user = event.context;
 												var userUri = currentUser.uri.substring(currentUser.uri.lastIndexOf("/") + 1);
 												userAccessRights = event.context.accessRights;
-												logClick("Access rights checkbox", "Changed Access rights for " + user.name, "Access Rights", "Manager", userUri);
+												logClick("Access rights checkbox", "Changed Access rights for " + user.name, "Access", "Manager", userUri, roleUri);
 												createEmployeeIfNotExist(user, accessRights, employeesList);
 											},
 											showHelp: function(event){
 												var userUri = currentUser.uri.substring(currentUser.uri.lastIndexOf("/") + 1);
 												var isManager = event.context.currentUser.AccessRights.isManager && !event.context.currentUser.AccessRights.isEmployee; 
 												var role = isManager ? "Manager" : "Employee";
-												logClick("Help Button", "Show help", "Access Rights", role, userUri);
+												logClick("Help Button", "Show help", "Access", role, userUri, roleUri);
 												$('#descriptionModal').modal({
 													keyboard: true
 												});
