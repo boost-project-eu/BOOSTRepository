@@ -80,8 +80,14 @@
 					iwcClient.connect(iwcCallback);
 
 					//gadgets.util.registerOnLoadHandler(init);
-
-
+					
+					//validation for 
+					setTimeout(function() { 
+						if ($("input[type=checkbox]:checked.employeeCheckbox").length < 2)
+							$("input[type=checkbox]:checked.employeeCheckbox").attr("disabled", true);
+						else
+							$("input[type=checkbox]:checked.employeeCheckbox").attr("disabled", false);
+					}, 2000);
 
 					function iwcCallback(intent){
 						if((intent.action == "BCN_CREATE") || (intent.action == "BCN_UPDATE")){
@@ -158,7 +164,10 @@
 						});
 					}
 
+					
+
 					$(function(){
+
 
 						retrieveAllUsers(space, function(users){
 							retrieveAccessRights(function(access){
@@ -238,6 +247,11 @@
 
 										ractiveOverview.on({
 											accessRightsChanged: function(event){
+												//validation for manager checkbox
+												if ($("input[type=checkbox]:checked.employeeCheckbox").length < 2)
+													$("input[type=checkbox]:checked.employeeCheckbox").attr("disabled", true);
+												else
+													$("input[type=checkbox]:checked.employeeCheckbox").attr("disabled", false);
 												user = event.context;
 												createEmployeeIfNotExist(user, accessRights, employeesList);
 											},
@@ -263,8 +277,8 @@
 					});
 				});
 			});
-
-
+			
+			
 		</script>
 
 		<!-- HTML Block -->
@@ -315,7 +329,7 @@
 
 							{{#userList}}
 								<tr>
-									<td>
+									<td >
 										<p class="{{accessRights.hasAgreedToLicense ? "" : "text-muted"}}">{{name}}
 										{{^accessRights.hasAgreedToLicense}}
 										<span title="This user needs to agree to the terms of use first." class="glyphicon glyphicon-exclamation-sign"></span>
@@ -328,7 +342,7 @@
 									</td>
 									<td align="center">
 										<label class="checkbox-inline">
-										  <input on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled={{!accessRights.hasAgreedToLicense}}>
+										  <input class="employeeCheckbox"  on-click="accessRightsChanged" type="checkbox" checked='{{accessRights.isManager}}' disabled={{!accessRights.hasAgreedToLicense}}>
 										</label>
 									</td>
 									<td align="center">
