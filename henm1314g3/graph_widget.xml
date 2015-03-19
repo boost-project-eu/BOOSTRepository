@@ -882,7 +882,6 @@
 					}
 
 					function showDefaultGraph(){
-						console.log("5");
 
 						isOverviewGraph.bool=true;
 						isEmployeeOverviewGraph.bool=false;
@@ -978,7 +977,6 @@
 					}
 
 					function showEmployeeOverviewGraph(){
-						console.log("6");
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=true;
 						isBcnGraph.bool=false;
@@ -1072,7 +1070,6 @@
 					//it is an average LI's over all employees
 
 					function showBcnGraph(bcnUri){
-						console.log("7");
 						logClick("showBCNGraph", "Show progress for specific BCN", "Graph", userRole, userUri, roleUri);
 						isBcnGraph.bool=true;
 						isOverviewGraph.bool=false;
@@ -1128,7 +1125,6 @@
 
 					function showLiGraph(bcnUri, liClicked){
 						logClick("LI Progress", "Show progress for specific LI", "Graph", userRole, userUri, roleUri);
-						console.log("8");
 						isBcnGraph.bool=true;
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=false;
