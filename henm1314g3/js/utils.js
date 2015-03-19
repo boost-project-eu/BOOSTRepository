@@ -43,3 +43,25 @@ function logClick(elementName, userAction, widget, role, userUri, roleUri){
     roleUri: roleUri
   }, onAjaxSuccess);
 }
+
+function syncLog(elementName, userAction, widget, role, userUri, roleUri, callback){
+  var data = {
+    elementName: elementName,
+    userAction: userAction,
+    widget: widget,
+    role: role,
+    userUri: userUri,
+    roleUri: roleUri
+  }
+  $.ajax({
+    type: "POST",
+    url: "http://boostloger.herokuapp.com/save",
+    data: data,
+    success: function(msg){
+      callback();
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      console.log("Error:" + XMLHttpRequest.responseText + textStatus);
+    }
+  });
+};

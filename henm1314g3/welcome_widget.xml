@@ -118,23 +118,18 @@
 						ractiveWelcome.on({
 							setGerman: function(event){
 								setLanguage("de-de");
-								logClick("Language SelectBox", "Changed language to DE", "Welcome", userRole, userUri, roleUri);
 							},
 							setEnglish: function(event){
 								setLanguage("en-en");
-								logClick("Language SelectBox", "Changed language to EN", "Welcome", userRole, userUri, roleUri);
 							},
 							setCzech: function(event){
 								setLanguage("cz-cz");
-								logClick("Language SelectBox", "Changed language to CZ", "Welcome", userRole, userUri, roleUri);
 							},
 							setGreek: function(event){
 								setLanguage("el-el");
-								logClick("Language SelectBox", "Changed language to EL", "Welcome", userRole, userUri, roleUri);
 							},
 							setFrench: function(event){
 								setLanguage("fr-fr");
-								logClick("Language SelectBox", "Changed language to FR", "Welcome", userRole, userUri, roleUri);
 							},
 						});
 
@@ -158,7 +153,8 @@
 						cookieStr = "locale=" + locale
 						document.cookie=cookieStr;
 						publishLanguageChanged();
-						window.location.reload();
+						syncLog("Language SelectBox", "Changed language to " + locale, "Welcome", userRole, userUri, roleUri, function(){window.location.reload()})
+						// window.location.reload();
 					}
 
 					function publishLanguageChanged(){

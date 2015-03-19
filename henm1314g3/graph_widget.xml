@@ -354,6 +354,7 @@
 					 });
 
 					function LIprogressForBcn(bcn){
+						console.log("1");
 						var liNameList=[];
 
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
