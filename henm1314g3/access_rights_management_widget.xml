@@ -223,7 +223,11 @@
 										
 										//hide owner of the space
 										if (!currentUser.isOwner)
-											userList = _.rest(userList, 'isOwner');
+										{
+											userList = _.filter(userList, function(user){
+												return user.isOwner == false;
+											});
+										}
 										
 										//Check if user has agreed to license
 										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
