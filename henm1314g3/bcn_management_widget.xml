@@ -435,9 +435,16 @@
 							for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
 								var li = bcnsList[i].learningIndicators[j];
 								employeeLiData = currentEmployee.learningLevels[bcnsList[i].uri][li.id];
+								if(!employeeLiData){
+									employeeLiData = {
+										startDate: moment(),
+										endDate: moment(),
+										isRelevant: false
+									};
+								}
+
 								liStartDate = moment(employeeLiData.startDate);
 								liEndDate = moment(employeeLiData.endDate);
-
 								if (employeeLiData.isRelevant){
 									bcnStartDates.push(liStartDate);
 									bcnEndDates.push(liEndDate);
