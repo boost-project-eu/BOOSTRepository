@@ -367,12 +367,15 @@
 							for(i=0; i<employees.length; i++){
 
 								var employee = employees[i];
-								var start = employee.learningLevels[bcn.uri][li.id].start;
-								var current = employee.learningLevels[bcn.uri][li.id].current;
-								var end = employee.learningLevels[bcn.uri][li.id].end;
+								var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+								if (!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+								var start = employeeLiData.start;
+								var current = employeeLiData.current;
+								var end = employeeLiData.end;
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+									if(employeeLiData.isRelevant){
 										liStartList.push(start);
 										liCurrentList.push(current);
 										liEndList.push(end);
@@ -415,13 +418,16 @@
 							for(i=0; i<employees.length; i++){
 
 								var employee = employees[i];
-								var start = employee.learningLevels[bcn.uri][li.id].start;
-								var current = employee.learningLevels[bcn.uri][li.id].current;
-								var end = employee.learningLevels[bcn.uri][li.id].end;
+								var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+								if (!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+								var start = employeeLiData.start;
+								var current = employeeLiData.current;
+								var end = employeeLiData.end;
 
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+									if(employeeLiData.isRelevant){
 										liStartList.push(start);
 										liCurrentList.push(current);
 										liEndList.push(end);
@@ -474,13 +480,17 @@
 							for(var j = 0; j<bcn.learningIndicators.length; j++){
 								var li = bcn.learningIndicators[j];
 
-								var start = employee.learningLevels[bcn.uri][li.id].start;
-								var current = employee.learningLevels[bcn.uri][li.id].current;
-								var end = employee.learningLevels[bcn.uri][li.id].end;
+								var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+								if (!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+
+								var start = employeeLiData.start;
+								var current = employeeLiData.current;
+								var end = employeeLiData.end;
 
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+									if(employeeLiData.isRelevant){
 
 										liStartList.push(start);
 										liCurrentList.push(current);
@@ -903,14 +913,17 @@
 
 								for (var k = 0; k<employees.length; k++){
 									var employee = employees[k];
-									var start = employee.learningLevels[bcn.uri][li.id].start;
-									var current = employee.learningLevels[bcn.uri][li.id].current;
-									var end = employee.learningLevels[bcn.uri][li.id].end;
+									var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+									if (!employeeLiData)
+										employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+									var start = employeeLiData.start;
+									var current = employeeLiData.current;
+									var end = employeeLiData.end;
 
 
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
-										if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+										if(employeeLiData.isRelevant){
 
 										liStartList.push(start);
 										liCurrentList.push(current);
@@ -998,14 +1011,17 @@
 
 
 									var li = bcn.learningIndicators[j];
-									var start = employee.learningLevels[bcn.uri][li.id].start;
-									var current = employee.learningLevels[bcn.uri][li.id].current;
-									var end = employee.learningLevels[bcn.uri][li.id].end;
+									var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+									if (!employeeLiData)
+										employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+									var start = employeeLiData.start;
+									var current = employeeLiData.current;
+									var end = employeeLiData.end;
 
 
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
-										if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+										if(employeeLiData.isRelevant){
 
 										liStartList.push(start);
 
@@ -1234,13 +1250,16 @@
 
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
 							var li = bcn.learningIndicators[j];
-							var start = parseFloat(employee.learningLevels[bcn.uri][li.id].start);
+							var employeeLiData = employee.learningLevels[bcnsList[i].uri][li.id];
+								if(!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+							var start = parseFloat(employeeLiData.start);
 
-							var current = employee.learningLevels[bcn.uri][li.id].current;
-							var end = employee.learningLevels[bcn.uri][li.id].end;
+							var current = employeeLiData.current;
+							var end = employeeLiData.end;
 
 							//check if LI isRelevant and show only if it is true
-							if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+							if(employeeLiData.isRelevant){
 								liNameList.push(li.name);
 
 								liStartList.push(start);
