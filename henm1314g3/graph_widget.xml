@@ -109,7 +109,6 @@
 						retrieveAllBcns(space, function(bcnsList){
 							trimObjectNames(bcnsList, 30)
 							bcns= bcnsList;
-
 							bcnsList.sort(function(a, b){
 							if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
 							if(a.priority > b.priority)  return -1; else return 1;
@@ -1250,7 +1249,7 @@
 
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
 							var li = bcn.learningIndicators[j];
-							var employeeLiData = employee.learningLevels[bcnsList[i].uri][li.id];
+							var employeeLiData = employee.learningLevels[bcns[j].uri][li.id];
 								if(!employeeLiData)
 									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
 							var start = parseFloat(employeeLiData.start);
