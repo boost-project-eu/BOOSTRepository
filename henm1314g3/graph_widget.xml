@@ -352,34 +352,33 @@
 					        });
 					 });
 
-					function LIprogressForBcn(bcn){
+					function LIprogressForBcn(bcn, liClicked){
 						var liNameList=[];
 
-						for(var j = 0; j<bcn.learningIndicators.length; j++){
+						var li = _.first( _.filter(bcn.learningIndicators, function(li){
+							return li.name == liClicked
+						}));
 
-							var liStartList=[];
-							var liCurrentList=[];
-							var liEndList=[];
+						var liStartList=[];
+						var liCurrentList=[];
+						var liEndList=[];
 
-							var li = bcn.learningIndicators[j];
+						for(i=0; i<employees.length; i++){
 
-							for(i=0; i<employees.length; i++){
+							var employee = employees[i];
+							var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+							if (!employeeLiData)
+								employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+							var start = employeeLiData.start;
+							var current = employeeLiData.current;
+							var end = employeeLiData.end;
 
-								var employee = employees[i];
-								var employeeLiData = employee.learningLevels[bcn.uri][li.id];
-								if (!employeeLiData)
-									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
-								var start = employeeLiData.start;
-								var current = employeeLiData.current;
-								var end = employeeLiData.end;
-
-								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employeeLiData.isRelevant){
-										liStartList.push(start);
-										liCurrentList.push(current);
-										liEndList.push(end);
-										liNameList.push(employee.name);
-									}
+							if (employee.learningLevels[bcn.uri].isRelevant){
+								if(employeeLiData.isRelevant){
+									liStartList.push(start);
+									liCurrentList.push(current);
+									liEndList.push(end);
+									liNameList.push(employee.name);
 								}
 							}
 						}
@@ -840,7 +839,6 @@
 																if (li.name == liNameList[this.x]) {
 																	var liClicked = liNameList[this.x];
 																	showLiGraph(bcns[i].uri, liClicked);
-																//	alert("show detailed LI graph");
 																}
 																}
 															}
@@ -855,7 +853,6 @@
 																$('#container').data('emplDataUri', employeeUri);
 																$('#container').data('bcnDataUri', bcns[i].uri);
 																showDetailedEmployeeGraph(employeeUri, bcns[i].uri);
-															//	alert ('Point: showDetailedEmployeeGraph');
 															}
 														}
 													}
@@ -1142,14 +1139,13 @@
 
 						}
 
-						var data = LIprogressForBcn(bcn);
-
+						var data = LIprogressForBcn(bcn, liClicked);
+						
 						var liEndListAvg=[];
 						var liCurrentListAvg=[];
 						var liStartListAvg=[];
 						var liNameList=[];
 						for (var i=0; i<data[0].length; i++){
-
 							liEndListAvg[i]=data[0][i][1];
 							liStartListAvg[i]=data[1][i][1];
 							liCurrentListAvg[i]=data[2][i][1];
