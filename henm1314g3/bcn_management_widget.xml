@@ -427,14 +427,54 @@
 						var bcnStartDates = [];
 						var bcnEndDates = [];
 
-						for(var i = 0; i < bcnsList.length; i++){
+						// for(var i = 0; i < bcnsList.length; i++){
+						// 	bcnStartDates = [];
+						// 	bcnEndDates = [];
+
+						// 	// learning indicators information copying into bcnList
+						// 	for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
+						// 		var li = bcnsList[i].learningIndicators[j];
+						// 		employeeLiData = currentEmployee.learningLevels[bcnsList[i].uri][li.id];
+						// 		// if(!employeeLiData){
+						// 		// 	employeeLiData = {
+						// 		// 		startDate: moment(),
+						// 		// 		endDate: moment(),
+						// 		// 		isRelevant: false
+						// 		// 	};
+						// 		// }
+
+						// 		liStartDate = moment(employeeLiData.startDate);
+						// 		liEndDate = moment(employeeLiData.endDate);
+						// 		if (employeeLiData.isRelevant){
+						// 			bcnStartDates.push(liStartDate);
+						// 			bcnEndDates.push(liEndDate);
+						// 		}
+
+						// 		liDayPast = now.diff(liStartDate, 'days');
+						// 		liDuration = liEndDate.diff(liStartDate, 'days');
+						// 		employeeLiData.datePercentage = (100/liDuration) * liDayPast;
+						// 		employeeLiData.daysLeft = liDuration - liDayPast;
+						// 		li.employeeLiData = employeeLiData;
+						// 	}
+
+
+						// 	bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
+						// 	var bcnStartDate = GetSmallestDate(bcnStartDates) || moment();
+						// 	var bcnEndDate = GetBiggestDate(bcnEndDates) || moment();
+						// 	var goalDuration = bcnEndDate.diff(bcnStartDate, 'days');
+						// 	var dayPast = now.diff(bcnStartDate, 'days');
+						// 	var datePercentage = (100/goalDuration) * dayPast;
+						// 	bcnsList[i].deadline = bcnEndDate.format("MM/DD/YYYY");
+						// 	bcnsList[i].startDate = bcnStartDate.format("MM/DD/YYYY");
+						// 	bcnsList[i].datePercentage = datePercentage;
+						// 	bcnsList[i].daysLeft = bcnEndDate.diff(bcnStartDate, 'days') - now.diff(bcnStartDate, 'days');
+						// };
+						_.each(bcnsList, function(bcn){
 							bcnStartDates = [];
 							bcnEndDates = [];
 
-							// learning indicators information copying into bcnList
-							for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
-								var li = bcnsList[i].learningIndicators[j];
-								employeeLiData = currentEmployee.learningLevels[bcnsList[i].uri][li.id];
+							_.each(bcn.learningIndicators, function(learningIndicator){
+								var employeeLiData = currentEmployee.learningLevels[bcn.uri][learningIndicator.id];
 								if(!employeeLiData){
 									employeeLiData = {
 										startDate: moment(),
@@ -454,21 +494,21 @@
 								liDuration = liEndDate.diff(liStartDate, 'days');
 								employeeLiData.datePercentage = (100/liDuration) * liDayPast;
 								employeeLiData.daysLeft = liDuration - liDayPast;
-								li.employeeLiData = employeeLiData;
-							}
-
-
-							bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
+								learningIndicator.employeeLiData = employeeLiData;
+							});
+							
+							bcn.isRelevant = currentEmployee.learningLevels[bcn.uri].isRelevant;
 							var bcnStartDate = GetSmallestDate(bcnStartDates) || moment();
 							var bcnEndDate = GetBiggestDate(bcnEndDates) || moment();
 							var goalDuration = bcnEndDate.diff(bcnStartDate, 'days');
 							var dayPast = now.diff(bcnStartDate, 'days');
 							var datePercentage = (100/goalDuration) * dayPast;
-							bcnsList[i].deadline = bcnEndDate.format("MM/DD/YYYY");
-							bcnsList[i].startDate = bcnStartDate.format("MM/DD/YYYY");
-							bcnsList[i].datePercentage = datePercentage;
-							bcnsList[i].daysLeft = bcnEndDate.diff(bcnStartDate, 'days') - now.diff(bcnStartDate, 'days');
-						};
+							bcn.deadline = bcnEndDate.format("MM/DD/YYYY");
+							bcn.startDate = bcnStartDate.format("MM/DD/YYYY");
+							bcn.datePercentage = datePercentage;
+							bcn.daysLeft = bcnEndDate.diff(bcnStartDate, 'days') - now.diff(bcnStartDate, 'days');						
+
+						});
 					}
 
 					function iwcCallback(intent){
