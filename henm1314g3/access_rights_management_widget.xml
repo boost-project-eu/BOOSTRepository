@@ -132,7 +132,9 @@
 					}
 
 					function createEmployeeIfNotExist(user, accessRights, employeesList){
+						user.uri = decodeURIComponent(user.uri);
 						accessRights.update(function(){
+							user.uri = decodeURIComponent(user.uri);
 							if(accessRights.getUserAccessRights(user.uri).isEmployee){
 								var foundEmployeeData = false;
 								_.each(employeesList, function(employee){
@@ -175,6 +177,7 @@
 									retrieveAllBcns(space, function(bcns){
 
 										userList = users;
+										// console.log(userList);
 										accessRights = access;
 										employeesList = employees;
 										bcnsList = bcns;
@@ -185,7 +188,7 @@
 
 										for(var i = 0; i < userList.length; i++){
 											var user = userList[i];
-											if (user.uri == openapp.param.user()){
+											if (decodeURIComponent(user.uri) == openapp.param.user()){
 												currentUser = user;
 												if (currentUser) {
 													currentUser.AccessRights = accessRights.getUserAccessRights(currentUser.uri);
@@ -197,7 +200,6 @@
 													currentUser.AccessRights.isManager = false;
 													currentUser.AccessRights.isEmployee = false;
 													currentUser.AccessRights.hasAgreedToLicense = false;
-
 												}
 
 											};

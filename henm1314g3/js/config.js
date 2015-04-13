@@ -77,7 +77,7 @@ require.config({
             deps: ['boostShared']
         },
         AccessRightsManager: {
-            deps: ['boostShared', 'bootbox']
+            deps: ['boostShared', 'bootbox', 'lodash']
         },
         ConfigManager: {
             deps: ['boostShared']

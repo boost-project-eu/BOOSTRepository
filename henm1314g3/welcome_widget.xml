@@ -93,6 +93,7 @@
 
 						// Get the access rights:
 						retrieveAccessRights(function(access){
+						
 						accessRights = access;
 						userAccessRights = access.getUserAccessRights();
 						agreed = userAccessRights.hasAgreedToLicense;

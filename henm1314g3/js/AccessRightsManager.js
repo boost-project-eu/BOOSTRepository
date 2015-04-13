@@ -15,17 +15,25 @@ function AccessRights(object){
 
 AccessRights.prototype.getUserAccessRights = function(userUri){
 	//If no user uri is defined we just use the current user
+	var newRights = {};
 	if(userUri === undefined)
 		var userUri = openapp.param.user();
+	
+	_.each(this.userRights, function(n, key){
+		if(decodeURIComponent(key) == decodeURIComponent(userUri))
+		{	
+			newRights = n;
+		}
+	});
 
-	if(this.userRights.hasOwnProperty(userUri))
-		return this.userRights[userUri];
-	else{
-		var newRights = {};
+	if(_.isEmpty(newRights)){
 		newRights.isManager = false;
 		newRights.isEmployee = true;
 		newRights.hasAgreedToLicense = false;
 		this.userRights[userUri] = newRights;
+		return newRights;
+	}
+	else {
 		return newRights;
 	}
 }
