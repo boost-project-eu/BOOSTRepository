@@ -73,7 +73,7 @@ function retrieveAllUsers(space, callback){
 								//Remove 'mailto:' prefix from the email
 								email = email.substring(7);
 								if (ownerUri) {
-									var isOwner = (ownerUri == item);
+									var isOwner = (ownerUri == decodeURIComponent(item));
 								} else {
 									isOwner = false;
 								}

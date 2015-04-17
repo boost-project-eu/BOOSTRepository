@@ -132,7 +132,6 @@
 					}
 
 					function createEmployeeIfNotExist(user, accessRights, employeesList){
-						user.uri = decodeURIComponent(user.uri);
 						accessRights.update(function(){
 							user.uri = decodeURIComponent(user.uri);
 							if(accessRights.getUserAccessRights(user.uri).isEmployee){
@@ -182,6 +181,7 @@
 										employeesList = employees;
 										bcnsList = bcns;
 
+										// console.log(access);
 										sortUsers(userList);
 
 										//retrieve current employee

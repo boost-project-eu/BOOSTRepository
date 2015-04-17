@@ -97,8 +97,6 @@
 						accessRights = access;
 						userAccessRights = access.getUserAccessRights();
 						agreed = userAccessRights.hasAgreedToLicense;
-						//debug
-						//agreed = false;
 
 						if (!agreed)
 							$("#agreeLisenceModal").modal();
