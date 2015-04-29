@@ -132,7 +132,7 @@
 					}
 
 					function createEmployeeIfNotExist(user, accessRights, employeesList){
-						accessRights.update(function(){
+						accessRights.updateonly(function(){
 							user.uri = decodeURIComponent(user.uri);
 							if(accessRights.getUserAccessRights(user.uri).isEmployee){
 								var foundEmployeeData = false;

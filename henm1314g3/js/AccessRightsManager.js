@@ -38,7 +38,7 @@ AccessRights.prototype.getUserAccessRights = function(userUri){
 	}
 }
 
-AccessRights.prototype.update = function(callback){
+AccessRights.prototype.updateonly = function(callback){
 	//If resource was not created, create it instead
 	var boostResource = new openapp.oo.Resource(this.uri);
 	boostResource.setRepresentation(this, "application/json", function(){
