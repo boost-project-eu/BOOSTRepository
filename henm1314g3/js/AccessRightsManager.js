@@ -38,6 +38,14 @@ AccessRights.prototype.getUserAccessRights = function(userUri){
 	}
 }
 
+AccessRights.prototype.update = function(callback){
+	//If resource was not created, create it instead
+	var boostResource = new openapp.oo.Resource(this.uri);
+	boostResource.setRepresentation(this, "application/json", function(){
+		callback();
+	});
+}
+
 function retrieveAccessRights(callback){
 	retrieveBoostResources("my:ns:accessRights", function(object){return new AccessRights(object)}, function(accessRights){
 		if(accessRights.length == 0)

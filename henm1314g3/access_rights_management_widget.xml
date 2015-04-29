@@ -132,30 +132,30 @@
 					}
 
 					function createEmployeeIfNotExist(user, accessRights, employeesList){
-						// accessRights.update(function(){
-						user.uri = decodeURIComponent(user.uri);
-						if(accessRights.getUserAccessRights(user.uri).isEmployee){
-							var foundEmployeeData = false;
-							_.each(employeesList, function(employee){
-								if(employee.userUri == user.uri){
-									foundEmployeeData = true;
-								}
-							});
-
-							if(!foundEmployeeData){
-								createEmployeeFromUser(user, bcnsList, function(employee){
-									employeesList.push(employee);
-									publishAccessRightsChanged();
+						accessRights.update(function(){
+							user.uri = decodeURIComponent(user.uri);
+							if(accessRights.getUserAccessRights(user.uri).isEmployee){
+								var foundEmployeeData = false;
+								_.each(employeesList, function(employee){
+									if(employee.userUri == user.uri){
+										foundEmployeeData = true;
+									}
 								});
+
+								if(!foundEmployeeData){
+									createEmployeeFromUser(user, bcnsList, function(employee){
+										employeesList.push(employee);
+										publishAccessRightsChanged();
+									});
+								}
+								else{
+									publishAccessRightsChanged();
+								}
 							}
 							else{
 								publishAccessRightsChanged();
 							}
-						}
-						else{
-							publishAccessRightsChanged();
-						}
-						// });
+						});
 					}
 
 					function sortUsers(users){
