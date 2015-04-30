@@ -430,7 +430,7 @@
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
 			  	{{^accessRights.isEmployee}}
-				  	{{#accessRights.isManager}}
+				  	{{#accessRights.isManager}}	
 				  		<div class="btn-group">
 					 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>
 						</div>
