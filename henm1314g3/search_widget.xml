@@ -286,6 +286,11 @@
 						retrieveAccessRights(function(accessRights){
 							userAccessRights = accessRights.getUserAccessRights();
 							agreed = userAccessRights.hasAgreedToLicense;
+
+							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+							userRole = isManager ? "Manager" : "Employee";
+							userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+							roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 							//Check if user has agreed to license
 
 							if(!agreed){
@@ -328,6 +333,7 @@
 
 							ractiveManageRepos.on({
 								saveRepo: function (event){
+									logClick("SaveRepoButton", "Save search repository changes", "Search", userRole, userUri, roleUri);
 									model.config.update(function(){
 					                  	publishConfigChanged(model.config.uri);
 										ractiveSearchHeader.set({model: model});
@@ -339,29 +345,37 @@
 
 							ractiveSearchHeader.on({
 								manageRepos: function (event){
+									logClick("ManageReposButton", "Open manage repo modal", "Search", userRole, userUri, roleUri);
 									ractiveManageRepos.set({model: model});
 									$("#manageRepoModal").modal();
 								},
 								activate: function (event){
+									logClick("ActivateRepository", "Activate " + event.context.searchFunctions.name + " repositiry", "Search", userRole, userUri, roleUri);
 									event.context.activate();
 								},
 								searchInRepo: function (event){
+									logClick("SearchInRepoButton", "Search for: " + $("#search_field").val(), "Search", userRole, userUri, roleUri);
 									model.selectedRepository.search($("#search_field").val(), function(){
 									});
 								},
 								pageclick: function(event){
+									logClick("PageChangeButton", "Change page by number", userRole, userUri, roleUri);
 									event.context.click();
 								},
 								nextPage: function(event){
+									logClick("nextPageButton", "Change page to next", userRole, userUri, roleUri);
 									model.selectedRepository.nextResultsPage();
 								},
 								prevPage: function(event){
+									logClick("prevPageButton", "Change page to prev", userRole, userUri, roleUri);
 									model.selectedRepository.prevResultsPage();
 								},
 								resultClick: function(event){
+									logClick("ResultClickButton", "Click on search result", userRole, userUri, roleUri);
 									event.context.click();
-								},
+								},	
 								questionModal: function(event){
+									logClick("ShowHelpButtin", "Show help modal", userRole, userUri, roleUri);
 									$('#descriptionModal').modal({
 						        		keyboard: true
 						          	});
