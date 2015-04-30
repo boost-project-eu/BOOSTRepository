@@ -114,7 +114,6 @@
 						retrieveAllBcns(space, function(bcnsList){
 							trimObjectNames(bcnsList, 30)
 							bcns= bcnsList;
-
 							bcnsList.sort(function(a, b){
 							if (a.priority==b.priority) {if(a.name.toLowerCase() < b.name.toLowerCase()) return -1; else return 1;}
 							if(a.priority > b.priority)  return -1; else return 1;
@@ -360,31 +359,33 @@
 					        });
 					 });
 
-					function LIprogressForBcn(bcn){
+					function LIprogressForBcn(bcn, liClicked){
 						var liNameList=[];
 
-						for(var j = 0; j<bcn.learningIndicators.length; j++){
+						var li = _.first( _.filter(bcn.learningIndicators, function(li){
+							return li.name == liClicked
+						}));
 
-							var liStartList=[];
-							var liCurrentList=[];
-							var liEndList=[];
+						var liStartList=[];
+						var liCurrentList=[];
+						var liEndList=[];
 
-							var li = bcn.learningIndicators[j];
+						for(i=0; i<employees.length; i++){
 
-							for(i=0; i<employees.length; i++){
+							var employee = employees[i];
+							var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+							if (!employeeLiData)
+								employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+							var start = employeeLiData.start;
+							var current = employeeLiData.current;
+							var end = employeeLiData.end;
 
-								var employee = employees[i];
-								var start = employee.learningLevels[bcn.uri][li.id].start;
-								var current = employee.learningLevels[bcn.uri][li.id].current;
-								var end = employee.learningLevels[bcn.uri][li.id].end;
-
-								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
-										liStartList.push(start);
-										liCurrentList.push(current);
-										liEndList.push(end);
-										liNameList.push(employee.name);
-									}
+							if (employee.learningLevels[bcn.uri].isRelevant){
+								if(employeeLiData.isRelevant){
+									liStartList.push(start);
+									liCurrentList.push(current);
+									liEndList.push(end);
+									liNameList.push(employee.name);
 								}
 							}
 						}
@@ -422,13 +423,16 @@
 							for(i=0; i<employees.length; i++){
 
 								var employee = employees[i];
-								var start = employee.learningLevels[bcn.uri][li.id].start;
-								var current = employee.learningLevels[bcn.uri][li.id].current;
-								var end = employee.learningLevels[bcn.uri][li.id].end;
+								var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+								if (!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+								var start = employeeLiData.start;
+								var current = employeeLiData.current;
+								var end = employeeLiData.end;
 
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+									if(employeeLiData.isRelevant){
 										liStartList.push(start);
 										liCurrentList.push(current);
 										liEndList.push(end);
@@ -481,13 +485,17 @@
 							for(var j = 0; j<bcn.learningIndicators.length; j++){
 								var li = bcn.learningIndicators[j];
 
-								var start = employee.learningLevels[bcn.uri][li.id].start;
-								var current = employee.learningLevels[bcn.uri][li.id].current;
-								var end = employee.learningLevels[bcn.uri][li.id].end;
+								var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+								if (!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+
+								var start = employeeLiData.start;
+								var current = employeeLiData.current;
+								var end = employeeLiData.end;
 
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
-									if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+									if(employeeLiData.isRelevant){
 
 										liStartList.push(start);
 										liCurrentList.push(current);
@@ -841,7 +849,6 @@
 																if (li.name == liNameList[this.x]) {
 																	var liClicked = liNameList[this.x];
 																	showLiGraph(bcns[i].uri, liClicked);
-																//	alert("show detailed LI graph");
 																}
 																}
 															}
@@ -856,7 +863,6 @@
 																$('#container').data('emplDataUri', employeeUri);
 																$('#container').data('bcnDataUri', bcns[i].uri);
 																showDetailedEmployeeGraph(employeeUri, bcns[i].uri);
-															//	alert ('Point: showDetailedEmployeeGraph');
 															}
 														}
 													}
@@ -913,14 +919,17 @@
 
 								for (var k = 0; k<employees.length; k++){
 									var employee = employees[k];
-									var start = employee.learningLevels[bcn.uri][li.id].start;
-									var current = employee.learningLevels[bcn.uri][li.id].current;
-									var end = employee.learningLevels[bcn.uri][li.id].end;
+									var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+									if (!employeeLiData)
+										employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+									var start = employeeLiData.start;
+									var current = employeeLiData.current;
+									var end = employeeLiData.end;
 
 
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
-										if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+										if(employeeLiData.isRelevant){
 
 										liStartList.push(start);
 										liCurrentList.push(current);
@@ -1008,14 +1017,17 @@
 
 
 									var li = bcn.learningIndicators[j];
-									var start = employee.learningLevels[bcn.uri][li.id].start;
-									var current = employee.learningLevels[bcn.uri][li.id].current;
-									var end = employee.learningLevels[bcn.uri][li.id].end;
+									var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+									if (!employeeLiData)
+										employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+									var start = employeeLiData.start;
+									var current = employeeLiData.current;
+									var end = employeeLiData.end;
 
 
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
-										if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+										if(employeeLiData.isRelevant){
 
 										liStartList.push(start);
 
@@ -1138,14 +1150,13 @@
 
 						}
 
-						var data = LIprogressForBcn(bcn);
-
+						var data = LIprogressForBcn(bcn, liClicked);
+						
 						var liEndListAvg=[];
 						var liCurrentListAvg=[];
 						var liStartListAvg=[];
 						var liNameList=[];
 						for (var i=0; i<data[0].length; i++){
-
 							liEndListAvg[i]=data[0][i][1];
 							liStartListAvg[i]=data[1][i][1];
 							liCurrentListAvg[i]=data[2][i][1];
@@ -1247,13 +1258,17 @@
 
 						for(var j = 0; j<bcn.learningIndicators.length; j++){
 							var li = bcn.learningIndicators[j];
-							var start = parseFloat(employee.learningLevels[bcn.uri][li.id].start);
 
-							var current = employee.learningLevels[bcn.uri][li.id].current;
-							var end = employee.learningLevels[bcn.uri][li.id].end;
+							var employeeLiData = employee.learningLevels[bcn.uri][li.id];
+								if(!employeeLiData)
+									employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+							var start = parseFloat(employeeLiData.start);
+
+							var current = employeeLiData.current;
+							var end = employeeLiData.end;
 
 							//check if LI isRelevant and show only if it is true
-							if(employee.learningLevels[bcn.uri][li.id].isRelevant){
+							if(employeeLiData.isRelevant){
 								liNameList.push(li.name);
 
 								liStartList.push(start);

@@ -44,8 +44,10 @@ function retrieveAllUsers(space, callback){
 		space.getSubResources({
 			relation : "http://purl.org/openapp/owner",
 			onAll : function(ownerResource){
-				if (ownerResource[0]) var ownerUri = ownerResource[0].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value;
-		
+				if (ownerResource[0]) {
+					var ownerUri = ownerResource[0].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value;
+					ownerUri = decodeURIComponent(ownerUri);
+				}
 				//First get the URIs of all the user which are in the space
 				space.getSubResources({
 					relation : "http://xmlns.com/foaf/0.1/member",
@@ -55,13 +57,15 @@ function retrieveAllUsers(space, callback){
 						var userUris = [];
 
 						for(var i = 0; i < resources.length; i++){
-							userUris.push(resources[i].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value);
+							var userUri = resources[i].info.subject["http://www.w3.org/2002/07/owl#sameAs"][0].value;
+							userUris.push(userUri);
 						}
 						//Get all the users in the space based on their URI
 						var users = [];
 
 						var getUser = function(item, done){
 							var userResource = new openapp.oo.Resource(item);
+
 							userResource.getInfo(function(info){
 								var email = info["http://xmlns.com/foaf/0.1/mbox"];
 								if(!email)
@@ -69,13 +73,13 @@ function retrieveAllUsers(space, callback){
 								//Remove 'mailto:' prefix from the email
 								email = email.substring(7);
 								if (ownerUri) {
-									var isOwner = (ownerUri == item);
+									var isOwner = (ownerUri == decodeURIComponent(item));
 								} else {
 									isOwner = false;
 								}
 
 								var user = new User({
-									uri : item,
+									uri : decodeURIComponent(item),
 									name : info["http://purl.org/dc/terms/title"],
 									email : email,
 									isOwner : isOwner

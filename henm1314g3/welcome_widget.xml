@@ -84,6 +84,7 @@
 					}
 					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){
+					
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
@@ -93,6 +94,7 @@
 
 						// Get the access rights:
 						retrieveAccessRights(function(access){
+						
 						accessRights = access;
 						userAccessRights = access.getUserAccessRights();
 						agreed = userAccessRights.hasAgreedToLicense;

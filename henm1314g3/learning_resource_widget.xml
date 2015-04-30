@@ -198,10 +198,16 @@
 
 										if (currentEmployee){
 											for(var i = 0; i < bcnsList.length; i++){
-												bcnsList[i].isRelevant = currentEmployee.learningLevels[bcnsList[i].uri].isRelevant;
+												var employeeLevel = currentEmployee.learningLevels[bcnsList[i].uri]
+												if (!employeeLevel)
+													employeeLevel = {isRelevant: false};
+												bcnsList[i].isRelevant = employeeLevel.isRelevant;
 												for(var j = 0; j < bcnsList[i].learningIndicators.length; j++){
 													var li = bcnsList[i].learningIndicators[j];
-													li.isRelevant = currentEmployee.learningLevels[bcnsList[i].uri][li.id].isRelevant;
+													employeeLiData = employeeLevel[li.id];
+													if (!employeeLiData) 
+														employeeLiData = {start: 0, current: 0, end: 5, isRelevant: false, startDate: moment(), endDate: moment(), datePercentage: "", daysLeft: 0 };
+													li.isRelevant = employeeLiData.isRelevant;
 												}
 											}
 										}
