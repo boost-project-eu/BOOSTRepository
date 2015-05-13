@@ -72,6 +72,9 @@
 
 					var space;
 					var check=false;
+					var userUri;
+					var roleUri;
+					var userRole;
 
 					var user = {
 						isEmployee: false,
@@ -104,6 +107,8 @@
 
 						space = new openapp.oo.Resource(openapp.param.space());
 						iwcClient = new iwc.Client();
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+						roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 						iwcClient.connect(iwcCallback);
 
 						retrieveAllBcns(space, function(bcnsList){
@@ -116,6 +121,8 @@
 							retrieveAccessRights(function(accessRights){
 
 							var userAccessRights = accessRights.getUserAccessRights();
+							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+							userRole = isManager ? "Manager" : "Employee";
 
 								retrieveAllUsers(space, function(users){
 								retrieveAllEmployees(space, function(allEmployeesList){
@@ -530,7 +537,6 @@
 					// Printing the graphs
 
 					function printGraph(isOverview, employeeUri, title, subtitle, uriList, liNameList, formater, liStartListAvg, liCurrentListAvg, liEndListAvg){
-
 						//llevel is from EmployeeManager.js
 
 						var learningLevelsName = [];
@@ -568,10 +574,12 @@
 										click: function (event) {
 											if (isOverviewGraph.bool){
 												showEmployeeOverviewGraph();
+												logClick("showEmployeeOverviewGraph", "Show progress for all employees", "Graph", userRole, userUri, roleUri);
 											//	alert ('showEmployeeOverviewGraph');
 											}
 											else if (isEmployeeOverviewGraph.bool){
 												showDefaultGraph();
+												logClick("showBCNOverviewGraph", "Show progress for all BCNs", "Graph", userRole, userUri, roleUri);
 											//	alert ('showDefaultGraph');
 											}
 
@@ -728,9 +736,11 @@
 										click: function (event) {
 											if (isBcnGraph.bool){
 												showDefaultGraph();
+												logClick("showBCNOverviewGraph", "Show progress for all BCNs", "Graph", userRole, userUri, roleUri);
 											//	alert ('showDefaultGraph Overall Goals View');
 											} else if (isEmployeeGraph.bool) {
 												showEmployeeOverviewGraph();
+												logClick("showEmployeeOverviewGraph", "Show progress for all employees", "Graph", userRole, userUri, roleUri);
 											//	alert ('showEmployeeOverviewGraph back from goal');
 											} else if (isDetailedGraph.bool) {
 												var emplDataUri = $('#container').data('emplDataUri');
@@ -1072,7 +1082,7 @@
 					//it is an average LI's over all employees
 
 					function showBcnGraph(bcnUri){
-
+						logClick("showBCNGraph", "Show progress for specific BCN", "Graph", userRole, userUri, roleUri);
 						isBcnGraph.bool=true;
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=false;
@@ -1126,6 +1136,7 @@
 					// showLiGraph in this function we calculate avarege over all LI per User
 
 					function showLiGraph(bcnUri, liClicked){
+						logClick("LI Progress", "Show progress for specific LI", "Graph", userRole, userUri, roleUri);
 						isBcnGraph.bool=true;
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=false;
@@ -1178,6 +1189,7 @@
 					}
 
 					function showEmployeeGraph(employeeUri){
+						logClick("showEmployeeGraph", "Show progress for specific employee", "Graph", userRole, userUri, roleUri);
 						isBcnGraph.bool=false;
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=false;
@@ -1220,6 +1232,7 @@
 					}
 
 					function showDetailedEmployeeGraph(employeeUri, bcnUri){
+						logClick("showDetailedEmployeeGraph", "Show Li progress for specific employee", "Graph", userRole, userUri, roleUri);
 						isBcnGraph.bool=false;
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=false;

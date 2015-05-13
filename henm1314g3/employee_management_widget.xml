@@ -233,6 +233,10 @@
 						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 						userAccessRights = accessRights.getUserAccessRights();
+						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+						userRole = isManager ? "Manager" : "Employee";
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+						roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 
 							//Check if user has agreed to license
 
@@ -284,6 +288,7 @@
 
 								ractiveEmployeeHeader.on({
 								showOverallProgress: function ( event ) {
+									logClick("showOverallProgress button", "Show progress for all employees", "Employee", userRole, userUri, roleUri);
 									publishShowOverallEmployeeProgress();
 								},
 
@@ -301,7 +306,7 @@
 									$('#descriptionModal').modal({
 										keyboard: true
 									});
-
+									logClick("showHelp button", "Show help modal", "Employee", userRole, userUri, roleUri);
 								}
 								});
 
@@ -332,9 +337,11 @@
 									$('#deleteEmployeeModal').modal();
 								},
 									graphShow: function(event){
+									logClick("graphShow button", "Show progress for " + event.context.name, "Employee", userRole, userUri, roleUri);
 									publishShowEmployeeProgress(event.context.uri);
 								},
 									employeeDatesShow: function(event){
+									logClick("employeeDatesShow button", "Show Assigned Deadlines for " + event.context.name, "Employee", userRole, userUri, roleUri);
 									publishShowEmployeeDates(event.context.userUri);
 								},
 									setLI: function ( event ) {
@@ -350,7 +357,7 @@
 									$('.input-group.date').datepicker({
 									    keyboardNavigation: false
 									});
-
+									logClick("EditEmployee button", "Open Edit Employee Modal for " + event.context.name, "Employee", userRole, userUri, roleUri);
 									$('#setLIModal').modal();
 								},
 									showHelpEmployeeGraph: function ( event ) {
@@ -481,6 +488,7 @@
 										l.stop();
 										$('#setLIModal').modal("hide");
 									});
+									logClick("saveSetLI button", "Set LIs and Save changes for " + employee.name, "Employee", userRole, userUri, roleUri);
 								});
 
 								//dates events
@@ -512,6 +520,7 @@
 										var formatDate = moment(e.date);
 										event.context.employeeLiData.startDate = formatDate.format("MM/DD/YYYY");
 									});
+									logClick("changeLiStartDatePicker input", "Change Start Date of assigned LI", "Employee", userRole, userUri, roleUri);
 								});
 
 								ractiveSetLIEmployee.on("changeLiEndDatePicker",  function(event){
@@ -521,6 +530,7 @@
 										var formatDate = moment(e.date);
 										event.context.employeeLiData.endDate = formatDate.format("MM/DD/YYYY");
 									});
+									logClick("changeLiEndDatePicker input", "Change End Date of assigned LI", "Employee", userRole, userUri, roleUri);
 								});
 
 								$("#loadingEmployeeText").addClass("hidden");

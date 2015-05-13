@@ -159,6 +159,10 @@
 						// Get the access rights:
 							retrieveAccessRights(function(accessRights){
 							userAccessRights = accessRights.getUserAccessRights();
+							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+							userRole = isManager ? "Manager" : "Employee";
+							userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+							roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 
 							//Check if user has agreed to license
 
@@ -167,14 +171,6 @@
 							} 
 
 							});  // end of the retrieveAccessRights
-
-					      // help button click
-
-					      $('#question').click(function(){
-					        $('#descriptionModal').modal({
-					        keyboard: true
-					          });
-					        });
 
 						$("#importLearningDocumentButton").click(function(){
 							if(learningDocumentFromSearchWidget != null){
@@ -307,6 +303,7 @@
 								        });
 
 								        titleRactive.on("showhelp", function(event){
+								        	logClick("showHelp", "Show Help", "Resources", userRole, userUri, roleUri);
 						        			$('#descriptionModal').modal({
 						        				keyboard: true
 									        });
@@ -324,6 +321,7 @@
 								        });
 
 								        treeRactive.on("documentAdd", function(event){
+								        	logClick("documentAdd", "Open Add new Document Modal", "Resources", userRole, userUri, roleUri);
 								        	var newDocument = new LearningDocument({});
 								        	newDocument.type = "weblink";
 								        	var learningIndicatorId = event.context.id;
@@ -350,6 +348,7 @@
 
 
 										treeRactive.on("expertAdd", function(event){
+											logClick("expertAdd", "Open Add new Expert Modal", "Resources", userRole, userUri, roleUri);
 								        	var newExpert = new Expert({});
 								        	var learningIndicatorId = event.context.id;
 
@@ -375,6 +374,7 @@
 								        });
 
 										treeRactive.on("widgetAdd", function(event){
+											logClick("widgetAdd", "Open Add new Widget Modal", "Resources", userRole, userUri, roleUri);
 								        	var newWidget = new Widget({});
 								        	var learningIndicatorId = event.context.id;
 
@@ -399,6 +399,7 @@
 
 
 								        treeRactive.on("documentDelete", function(event){
+								        	logClick("documentDelete", "Open delete document modal", "Resources", userRole, userUri, roleUri);
 								        	var kp = event.keypath;
 								        	learningDocumentsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
@@ -409,6 +410,7 @@
 								        	$("#deleteDocumentModal").modal();
 								        });
 								        treeRactive.on("WidgetDelete", function(event){
+								        	logClick("documentDelete", "Open delete document modal", "Resources", userRole, userUri, roleUri);
 								        	var kp = event.keypath;
 								        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
@@ -419,6 +421,7 @@
 								        	$("#deleteWidgetModal").modal();
 								        });
 								        treeRactive.on("ExpertDelete", function(event){
+								        	logClick("expertDelete", "Open delete expert modal", "Resources", userRole, userUri, roleUri);
 								        	var kp = event.keypath;
 								        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
 
@@ -431,6 +434,7 @@
 
 
 								        treeRactive.on("ExpertView", function(event){
+								        	logClick("ExpertView", "Open view expert modal", "Resources", userRole, userUri, roleUri);
 								        	var kp = event.keypath;
 								        	ExpertsKeypath = kp.slice(0, kp.lastIndexOf("."));
 											viewExpertRactive.set({
@@ -442,6 +446,7 @@
 								        });
 
 								        treeRactive.on("WidgetView", function(event){
+								        	logClick("WidgetView", "Open view widget modal", "Resources", userRole, userUri, roleUri);
 								        	var kp = event.keypath;
 								        	WidgetsKeypath = kp.slice(0, kp.lastIndexOf("."));
 											viewWidgetRactive.set({
@@ -469,6 +474,7 @@
 								        });
 
 								        treeRactive.on("documentShow", function(event){
+								        	logClick("documentShow", "Show learning document", "Resources", userRole, userUri, roleUri);
 								        	if(event.context.type == "weblink"){
 								        		var url = event.context.url;
 								        		var http = "http://"
@@ -481,6 +487,7 @@
 								        });
 
 								        treeRactive.on("documentEdit", function(event){
+								        	logClick("documentEdit", "Open edit document modal", "Resources", userRole, userUri, roleUri);
 								        	editDocumentRactive.set("editDocument", event.context);
 								        	editDocumentRactive.set("keypath", event.keypath);
 								        	$("#editDocumentModal").modal();
@@ -488,6 +495,7 @@
 
 								        $("#documentsTree").tree();
 								        treeRactive.on("ExpertEdit", function(event){
+								        	logClick("ExpertEdit", "Open edit expert modal", "Resources", userRole, userUri, roleUri);
 								        	editExpertRactive.set("editExpert", event.context);
 								        	editExpertRactive.set("keypath", event.keypath);
 								        	editExpertRactive.set("nameError", false);
@@ -497,6 +505,7 @@
 
 								        $("#ExpertsTree").tree();
 								        treeRactive.on("WidgetEdit", function(event){
+								        	logClick("WidgetEdit", "Open edit widget modal", "Resources", userRole, userUri, roleUri);
 								        	editWidgetRactive.set("editWidget", event.context);
 								        	editWidgetRactive.set("keypath", event.keypath);
 											$("#editWidgetModal").modal();
@@ -599,6 +608,7 @@
 								        viewWidgetRactive.on()
 
 								        deleteDocumentRactive.on("deleteDocument", function(event){
+								        	logClick("deleteDocument", "Delete learning document", "Resources", userRole, userUri, roleUri);
 								        	var node = event.node;
 								        	var l = Ladda.create(node);
 								        	l.start();
@@ -613,6 +623,7 @@
 
 								        });
 								        deleteExpertRactive.on("deleteExpert", function(event){
+								        	logClick("deleteExpert", "Delete learning expert", "Resources", userRole, userUri, roleUri);
 								        	var node = event.node;
 								        	var l = Ladda.create(node);
 								        	l.start();
@@ -627,6 +638,7 @@
 
 								        });
 								        deleteWidgetRactive.on("deleteWidget", function(event){
+								        	logClick("deleteWidget", "Delete learning widget", "Resources", userRole, userUri, roleUri);
 								        	var node = event.node;
 								        	var l = Ladda.create(node);
 								        	l.start();
@@ -675,6 +687,8 @@
 								        });
 
 								        editDocumentRactive.on("updateDocument", function(event){
+								        	console.log("uspade document");
+								        	logClick("updateDocument", "Update learning document", "Resources", userRole, userUri, roleUri);
 								        	var node = event.node;
 								        	var l = Ladda.create(node);
 								        	l.start();
@@ -696,6 +710,7 @@
 								        	});
 								        });
 								        editExpertRactive.on("updateExpert", function(event){
+								        	logClick("updateExpert", "Update learning Expert", "Resources", userRole, userUri, roleUri);
 								        	var exp = this.get("editExpert");
 								        	if(!checkInputExpert(exp, this))
 											return;
@@ -711,6 +726,7 @@
 								        	});
 								        });
 								        editWidgetRactive.on("updateWidget", function(event){
+								        	logClick("updateWidget", "Update learning Widget", "Resources", userRole, userUri, roleUri);
 								        	var node = event.node;
 								        	var l = Ladda.create(node);
 								        	l.start();
@@ -751,6 +767,7 @@
 								        });
 
 								        addDocumentRactive.on("saveDocument", function(event){
+								        	logClick("saveDocument", "Save new document", "Resources", userRole, userUri, roleUri);
 								        	var node = event.node;
 								        	var l = Ladda.create(node);
 								        	l.start();
@@ -775,6 +792,7 @@
 								        });
 
 								        addExpertRactive.on("saveExpert", function(event){
+								        	logClick("saveExpert", "Save new Expert", "Resources", userRole, userUri, roleUri);
 								        	var exp = this.get("newExpert");
 								        	if(!checkInputExpert(exp, this))
 											return;
@@ -790,6 +808,7 @@
 								        	});
 								        });
 								        addWidgetRactive.on("saveWidget", function(event){
+								        	logClick("saveWidget", "Save new Expert", "Resources", userRole, userUri, roleUri);
 
 								        	// var widgetUrl = this.get("newWidget").url;
 								        	// var spaceURI = openapp.param.user();
@@ -807,6 +826,7 @@
 								        });
 
 								        addDocumentRactive.on("importDocument", function(event){
+								        	logClick("importDocument", "Import document from viewer", "Resources", userRole, userUri, roleUri);
 								        	var document = this.get("newDocument");
 								        	learningDocumentFromSearchWidget.bcnUri = document.bcnUri;
 								        	learningDocumentFromSearchWidget.liId = document.liId;

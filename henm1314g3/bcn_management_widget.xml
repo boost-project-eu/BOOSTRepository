@@ -108,6 +108,10 @@
 						// Get the access rights:
 						retrieveAccessRights(function(accessRights){
 						userAccessRights = accessRights.getUserAccessRights();
+						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+						userRole = isManager ? "Manager" : "Employee";
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+						roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 
 							//Check if user has agreed to license
 
@@ -195,18 +199,20 @@
 								ractiveBcnHeader.on({
 									showOverallProgress: function ( event ) {
 										publishShowOverallBcnProgress();
+										logClick("showOverallProgress button", "Show progress for all Bcns", "BCN", userRole, userUri, roleUri);
 									},
 									addNewBcn: function ( event ) {
 										// Show addBcnModal on click on addNewBcnButton
 										var newBcn = new BCN({});
 										ractiveAddBcn.set("bcn", newBcn);
-
 										$("#addBcnModal").modal();
+										logClick("addNewBcn button", "Open new CBN Modal", "BCN", userRole, userUri, roleUri);
 									},
 									returnToOverall: function(event) {
 										userAccessRights.isEmployee = false;
 										ractiveOverview.set("accessRights", userAccessRights);
 										ractiveBcnHeader.set("showSpecificEmployee", false);
+										logClick("returnToOverall button", "Return to overall view", "BCN", userRole, userUri, roleUri);
 									},
 									showHelpHome: function( event ){
 										$('.tooltip-returnHome').tooltip();
@@ -225,6 +231,7 @@
 										$('#descriptionModal').modal({
 											keyboard: true
 										});
+										logClick("showHelp button", "Show help modal", "BCN", userRole, userUri, roleUri);
 
 									}
 								});
@@ -236,10 +243,12 @@
 									var li = event.context;
 									var bcn = this.get("bcn");
 									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+									logClick("RemoveLiNewBcn button", "Delete Li from new BCN", "BCN", userRole, userUri, roleUri);
 								});
 
 								ractiveAddBcn.on("addLI", function(event){
 									this.get('bcn').addLI("");
+									logClick("AddLiNewBcn button", "Add Li to new BCN", "BCN", userRole, userUri, roleUri);
 								});
 
 								ractiveAddBcn.on("saveBCN", function(event){
@@ -278,6 +287,7 @@
 									//Why do we need this? If we do not call it we get an error for some reason:
 									//It's like onClick (off)
 									event.original.preventDefault();
+									logClick("SaveNewBcn button", "Save created BCN", "BCN", userRole, userUri, roleUri);
 								});
 
 
@@ -306,12 +316,14 @@
 
 								ractiveEditBcn.on("addLI", function(event){
 									this.get('bcn').addLI("");
+									logClick("addLI button", "Add new LI to goal", "BCN", userRole, userUri, roleUri);
 								});
 
 								ractiveEditBcn.on("removeLI", function(event){
 									var li = event.context;
 									var bcn = this.get("bcn");
 									bcn.learningIndicators.splice(bcn.learningIndicators.indexOf(li), 1);
+									logClick("RemoveLi button", "Remove Learning indicator from goal", "BCN", userRole, userUri, roleUri);
 								});
 
 								ractiveEditBcn.on("saveBCN", function(event){
@@ -347,6 +359,7 @@
 										});
 									});
 									event.original.preventDefault();
+									logClick("SaveLi button", "Save edited goal", "BCN", userRole, userUri, roleUri);
 								});
 
 
@@ -375,7 +388,7 @@
 										//Hide the loading indicator of the delete button
 										l.stop();
 										$("#deleteBcnModal").modal("hide");
-
+										logClick("deleteBCN button", "Delete BCN", "BCN", userRole, userUri, roleUri);
 									});
 								});
 
@@ -386,10 +399,12 @@
 										graphShow: function ( event ) {
 										var bcnIndex = bcnsList.indexOf(event.context);
 										publishShowBcnProgress(bcnsList[bcnIndex].uri);
+										logClick("graphShow button", "Show Progress for bcn in Graph widget", "BCN", userRole, userUri, roleUri);
 									},
 										delete: function ( event ) {
 										ractiveDeleteBcn.set("bcn", event.context);
 										$('#deleteBcnModal').modal();
+										logClick("dleteBcnModal button", "Show delete bcn modal", "BCN", userRole, userUri, roleUri);
 									},
 										showHelpGoalGraph: function ( event ) {
 										$('.tooltip-showGoalProgress').tooltip();

@@ -55,7 +55,7 @@
 			    "UserManager",
 			    "utils"
 			    ], function(tr, a, b, r, _) {
-			    	
+
 			    	translations= tr;
 			    	async = a;
 			    	bootbox = b;
@@ -76,13 +76,14 @@
 					}
 
 					space = new openapp.oo.Resource(openapp.param.space());
+					roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
 
 					//gadgets.util.registerOnLoadHandler(init);
-					
-					//validation for 
-					setTimeout(function() { 
+
+					//validation for
+					setTimeout(function() {
 						if ($("input[type=checkbox]:checked.employeeCheckbox").length < 2)
 							$("input[type=checkbox]:checked.employeeCheckbox").attr("disabled", true);
 						else
@@ -165,7 +166,7 @@
 						});
 					}
 
-					
+
 
 					$(function(){
 
@@ -220,7 +221,7 @@
 										//owner.accessRights.hasAgreedToLicense = true;
 										if (owner)
 											owner.accessRights.isManager = true;
-										
+
 										//hide owner of the space
 										if (!currentUser.isOwner)
 										{
@@ -228,12 +229,12 @@
 												return user.isOwner == false;
 											});
 										}
-										
+
 										//Check if user has agreed to license
 										if(!accessRights.getUserAccessRights().hasAgreedToLicense){
 											showModalAcceptTermsOfUse();
 
-										} 
+										}
 										// else if(!accessRights.getUserAccessRights().isManager){
 											// showModalContactManager();
 										// }
@@ -257,9 +258,17 @@
 												else
 													$("input[type=checkbox]:checked.employeeCheckbox").attr("disabled", false);
 												user = event.context;
+												var userUri = currentUser.uri.substring(currentUser.uri.lastIndexOf("/") + 1);
+												userAccessRights = event.context.accessRights;
+												logClick("Access rights checkbox", "Changed Access rights for " + user.name, "Access", "Manager", userUri, roleUri);
 												createEmployeeIfNotExist(user, accessRights, employeesList);
 											},
 											showHelp: function(event){
+												var userUri = currentUser.uri.substring(currentUser.uri.lastIndexOf("/") + 1);
+												var isManager = event.context.currentUser.AccessRights.isManager && !event.context.currentUser.AccessRights.isEmployee;
+												var role = isManager ? "Manager" : "Employee";
+												console.log("help");
+												logClick("Help Button", "Show help", "Access", role, userUri, roleUri);
 												$('#descriptionModal').modal({
 													keyboard: true
 												});
@@ -281,8 +290,8 @@
 					});
 				});
 			});
-			
-			
+
+
 		</script>
 
 		<!-- HTML Block -->

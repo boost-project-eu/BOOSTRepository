@@ -84,7 +84,7 @@
 					}
 					//gadgets.util.registerOnLoadHandler(init);
 					//function init(){
-					
+
 					space = new openapp.oo.Resource(openapp.param.space());
 					iwcClient = new iwc.Client();
 					iwcClient.connect(iwcCallback);
@@ -94,10 +94,14 @@
 
 						// Get the access rights:
 						retrieveAccessRights(function(access){
-						
+
 						accessRights = access;
 						userAccessRights = access.getUserAccessRights();
 						agreed = userAccessRights.hasAgreedToLicense;
+						var isManager = userAccessRights.isManager && !userAccessRights.isEmployee;
+						userRole = isManager ? "Manager" : "Employee";
+						userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
+						roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
 
 						if (!agreed)
 							$("#agreeLisenceModal").modal();
@@ -151,7 +155,8 @@
 						cookieStr = "locale=" + locale
 						document.cookie=cookieStr;
 						publishLanguageChanged();
-						window.location.reload();
+						syncLog("Language SelectBox", "Changed language to " + locale, "Welcome", userRole, userUri, roleUri, function(){window.location.reload()})
+						// window.location.reload();
 					}
 
 					function publishLanguageChanged(){
@@ -179,6 +184,7 @@
 					}
 
 					$("#agreeButton").click(function(){
+						logClick("AgreeLicence button", "User Agreed to Licence", "Welcome", userRole, userUri, roleUri);
 						userAccessRights.hasAgreedToLicense = true;
 						accessRights.update(function (){
 							$("#agreeLisenceModal").modal("hide");
@@ -215,7 +221,7 @@
 								</div>
 							</div>
 							<div class="col-xs-2"><a href="http://www.boost-project.eu/" target="_blank" style="float:right; margin:5 0 5 5px;"><img src="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/resources/small_logo.gif" alt="overall" width="40" height="30" alt="BOOST website"></a></div>
-							
+
 							<!--
 							<button type="button" class="btn btn-warning" on-click="setGerman" style="float:right; margin:-7 0 5 5px;">DE</button>
 							<button type="button" class="btn btn-danger" on-click="setEnglish" style="float:right; margin:-7 0 5 5px;">EN</button>
