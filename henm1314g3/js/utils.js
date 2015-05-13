@@ -1,5 +1,5 @@
 function closeAutorisationWindow (){
-  var cnt = 20; 
+  var cnt = 20;
   var mywindow = null;
   var timeout = function(){
       var btn = document.getElementById("oauthPersonalizeButton");
@@ -34,7 +34,8 @@ function closeAutorisationWindow (){
 onAjaxSuccess = function(data) {};
 
 function logClick(elementName, userAction, widget, role, userUri, roleUri){
-  $.post('http://boostloger.herokuapp.com/save', {
+  console.log('here');
+  $.post('http://beckmann.informatik.rwth-aachen.de:9080/save', {
     elementName: elementName,
     userAction: userAction,
     widget: widget,
@@ -55,13 +56,13 @@ function syncLog(elementName, userAction, widget, role, userUri, roleUri, callba
   }
   $.ajax({
     type: "POST",
-    url: "http://boostloger.herokuapp.com/save",
+    url: "http://beckmann.informatik.rwth-aachen.de:9080/save",
     data: data,
     success: function(msg){
       callback();
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
-      console.log("Error:" + XMLHttpRequest.responseText + textStatus);
+      console.log(XMLHttpRequest);
     }
   });
 };
