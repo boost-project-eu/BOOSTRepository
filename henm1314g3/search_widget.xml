@@ -287,7 +287,7 @@
 							userAccessRights = accessRights.getUserAccessRights();
 							agreed = userAccessRights.hasAgreedToLicense;
 
-							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee;
 							userRole = isManager ? "Manager" : "Employee";
 							userUri = openapp.param.user().substring(openapp.param.user().lastIndexOf("/") + 1);
 							roleUri = window.parent.location.href.substring(window.parent.location.href.lastIndexOf("/") + 1)
@@ -295,7 +295,7 @@
 
 							if(!agreed){
 								showModalAcceptTermsOfUse();
-							} 
+							}
 
 							ractiveSearchHeader = new Ractive({
 									el: 'containerSearch',
@@ -339,7 +339,7 @@
 										ractiveSearchHeader.set({model: model});
 					                 	$("#manageRepoModal").modal("hide");
 					                	location.reload();
-					                });	
+					                });
 								}
 							});
 
@@ -359,23 +359,23 @@
 									});
 								},
 								pageclick: function(event){
-									logClick("PageChangeButton", "Change page by number", userRole, userUri, roleUri);
+									logClick("PageChangeButton", "Change page by number", "Search", userRole, userUri, roleUri);
 									event.context.click();
 								},
 								nextPage: function(event){
-									logClick("nextPageButton", "Change page to next", userRole, userUri, roleUri);
+									logClick("nextPageButton", "Change page to next", "Search", userRole, userUri, roleUri);
 									model.selectedRepository.nextResultsPage();
 								},
 								prevPage: function(event){
-									logClick("prevPageButton", "Change page to prev", userRole, userUri, roleUri);
+									logClick("prevPageButton", "Change page to prev", "Search", userRole, userUri, roleUri);
 									model.selectedRepository.prevResultsPage();
 								},
 								resultClick: function(event){
-									logClick("ResultClickButton", "Click on search result", userRole, userUri, roleUri);
+									logClick("ResultClickButton", "Click on search result", "Search", userRole, userUri, roleUri);
 									event.context.click();
-								},	
+								},
 								questionModal: function(event){
-									logClick("ShowHelpButtin", "Show help modal", userRole, userUri, roleUri);
+									logClick("ShowHelpButtin", "Show help modal", "Search", userRole, userUri, roleUri);
 									$('#descriptionModal').modal({
 						        		keyboard: true
 						          	});
@@ -430,7 +430,7 @@
 			  	</div>
 			  	<div class="panel-body" id="panelBody">
 			  	{{^accessRights.isEmployee}}
-				  	{{#accessRights.isManager}}	
+				  	{{#accessRights.isManager}}
 				  		<div class="btn-group">
 					 	 	<button on-click="manageRepos" type="button" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-wrench" data-placement="top"></span></button>
 						</div>
@@ -545,7 +545,7 @@
 
     <!-- Modal to manage repositories -->
 
-	
+
 
       <div class="modal fade" id="manageRepoModal" >
         <div class="modal-dialog" id="containerRepoManage">
@@ -574,7 +574,7 @@
 
             </div>
           </div><!-- /.modal-content -->
-		</script>        
+		</script>
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal
 
