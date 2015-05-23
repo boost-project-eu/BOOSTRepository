@@ -14,12 +14,14 @@ var locale = getCookie("locale") || localStorage.getItem("locale") || navigator.
 require.config({
     locale: locale,
     paths: {
-        jquery: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-1.10.2.min",
+        jquery: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/jquery-2.1.4.min",
         jqueryUi: "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
         async: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/async",
         bootstrap: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap.min",
         boostShared: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared",
         bootstrapSlider: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-slider",
+        bootstrapToggle: "https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min",
+        bootstrapSwitch: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-switch.min",
         tree: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree",
         spin: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min",
         ladda: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min",
@@ -93,6 +95,12 @@ require.config({
             deps: ['highcharts']
         },
         bootstrap: {
+            deps: ['jquery']
+        },
+        bootstrapToggle: {
+            deps: ['jquery']
+        },
+        bootstrapSwitch: {
             deps: ['jquery']
         },
         jqueryUi: {

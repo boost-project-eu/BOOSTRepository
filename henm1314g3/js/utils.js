@@ -34,7 +34,6 @@ function closeAutorisationWindow (){
 onAjaxSuccess = function(data) {};
 
 function logClick(elementName, userAction, widget, role, userUri, roleUri){
-  console.log('here');
   $.post('http://beckmann.informatik.rwth-aachen.de:9080/save', {
     elementName: elementName,
     userAction: userAction,
