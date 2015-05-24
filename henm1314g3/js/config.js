@@ -21,7 +21,6 @@ require.config({
         boostShared: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/boostShared",
         bootstrapSlider: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-slider",
         bootstrapToggle: "https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min",
-        bootstrapSwitch: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/bootstrap-switch.min",
         tree: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/js/tree",
         spin: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/spin.min",
         ladda: "http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda.min",

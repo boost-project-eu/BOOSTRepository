@@ -30,7 +30,6 @@
 		<!-- Define CSS -->
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/bootstrap-toggle.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/css/slider.css">
 		<link rel="stylesheet" href="http://127.0.0.1:8073/role/BOOSTRepository/henm1314g3/ladda/ladda-themeless.min.css">
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -50,7 +49,6 @@
 			    "bootstrap",
 			    "bootstrapSlider",
 			    "bootstrapToggle",
-			    "bootstrapSwitch",
 			    "boostShared",
 			    "EmployeeManager",
 			    "spin",
