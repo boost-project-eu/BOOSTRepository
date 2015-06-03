@@ -407,7 +407,6 @@
 					}
 
 					function averageLIProgressForBcn(bcn){
-						console.log('1');
 						var liNameList=[];
 						var liStartListAvg=[];
 						var liCurrentListAvg=[];
@@ -475,7 +474,6 @@
 					}
 
 					function averageBcnProgressForEmployee(employee){
-						console.log("2");
 						var liNameList=[];
 
 						var liStartListAvg=[];
@@ -896,7 +894,6 @@
 					}
 
 					function showDefaultGraph(){
-						console.log('3');
 						isOverviewGraph.bool=true;
 						isEmployeeOverviewGraph.bool=false;
 						isBcnGraph.bool=false;
@@ -994,7 +991,6 @@
 					}
 
 					function showEmployeeOverviewGraph(){
-						console.log('4');
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=true;
 						isBcnGraph.bool=false;

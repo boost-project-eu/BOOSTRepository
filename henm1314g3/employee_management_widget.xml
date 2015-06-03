@@ -690,7 +690,7 @@
 												<li style="width:200px;" align="center">
 													<div class="btn-group">
 														<button class="btn btn-default btn-sm"  on-mouseover="showHelpSetLI" on-click='setLI'><span class='glyphicon glyphicon-flag tooltip-setLI' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_ASSIGN_GOALS}} {{name}}" style="margin-right:5px;"></span></button>
-														<button class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee"><a href='mailto:{{email}}'><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SEND_EMAIL}} {{name}}" style="margin-right:5px; color:#000;"></span></a></button>
+														<a class="btn btn-default btn-sm"  on-mouseover="showHelpEmailEmployee" href="mailto:{{email}}"><span class='glyphicon glyphicon-envelope tooltip-emailEmployee' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SEND_EMAIL}} {{name}}" style="margin-right:5px; color:#000;"></span></a>
 														<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeGraph" on-click='graphShow'><span class='glyphicon glyphicon-stats tooltip-showEmployeeProgress' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_PROGRESS}} {{name}}" style="margin-right:5px;"></span></button>
 														<button class="btn btn-default btn-sm" on-mouseover="showHelpEmployeeDates" on-click='employeeDatesShow'><span class='glyphicon glyphicon-calendar tooltip-showDeadlines' data-placement="left" data-toggle="tooltip" data-original-title="{{text.STR_SHOW_DEADLINES}} {{name}}" style="margin-right:5px;"></span></button>
 													</div>
