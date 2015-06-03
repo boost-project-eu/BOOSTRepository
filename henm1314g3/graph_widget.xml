@@ -121,7 +121,7 @@
 							retrieveAccessRights(function(accessRights){
 
 							var userAccessRights = accessRights.getUserAccessRights();
-							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee; 
+							var isManager = userAccessRights.isManager && !userAccessRights.isEmployee;
 							userRole = isManager ? "Manager" : "Employee";
 
 								retrieveAllUsers(space, function(users){
@@ -345,7 +345,7 @@
 
 							if(!userAccessRights.hasAgreedToLicense){
 								showModalAcceptTermsOfUse();
-							} 
+							}
 
 							});  // end of the retrieveAccessRights
 
@@ -379,6 +379,8 @@
 							var start = employeeLiData.start;
 							var current = employeeLiData.current;
 							var end = employeeLiData.end;
+							if(current < start)
+								current = start
 
 							if (employee.learningLevels[bcn.uri].isRelevant){
 								if(employeeLiData.isRelevant){
@@ -405,6 +407,7 @@
 					}
 
 					function averageLIProgressForBcn(bcn){
+						console.log('1');
 						var liNameList=[];
 						var liStartListAvg=[];
 						var liCurrentListAvg=[];
@@ -429,6 +432,8 @@
 								var start = employeeLiData.start;
 								var current = employeeLiData.current;
 								var end = employeeLiData.end;
+								if(current < start)
+									current = start
 
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
@@ -470,6 +475,7 @@
 					}
 
 					function averageBcnProgressForEmployee(employee){
+						console.log("2");
 						var liNameList=[];
 
 						var liStartListAvg=[];
@@ -492,6 +498,8 @@
 								var start = employeeLiData.start;
 								var current = employeeLiData.current;
 								var end = employeeLiData.end;
+								if(current < start)
+									current = start
 
 
 								if (employee.learningLevels[bcn.uri].isRelevant){
@@ -888,7 +896,7 @@
 					}
 
 					function showDefaultGraph(){
-
+						console.log('3');
 						isOverviewGraph.bool=true;
 						isEmployeeOverviewGraph.bool=false;
 						isBcnGraph.bool=false;
@@ -925,8 +933,8 @@
 									var start = employeeLiData.start;
 									var current = employeeLiData.current;
 									var end = employeeLiData.end;
-
-
+									if(current < start)
+										current = start
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
 										if(employeeLiData.isRelevant){
@@ -986,6 +994,7 @@
 					}
 
 					function showEmployeeOverviewGraph(){
+						console.log('4');
 						isOverviewGraph.bool=false;
 						isEmployeeOverviewGraph.bool=true;
 						isBcnGraph.bool=false;
@@ -1023,7 +1032,8 @@
 									var start = employeeLiData.start;
 									var current = employeeLiData.current;
 									var end = employeeLiData.end;
-
+									if(current < start)
+										current = start
 
 
 									if (employee.learningLevels[bcn.uri].isRelevant){
@@ -1151,7 +1161,7 @@
 						}
 
 						var data = LIprogressForBcn(bcn, liClicked);
-						
+
 						var liEndListAvg=[];
 						var liCurrentListAvg=[];
 						var liStartListAvg=[];
