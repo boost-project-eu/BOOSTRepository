@@ -40,7 +40,7 @@ function logClick(elementName, userAction, widget, role, userUri, roleUri){
     widget: widget,
     role: role,
     userUri: userUri,
-    roleUri: roleUri
+    roleUri: roleUri.replace("#", "")
   }, onAjaxSuccess);
 }
 
@@ -51,7 +51,7 @@ function syncLog(elementName, userAction, widget, role, userUri, roleUri, callba
     widget: widget,
     role: role,
     userUri: userUri,
-    roleUri: roleUri
+    roleUri: roleUri.replace("#", "")
   }
   $.ajax({
     type: "POST",
