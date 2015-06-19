@@ -78,10 +78,9 @@
 					//}
 
 					function iwcCallback(intent){
-						if(intent.action == "LEARNING_DOCUMENT_SELECTED" ||
-							intent.action == "SHOW_LEARNING_DOCUMENT"){
+						if(intent.action == "LEARNING_DOCUMENT_SELECTED" || intent.action == "SHOW_LEARNING_DOCUMENT"){
 							var document = intent.extras;
-							if(document.type == "youtube")
+							if(document.type == "youtube" || document.type == "weblink")
 								showYoutubeVideo(document.contentSpecificData.videoId);
 							if(document.type == "slideshare")
 								showSlideshareSlideshow(document.contentSpecificData.id);
