@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+
+    <ModulePrefs title="Role"
+        description="Manage the access rights of all the different users."
+        author="Team Boost"
+        author_email="henm1314g3@dbis.rwth-aachen.de"
+        height="450"
+        width="500">
+    <Require feature="opensocial-0.8" />
+    <Require feature="openapp" />
+    <OAuth>
+        <Service name="openapp"
+            xmlns:openapp="http://www.role-project.eu/xml/openapp/opensocialext/"
+            openapp:service="http://purl.org/role/terms/spaceService"
+            openapp:permitReadAppend="http://purl.org/role/terms/data">
+
+            <Request method="" url=""/>
+            <Authorization url=""/>
+            <Access method="" url=""/>
+        </Service>
+    </OAuth>
+    </ModulePrefs>
+
+    <Content type="html">
+    <![CDATA[
+
+
+        <!-- JavaScript Block -->
+        <script>
+            function deleteCurrentSpace() {
+                space = new openapp.oo.Resource(openapp.param.space());
+                openapp.resource.del(space.uri, function(){
+                  console.log("Current space successfully deleted");
+                });
+            };
+
+            function myFunction() {
+                var pass = prompt("Please enter password", "");
+                if (pass != null) {
+                    console.log(pass);
+                    if (pass == "123"){
+                        deleteCurrentSpace();
+                    }
+                    else
+                        alert("incorrect pass");
+                }
+            }
+
+        </script>
+
+        <!-- HTML Block -->
+
+        <button onclick="myFunction()">Try it</button>
+
+    ]]>
+  </Content>
+</Module>
